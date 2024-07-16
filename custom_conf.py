@@ -114,7 +114,7 @@ html_context = {
     'sequential_nav': "none",
 
     # Controls if to display the contributors of a file or not
-    "display_contributors": false,
+    "display_contributors": False,
 
     # Controls time frame for showing the contributors
     "display_contributors_since": ""
