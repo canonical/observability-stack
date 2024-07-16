@@ -19,13 +19,13 @@ import datetime
 ############################################################
 
 # Product name
-project = 'Documentation starter pack'
+project = 'Observability'
 author = 'Canonical Ltd.'
 
 # The title you want to display for the documentation in the sidebar.
 # You might want to include a version number here.
 # To not display any title, set this option to an empty string.
-html_title = project + ' documentation'
+html_title = ''
 
 # The default value uses CC-BY-SA as the license and the current year
 # as the copyright year.
@@ -74,7 +74,7 @@ html_context = {
     # For example: "ubuntu.com/lxd" or "microcloud.is"
     # If there is no product website, edit the header template to remove the
     # link (see the readme for instructions).
-    'product_page': 'documentation.ubuntu.com',
+    'product_page': '',
 
     # Add your product tag (the orange part of your logo, will be used in the
     # header) to ".sphinx/_static" and change the path here (start with "_static")
@@ -84,19 +84,19 @@ html_context = {
     # Change to the discourse instance you want to be able to link to
     # using the :discourse: metadata at the top of a file
     # (use an empty value if you don't want to link)
-    'discourse': 'https://discourse.ubuntu.com',
+    'discourse': 'https://discourse.charmhub.io/c/charm/observability/62',
 
     # Change to the Mattermost channel you want to link to
     # (use an empty value if you don't want to link)
-    'mattermost': 'https://chat.canonical.com/canonical/channels/documentation',
+    'mattermost': '',
 
     # Change to the Matrix channel you want to link to
     # (use an empty value if you don't want to link)
-    'matrix': 'https://matrix.to/#/#documentation:ubuntu.com',
+    'matrix': 'https://matrix.to/#/#observability:ubuntu.com',
 
     # Change to the GitHub URL for your project
     # This is used, for example, to link to the source files and allow creating GitHub issues directly from the documentation.
-    'github_url': 'https://github.com/canonical/sphinx-docs-starter-pack',
+    'github_url': 'https://github.com/canonical/observability-docs',
 
     # Change to the branch for this version of the documentation
     'github_version': 'main',
@@ -114,7 +114,7 @@ html_context = {
     'sequential_nav': "none",
 
     # Controls if to display the contributors of a file or not
-    "display_contributors": True,
+    "display_contributors": false,
 
     # Controls time frame for showing the contributors
     "display_contributors_since": ""
