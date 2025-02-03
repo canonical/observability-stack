@@ -33,7 +33,7 @@ author = "Canonical Ltd."
 #
 # TODO: To disable the title, set to an empty string.
 
-html_title = ""
+html_title = "Observability Documentation"
 
 
 # Copyright string; shown at the bottom of the page

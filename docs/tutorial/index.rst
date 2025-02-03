@@ -13,5 +13,6 @@ Installation
 .. toctree::
    :maxdepth: 1
 
-   1. Getting started on MicroK8s <getting-started-with-cos-lite>
+   COS Lite on MicroK8s <getting-started-with-cos-lite>
+   COS on any K8s <getting-started-with-cos>
 
