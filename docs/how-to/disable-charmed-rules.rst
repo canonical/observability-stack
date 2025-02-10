@@ -16,7 +16,6 @@ using a boolean config option, called ``forward_alert_rules``:
 - grafana-agent
 - cos-proxy
 - prometheus-scrape-config
-- cos-configuration
 
 For example, to disable forwarding of all alert rules from grafana agent,
 
