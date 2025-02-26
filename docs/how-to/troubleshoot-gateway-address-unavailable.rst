@@ -1,2 +1,0 @@
-Troubleshooting `Gateway address unavailable`
-*********************************************
