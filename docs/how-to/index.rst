@@ -37,6 +37,7 @@ with COS to actually observe them.
    Configure scrape jobs <configure-scrape-jobs>
    Exposing a metrics endpoint <exposing-a-metrics-endpoint>
    Integrating COS Lite with uncharmed applications <integrating-cos-lite-with-uncharmed-applications>
+   Disable charmed rules <disable-charmed-rules>
    Setting up a development environment using Minio <dev-setup-with-minio>
 
 Troubleshooting
