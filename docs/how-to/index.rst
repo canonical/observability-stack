@@ -32,10 +32,13 @@ with COS to actually observe them.
 .. toctree::
    :maxdepth: 1
 
+   Add tracing to COS Lite <add-tracing-to-cos-lite>
+   Adding alert rules <adding-alert-rules>
+   Configure scrape jobs <configure-scrape-jobs>
    Exposing a metrics endpoint <exposing-a-metrics-endpoint>
    Integrating COS Lite with uncharmed applications <integrating-cos-lite-with-uncharmed-applications>
-   Configure scrape jobs <configure-scrape-jobs>
    Disable charmed rules <disable-charmed-rules>
+   Setting up a development environment using Minio <dev-setup-with-minio>
 
 Troubleshooting
 ===============
@@ -45,6 +48,10 @@ how-to guides will assist you in troubleshooting COS in an effective manner.
 
 .. toctree::
    :maxdepth: 1
+   :hidden:
 
-   Troubleshooting `Gateway address unavailable` in Traefik <troubleshoot-gateway-address-unavailable>
-   Troubleshooting `socket: too many open files` <troubleshoot-socket-too-many-open-files>
+   Troubleshooting <troubleshooting/index.rst>
+
+- `Troubleshoot "Gateway Address Unavailable" in Traefik <troubleshooting/troubleshoot-gateway-address-unavailable>`_
+- `Troubleshoot "socket: too many open files" <troubleshooting/troubleshoot-socket-too-many-open-files>`_
+- `Troubleshoot integrations <troubleshooting/troubleshoot-integrations>`_
