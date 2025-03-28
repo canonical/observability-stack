@@ -29,9 +29,8 @@ For Site Reliability Engineers, Canonical Observability Stack provides a turn-ke
 
    .. grid-item-card:: :ref:`How-to guides <how-to>`
 
-      **Step-by-step guides** - learn key operations, ranging from 
-      :ref:`exposing a Metrics Endpoint <exposing-a-metrics-endpoint>`
-      to  :ref:`integrating COS Lite with uncharmed applications <integrating-cos-lite-with-uncharmed-aplications>`.
+      **Step-by-step guides** - learn key operations, ranging from exposing 
+      a metrics endpoint to integrating COS Lite with uncharmed applications.
 
 .. grid:: 1 1 2 2
    :reverse:
