@@ -18,8 +18,8 @@ for details.
 ## Components
 
 
-COS Lite consists of two types of components: core and auxillary, where core
-are needed for the solution to function, while the auxillary ones may be added
+COS Lite consists of two types of components: core and auxiliary, where core
+are needed for the solution to function, while the auxiliary ones may be added
 to enhance the functionality as needed.
 
 ### Core
@@ -33,13 +33,13 @@ of consumption is through Grafana.
 #### [Loki](https://charmhub.io/loki-k8s)
 
 The Loki charmed operator is responsible for ingesting, storing, evaluating and
-servig log telemetry. The main way of consumption is through the Grafana user
+serving log telemetry. The main way of consumption is through the Grafana user
 interface.
 
 #### [Alertmanager](https://charmhub.io/alertmanager-k8s)
 
 The Alertmanager charmed operator is responsible for routing alert notifications
-on to relevant recepients based on the alert rules expressed in Prometheus and Loki.
+on to relevant recipients based on the alert rules expressed in Prometheus and Loki.
 
 #### [Grafana](https://charmhub.io/grafana-k8s)
 

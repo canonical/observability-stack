@@ -23,7 +23,7 @@ Configuration
 =============
 
 In this part of the tutorial you will learn how to make COS automatically sync
-the alert rules of your git repo to your metrics backend using the COS Configuration
+the alert rules of your git repository to your metrics backend using the COS Configuration
 charm.
 
 .. toctree::

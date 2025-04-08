@@ -11,7 +11,7 @@ it's relatively straightforward to do so. Not bad at all.
 This how-to assumes that you already have a working deployment of COS Lite. If that is not the case, we recommend you first follow our [tutorial for getting started with COS Lite](/tutorial/installation/getting-started-with-cos-lite).
 
 The first step will be to get a hold of a machine, somewhere, and follow 
-[this guide on how to get started with COS lite on microk8s](https://charmhub.io/topics/canonical-observability-stack/tutorials/install-microk8s). 
+[this guide on how to get started with COS lite on MicroK8s](https://charmhub.io/topics/canonical-observability-stack/tutorials/install-microk8s). 
 
 Unless you're also planning to monitor some charmed applications with this cos-lite deployment, you will **not** need to use [the offers overlay](https://charmhub.io/topics/canonical-observability-stack/tutorials/install-microk8s#heading--deploy-the-cos-lite-bundle-with-overlays). 
 
@@ -22,7 +22,7 @@ and send them to `cos-lite`, where you will be able to inspect them through the
 Grafana dashboards.
 
 We recommend to host the Grafana agent as close as possible to the workloads you 
-intend to monitor, to minimise the risk of network faults and the resulting gaps 
+intend to monitor, to minimize the risk of network faults and the resulting gaps 
 in telemetry collection.
 
 We recommend to install the Grafana agent via a handy snap we maintain:
@@ -40,7 +40,7 @@ Now that you have Grafana Agent up and running, you will need to configure it.
 ## Get the API endpoints
 
 COS Lite includes a Traefik instance that takes care of load balancing and 
-ingressing the various observability components of the stack. Since `cos-lite` 
+providing ingress capabilities to the various observability components of the stack. Since `cos-lite` 
 runs on Kubernetes, this allows you to talk to them via `traefik` over a stable 
 URL.
 
@@ -57,7 +57,7 @@ In the Juju model where COS Lite is deployed, run the command below to find out 
 $ juju run traefik/0 show-proxied-endpoints
 ```
 
-Assuming you have [configured the traefik charm](https://github.com/canonical/traefik-k8s-operator#configurations) to use an external hostname, for example `"traefik.url"`, you will see something like:
+Assuming you have [configured the Traefik charm](https://github.com/canonical/traefik-k8s-operator#configurations) to use an external host name, for example `"traefik.url"`, you will see something like:
 
 ```
 proxied-endpoints: '{
@@ -72,7 +72,7 @@ If you prefer to explore the deployment in a graphical manner, you can also
 open `https://traefik.url/mymodel-catalogue` in a browser for a list of all the 
 user interfaces of the components included.
 
-At this point you will need to follow [the documentation on how to configure the Grafana agent](https://grafana.com/docs/agent/latest/static/configuration/#configure-static-mode). Use the urls you obtained from traefik to tell the agent where to send its telemetry.
+At this point you will need to follow [the documentation on how to configure the Grafana agent](https://grafana.com/docs/agent/latest/static/configuration/#configure-static-mode). Use the URLs you obtained from Traefik to tell the agent where to send its telemetry.
 
 Once you've written your finished configuration to `/etc/grafana-agent.yaml`, you'll 
 be able to restart the snap using the following command:
@@ -85,7 +85,7 @@ And with that, you are done! Good job, you got this!
 
 ## Diving deeper
 
-If completing this how-to guide made you crave for me, feel free to continue on with one of the following extra curriculars.
+If completing this how-to guide made you crave for me, feel free to continue on with one of the following extracurriculars.
 
 ### Custom dashboards and alerts
 
@@ -99,7 +99,7 @@ See [this guide](https://github.com/canonical/cos-configuration-k8s-operator#dep
 
 ### Using TLS
 
-You can deploy cos-lite with the [tls](https://github.com/canonical/cos-lite-bundle/pull/80) overlay to enable secure communications with and within COS Lite. 
+You can deploy cos-lite with the [TLS](https://github.com/canonical/cos-lite-bundle/pull/80) overlay to enable secure communications with and within COS Lite. 
 
 You can follow [this guide](https://charmhub.io/traefik-k8s/docs/tls-termination) to enable TLS in Traefik and COS Lite.
 

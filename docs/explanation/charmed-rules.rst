@@ -5,7 +5,7 @@ What are alert rules?
 =====================
 
 Prometheus and Loki would post alerts to Alertmanager when alert expressions are
-evaluated as "true". Alert expressions are stored in yaml files called "alert rules".
+evaluated as "true". Alert expressions are stored in YAML files called "alert rules".
 
 - Metrics-based alert rule expressions are written in PromQL, and are evaluated by prometheus.
 - Log-based alert rule expressions are written in LogQL, and are evaluated by Loki.
@@ -25,7 +25,7 @@ By default, rule files are located at ``./src/prometheus_alert_rules`` and ``./s
 relative to the charm's root folder.
 
 When the built-in alert rules are picked up by the charmed operator, they are transformed
-and forwarded to prometheus or loki charms over relation data.
+and forwarded to Prometheus or Loki charms over relation data.
 
 The main advantage of charmed rules is that operation knowledge is centralized, and is readily available
 with the charmed operator.
@@ -36,4 +36,4 @@ Charmed rules can be `disabled <disable-charmed-rules>`_.
 Automatic modifications made to charmed alert rules
 ---------------------------------------------------
 - All alert expressions are automatically injected with juju topology matchers.
-- Juju topology alert labels are automaticall added to all alerts.
+- Juju topology alert labels are automatically added to all alerts.

@@ -30,7 +30,7 @@ $ microk8s enable hostpath-storage
 ```
 
 The bundle comes with Traefik to provide ingress, for which you'll need a load balancer controller.
-If you don't have one already, the `metallb` addon should be enabled:
+If you don't have one already, the `metallb` add-on should be enabled:
 
 ```bash 
 $ IPADDR=$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc')
@@ -46,11 +46,11 @@ $ microk8s kubectl rollout status daemonset.apps/speaker -n metallb-system -w
 ```
 
 ```{note}
-If you have an HTTP proxy configured, you will need to give this information to MicroK8s. See [the proxy docs](https://microk8s.io/docs/install-proxy) for details.
+If you have an HTTP proxy configured, you will need to give this information to MicroK8s. See [the proxy documentation](https://microk8s.io/docs/install-proxy) for details.
 ```
 
 ```{note} 
-By default, MicroK8s will use `8.8.8.8` and `8.8.4.4` as DNS servers, which can be adjusted. See [the dns docs]`https://microk8s.io/docs/addon-dns` for details.
+By default, MicroK8s will use `8.8.8.8` and `8.8.4.4` as DNS servers, which can be adjusted. See [the DNS documentation]`https://microk8s.io/docs/addon-dns` for details.
 ```
 
 ## Deploy the COS Lite bundle
@@ -141,7 +141,7 @@ Specifically, we offer the following overlays:
   makes your COS model ready for [cross-model relations](https://juju.is/docs/olm/cross-model-relations)
 
 - the [storage-small overlay](https://github.com/canonical/cos-lite-bundle/blob/main/overlays/storage-small-overlay.yaml)
-  applies some defaults for the various storages used by the COS Lite components.
+  applies some defaults for the various storage used by the COS Lite components.
 
 ```{note}
 You can apply the `offers` overlay to an existing COS Lite bundle by executing the `juju deploy` command.
@@ -162,9 +162,9 @@ $ juju deploy cos-lite \
 
 ## Browse dashboards
 
-When all the charms are deployed you can head over to browse their built-in web-UIs. You can find out their 
+When all the charms are deployed you can head over to browse their built-in web interfaces. You can find out their 
 addresses from the [show-proxied-endpoints](https://charmhub.io/traefik-k8s/actions#show-proxied-endpoints) 
-traefik action.
+Traefik action.
 
 For example:
 
@@ -194,10 +194,10 @@ $ juju run traefik/0 show-proxied-endpoints --format=yaml \
 ```
 
 In the output above, 
-- `10.43.8.34` is traefik's IP address.
-- Applications that are ingresses "per app", such as alertmanager, are 
+- `10.43.8.34` is Traefik's IP address.
+- Applications that are ingresses "per app", such as Alertmanager, are 
   accessible via the `model-app` path (i.e. `http://10.43.8.34:80/cos-alertmanager`).
-- Applications that are ingresses "per unit", such as loki, are accessible via 
+- Applications that are ingresses "per unit", such as Loki, are accessible via 
   the `model-app-unit` path (i.e. `http://10.43.8.34:80/cos-loki-0`).
 
 Note that Grafana does not appear in the list. Currently, to obtain Grafana's 
@@ -247,7 +247,7 @@ Enjoy!
 - Use the [grafana-agent machine charm](https://charmhub.io/grafana-agent) to observe 
   charms on other substrates than Kubernetes. 
 
-If you need support, the [charmhub community](https://discourse.charmhub.io) is the best 
+If you need support, the [Charmhub community](https://discourse.charmhub.io) is the best 
 place to get all your questions answered and get in touch with the community.
 
 ## Further reading

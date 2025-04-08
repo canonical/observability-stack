@@ -1,5 +1,3 @@
-.. _migrate-lma-to-cos-lite:
-
 # Migrate from LMA to COS Lite
 
 Now that COS Lite has been generally available for a while, and we're seeing more and more users wanting to replace their current LMA setup with COS Lite, it feels  like an appropriate time to provide some details on how to accomplish such a migration.
@@ -23,7 +21,7 @@ See the official `Juju docs <https://juju.is/docs/juju/juju-upgrade-controller>`
 
 The reason why we're picking `2.9.44` (or newer if and when they are released) is because we need a version that is recent enough to include support for cross-controller relations with Juju 3, and then we might as well go to the latest version in the 2.9 track.
 
-## 2. Deploy COS to an isolated Microk8s instance
+## 2. Deploy COS to an isolated MicroK8s instance
 
 This model needs to be running Juju 3.1. For instructions on how to deploy 
 COS, see  [our tutorial on the topic](https://charmhub.io/topics/canonical-observability-stack/tutorials/install-microk8s).
@@ -36,8 +34,8 @@ It will now look somewhat like this:
 
 Deploy [COS Proxy](https://charmhub.io/cos-proxy) in your existing model and 
 wire it up to all the same targets as you would with LMA. cos-proxy is designed 
-to bridge the gap between your current LMA enabled charms that utilize filebeat 
-and NRPE, and COS, which is utilizing prometheus and loki/promtail. 
+to bridge the gap between your current LMA enabled charms that utilize Filebeat 
+and NRPE, and COS, which is utilizing Prometheus and Loki/Promtail. 
 
 For Grafana Agent you only need to relate it to your principal charms.
 
@@ -54,12 +52,12 @@ to COS.
 You'll now receive your telemetry in both LMA and COS, which is great as it 
 allows you to in your own pace evaluate and validate that you have coverage 
 for the checks and alarms you're used to in LMA in COS before deciding to 
-push the decomission button. 
+push the decommission button. 
 
-## 5. Decomission LMA
+## 5. Decommission LMA
 
 Now that you have COS Lite up and running and have verified that it works 
-even better than what you had with LMA, you can now start decomission your 
+even better than what you had with LMA, you can now start decommissioning your 
 LMA setup. 
 
 As it is a migration between solution, none of your historical 

@@ -6,7 +6,7 @@ for **testing purposes** for distributed COS components such as Tempo, Loki
 and Mimir. 
 
 ```{warning} 
-In production, you will probably want to deploy ceph and then follow [this guide](https://discourse.charmhub.io/t/tempo-ha-docs-how-to-use-ceph-backed-s3-storage-for-ha-charms/15740).
+In production, you will probably want to deploy Ceph and then follow [this guide](https://discourse.charmhub.io/t/tempo-ha-docs-how-to-use-ceph-backed-s3-storage-for-ha-charms/15740).
 ```
 
 The Minio charm does not directly provide an `s3` endpoint. For that, we need 
@@ -64,7 +64,7 @@ From there you will be able to create a bucket with a few clicks. See
 [this guide](https://thenewstack.io/how-to-create-an-object-storage-bucket-with-minio-object-storage/) for a step-by-step tutorial.
 
 
-#### Using the Python sdk
+#### Using the Python SDK
 
 ```bash
 $ pip install minio
@@ -131,7 +131,7 @@ $ sudo pip3 install minio  # install the script's only dependency
 $ curl https://raw.githubusercontent.com/canonical/tempo-coordinator-k8s-operator/main/scripts/deploy_minio.py | python3
 ```
 
-The script will install minio charm, s3-integrator charm and configure them to 
+The script will install the `minio` and `s3-integrator` charms, and configure them to 
 create and use `tempo` as the bucket name where traces will be stored. Once 
 the script finishes, you should see the following message:
 

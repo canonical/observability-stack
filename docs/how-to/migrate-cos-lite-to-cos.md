@@ -15,4 +15,4 @@ retention-based phase-out.
 2. Relate the new COS charms to the same applications COS Lite is related to.
 3. Wait for the retention period to elapse for COS Lite.
 4. Verify the same data is available both in COS Lite and in COS
-5. Decomission COS Lite.
+5. Decommission COS Lite.

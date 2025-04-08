@@ -100,10 +100,10 @@ If you have a charm offering a `certificates` endpoint such as [`self-signed-cer
 $ juju integrate tempo:certificates ca:certificates 
 ```
 
-to enable traces to be sent to `tempo` over https (or grpcs).
+to enable traces to be sent to `tempo` over HTTPS (or gRPCs).
 
 ```{note}
 For this to work, Tempo needs to trust the same CA as Traefik. If you're 
-using different CAs to provide certificates to Tempo and Traefik, you'll 
+using different certificate authorities to provide certificates to Tempo and Traefik, you'll 
 need to integrate the CA charms with ``cert-transfer``.
 ```

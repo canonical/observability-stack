@@ -12,7 +12,7 @@ Get "http://10.0.0.1:9275/metrics": dial tcp 10.0.0.1:9275: socket: too many ope
 ```
 
 To resolve this, we need to increase the max open file limit of the Kubernetes 
-deployment itself. For Microk8s, this would be done by increasing the limits in 
+deployment itself. For MicroK8s, this would be done by increasing the limits in 
 `/var/snap/microk8s/current/args/containerd-env`.
 
 ## 1. Juju SSH into the machine
@@ -49,9 +49,9 @@ $ vim /var/snap/microk8s/current/args/containerd-env
 + ulimit -l 16384 || true
 ```
 
-## 4. Restart the microk8s machine
+## 4. Restart the MicroK8s machine
 
-Restart the machine the microk8s unit is deployed on and then wait for it to come back up.
+Restart the machine the MicroK8s unit is deployed on and then wait for it to come back up.
 
 ```bash 
 $ sudo reboot

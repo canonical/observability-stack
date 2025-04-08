@@ -3,7 +3,7 @@
 How-to guides
 *************
 
-These guides accompany you through the complete COS stack operations lifecycle.
+These guides accompany you through the complete COS stack operations life cycle.
 
 
 .. note::

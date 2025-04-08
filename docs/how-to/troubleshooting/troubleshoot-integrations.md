@@ -2,8 +2,8 @@
 
 Integrating a charm with [COS](https://charmhub.io/topics/canonical-observability-stack) means:
 
-- having your app's metrics and corresponding alert rules reach [prometheus](https://charmhub.io/prometheus-k8s/).
-- having your app's logs and corresponding alert rules reach [loki](https://charmhub.io/loki-k8s/).
+- having your app's metrics and corresponding alert rules reach [Prometheus](https://charmhub.io/prometheus-k8s/).
+- having your app's logs and corresponding alert rules reach [Loki](https://charmhub.io/loki-k8s/).
 - having your app's dashboards reach [grafana](https://charmhub.io/grafana-k8s/).
 
 The COS team is responsible for some aspects of testing, and some aspects of testing belong to 
@@ -21,7 +21,7 @@ You can use:
 - `promtool check rules` (see details [here](https://prometheus.io/docs/prometheus/latest/command-line/promtool/#promtool-check))
   to make sure the rules have valid syntax. 
 - `cos-tool validate` (see details [here](https://github.com/canonical/cos-tool)). The advantage of 
-  cos-tool is that the same executable can validate both prometheus and loki rules.
+  cos-tool is that the same executable can validate both Prometheus and Loki rules.
 
 Make sure your alerts manifest matches the output of:
 
@@ -58,7 +58,7 @@ that there is no prior data, thus interpreting it as `0`.
 
 ### Integration tests
 
-When related to loki, make sure your logging sources are listed in:
+When related to Loki, make sure your logging sources are listed in:
   - `GET /loki/api/v1/label/filename/values`
   - `GET /loki/api/v1/label/juju_unit/values`
 
@@ -129,7 +129,7 @@ jq: error (at <stdin>:19): Cannot iterate over null (null)
 
 (which is good).
 
-You can achieve this also using the status yaml. Save the following script to `is_multi_agent.py`:
+You can achieve this also using the status YAML. Save the following script to `is_multi_agent.py`:
 
 
 
@@ -173,7 +173,7 @@ openstack-exporter/19 is related to more than one grafana-agent subordinate: {'g
 
 ### Grafana-agent related to multiple principles on the same machine
 
-The grafana-agent vm charm can only be related to one principal in the same machine.
+The grafana-agent machine charm can only be related to one principal in the same machine.
 
 Save the following script to `is_multi.py`:
 
@@ -226,5 +226,5 @@ ga is subordinate to both 'co', 'nc' in the same machines {'24'}
 
 ## See also
 
-- https://discourse.charmhub.io/t/prometheus-k8s-docs-troubleshooting-integrations/14351
-- https://discourse.charmhub.io/t/loki-k8s-docs-troubleshooting-missing-logs/14187
+- [Troubleshooting Prometheus Integrations](https://discourse.charmhub.io/t/prometheus-k8s-docs-troubleshooting-integrations/14351)
+- [Troubleshooting missing logs](https://discourse.charmhub.io/t/loki-k8s-docs-troubleshooting-missing-logs/14187)
