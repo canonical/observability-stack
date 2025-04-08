@@ -29,7 +29,7 @@ charm.
 .. toctree::
    :maxdepth: 1
 
-   3. Sync alert rules from Git <sync-alert-rules-from-git>
+   2. Sync alert rules from Git <sync-alert-rules-from-git>
 
 Instrumentation
 ===============
@@ -41,4 +41,4 @@ application using the Grafana Agent machine charm.
 .. toctree::
    :maxdepth: 1
 
-   4. Instrument machine charms <instrument-machine-charms>
+   3. Instrument machine charms <instrument-machine-charms>
