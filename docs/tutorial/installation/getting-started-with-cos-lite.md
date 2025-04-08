@@ -77,7 +77,7 @@ $ watch --color juju status --color --relations
 
 The status of your deployment should eventually be very similar to the following:
 
-```plain
+```
 $ juju status --relations
 
 Model  Controller  Cloud/Region        Version  SLA          Timestamp
@@ -220,7 +220,7 @@ url: http://10.43.8.34:80/cos-alertmanager
 With ingress in place, you can still access the workloads via pod IPs, but you will need 
 to include the original port, as well as the ingress path. For example:
 
-```plain
+```
 $ curl 10.1.55.34:9093/cos-alertmanager/-/ready
 ```
 

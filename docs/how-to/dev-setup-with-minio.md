@@ -135,7 +135,7 @@ The script will install minio charm, s3-integrator charm and configure them to
 create and use `tempo` as the bucket name where traces will be stored. Once 
 the script finishes, you should see the following message:
 
-```plain
+```
 Waiting for task 2...
 ok: Credentials successfully updated.
 

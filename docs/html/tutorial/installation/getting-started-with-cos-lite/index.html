@@ -1,0 +1,627 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Getting started with COS Lite on MicroK8s" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="tutorial/installation/getting-started-with-cos-lite/" />
+<meta property="og:site_name" content="Observability" />
+<meta property="og:description" content="Prerequisites: This tutorial assumes you have a Juju controller bootstrapped on a MicroK8s cloud that is ready to use. A typical setup using snaps can be found in the Juju docs. Follow the instruct..." />
+<meta property="og:image" content="https://assets.ubuntu.com/v1/253da317-image-document-ubuntudocs.svg" />
+<meta property="og:image:alt" content="Observability" />
+<meta name="description" content="Prerequisites: This tutorial assumes you have a Juju controller bootstrapped on a MicroK8s cloud that is ready to use. A typical setup using snaps can be found in the Juju docs. Follow the instruct..." />
+
+    <meta property="article:modified_time" content="2025-03-28T15:44:07+01:00" /><link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Getting started with COS on any K8s" href="../getting-started-with-cos/" /><link rel="prev" title="Deploying the observability stack" href="../" />
+
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
+        <title>Getting started with COS Lite on MicroK8s - Observability Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/youtube.css?v=4e28cee6" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/related-links.css?v=18806edd" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/terminal-output.css?v=21da04dd" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/contributors.css?v=bd05fc90" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=302659d7" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/pdf.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=202ba174" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/header.css?v=84f70f09" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/github_issue_links.css?v=af88fb93" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/furo_colors.css?v=9c678fc2" />
+    
+</head>
+  <body>
+    <header id="header" class="p-navigation">
+
+  <div class="p-navigation__nav" role="menubar">
+
+    <ul class="p-navigation__links" role="menu">
+
+      <li>
+        <a class="p-logo" href="https://github.com/canonical/observability" aria-current="page">
+          <img src="../../../_static/tag.png" alt="Logo" class="p-logo-image">
+          <div class="p-logo-text p-heading--4">Observability
+          </div>
+        </a>
+      </li>
+
+      <li class="nav-ubuntu-com">
+        <a href="https://github.com/canonical/observability" class="p-navigation__link">github.com/canonical/observability</a>
+      </li>
+
+      <li>
+        <a href="#" class="p-navigation__link nav-more-links">More resources</a>
+        <ul class="more-links-dropdown">
+
+          
+          <li>
+            <a href="https://discourse.charmhub.io" class="p-navigation__sub-link p-dropdown__link">Discourse</a>
+          </li>
+          
+
+          
+
+          
+          <li>
+            <a href="https://matrix.to/#/#observability:ubuntu.com" class="p-navigation__sub-link p-dropdown__link">Matrix</a>
+          </li>
+          
+
+          
+          <li>
+            <a href="https://github.com/canonical/observability-docs" class="p-navigation__sub-link p-dropdown__link">GitHub</a>
+          </li>
+          
+
+        </ul>
+      </li>
+
+    </ul>
+  </div>
+</header>
+   
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../"><div class="brand">Observability Documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../">
+  
+  
+  <span class="sidebar-brand-text">Observability Documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search/" role="search">
+    <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+    <input type="submit" value="Go">
+    <input type="hidden" name="check_keywords" value="yes">
+    <input type="hidden" name="area" value="default">
+  </form>
+  <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../../">Tutorial</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Tutorial</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current has-children"><a class="reference internal" href="../">1. Deploying the observability stack</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of 1. Deploying the observability stack</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">A. COS Lite on MicroK8s</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started-with-cos/">B. COS on any K8s</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../sync-alert-rules-from-git/">3. Sync alert rules from Git</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../instrument-machine-charms/">4. Instrument machine charms</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../how-to/">How-to guides</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of How-to guides</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../how-to/migrate-lma-to-cos-lite/">Migrate from LMA to COS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../how-to/migrate-cos-lite-to-cos/">Migrate from COS Lite to COS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../how-to/add-tracing-to-cos-lite/">Add tracing to COS Lite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../how-to/adding-alert-rules/">Adding alert rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../how-to/configure-scrape-jobs/">Configure scrape jobs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../how-to/exposing-a-metrics-endpoint/">Exposing a metrics endpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../how-to/integrating-cos-lite-with-uncharmed-applications/">Integrating COS Lite with uncharmed applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../how-to/dev-setup-with-minio/">Setting up a development environment using Minio</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../how-to/troubleshooting/">Troubleshooting</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Troubleshooting</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../how-to/troubleshooting/troubleshoot-gateway-address-unavailable/">Troubleshoot "Gateway Address Unavailable" in Traefik</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../how-to/troubleshooting/troubleshoot-socket-too-many-open-files/">Troubleshoot "socket: too many open files"</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../how-to/troubleshooting/troubleshoot-integrations/">Troubleshoot integrations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../reference/">Reference</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/solution-matrix/"> Solution Matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/migration/"> Migration</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../explanation/">Explanation</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of Explanation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../explanation/cos-lite/">COS Lite</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="getting-started-with-cos-lite-on-microk8s">
+<h1>Getting started with COS Lite on MicroK8s<a class="headerlink" href="#getting-started-with-cos-lite-on-microk8s" title="Link to this heading">¶</a></h1>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h2>
+<p>This tutorial assumes you have a Juju controller bootstrapped on a
+MicroK8s cloud that is ready to use. A typical setup using <a class="reference external" href="https://snapcraft.io/">snaps</a>
+can be found in the <a class="reference external" href="https://juju.is/docs/sdk/dev-setup">Juju docs</a>.</p>
+<p>Follow the instructions there to install Juju and MicroK8s.</p>
+</section>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h2>
+<p>The <a class="reference external" href="https://juju.is/docs/lma2">COS Lite bundle</a> is a Juju-based observability stack, running on Kubernetes. The bundle consists of
+<a class="reference external" href="https://charmhub.io/prometheus-k8s">Prometheus</a>,
+<a class="reference external" href="https://charmhub.io/loki-k8s">Loki</a>,
+<a class="reference external" href="https://charmhub.io/alertmanager-k8s">Alertmanager</a>, and
+<a class="reference external" href="https://charmhub.io/grafana-k8s">Grafana</a>.</p>
+<p>Let’s go and deploy that bundle!</p>
+</section>
+<section id="configure-microk8s">
+<h2>Configure MicroK8s<a class="headerlink" href="#configure-microk8s" title="Link to this heading">¶</a></h2>
+<p>For the COS Lite bundle deployment to go smoothly, make sure the following MicroK8s <a class="reference external" href="https://microk8s.io/docs/addons">addons</a> are enabled: <code class="docutils literal notranslate"><span class="pre">dns</span></code>, <code class="docutils literal notranslate"><span class="pre">hostpath-storage</span></code> and <code class="docutils literal notranslate"><span class="pre">metallb</span></code>.</p>
+<p>You can check this with <code class="docutils literal notranslate"><span class="pre">microk8s</span> <span class="pre">status</span></code>, and if any are missing, enable them with</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>microk8s<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>dns<span class="w"> </span>
+$<span class="w"> </span>microk8s<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>hostpath-storage
+</pre></div>
+</div>
+<p>The bundle comes with Traefik to provide ingress, for which you’ll need a load balancer controller.
+If you don’t have one already, the <code class="docutils literal notranslate"><span class="pre">metallb</span></code> addon should be enabled:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nv">IPADDR</span><span class="o">=</span><span class="k">$(</span>ip<span class="w"> </span>-4<span class="w"> </span>-j<span class="w"> </span>route<span class="w"> </span>get<span class="w"> </span><span class="m">2</span>.2.2.2<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.[] | .prefsrc&#39;</span><span class="k">)</span>
+$<span class="w"> </span>microk8s<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>metallb:<span class="nv">$IPADDR</span>-<span class="nv">$IPADDR</span>
+</pre></div>
+</div>
+<p>To wait for all the addons to be rolled out, then run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>microk8s<span class="w"> </span>kubectl<span class="w"> </span>rollout<span class="w"> </span>status<span class="w"> </span>deployments/hostpath-provisioner<span class="w"> </span>-n<span class="w"> </span>kube-system<span class="w"> </span>-w
+$<span class="w"> </span>microk8s<span class="w"> </span>kubectl<span class="w"> </span>rollout<span class="w"> </span>status<span class="w"> </span>deployments/coredns<span class="w"> </span>-n<span class="w"> </span>kube-system<span class="w"> </span>-w
+$<span class="w"> </span>microk8s<span class="w"> </span>kubectl<span class="w"> </span>rollout<span class="w"> </span>status<span class="w"> </span>daemonset.apps/speaker<span class="w"> </span>-n<span class="w"> </span>metallb-system<span class="w"> </span>-w
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you have an HTTP proxy configured, you will need to give this information to MicroK8s. See <a class="reference external" href="https://microk8s.io/docs/install-proxy">the proxy docs</a> for details.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, MicroK8s will use <code class="docutils literal notranslate"><span class="pre">8.8.8.8</span></code> and <code class="docutils literal notranslate"><span class="pre">8.8.4.4</span></code> as DNS servers, which can be adjusted. See [the dns docs]<code class="docutils literal notranslate"><span class="pre">https://microk8s.io/docs/addon-dns</span></code> for details.</p>
+</div>
+</section>
+<section id="deploy-the-cos-lite-bundle">
+<h2>Deploy the COS Lite bundle<a class="headerlink" href="#deploy-the-cos-lite-bundle" title="Link to this heading">¶</a></h2>
+<p>It is usually a good idea to create a dedicated model for the COS Lite bundle. So let’s do just that and call the new model <code class="docutils literal notranslate"><span class="pre">cos</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>juju<span class="w"> </span>add-model<span class="w"> </span>cos
+$<span class="w"> </span>juju<span class="w"> </span>switch<span class="w"> </span>cos
+</pre></div>
+</div>
+<p>Next, deploy the bundle with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>juju<span class="w"> </span>deploy<span class="w"> </span>cos-lite<span class="w"> </span>--trust
+</pre></div>
+</div>
+<p>Now you can sit back and watch the deployment take place:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>watch<span class="w"> </span>--color<span class="w"> </span>juju<span class="w"> </span>status<span class="w"> </span>--color<span class="w"> </span>--relations
+</pre></div>
+</div>
+<p>The status of your deployment should eventually be very similar to the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ juju status --relations
+
+Model  Controller  Cloud/Region        Version  SLA          Timestamp
+cos    charm-dev   microk8s/localhost  2.9.42   unsupported  15:43:36-04:00
+
+App           Version  Status  Scale  Charm             Channel  Rev  Address         Exposed  Message
+alertmanager  0.25.0   active      1  alertmanager-k8s  edge      67  10.152.183.93   no       
+catalogue              active      1  catalogue-k8s     edge      15  10.152.183.193  no       
+grafana       9.2.1    active      1  grafana-k8s       edge      77  10.152.183.137  no       
+loki          2.7.4    active      1  loki-k8s          edge      82  10.152.183.119  no       
+prometheus    2.42.0   active      1  prometheus-k8s    edge     122  10.152.183.51   no       
+traefik       2.9.6    active      1  traefik-k8s       edge     125  10.43.8.34      no       
+
+Unit             Workload  Agent  Address     Ports  Message
+alertmanager/0*  active    idle   10.1.55.34         
+catalogue/0*     active    idle   10.1.55.38         
+grafana/0*       active    idle   10.1.55.32         
+loki/0*          active    idle   10.1.55.14         
+prometheus/0*    active    idle   10.1.55.40         
+traefik/0*       active    idle   10.1.55.53         
+
+Relation provider                   Requirer                     Interface              Type     Message
+alertmanager:alerting               loki:alertmanager            alertmanager_dispatch  regular  
+alertmanager:alerting               prometheus:alertmanager      alertmanager_dispatch  regular  
+alertmanager:grafana-dashboard      grafana:grafana-dashboard    grafana_dashboard      regular  
+alertmanager:grafana-source         grafana:grafana-source       grafana_datasource     regular  
+alertmanager:replicas               alertmanager:replicas        alertmanager_replica   peer     
+alertmanager:self-metrics-endpoint  prometheus:metrics-endpoint  prometheus_scrape      regular  
+catalogue:catalogue                 alertmanager:catalogue       catalogue              regular  
+catalogue:catalogue                 grafana:catalogue            catalogue              regular  
+catalogue:catalogue                 prometheus:catalogue         catalogue              regular  
+grafana:grafana                     grafana:grafana              grafana_peers          peer     
+grafana:metrics-endpoint            prometheus:metrics-endpoint  prometheus_scrape      regular  
+loki:grafana-dashboard              grafana:grafana-dashboard    grafana_dashboard      regular  
+loki:grafana-source                 grafana:grafana-source       grafana_datasource     regular  
+loki:metrics-endpoint               prometheus:metrics-endpoint  prometheus_scrape      regular  
+prometheus:grafana-dashboard        grafana:grafana-dashboard    grafana_dashboard      regular  
+prometheus:grafana-source           grafana:grafana-source       grafana_datasource     regular  
+prometheus:prometheus-peers         prometheus:prometheus-peers  prometheus_peers       peer     
+traefik:ingress                     alertmanager:ingress         ingress                regular  
+traefik:ingress                     catalogue:ingress            ingress                regular  
+traefik:ingress-per-unit            loki:ingress                 ingress_per_unit       regular  
+traefik:ingress-per-unit            prometheus:ingress           ingress_per_unit       regular  
+traefik:metrics-endpoint            prometheus:metrics-endpoint  prometheus_scrape      regular  
+traefik:traefik-route               grafana:ingress              traefik_route          regular  
+</pre></div>
+</div>
+<p>Now COS Lite is good to go: you can relate software with it to begin the monitoring!</p>
+<p>Alternatively, you may want to deploy the bundle with one or more of our readily available
+overlays, which is what we’ll cover next.</p>
+</section>
+<section id="deploy-the-cos-lite-bundle-with-overlays">
+<h2>Deploy the COS Lite bundle with overlays<a class="headerlink" href="#deploy-the-cos-lite-bundle-with-overlays" title="Link to this heading">¶</a></h2>
+<p>An <a class="reference external" href="https://juju.is/docs/sdk/bundle.yaml">overlay</a> is a set of model-specific modifications
+that avoid repetitive overhead in setting up bundles like COS Lite.</p>
+<p>Specifically, we offer the following overlays:</p>
+<ul class="simple">
+<li><p>the <a class="reference external" href="https://github.com/canonical/cos-lite-bundle/blob/main/overlays/offers-overlay.yaml">offers overlay</a>
+makes your COS model ready for <a class="reference external" href="https://juju.is/docs/olm/cross-model-relations">cross-model relations</a></p></li>
+<li><p>the <a class="reference external" href="https://github.com/canonical/cos-lite-bundle/blob/main/overlays/storage-small-overlay.yaml">storage-small overlay</a>
+applies some defaults for the various storages used by the COS Lite components.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can apply the <code class="docutils literal notranslate"><span class="pre">offers</span></code> overlay to an existing COS Lite bundle by executing the <code class="docutils literal notranslate"><span class="pre">juju</span> <span class="pre">deploy</span></code> command.
+The <code class="docutils literal notranslate"><span class="pre">storage-small</span></code> overlay, however, is applicable only on the first deployment.
+So, if you were following the previous steps you would first need to switch to a new Juju model or remove all applications from the current one.</p>
+</div>
+<p>To use any of the overlays above, you need to include an <code class="docutils literal notranslate"><span class="pre">--overlay</span></code> argument per overlay (applied in order):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>curl<span class="w"> </span>-L<span class="w"> </span>https://raw.githubusercontent.com/canonical/cos-lite-bundle/main/overlays/offers-overlay.yaml<span class="w"> </span>-O
+$<span class="w"> </span>curl<span class="w"> </span>-L<span class="w"> </span>https://raw.githubusercontent.com/canonical/cos-lite-bundle/main/overlays/storage-small-overlay.yaml<span class="w"> </span>-O
+$<span class="w"> </span>juju<span class="w"> </span>deploy<span class="w"> </span>cos-lite<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--trust<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--overlay<span class="w"> </span>./offers-overlay.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--overlay<span class="w"> </span>./storage-small-overlay.yaml
+</pre></div>
+</div>
+</section>
+<section id="browse-dashboards">
+<h2>Browse dashboards<a class="headerlink" href="#browse-dashboards" title="Link to this heading">¶</a></h2>
+<p>When all the charms are deployed you can head over to browse their built-in web-UIs. You can find out their
+addresses from the <a class="reference external" href="https://charmhub.io/traefik-k8s/actions#show-proxied-endpoints">show-proxied-endpoints</a>
+traefik action.</p>
+<p>For example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>juju<span class="w"> </span>run<span class="w"> </span>traefik/0<span class="w"> </span>show-proxied-endpoints<span class="w"> </span>--format<span class="o">=</span>yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span><span class="p">|</span><span class="w"> </span>yq<span class="w"> </span><span class="s1">&#39;.&quot;traefik/0&quot;.results.&quot;proxied-endpoints&quot;&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span><span class="p">|</span><span class="w"> </span>jq
+</pre></div>
+</div>
+<p>…should return output similar to:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;prometheus/0&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://10.43.8.34:80/cos-prometheus-0&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;loki/0&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://10.43.8.34:80/cos-loki-0&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;catalogue&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://10.43.8.34:80/cos-catalogue&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;alertmanager&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://10.43.8.34:80/cos-alertmanager&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>In the output above,</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">10.43.8.34</span></code> is traefik’s IP address.</p></li>
+<li><p>Applications that are ingresses “per app”, such as alertmanager, are
+accessible via the <code class="docutils literal notranslate"><span class="pre">model-app</span></code> path (i.e. <code class="docutils literal notranslate"><span class="pre">http://10.43.8.34:80/cos-alertmanager</span></code>).</p></li>
+<li><p>Applications that are ingresses “per unit”, such as loki, are accessible via
+the <code class="docutils literal notranslate"><span class="pre">model-app-unit</span></code> path (i.e. <code class="docutils literal notranslate"><span class="pre">http://10.43.8.34:80/cos-loki-0</span></code>).</p></li>
+</ul>
+<p>Note that Grafana does not appear in the list. Currently, to obtain Grafana’s
+proxied endpoint you would need to look at catalogue’s relation data directly - try running:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>juju<span class="w"> </span>show-unit<span class="w"> </span>catalogue/0<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>url
+</pre></div>
+</div>
+<p>…which should return a list of the endpoints like this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>url:<span class="w"> </span>http://10.43.8.34:80/cos-catalogue
+url:<span class="w"> </span>http://10.43.8.34/cos-grafana
+url:<span class="w"> </span>http://10.43.8.34:80/cos-prometheus-0
+url:<span class="w"> </span>http://10.43.8.34:80/cos-alertmanager
+</pre></div>
+</div>
+<p>With ingress in place, you can still access the workloads via pod IPs, but you will need
+to include the original port, as well as the ingress path. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ curl 10.1.55.34:9093/cos-alertmanager/-/ready
+</pre></div>
+</div>
+<p>The default password for Grafana is automatically generated for every installation. To
+access Grafana’s web interface, use the username <code class="docutils literal notranslate"><span class="pre">admin</span></code>, and the password obtained
+from the <a class="reference external" href="https://charmhub.io/grafana-k8s/actions"><code class="docutils literal notranslate"><span class="pre">get-admin-password</span></code></a> action, e.g:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>juju<span class="w"> </span>run<span class="w"> </span>grafana/leader<span class="w"> </span>get-admin-password<span class="w"> </span>--model<span class="w"> </span>cos
+</pre></div>
+</div>
+<p>Enjoy!</p>
+</section>
+<section id="next-steps">
+<h2>Next steps<a class="headerlink" href="#next-steps" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Use the <a class="reference external" href="https://charmhub.io/prometheus-scrape-target-k8s">scrape target charm</a> to
+have the COS stack scrape any Prometheus compatible target.</p></li>
+<li><p>Relate your own charm to the COS stack with relation interfaces such as
+<a class="reference external" href="https://charmhub.io/prometheus-k8s/libraries/prometheus_scrape">prometheus_scrape</a>.</p></li>
+<li><p><a class="reference external" href="https://prometheus.io/docs/alerting/latest/configuration/">Configure alertmanager</a>
+to have alerts routed to your receivers.</p></li>
+<li><p>Use the <a class="reference external" href="https://charmhub.io/cos-proxy">cos-proxy machine charm</a> to observe
+LMA-enabled machine charms.</p></li>
+<li><p>Use the <a class="reference external" href="https://charmhub.io/grafana-agent">grafana-agent machine charm</a> to observe
+charms on other substrates than Kubernetes.</p></li>
+</ul>
+<p>If you need support, the <a class="reference external" href="https://discourse.charmhub.io">charmhub community</a> is the best
+place to get all your questions answered and get in touch with the community.</p>
+</section>
+<section id="further-reading">
+<h2>Further reading<a class="headerlink" href="#further-reading" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://ubuntu.com/blog/model-driven-observability-part-1">Model-driven observability: modern monitoring with Juju</a></p></li>
+</ul>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+   
+
+<div class="related-pages">
+  
+  
+    
+  
+  
+  
+</div>
+<div class="bottom-of-page">
+  <div class="left-details">
+    <div class="copyright">
+        Copyright &#169; 2025 CC-BY-SA, Canonical Ltd.
+    </div>
+
+    <div class="last-updated">
+      Last updated on Mar 28, 2025</div>
+  </div>
+  <div>
+   
+  </div>
+  <div class="right-details">
+  </div>
+</div>
+
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+<div class="toc-sticky toc-scroll">
+   
+    <div class="toc-title-container">
+      <span class="toc-title">
+       Contents
+      </span>
+    </div>
+    <div class="toc-tree-container">
+      <div class="toc-tree">
+        <ul>
+<li><a class="reference internal" href="#">Getting started with COS Lite on MicroK8s</a><ul>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#configure-microk8s">Configure MicroK8s</a></li>
+<li><a class="reference internal" href="#deploy-the-cos-lite-bundle">Deploy the COS Lite bundle</a></li>
+<li><a class="reference internal" href="#deploy-the-cos-lite-bundle-with-overlays">Deploy the COS Lite bundle with overlays</a></li>
+<li><a class="reference internal" href="#browse-dashboards">Browse dashboards</a></li>
+<li><a class="reference internal" href="#next-steps">Next steps</a></li>
+<li><a class="reference internal" href="#further-reading">Further reading</a></li>
+</ul>
+</li>
+</ul>
+
+      </div>
+    </div>
+   
+    
+  </div>
+
+    </aside>
+  </div>
+</div><script src="../../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../../_static/documentation_options.js?v=a5603611"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="../../../_static/contributors.js?v=5acea47a"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../../../_static/header-nav.js?v=e117ad08"></script>
+    
+<script>
+  const github_url = "https://github.com/canonical/observability-docs";
+</script>
+</body>
+</html>

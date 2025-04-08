@@ -7,7 +7,7 @@ leads to the process hitting the max open files count, as set by ``ulimit``.
 This issue can be identified by looking in your Grafana Agent logs, or Prometheus 
 Scrape Targets in the UI, for the following kind of message:
 
-```plain
+```
 Get "http://10.0.0.1:9275/metrics": dial tcp 10.0.0.1:9275: socket: too many open files
 ```
 

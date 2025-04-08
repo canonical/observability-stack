@@ -8,7 +8,7 @@ it's relatively straightforward to do so. Not bad at all.
 
 ## Prerequisites
 
-This how-to assumes that you already have a working deployment of COS Lite. If that is not the case, we recommend you first follow our [tutorial for getting started with COS Lite](getting-started-tutorial).
+This how-to assumes that you already have a working deployment of COS Lite. If that is not the case, we recommend you first follow our [tutorial for getting started with COS Lite](/tutorial/installation/getting-started-with-cos-lite).
 
 The first step will be to get a hold of a machine, somewhere, and follow 
 [this guide on how to get started with COS lite on microk8s](https://charmhub.io/topics/canonical-observability-stack/tutorials/install-microk8s). 

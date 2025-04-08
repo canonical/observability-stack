@@ -96,7 +96,7 @@ timeouts or try to move CI jobs to internal runners.
 
 Verify that the Traefik Kubernetes service now has been assigned an external IP:
 
-```plain
+```
 
 $ microk8s.kubectl get services -A
 
