@@ -29,7 +29,7 @@ $ juju deploy tempo-worker-k8s tempo-worker \
 
 In this tutorial we deploy the 'monolithic' version of `tempo`, where a 
 single worker node is assigned all the roles. For alternative deployment 
-modes and a migration guide, refer to  [this post on Discourse](https://discourse.charmhub.io/t/cos-lite-docs-managing-deployments-of-cos-lite-ha-addons/15213>).
+modes and a migration guide, refer to  [this post on Discourse](https://discourse.charmhub.io/t/cos-lite-docs-managing-deployments-of-cos-lite-ha-addons/15213).
 
 ## Integrate with s3
 

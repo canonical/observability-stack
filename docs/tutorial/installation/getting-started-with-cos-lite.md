@@ -4,13 +4,13 @@
 
 This tutorial assumes you have a Juju controller bootstrapped on a 
 MicroK8s cloud that is ready to use. A typical setup using [snaps](https://snapcraft.io/) 
-can be found in the [Juju docs](https://juju.is/docs/sdk/dev-setup).
+can be found in the [Juju docs](https://documentation.ubuntu.com/juju/3.6/howto/manage-your-deployment/manage-your-deployment-environment/).
 
 Follow the instructions there to install Juju and MicroK8s.
 
 ## Introduction
 
-The [COS Lite bundle](https://juju.is/docs/lma2) is a Juju-based observability stack, running on Kubernetes. The bundle consists of 
+The [COS Lite bundle](https://charmhub.io/cos-lite) is a Juju-based observability stack, running on Kubernetes. The bundle consists of 
 [Prometheus](https://charmhub.io/prometheus-k8s), 
 [Loki](https://charmhub.io/loki-k8s), 
 [Alertmanager](https://charmhub.io/alertmanager-k8s), and 
@@ -132,13 +132,13 @@ overlays, which is what we'll cover next.
 
 ## Deploy the COS Lite bundle with overlays
 
-An [overlay](https://juju.is/docs/sdk/bundle.yaml) is a set of model-specific modifications
+An [overlay](https://canonical-charmcraft.readthedocs-hosted.com/en/stable/reference/files/bundle-yaml-file/) is a set of model-specific modifications
 that avoid repetitive overhead in setting up bundles like COS Lite.
 
 Specifically, we offer the following overlays:
 
 - the [offers overlay](https://github.com/canonical/cos-lite-bundle/blob/main/overlays/offers-overlay.yaml) 
-  makes your COS model ready for [cross-model relations](https://juju.is/docs/olm/cross-model-relations)
+  makes your COS model ready for [cross-model relations](https://documentation.ubuntu.com/juju/latest/reference/relation/#cross-model)
 
 - the [storage-small overlay](https://github.com/canonical/cos-lite-bundle/blob/main/overlays/storage-small-overlay.yaml)
   applies some defaults for the various storage used by the COS Lite components.

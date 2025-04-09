@@ -26,5 +26,5 @@
  [LogProxyConsumer]: https://charmhub.io/loki-k8s/libraries/loki_push_api
 
 ## External links
-- [Monitoring Agents Comparative Study](https://wiki.anuket.io/display/HOME/Monitoring+Agents+Comparative+Study)
-- [How to integrate COS-Lite with non-juju workloads](https://discourse.charmhub.io/t/12005)
+- [Monitoring Agents Comparative Study]( https://lf-anuket.atlassian.net/wiki/spaces/HOME/pages/21878543/Monitoring+Agents+Comparative+Study)
+- [How to integrate COS-Lite with non-juju workloads](https://discourse.charmhub.io/t/how-to-integrate-cos-lite-with-uncharmed-applications/12005)

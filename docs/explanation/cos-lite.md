@@ -1,6 +1,6 @@
 # COS Lite
 
-[Canonical Observability Stack Lite](https://charmhub.io/cos-lite>)
+[Canonical Observability Stack Lite](https://charmhub.io/cos-lite)
 (referred to as COS Lite) is designed for the edge and is capable of 
 running reliably alongside MicroK8s and Juju with limited computing 
 resources (around 8 GB of memory).
@@ -89,7 +89,7 @@ by making their ``/metrics`` endpoints part of the Juju state.
 
 #### [COS Proxy](https://charmhub.io/cos-proxy)
 
-The COS Proxy charmed operator is a charm [for virtual and physical machines](https://juju.is/docs/sdk)
+The COS Proxy charmed operator is a charm [for virtual and physical machines](https://documentation.ubuntu.com/juju/latest/howto/manage-charms/index.html#build-a-charm)
 designed to “translate” the relations supported by the previous iteration, LMA, to COS native ones.
 
 #### [COS Configuration](https://charmhub.io/cos-configuration-k8s)
