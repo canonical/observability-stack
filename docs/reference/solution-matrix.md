@@ -1,7 +1,7 @@
 # Integration matrix
 
 
-|             | K8s charm                                                                                                                                               | Machine charm                                                                                  | Legacy charms - LMA deps         | Non-juju workload                          |
+|             | K8s charm                                                                                                                                               | Machine charm                                                                                  | Legacy charms - LMA         | Non-juju workload                          |
 | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | -------------------------------- | ------------------------------------------ |
 | Logs        |  | [cos_agent] (subordinate, pulls logs from `/var/log` or from other snaps with a matching slot) | [cos-proxy]                      | [grafana-agent snap] (manually configured) |
 | Metrics     | [prometheus_scrape] (in-model), [prometheus_remote_write] (CMR) - with grafana-agent                                                                    | [cos_agent]                                                                                    | [cos-proxy]                      | [scrape-target], [grafana-agent snap]      |
