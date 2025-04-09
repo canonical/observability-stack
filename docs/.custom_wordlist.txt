@@ -68,3 +68,6 @@ visualizes
 WCAG
 xetex
 xindy
+OSDs
+OSD
+boolean

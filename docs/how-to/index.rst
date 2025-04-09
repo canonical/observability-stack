@@ -38,7 +38,6 @@ with COS to actually observe them.
    Expose a metrics endpoint <exposing-a-metrics-endpoint>
    Integrate COS Lite with uncharmed applications <integrating-cos-lite-with-uncharmed-applications>
    Disable built-in charm alert rules <disable-charmed-rules>
-   Set up a development environment using Minio <dev-setup-with-minio>
    Testing with Minio <testing-with-minio>
    
 Troubleshooting

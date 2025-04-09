@@ -188,13 +188,17 @@ redirects = {}
 
 linkcheck_ignore = [
     "http://127.0.0.1:8000",
-    "https://github.com/canonical/ACME/*"
+    "https://github.com/canonical/ACME/*",
+    "troubleshooting/",
     ]
 
 
 # A regex list of URLs where anchors are ignored by 'make linkcheck'
 
-linkcheck_anchors_ignore_for_url = [r"https://github\.com/.*"]
+linkcheck_anchors_ignore_for_url = [
+    r"https://github\.com/.*",
+    "https://matrix.to/*"
+    ]
 
 # give linkcheck multiple tries on failure
 # linkcheck_timeout = 30

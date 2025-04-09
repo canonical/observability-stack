@@ -32,7 +32,7 @@ $ sudo snap install grafana-agent
 ```
 
 ```{note}
-Grafana agent is also available as a single Go binary, and you are free to install it and run it the way you like. See the [official documentation](https://grafana.com/docs/agent/latest/) for the publisher's recommendations and guides. We also have it [containerized](http://ghcr.io/canonical/grafana-agent) and [petrified](https://github.com/canonical/grafana-agent-rock/).
+Grafana agent is also available as a single Go binary, and you are free to install it and run it the way you like. See the [official documentation](https://grafana.com/docs/agent/latest/) for the publisher's recommendations and guides. We also have it [containerized](https://github.com/canonical/grafana-agent-rock/pkgs/container/grafana-agent) and [petrified](https://github.com/canonical/grafana-agent-rock/).
 ```
 
 Now that you have Grafana Agent up and running, you will need to configure it.

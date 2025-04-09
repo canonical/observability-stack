@@ -34,7 +34,7 @@ as optionally a set of labels and annotations. In this how to, we'll
 use an alert rule for ``zinc-k8s``. For the sake of this how to, the 
 details of the rule are of less importance. If you want to learn more 
 about crafting alert rules, have a look at the official (Prometheus)[https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/] 
-or [Loki](https://grafana.com/docs/loki/latest/rules/#example) 
+or [Loki](https://grafana.com/docs/loki/latest/alert/#example) 
 documentation.
 
 ```yaml

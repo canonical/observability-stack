@@ -55,6 +55,6 @@ and constructive feedback.
 * `Join the Matrix community chat <https://matrix.to/#/#cos:ubuntu.com>`_
 * `Contribute on GitHub <https://github.com/canonical/observability>`_
 
-* `Code of conduct <https://ubuntu.com/community/code-of-conduct>`_
+* `Code of conduct <https://ubuntu.com/community/ethos/code-of-conduct>`_
 * `Canonical contributor license agreement
   <https://ubuntu.com/legal/contributors>`_
