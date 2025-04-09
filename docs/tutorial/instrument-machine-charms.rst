@@ -1,3 +1,0 @@
-Instrumenting machine charms
-****************************
-

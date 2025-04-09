@@ -7,4 +7,3 @@ Reference
    :maxdepth: 1
 
     Solution Matrix <solution-matrix>
-    Migration <migration>

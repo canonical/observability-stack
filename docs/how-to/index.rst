@@ -33,13 +33,14 @@ with COS to actually observe them.
    :maxdepth: 1
 
    Add tracing to COS Lite <add-tracing-to-cos-lite>
-   Adding alert rules <adding-alert-rules>
+   Add alert rules <adding-alert-rules>
    Configure scrape jobs <configure-scrape-jobs>
-   Exposing a metrics endpoint <exposing-a-metrics-endpoint>
-   Integrating COS Lite with uncharmed applications <integrating-cos-lite-with-uncharmed-applications>
-   Disable charmed rules <disable-charmed-rules>
-   Setting up a development environment using Minio <dev-setup-with-minio>
-
+   Expose a metrics endpoint <exposing-a-metrics-endpoint>
+   Integrate COS Lite with uncharmed applications <integrating-cos-lite-with-uncharmed-applications>
+   Disable built-in charm alert rules <disable-charmed-rules>
+   Set up a development environment using Minio <dev-setup-with-minio>
+   Testing with Minio <testing-with-minio>
+   
 Troubleshooting
 ===============
 
