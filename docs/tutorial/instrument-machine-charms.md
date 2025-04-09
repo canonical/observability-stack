@@ -17,7 +17,7 @@ Application units are typically run in an isolated container on a machine with n
 
 ## Ensure COS Lite is up and running.
 
-Before we get started, we will make sure that the observability stack is up and running in our `cos` model (follow the instructions in [COS Lite](https://charmhub.io/prometheus-k8s/docs/deploy-cos-lite?channel=edge)) in a K8s controller, like this:
+Before we get started, we will make sure that the observability stack is up and running in our `cos` model (follow the tutorial on [getting started with COS Lite](/tutorial/installation/getting-started-with-cos-lite)) in a K8s controller, like this:
 
 ```text
  juju status --relations
@@ -232,7 +232,7 @@ As the next step, we will relate Grafana Agent to the COS Lite components. Speci
 * Loki for the logs, and
 * Grafana for the dashboards. 
 
-From the model our application is running, we can verify the [`offers`](https://juju.is/docs/olm/manage-cross-model-integrations) COS Lite is exposing:
+From the model our application is running, we can verify the [`offers`](https://documentation.ubuntu.com/juju/latest/howto/manage-relations/#manage-relations) COS Lite is exposing:
 
 ```shell
 $ juju find-offers -m k8s:admin/cos
