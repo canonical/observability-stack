@@ -1,12 +1,13 @@
 # Testing with Minio
 
 ```{warning}
-The Minio charm is not suited for production usage. If that is what you are after, you should have a look at [Charmed Ceph](https://ubuntu.com/ceph/docs) and then follow [this guide](https://discourse.charmhub.io/t/tempo-ha-docs-how-to-use-ceph-backed-s3-storage-for-ha-charms/15740) instead.
+The Minio charm is not suited for production usage. If that is what you are after, you should have a look at [Charmed Ceph](https://ubuntu.com/ceph/docs) and then follow [this guide](https://discourse.charmhub.io/t/tempo-ha-docs-how-to-use-ceph-backed-s3-storage-for-ha-charms/15740) instead. 
 ```
 
 [Minio](https://min.io/) is a lightweight S3-compatible object storage system. In its 
 single-node configuration, it is suitable for providing s3 storage backends for 
-**testing purposes** for certain HA COS addons such as Tempo, Loki and Mimir. 
+**testing purposes** for certain HA COS addons such as Tempo, Loki and Mimir. In other
+words, this guide does not apply to users of COS Lite.
 
 ## Single-node Minio deployment
 
@@ -23,7 +24,7 @@ $ juju deploy minio \
     --channel edge \
     --trust \
     --config access-key=accesskey \
-    --config secret-key=mysoverysecretkey
+    --config secret-key=secretkey
 ```
 
 And wait for it to go to `active/idle`.
@@ -49,7 +50,7 @@ The `s3` app will go into `blocked` status until you run the `sync-s3-credential
 ```bash
 $ juju run s3/leader sync-s3-credentials \
     access-key=accesskey \
-    secret-key=mysoverysecretkey
+    secret-key=secretkey
 ```
 
 
@@ -57,7 +58,7 @@ $ juju run s3/leader sync-s3-credentials \
 
 #### Using the Minio UI
 
-The simplest way to create a bucket is to use the Minio console. Obtain the Minio IP from the `juju status` output and then open `http://MINIO_IP:9001` in a browser using the access key and secret key you configured earlier as user and password respectively.
+The simplest way to create a bucket is to use the Minio console UI. Obtain the Minio IP from the `juju status` output and then open `http://MINIO_IP:9001` in a browser using the access key and secret key you configured earlier as user and password respectively.
 
 From there you should be able to create a bucket with a few clicks. See [this guide](https://thenewstack.io/how-to-create-an-object-storage-bucket-with-minio-object-storage/) for a step-by-step tutorial.
 
@@ -118,7 +119,11 @@ $ sudo pip3 install minio  # install the script's only dependency
 $ curl https://raw.githubusercontent.com/canonical/tempo-coordinator-k8s-operator/main/scripts/deploy_minio.py -o deploy_minio.py
 
 # review the script prior to executing it, then:
-$ python3 deploy_minio.py
+$ python3 MINIO_BUCKET="tempo" deploy_minio.py
+
+# and if you also want to use s3 buckets for mimir and loki:
+$ python3 MINIO_BUCKET="loki" deploy_minio.py
+$ python3 MINIO_BUCKET="mimir" deploy_minio.py
 ```
 
 The script will install the `minio` charm, the `s3-integrator` charm and configure them to create and use a `tempo` bucket where traces will be stored. Once the script finishes, you should see the following message:
