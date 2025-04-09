@@ -39,6 +39,7 @@ with COS to actually observe them.
    Integrate COS Lite with uncharmed applications <integrating-cos-lite-with-uncharmed-applications>
    Disable built-in charm alert rules <disable-charmed-rules>
    Testing with Minio <testing-with-minio>
+   Set up distributed storage <set-up-distributed-storage>
    
 Troubleshooting
 ===============
