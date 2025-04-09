@@ -1,12 +1,12 @@
 # Sync alert rules from git
 
-In this tutorial you will learn how to make COS Lite automatically sync the alert rules of a git repo to Prometheus using the [COS Configuration charm](https://charmhub.io/cos-configuration-k8s/docs).
+In this tutorial you will learn how to make COS Lite automatically sync the alert rules of a git repository to Prometheus using the [COS Configuration charm](https://charmhub.io/cos-configuration-k8s/docs).
 
 
 ## Prerequisites
 This tutorial assumes that you already have the following:
-- a Kubernetes deployment [bootstrapped with Juju](https://juju.is/docs/olm/get-started-with-juju#heading--prepare-your-cloud).
-- a git repo with your Prometheus Alert rules.
+- A Kubernetes deployment [bootstrapped with Juju](https://documentation.ubuntu.com/juju/latest/tutorial/).
+- A git repository with your Prometheus Alert rules.
 
 ## Introduction
 
@@ -61,10 +61,10 @@ The COS Configuration charm will be used to poll a git repository of our choice 
 
 After deploying the charm, we will also need to provide some configuration:
 
-- `git_repo`: URL to repo to clone and sync against.
+- `git_repo`: URL to repository to clone and sync against.
 - `git_branch`: The git branch to check out.
 - `git_depth`: Cloning depth, to truncate commit history to the specified number of commits. Zero means no truncating.
-- `prometheus_alert_rules_path`: Relative path in repo to prometheus rules.
+- `prometheus_alert_rules_path`: Relative path in repository to prometheus rules.
 
 Now, let's deploy it:
 
@@ -149,7 +149,7 @@ drwxr-xr-x 3 root root 4096 Feb 23 20:40 dd2cc335a9b5734e0adbb25681074b09a4c3a11
 lrwxrwxrwx 1 root root   40 Feb 23 20:40 repo -> dd2cc335a9b5734e0adbb25681074b09a4c3a111
 ```
 
-After relating to e.g. prometheus, rules from the synced repo should appear in app data,
+After relating to e.g. prometheus, rules from the synced repository should appear in app data,
 
 ```bash
 $ juju show-unit prometheus/0 \
@@ -197,7 +197,7 @@ or using Prometheus Web UI:
 <!-- TOC --><a name="sync-interval"></a>
 ## Sync interval
 
-The repo syncs on every [`update-status` event](https://juju.is/docs/sdk/update-status-event) or when the juju administrator manually runs the `sync-now` action.
+The repository syncs on every [`update-status` event](https://documentation.ubuntu.com/juju/latest/reference/hook/#update-status) or when the juju administrator manually runs the `sync-now` action.
 
 ```shell
 $ juju run cos-config/0 sync-now
