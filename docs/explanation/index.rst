@@ -8,3 +8,5 @@ Explanation
 
    Charmed alert rules <charmed-rules>
    COS Lite <cos-lite>
+   Design Goals <design-goals>
+
