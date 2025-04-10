@@ -71,3 +71,5 @@ xindy
 OSDs
 OSD
 boolean
+Charmcraft
+ZooKeeper

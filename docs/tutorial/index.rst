@@ -17,7 +17,7 @@ or COS Lite, Juju-based observability stacks running on Kubernetes.
 .. toctree::
    :maxdepth: 1
 
-   1. Deploying the observability stack <installation/index>
+   1. Deploy the observability stack <installation/index>
 
 Configuration
 =============
