@@ -24,7 +24,7 @@ $ sudo snap install microceph
 
 ## Hold snap updates
 
-Allowing the snap to be auto-updated can lead to unintended consequences. In enterprise environments especially, it is better to research the ramifications of software changes before those changes are implemented. So, as recommended by the [MicroCeph maintainers](https://canonical-microceph.readthedocs-hosted.com/en/latest/how-to/single-node), prevent the software from being auto-updated.
+Allowing the snap to be auto-updated can lead to unintended consequences. In enterprise environments especially, it is best to research the ramifications of software changes before those changes are implemented. So, as recommended by the [MicroCeph maintainers](https://canonical-microceph.readthedocs-hosted.com/en/latest/how-to/single-node), prevent the software from being auto-updated.
 
 ```bash
 $ sudo snap refresh --hold microceph
