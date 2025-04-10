@@ -20,10 +20,10 @@ The following sections outline what this means in practice, and which juju-topol
 Depending on whether the charm where the dashboards reside is related directly to `grafana-k8s`, or whether the data flows through `grafana-agent` or `cos-proxy`, there are subtle differences in how the topology is injected.
 
 ### Charms relating directly to `grafana-k8s`
-Built-in dashboards are enriched with topology drop-downs. This allows filtering dashboard data by topology labels. You can opt out of this behaviour by calling a `._reinitialize_dashboard_data(inject_dropdowns=False)` method on the `GrafanaDashboardProvider` relation wrapper object.
+Built-in dashboards are enriched with topology drop-downs. This allows filtering dashboard data by topology labels. You can opt out of this behavior by calling a `._reinitialize_dashboard_data(inject_dropdowns=False)` method on the `GrafanaDashboardProvider` relation wrapper object.
 
 ### Charms relating through `cos-configuration`
-Incidental dashboards coming in from a git-repo via the `cos-configuration` charm are left intact.
+Incidental dashboards coming in from a git repository via the `cos-configuration` charm are left intact.
 
 ### Charms relating through `grafana-agent` (`-k8s` or not)
 When dashboards are forwarded through a `grafana-agent` intermediary, the juju topology labels of the charm of origin are injected (and not `grafana-agent`'s). Any subsequent chaining to additional grafana agent charms would leave the labels intact.
@@ -52,7 +52,7 @@ For built-in alert rules,
 - Alert rules descriptions can use a  `{{ $labels.juju_unit }}` macro in the alert's annotations, which will be replaced with the unit name for better readability.
 
 ### Charms relating through `cos-configuration`
-Incidental rule files coming in from a git-repo via the `cos-configuration` charm are left untouched and forwarded as-they-are.
+Incidental rule files coming in from a git repository via the `cos-configuration` charm are left untouched and forwarded as-they-are.
 
 ### Charms relating through `grafana-agent` (`-k8s` or not)
 When rule files are forwarded via grafana-agent, then they are enriched with juju topology labels of the relating charm (not grafana agent's topology). Any subsequent chaining to additional grafana agent charms would leave the labels intact.
