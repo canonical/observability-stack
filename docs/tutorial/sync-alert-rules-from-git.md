@@ -194,7 +194,6 @@ or using Prometheus Web UI:
 
 ![imagen|690x480](assets/synced-alert-rule-prom.png) 
 
-<!-- TOC --><a name="sync-interval"></a>
 ## Sync interval
 
 The repository syncs on every [`update-status` event](https://documentation.ubuntu.com/juju/latest/reference/hook/#update-status) or when the juju administrator manually runs the `sync-now` action.
@@ -211,7 +210,6 @@ Waiting for task 2...
 git-sync-stdout: ""
 ```
 
-<!-- TOC --><a name="extra-information"></a>
 ## Extra information
 
 In addition to forwarding alert rules to Prometheus, the COS Configuration 
