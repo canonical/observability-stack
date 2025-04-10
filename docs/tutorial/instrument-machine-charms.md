@@ -41,6 +41,11 @@ loki/0*          active    idle   10.1.55.14
 prometheus/0*    active    idle   10.1.55.40         
 traefik/0*       active    idle   10.1.55.53         
 
+Offer       Application  Charm           Rev  Connected  Endpoint              Interface                Role
+dashboards  grafana      grafana-k8s     124  1/1        grafana-dashboard     grafana_dashboard        requirer
+logging     loki         loki-k8s        178  1/1        logging               loki_push_api            provider
+metrics     prometheus   prometheus-k8s  217  1/1        receive-remote-write  prometheus_remote_write  provider
+
 Relation provider                   Requirer                     Interface              Type     Message
 alertmanager:alerting               loki:alertmanager            alertmanager_dispatch  regular  
 alertmanager:alerting               prometheus:alertmanager      alertmanager_dispatch  regular  
