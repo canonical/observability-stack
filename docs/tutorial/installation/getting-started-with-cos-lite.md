@@ -50,7 +50,7 @@ If you have an HTTP proxy configured, you will need to give this information to 
 ```
 
 ```{note} 
-By default, MicroK8s will use `8.8.8.8` and `8.8.4.4` as DNS servers, which can be adjusted. See [the DNS documentation]`https://microk8s.io/docs/addon-dns` for details.
+By default, MicroK8s will use `8.8.8.8` and `8.8.4.4` as DNS servers, which can be adjusted. See [the DNS documentation](https://microk8s.io/docs/addon-dns) for details.
 ```
 
 ## Deploy the COS Lite bundle
@@ -79,27 +79,26 @@ The status of your deployment should eventually be very similar to the following
 
 ```
 $ juju status --relations
-
 Model  Controller  Cloud/Region        Version  SLA          Timestamp
-cos    charm-dev   microk8s/localhost  2.9.42   unsupported  15:43:36-04:00
+cos    microk8s    microk8s/localhost  3.6.4    unsupported  15:48:47+04:00
 
-App           Version  Status  Scale  Charm             Channel  Rev  Address         Exposed  Message
-alertmanager  0.25.0   active      1  alertmanager-k8s  edge      67  10.152.183.93   no       
-catalogue              active      1  catalogue-k8s     edge      15  10.152.183.193  no       
-grafana       9.2.1    active      1  grafana-k8s       edge      77  10.152.183.137  no       
-loki          2.7.4    active      1  loki-k8s          edge      82  10.152.183.119  no       
-prometheus    2.42.0   active      1  prometheus-k8s    edge     122  10.152.183.51   no       
-traefik       2.9.6    active      1  traefik-k8s       edge     125  10.43.8.34      no       
+App           Version  Status  Scale  Charm             Channel      Rev  Address         Exposed  Message
+alertmanager  0.27.0   active      1  alertmanager-k8s  latest/edge  158  10.152.183.34   no       
+catalogue              active      1  catalogue-k8s     latest/edge   83  10.152.183.128  no       
+grafana       9.5.3    active      1  grafana-k8s       latest/edge  146  10.152.183.110  no       
+loki          2.9.6    active      1  loki-k8s          latest/edge  193  10.152.183.108  no       
+prometheus    2.52.0   active      1  prometheus-k8s    latest/edge  240  10.152.183.55   no       
+traefik       2.11.0   active      1  traefik-k8s       latest/edge  236  10.152.183.211  no       Serving at 10.211.88.149
 
-Unit             Workload  Agent  Address     Ports  Message
-alertmanager/0*  active    idle   10.1.55.34         
-catalogue/0*     active    idle   10.1.55.38         
-grafana/0*       active    idle   10.1.55.32         
-loki/0*          active    idle   10.1.55.14         
-prometheus/0*    active    idle   10.1.55.40         
-traefik/0*       active    idle   10.1.55.53         
+Unit             Workload  Agent  Address      Ports  Message
+alertmanager/0*  active    idle   10.1.157.91         
+catalogue/0*     active    idle   10.1.157.81         
+grafana/0*       active    idle   10.1.157.93         
+loki/0*          active    idle   10.1.157.92         
+prometheus/0*    active    idle   10.1.157.94         
+traefik/0*       active    idle   10.1.157.90         Serving at 10.211.88.149
 
-Relation provider                   Requirer                     Interface              Type     Message
+Integration provider                Requirer                     Interface              Type     Message
 alertmanager:alerting               loki:alertmanager            alertmanager_dispatch  regular  
 alertmanager:alerting               prometheus:alertmanager      alertmanager_dispatch  regular  
 alertmanager:grafana-dashboard      grafana:grafana-dashboard    grafana_dashboard      regular  
@@ -109,11 +108,14 @@ alertmanager:self-metrics-endpoint  prometheus:metrics-endpoint  prometheus_scra
 catalogue:catalogue                 alertmanager:catalogue       catalogue              regular  
 catalogue:catalogue                 grafana:catalogue            catalogue              regular  
 catalogue:catalogue                 prometheus:catalogue         catalogue              regular  
+catalogue:replicas                  catalogue:replicas           catalogue_replica      peer     
 grafana:grafana                     grafana:grafana              grafana_peers          peer     
 grafana:metrics-endpoint            prometheus:metrics-endpoint  prometheus_scrape      regular  
+grafana:replicas                    grafana:replicas             grafana_replicas       peer     
 loki:grafana-dashboard              grafana:grafana-dashboard    grafana_dashboard      regular  
 loki:grafana-source                 grafana:grafana-source       grafana_datasource     regular  
 loki:metrics-endpoint               prometheus:metrics-endpoint  prometheus_scrape      regular  
+loki:replicas                       loki:replicas                loki_replica           peer     
 prometheus:grafana-dashboard        grafana:grafana-dashboard    grafana_dashboard      regular  
 prometheus:grafana-source           grafana:grafana-source       grafana_datasource     regular  
 prometheus:prometheus-peers         prometheus:prometheus-peers  prometheus_peers       peer     
@@ -122,6 +124,7 @@ traefik:ingress                     catalogue:ingress            ingress        
 traefik:ingress-per-unit            loki:ingress                 ingress_per_unit       regular  
 traefik:ingress-per-unit            prometheus:ingress           ingress_per_unit       regular  
 traefik:metrics-endpoint            prometheus:metrics-endpoint  prometheus_scrape      regular  
+traefik:peers                       traefik:peers                traefik_peers          peer     
 traefik:traefik-route               grafana:ingress              traefik_route          regular  
 ```
 
