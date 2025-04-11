@@ -73,3 +73,5 @@ OSD
 boolean
 Charmcraft
 ZooKeeper
+OTEL
+lifecycle
