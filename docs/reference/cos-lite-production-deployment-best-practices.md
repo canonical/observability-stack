@@ -6,7 +6,7 @@ COS Lite requires Juju 3.1 to function properly. It is able to observe applicati
 
 This is the recommended deployment topology for COS-Lite:
 
-```mermaid
+```{mermaid}
 flowchart LR
     subgraph Infra A
     A[Your workloads] -->|telemetry| GAGENT[Grafana Agent]
