@@ -1,6 +1,6 @@
 # Logging Architecture
 
-In COS, Grafana Loki is the storage and querying backend for logs. Loki is optimised for write performance (ingestion speed), at the cost of slower random reads. This means that filtering structured logs by labels is fast, but full-text search is slower.
+In COS, Grafana Loki is the storage and querying backend for logs. Loki is optimized for write performance (ingestion speed), at the cost of slower random reads. This means that filtering structured logs by labels is fast, but full-text search is slower.
 
 Log lines must be pushed into Loki, as Loki does not actively collect anything on its own.
 
@@ -8,7 +8,7 @@ Charmed operators are programmed to automatically add [juju topology labels](htt
 
 ## Send logs to Loki
 
-In a typical COS Lite deployment, Loki would be running in a separate model from the monitored applications. While charms can we related directly to Loki using multiple cross-model relations (CMRs), we recommend funnelling all model telemetry through regular in-model relations to grafana agent, and then using only one cross-model relation from grafana agent to Loki.
+In a typical COS Lite deployment, Loki would be running in a separate model from the monitored applications. While charms can we related directly to Loki using multiple cross-model relations (CMRs), we recommend that you funnel all model telemetry through regular in-model relations to grafana agent, and then using only one cross-model relation from grafana agent to Loki.
 
 ```{mermaid}
 flowchart LR
@@ -44,12 +44,12 @@ click cos-proxy "https://charmhub.io/cos-proxy"
 
 ### Send logs from k8s charms
 Depending on your workload, you could choose one of the following [charm libraries](https://charmhub.io/loki-k8s/libraries/loki_push_api):
-- `LokiPushApiConsumer`, for workloads that can speak Loki's push api.
-- `LogProxyConsumer`, which would automatically inject a promtail binary into the workload containers of interest.
-- `LogForwarder`: This object can be used by any Charmed Operator which needs to send the workload standard output (stdout) through Pebble's log forwarding mechanism.
+- `LokiPushApiConsumer`, for workloads that can speak Loki's Push API.
+- `LogProxyConsumer`, which would automatically inject a Promtail binary into the workload containers of interest.
+- `LogForwarder`: This object can be used by any Charmed Operator which needs to send the workload standard output (`stdout`) through Pebble's log forwarding mechanism.
 
 #### Example: postgresql
-[Charmed postgresql-k8s](https://charmhub.io/postgresql-k8s) is [using LogProxyConsumer](https://github.com/canonical/postgresql-k8s-operator/blob/978080424255e109c7a7c4f4d23a5b3d5aba12a6/src/charm.py#L188) to tell promtail to [collect logs from](https://github.com/canonical/postgresql-k8s-operator/blob/978080424255e109c7a7c4f4d23a5b3d5aba12a6/src/constants.py#L23):
+[Charmed postgresql-k8s](https://charmhub.io/postgresql-k8s) is [using `LogProxyConsumer`](https://github.com/canonical/postgresql-k8s-operator/blob/978080424255e109c7a7c4f4d23a5b3d5aba12a6/src/charm.py#L188) to tell Promtail to [collect logs from](https://github.com/canonical/postgresql-k8s-operator/blob/978080424255e109c7a7c4f4d23a5b3d5aba12a6/src/constants.py#L23):
 ```text
 [
     "/var/log/pgbackrest/*",
@@ -77,7 +77,7 @@ relations:
   - loki:logging
 ```
 
-this results in an auto-render promtail config file with three scrape jobs, one for each "filename":
+this results in an auto-render Promtail config file with three scrape jobs, one for each "filename":
 ```bash
 $ juju ssh --container postgresql pgsql/0 cat /etc/promtail/promtail_config.yaml
 ```
@@ -125,7 +125,7 @@ server:
   http_listen_port: 9080
 ```
 
-### Send logs from VM (“machine”) models
+### Send logs from (physical/virtual) machine models
 
 Use charmed [grafana-agent](https://charmhub.io/grafana-agent), which is a subordinate charm.
 - When related over `juju-info`, it will pick up all logs from `/var/log/*` without any additional setup.
@@ -224,21 +224,21 @@ server:
   log_level: info
 ```
 ### Send logs from legacy charms
-Legacy charms are charms that do not have COS relations in place, and are using older, "legacy" relations instead, such as "http", "prometheus", etc. Legacy charms relate to COS via the [cos-proxy](https://charmhub.io/cos-proxy) charm.
+Legacy charms are charms that do not have COS relations in place, and are using older, "legacy" relations instead, such as `http`, `prometheus`, etc. Legacy charms relate to COS via the [cos-proxy](https://charmhub.io/cos-proxy) charm.
 
 ### Send logs manually (no-juju solution)
-You can set up [any client](https://grafana.com/docs/loki/latest/send-data/) that can speak Loki's [push api], for example: [grafana-agent snap](https://snapcraft.io/grafana-agent).
+You can set up [any client](https://grafana.com/docs/loki/latest/send-data/) that can speak Loki's [Push API], for example: [grafana-agent snap](https://snapcraft.io/grafana-agent).
 
-## Inspecting log lines ingested by Loki
+## Inspect log lines ingested by Loki
 
-### Manually querying Loki API endpoints
+### Manually query Loki API endpoints
 
-You can [query loki](/t/loki-k8s-docs-http-api/13440) to obtain logs via [HTTP API](https://grafana.com/docs/loki/latest/reference/api/#query-logs-within-a-range-of-time).
+You can [query loki](https://discourse.charmhub.io/t/loki-k8s-docs-http-api/13440) to obtain logs via [HTTP API](https://grafana.com/docs/loki/latest/reference/loki-http-api/#query-logs-within-a-range-of-time).
 
-### Displaying in a grafana panel
-A Loki [datasource](https://grafana.com/docs/grafana/latest/datasources/loki/) is automatically created in grafana when a relation is formed [between loki and grafana](https://charmhub.io/interfaces/grafana_datasource).
+### Display in a Grafana panel
+A Loki [data source](https://grafana.com/docs/grafana/latest/datasources/loki/) is automatically created in grafana when a relation is formed [between loki and grafana](https://charmhub.io/interfaces/grafana_datasource).
 
-You can visualise logs in grafana using [LogQL expressions](https://grafana.com/docs/loki/latest/query/). Grafana does not keep a copy of the Loki database. It queries loki for data, based on the `expr` in the panels.
+You can visualize logs in Grafana using [LogQL expressions](https://grafana.com/docs/loki/latest/query/). Grafana does not keep a copy of the Loki database. It queries loki for data, based on the `expr` in the panels.
 
 ## Retention policy for logs in Loki
 
@@ -247,9 +247,10 @@ Loki does not have a size-based retention policy. Instead, they rely on a retent
 The default retention period is 30 days. At the moment the loki charmed operator does not support modifying this.
 
 
-[push api]: https://grafana.com/docs/loki/latest/reference/api/
 
 ## References
 - [Collect logs with Promtail](https://grafana.com/docs/grafana-cloud/send-data/logs/collect-logs-with-promtail/)
 - [Collect logs with Grafana Agent](https://grafana.com/docs/grafana-cloud/send-data/logs/collect-logs-with-agent/)
-- [Loki HTTP API][push api]
+- [Loki HTTP API][Push API]
+
+[Push API]: https://grafana.com/docs/loki/latest/reference/api/
