@@ -8,6 +8,7 @@ Reference
 
     Solution Matrix <solution-matrix>
     Juju Topology Labels <juju-topology-labels>
+    COS Lite Production Deployment Best Practices <cos-lite-production-deployment-best-practices>
 
 Kubernetes Charms
 =================

@@ -1,4 +1,5 @@
 # Leave a blank line at the end of this file to support concatenation
+Alerter
 alertmanager
 backend
 backends
@@ -8,6 +9,7 @@ Ceph
 cjk
 CMR
 CMRs
+CSRs
 config
 contextualize
 cpu
@@ -42,6 +44,7 @@ LogQL
 loki
 matchers
 MetalLB
+Microceph
 MicroK
 MicroK8s
 Mimir
@@ -57,6 +60,7 @@ Promtail
 proxied
 routable
 SDK
+StatefulSets
 tex
 texlive
 TLS
@@ -78,3 +82,9 @@ OTEL
 lifecycle
 OpenStack
 postgresql
+provisioner
+Snapcraft
+Unencrypted
+unencrypted
+FQDN
+Terraform
