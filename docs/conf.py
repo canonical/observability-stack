@@ -239,6 +239,7 @@ extensions = [
     "canonical_sphinx",
     "sphinxcontrib.cairosvgconverter",
     "sphinx_last_updated_by_git",
+    "sphinxcontrib.mermaid",
 ]
 
 # Excludes files or directories from processing

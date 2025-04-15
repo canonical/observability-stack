@@ -10,6 +10,7 @@ Reference
     Juju Topology Labels <juju-topology-labels>
     Cryptographic Documentation <cryptographic-documentation>
     Security Hardening Guide <security-hardening-guide>
+    COS Lite Production Deployment Best Practices <cos-lite-production-deployment-best-practices>
 
 Kubernetes Charms
 =================
