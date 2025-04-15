@@ -10,3 +10,4 @@ Explanation
    COS Lite <cos-lite>
    Design Goals <design-goals>
    Juju Topology <juju-topology>
+   Logging Architecture <logging-architecture>
