@@ -9,3 +9,7 @@ These are the steps to follow:
     - `grafana-cloud-config` is now `cloud-config`
 3. verify that data is appearing in the backends (Mimir, Prometheus, Loki, etc.)
 4. remove grafana-agent from your deployment
+
+## Known Issues
+
+Unlike `grafana-agent`, OpenTelemetry Collector maintains state in-memory by default: this means that queued telemetry data will be lost on restart. This will be addressed in the future with the **File Storage extension**, tracked in [opentelemetry-collector-k8s#34](https://github.com/canonical/opentelemetry-collector-k8s-operator/issues/34).
