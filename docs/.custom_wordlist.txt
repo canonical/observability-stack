@@ -51,6 +51,8 @@ Mimir
 Minio
 Nginx
 NRPE
+opentelemetry
+OpenTelemetry
 otf
 plantuml
 programmatically
