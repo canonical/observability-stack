@@ -1,6 +1,6 @@
 # Charms
 
-### COS
+## COS
 
 | Project                  | Substrate | Charmhub                                                 | Source Code                                                              | Bug Report                                                                      |
 |--------------------------|-----------|----------------------------------------------------------|--------------------------------------------------------------------------|---------------------------------------------------------------------------------|
@@ -10,13 +10,13 @@
 | Loki Worker              | K8s       | [Charmhub](https://charmhub.io/loki-worker-k8s)          | [Source](https://github.com/canonical/loki-worker-k8s-operator)          | [Issues](https://github.com/canonical/loki-worker-k8s-operator/issues)          |
 | Mimir Coordinator        | K8s       | [Charmhub](https://charmhub.io/mimir-coordinator-k8s)    | [Source](https://github.com/canonical/mimir-coordinator-k8s-operator)    | [Issues](https://github.com/canonical/mimir-coordinator-k8s-operator/issues)    |
 | Mimir Worker             | K8s       | [Charmhub](https://charmhub.io/mimir-worker-k8s)         | [Source](https://github.com/canonical/mimir-worker-k8s-operator)         | [Issues](https://github.com/canonical/mimir-worker-k8s-operator/issues)         |
-| S3 Integrator            | Any       | [Charmhub](https://charmhub.io/s3-integrator)            | [Source](https://github.com/canonical/s3-integrator-operator)            | [Issues](https://github.com/canonical/s3-integrator-operator/issues)            |
+| S3 Integrator            | Any       | [Charmhub](https://charmhub.io/s3-integrator)            | [Source](https://github.com/canonical/s3-integrator)                     | [Issues](https://github.com/canonical/s3-integrator/issues)                     |
 | Self-signed Certificates | Any       | [Charmhub](https://charmhub.io/self-signed-certificates) | [Source](https://github.com/canonical/self-signed-certificates-operator) | [Issues](https://github.com/canonical/self-signed-certificates-operator/issues) |
 | Tempo Coordinator        | K8s       | [Charmhub](https://charmhub.io/tempo-coordinator-k8s)    | [Source](https://github.com/canonical/tempo-coordinator-k8s-operator)    | [Issues](https://github.com/canonical/tempo-coordinator-k8s-operator/issues)    |
 | Tempo Worker             | K8s       | [Charmhub](https://charmhub.io/tempo-worker-k8s)         | [Source](https://github.com/canonical/tempo-worker-k8s-operator)         | [Issues](https://github.com/canonical/tempo-worker-k8s-operator/issues)         |
 | Traefik                  | K8s       | [Charmhub](https://charmhub.io/traefik-k8s)              | [Source](https://github.com/canonical/traefik-k8s-operator)              | [Issues](https://github.com/canonical/traefik-k8s-operator/issues)              |
 
-### COS Lite
+## COS Lite
 
 | Project                  | Substrate | Charmhub                                                 | Source Code                                                              | Bug Report                                                                      |
 |--------------------------|-----------|----------------------------------------------------------|--------------------------------------------------------------------------|---------------------------------------------------------------------------------|
@@ -28,18 +28,18 @@
 | Traefik                  | K8s       | [Charmhub](https://charmhub.io/traefik-k8s)              | [Source](https://github.com/canonical/traefik-k8s-operator)              | [Issues](https://github.com/canonical/traefik-k8s-operator/issues)              |
 | Self-signed Certificates | Any       | [Charmhub](https://charmhub.io/self-signed-certificates) | [Source](https://github.com/canonical/self-signed-certificates-operator) | [Issues](https://github.com/canonical/self-signed-certificates-operator/issues) |
 
-### Peripheral charms
+## Peripheral charms
 
-| Project                  | Substrate | Charmhub                                                 | Source Code                                                              | Bug Report                                                                      |
-|--------------------------|-----------|----------------------------------------------------------|--------------------------------------------------------------------------|---------------------------------------------------------------------------------|
-| Blackbox Exporter        | K8s       | [Charmhub](https://charmhub.io/blackbox-exporter-k8s)    | [Source](https://github.com/canonical/blackbox-exporter-k8-operator)     | [Issues](https://github.com/canonical/blackbox-exporter-k8s-operator/issues)    |
-| COS Configuration        | K8s       | [Charmhub](https://charmhub.io/cos-configuration-k8s)    | [Source](https://github.com/canonical/cos-configuration-k8s-operator)    | [Issues](https://github.com/canonical/cos-configuration-k8s-operator/issues)    |
-| COS Proxy                | Machines  | [Charmhub](https://charmhub.io/cos-proxy)                | [Source](https://github.com/canonical/cos-proxy-operator)                | [Issues](https://github.com/canonical/cos-proxy-operator/issues)                |
-| Grafana Agent            | K8s       | [Charmhub](https://charmhub.io/grafana-agent-k8s)        | [Source](https://github.com/canonical/grafana-agent-k8s-operator)        | [Issues](https://github.com/canonical/grafana-agent-k8s-operator/issues)        |
-| Grafana Agent            | Machines  | [Charmhub](https://charmhub.io/grafana-agent)            | [Source](https://github.com/canonical/grafana-agent-operator)            | [Issues](https://github.com/canonical/grafana-agent-operator/issues)            |
-| Karma                    | K8s       | [Charmhub](https://charmhub.io/karma-k8s)                | [Source](https://github.com/canonical/karma-k8s-operator)                | [Issues](https://github.com/canonical/karma-k8s-operator/issues)                |
-| Karma Alertmanager Proxy | K8s       | [Charmhub](https://charmhub.io/karma-alertmanager-k8s)   | [Source](https://github.com/canonical/karma-alertmanager-k8s-operator)   | [Issues](https://github.com/canonical/karma-alertmanager-k8s-operator/issues)   |
-| Prometheus Scrape Config | Any       | [Charmhub](https://charmhub.io/prometheus-scrape-config) | [Source](https://github.com/canonical/prometheus-scrape-config-operator) | [Issues](https://github.com/canonical/prometheus-scrape-config-operator/issues) |
-| Prometheus Scrape Target | Any       | [Charmhub](https://charmhub.io/prometheus-scrape-target) | [Source](https://github.com/canonical/prometheus-scrape-target-operator) | [Issues](https://github.com/canonical/prometheus-scrape-target-operator/issues) |
-| Script Exporter          | K8s       | [Charmhub](https://charmhub.io/script-exporter-k8s)      | [Source](https://github.com/canonical/script-exporter-k8-operator)       | [Issues](https://github.com/canonical/script-exporter-k8s-operator/issues)      |
-| SNMP Exporter            | Machines  | [Charmhub](https://charmhub.io/snmp-exporter)            | [Source](https://github.com/canonical/snmp-exporter-operator)            | [Issues](https://github.com/canonical/snmp-exporter-operator/issues)            |
+| Project                  | Substrate | Charmhub                                                     | Source Code                                                                  | Bug Report                                                                          |
+|--------------------------|-----------|--------------------------------------------------------------|------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
+| Blackbox Exporter        | K8s       | [Charmhub](https://charmhub.io/blackbox-exporter-k8s)        | [Source](https://github.com/canonical/blackbox-exporter-k8s-operator)        | [Issues](https://github.com/canonical/blackbox-exporter-k8s-operator/issues)        |
+| COS Configuration        | K8s       | [Charmhub](https://charmhub.io/cos-configuration-k8s)        | [Source](https://github.com/canonical/cos-configuration-k8s-operator)        | [Issues](https://github.com/canonical/cos-configuration-k8s-operator/issues)        |
+| COS Proxy                | Machines  | [Charmhub](https://charmhub.io/cos-proxy)                    | [Source](https://github.com/canonical/cos-proxy-operator)                    | [Issues](https://github.com/canonical/cos-proxy-operator/issues)                    |
+| Grafana Agent            | K8s       | [Charmhub](https://charmhub.io/grafana-agent-k8s)            | [Source](https://github.com/canonical/grafana-agent-k8s-operator)            | [Issues](https://github.com/canonical/grafana-agent-k8s-operator/issues)            |
+| Grafana Agent            | Machines  | [Charmhub](https://charmhub.io/grafana-agent)                | [Source](https://github.com/canonical/grafana-agent-operator)                | [Issues](https://github.com/canonical/grafana-agent-operator/issues)                |
+| Karma                    | K8s       | [Charmhub](https://charmhub.io/karma-k8s)                    | [Source](https://github.com/canonical/karma-k8s-operator)                    | [Issues](https://github.com/canonical/karma-k8s-operator/issues)                    |
+| Karma Alertmanager Proxy | K8s       | [Charmhub](https://charmhub.io/karma-alertmanager-proxy-k8s) | [Source](https://github.com/canonical/karma-alertmanager-proxy-k8s-operator) | [Issues](https://github.com/canonical/karma-alertmanager-proxy-k8s-operator/issues) |
+| Prometheus Scrape Config | Any       | [Charmhub](https://charmhub.io/prometheus-scrape-config-k8s) | [Source](https://github.com/canonical/prometheus-scrape-config-operator)     | [Issues](https://github.com/canonical/prometheus-scrape-config-operator/issues)     |
+| Prometheus Scrape Target | Any       | [Charmhub](https://charmhub.io/prometheus-scrape-target-k8s) | [Source](https://github.com/canonical/prometheus-scrape-target-operator)     | [Issues](https://github.com/canonical/prometheus-scrape-target-operator/issues)     |
+| Script Exporter          | K8s       | [Charmhub](https://charmhub.io/script-exporter)              | [Source](https://github.com/canonical/script-exporter-operator)              | [Issues](https://github.com/canonical/script-exporter-operator/issues)              |
+| SNMP Exporter            | Machines  | [Charmhub](https://charmhub.io/snmp-exporter)                | [Source](https://github.com/canonical/snmp-exporter-operator)                | [Issues](https://github.com/canonical/snmp-exporter-operator/issues)                |
