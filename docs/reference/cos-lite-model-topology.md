@@ -1,7 +1,11 @@
-COS Lite consists of a number of charms connected by juju relations.
+# Model Topology for COS Lite
 
-The graph is so dense and interconnected that displaying it in its entirety is confusing and uninformative. Instead, for clarity and readability, we depict the bundle topology using several separate diagrams, each one presenting a view of a specific data flow or functionality group. 
-Each line indicates a separate juju relation.
+COS Lite consists of a number of charms connected by Juju relations.
+
+The graph is so dense and interconnected that displaying it in its entirety isn't very informative. 
+Instead, for clarity and readability, we depict the bundle topology using several separate diagrams, 
+each one presenting a view of a specific data flow or functionality group. Each line indicates a 
+separate juju relation.
 
 ## Ingress view
 The workloads that make up COS Lite are servers that need to be reachable from outside the model they are deployed in.
