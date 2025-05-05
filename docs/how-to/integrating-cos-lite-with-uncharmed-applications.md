@@ -100,7 +100,7 @@ See [this guide](https://github.com/canonical/cos-configuration-k8s-operator#dep
 ### Using TLS
 
 To enable secure communications with (and within) COS Lite, deploy cos-lite with the 
-[tls overlay](https://github.com/canonical/cos-lite-bundle/pull/80).
+[TLS overlay](https://github.com/canonical/cos-lite-bundle/pull/80).
 You can follow [this guide](https://charmhub.io/traefik-k8s/docs/tls-termination) to enable TLS in Traefik and COS Lite.
 
 ### Grafana-agent snap as a client 
