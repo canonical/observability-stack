@@ -99,9 +99,45 @@ See [this guide](https://github.com/canonical/cos-configuration-k8s-operator#dep
 
 ### Using TLS
 
-You can deploy cos-lite with the [TLS](https://github.com/canonical/cos-lite-bundle/pull/80) overlay to enable secure communications with and within COS Lite. 
-
+To enable secure communications with (and within) COS Lite, deploy cos-lite with the 
+[TLS overlay](https://github.com/canonical/cos-lite-bundle/pull/80).
 You can follow [this guide](https://charmhub.io/traefik-k8s/docs/tls-termination) to enable TLS in Traefik and COS Lite.
+
+### Grafana-agent snap as a client 
+As a client (e.g. scraping `/metrics` endpoint), grafana-agent must trust the CA that signed the COS charms (or the COS
+ingress charm). 
+
+For example, to obtain the ca-cert from the [self-signed-certificates](https://charmhub.io/self-signed-certificates) charm,
+
+```bash
+juju run ssc/0 get-ca-certificate --format=yaml \
+  | yq '.ssc/0.results.ca-certificate'
+```
+
+Next, you need to [add the certificate to the root store](https://documentation.ubuntu.com/server/how-to/security/install-a-root-ca-certificate-in-the-trust-store/index.html).
+
+> Note: After running `update-ca-certificates` and restarting the grafana-agent snap service, check the grafana-agent 
+> logs to confirm there are no log lines such as:
+>
+> `msg="Failed to send batch, retrying" err="Post \"https://.../api/v1/write\": tls: failed to verify certificate: 
+> x509: certificate signed by unknown authority"`
+
+
+### Grafana-agent as a server
+To have a TLS handshake with incoming connections (e.g. if you push to grafana-agent via remote-write), you need to have
+a private key and a cert, and add to the grafana agent config as follows:
+
+```diff
+server:
+  log_level: info
++ grpc_tls_config:
++   cert_file: /home/path/to/grafana-agent.pem
++   key_file: /home/path/to/grafana-agent.key
++ http_tls_config:
++   cert_file: /home/path/to/grafana-agent.pem
++   key_file: /home/path/to/grafana-agent.key
+```
+
 
 ### Using the Prometheus-scrape-target charm
 
