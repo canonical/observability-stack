@@ -84,7 +84,7 @@ Note: **Do not** use the [`hostpath-storage`](https://microk8s.io/docs/addon-hos
  * `PersistentVolumeClaims` created by the host path storage provisioner are bound to the local node, so it is *impossible to move them to a different node*.
  * A `hostpath` volume can *grow beyond the capacity set in the volume claim manifest*.
 
-Instead, you could use the [`rook-ceph`](https://microk8s.io/docs/addon-rook-ceph) add-on together with Microceph. See the [Microceph tutorial](https://charmhub.io/cos-lite/docs/tutorials/distributed-storage?channel=latest/edge).
+Instead, you could use the [`rook-ceph`](https://microk8s.io/docs/addon-rook-ceph) add-on together with Microceph. See the [Microceph tutorial](https://microk8s.io/docs/how-to-ceph).
 [/note]
 
 ### Storage volume
