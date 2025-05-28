@@ -1,3 +1,5 @@
+# Telemetry labels
+
 An application produces telemetry (metrics, logs, traces, profiles) which the observability stack collects and analyzes to surface issues and abnormalities. Telemetry coming from multiple sources (which could be on different nodes, or even infrastructure) is stored in a centralized database, therefore we need to be able to map the telemetry back to its origin.
 This is the goal of **telemetry labels**.
 

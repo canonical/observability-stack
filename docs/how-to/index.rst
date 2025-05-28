@@ -39,7 +39,7 @@ with COS to actually observe them.
    Expose a metrics endpoint <exposing-a-metrics-endpoint>
    Integrate COS Lite with uncharmed applications <integrating-cos-lite-with-uncharmed-applications>
    Disable built-in charm alert rules <disable-charmed-rules>
-   Testing with Minio <testing-with-minio>
+   Testing with Minio <deploy-s3-integrator-and-minio>
    
 Troubleshooting
 ===============
