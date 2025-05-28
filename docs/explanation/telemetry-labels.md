@@ -90,7 +90,7 @@ Similarly, "service labels" can be specified using prometheus [remote-write endp
 
 ## Log labels
 Logs ("streams") ingested by Loki will be searchable by the specified labels.
-If you [push logs directly to Loki](https://grafana.com/docs/loki/latest/api/#push-log-entries-to-loki), you can attach labels to every "stream" pushed.
+If you [push logs directly to Loki](https://grafana.com/docs/loki/latest/reference/loki-http-api/#ingest-logs), you can attach labels to every "stream" pushed.
 In Loki's terminology, a stream is a set of log lines pushed in a single request:
 ```json
 {
@@ -113,7 +113,7 @@ all of the labels specified in the `stream` section above will be applied to all
 
 ## Scrape job labels for logs
 Log files can be scraped by Promtail or grafana agent, which then stream the log lines to Loki using Loki's `push-api` endpoint.
-Promtail, similar to grafana agent, has a [`scarpe_configs` section in its config file](https://grafana.com/docs/loki/latest/clients/promtail/configuration/#scrape_configs) for specifying targets (log filename) and associate labels to them.
+Promtail, similar to grafana agent, has a [`scarpe_configs` section in its config file](https://grafana.com/docs/loki/latest/send-data/promtail/configuration/#scrape_configs) for specifying targets (log filename) and associate labels to them.
 See also grafana agent's [config file](https://grafana.com/docs/agent/latest/configuration/logs-config/) docs.
 
 

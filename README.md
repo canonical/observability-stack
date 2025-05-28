@@ -6,7 +6,7 @@ Docs are [published to readthedocs](https://library.canonical.com/documentation/
 and are based on [Canonical's Sphinx Starter Pack](https://github.com/canonical/sphinx-docs-starter-pack).
 
 
-## Building the docs locally
+## Build the docs
 
 You must install python3-venv before you can build the documentation, for example
 
@@ -36,9 +36,9 @@ make run
 ```
 
 
-## Running quality checks locally
+## Run quality checks
 
 ```bash
 cd docs
-make spellcheck
+make spellcheck woke linkcheck
 ```
