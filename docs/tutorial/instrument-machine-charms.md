@@ -106,14 +106,13 @@ provides:
 
 ### Integrate the library in our charm code
 
-In `src/charm.py` we will first import the library.
+In `src/charm.py`, import the library.
 
 ```python
 from charms.grafana_agent.v0.cos_agent import COSAgentProvider
 ```
 
-We will then instantiate the `COSAgentProvider` object in the charms `__init__` method, like this.
-
+Instantiate the `COSAgentProvider` object in the charm's `__init__` method.
 
 ```python
         # ...
@@ -148,7 +147,7 @@ $ charmcraft pack
 
 ## Refreshing the Zookeeper charm
 
-Let's now move over to our machine model, and do a refresh of the
+Switch to the machine model and refresh the
 Zookeeper charm with the charm file we just created.
 
 ```
@@ -156,7 +155,7 @@ Zookeeper charm with the charm file we just created.
   juju refresh zookeeper --path ./*.charm
 ```
 
-Juju will now do an in-place upgrade of the charm, adding the `cos-agent` relation we just created. Let's verify that it's `active/idle` before we proceed.
+Juju will now do an in-place upgrade of the charm, adding the `cos-agent` relation we just created. Verify that it's `active/idle` before proceeding.
 
 ```
 $ juju status zookeeper
@@ -176,7 +175,7 @@ Machine  State    Address         Inst id        Base          AZ  Message
 
 ## Deploy the Grafana Agent machine charm
 
-We'll now deploy the Grafana Agent machine charm.
+Now deploy the Grafana Agent machine charm.
 
 ```
 $ juju deploy grafana-agent
@@ -198,15 +197,15 @@ Machine  State    Address         Inst id        Base          AZ  Message
 
 At this point we have one `zookeeper` unit in `active` state, and a `grafana-agent` in unknown state, with no units. This is, as mentioned earlier, because `grafana-agent` is a [subordinate charm](https://discourse.charmhub.io/t/subordinate-applications/1053).
 
-## Relate the charms
+## Integrate the charms
 
-We will now relate `zookeeper` with `grafana-agent` over the `cos-agent` relation.
+Now integrate `zookeeper` with `grafana-agent` over the `cos-agent` relation.
 
 ```
-$ juju relate zookeeper grafana-agent:cos-agent
+$ juju integrate zookeeper grafana-agent:cos-agent
 ```
 
-Once the relation has been established, the `grafana-agent` will be deployed together with the `zookeeper` unit, in the same machine. The status of the model at that point will be:
+Once the relation has been established, `grafana-agent` will be deployed together with the `zookeeper` unit, in the same machine. The status of the model at that point will be:
 
 ```
 $ juju status
@@ -229,7 +228,7 @@ Machine  State    Address         Inst id        Base          AZ  Message
 0        started  10.190.242.217  juju-0cb42c-0  ubuntu@22.04      Running
 ```
 
-Notice that despite `grafana-agent` being deployed and collecting telemetry, it is yet to forward them anywhere due to the lack of relations to the corresponding components in the observability stack.
+Note that despite `grafana-agent` being deployed and collecting telemetry, it is yet to forward them anywhere due to the lack of relations to the corresponding components in the observability stack.
 
 ## Relate Grafana Agent to COS Lite 
 
@@ -318,7 +317,7 @@ Machine  State    Address         Inst id        Base          AZ  Message
 
 ## Verify that metrics and logs reach Prometheus and Loki
 
-Now that the Cross Model Relations are established between our application model and our Observability model, we can easily verify that the metrics `zookeeper` exposes are reaching Prometheus.
+Now that the Cross Model Relations are established between our application model and our observability model, we can easily verify that the metrics `zookeeper` exposes are reaching Prometheus.
 
 ```
 
