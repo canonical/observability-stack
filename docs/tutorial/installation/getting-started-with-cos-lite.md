@@ -26,6 +26,13 @@ You can check this with `microk8s status`, and if any are missing, enable them w
 
 ```bash
 $ microk8s enable dns 
+```
+
+```{note}
+While the following setup is sufficient for non-production environments, if you're looking for a more resilient storage option, consider deploying MicroCeph on MicroK8s using this [tutorial](https://microk8s.io/docs/how-to-ceph).
+```
+
+```bash
 $ microk8s enable hostpath-storage
 ```
 

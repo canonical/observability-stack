@@ -7,8 +7,7 @@ The Canonical Observability Stack (COS) gathers, processes, visualizes, and aler
 
 By leveraging the topology model of Juju to contextualize the data, and charm relations to automate configuration and integration, it provides a low-ops observability suite based on best-in-class, open-source observability tools.
 
-For Site Reliability Engineers, COS provides a turn-key, out-of-the-box solution for improved day 2 operational insight.
-
+For Site Reliability Engineers, COS provides a turn-key, out-of-the-box solution for improved day-2 operational insight.
 
 
 .. toctree::
