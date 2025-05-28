@@ -11,7 +11,7 @@ Telemetry labels are used throughout the [Grafana ecosystem](https://grafana.com
 
 ## Metric labels
 
-By convention, applications expose labelled metrics under a [`/metrics` endpoint](https://github.com/OpenObservability/OpenMetrics/blob/main/specification/OpenMetrics.md).
+By convention, applications expose labeled metrics under a [`/metrics` endpoint](https://github.com/OpenObservability/OpenMetrics/blob/main/specification/OpenMetrics.md).
 For example, you can run the prometheus application and curl its `:9090/metrics` endpoint to obtain the metrics exposed by the process.
 
 ```bash
@@ -39,7 +39,7 @@ In the example above,
 - `process_open_fds` is a metric without any labels
 - `prometheus_http_requests_total` is a metric with two labels: 
   - `code`: a label that tells you the status code of a handled request 
-  - `handler`: a label that tells you the path of the endpoint handling an http request
+  - `handler`: a label that tells you the path of the endpoint handling an HTTP request
 
 ## Scrape job labels for metrics
 
@@ -89,9 +89,9 @@ Similarly, "service labels" can be specified using prometheus [remote-write endp
 
 
 ## Log labels
-Logs ("streams") ingested by loki will be searchable by the specified labels.
-If you [push logs directly to loki](https://grafana.com/docs/loki/latest/api/#push-log-entries-to-loki), you can attach labels to every "stream" pushed.
-In loki's terminology, a stream is a set of loglines pushed in a single request:
+Logs ("streams") ingested by Loki will be searchable by the specified labels.
+If you [push logs directly to Loki](https://grafana.com/docs/loki/latest/api/#push-log-entries-to-loki), you can attach labels to every "stream" pushed.
+In Loki's terminology, a stream is a set of log lines pushed in a single request:
 ```json
 {
   "streams": [
@@ -108,17 +108,17 @@ In loki's terminology, a stream is a set of loglines pushed in a single request:
 }
 ```
 
-all of the labels specified in the `stream` section above will be applied to all the loglines specified in the `values` block.
+all of the labels specified in the `stream` section above will be applied to all the log lines specified in the `values` block.
 
 
 ## Scrape job labels for logs
-Log files can be scraped by promtail or grafana agent, which then stream the log lines to loki using loki's push api endpoint.
+Log files can be scraped by Promtail or grafana agent, which then stream the log lines to Loki using Loki's `push-api` endpoint.
 Promtail, similar to grafana agent, has a [`scarpe_configs` section in its config file](https://grafana.com/docs/loki/latest/clients/promtail/configuration/#scrape_configs) for specifying targets (log filename) and associate labels to them.
 See also grafana agent's [config file](https://grafana.com/docs/agent/latest/configuration/logs-config/) docs.
 
 
 ## Alert labels
-By design, prometheus (and loki) store all [alerts](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) in a centralized fashion: if you want your alerts to be evaluated, you must place them on the filesystem somewhere accessible by prometheus, and specify that path in prometheus's [config file](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#configuration-file):
+By design, prometheus (and Loki) store all [alerts](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) in a centralized fashion: if you want your alerts to be evaluated, you must place them on the filesystem somewhere accessible by prometheus, and specify that path in Prometheus's [config file](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#configuration-file):
 
 ```yaml
 rule_files:
@@ -151,4 +151,4 @@ This is useful for:
 See also:
 - [reference/juju-topology-labels](Juju topology labels)
 - [How relabeling in Prometheus works](https://grafana.com/blog/2022/03/21/how-relabeling-in-prometheus-works)
-- [promlens relabeler](https://relabeler.promlabs.com/).
+- [PromLens Relabeler](https://relabeler.promlabs.com/).

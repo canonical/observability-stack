@@ -5,6 +5,7 @@ This repo contains docs and scripts for building and deploying documentation for
 Docs are [published to readthedocs](https://library.canonical.com/documentation/publish-on-read-the-docs)
 and are based on [Canonical's Sphinx Starter Pack](https://github.com/canonical/sphinx-docs-starter-pack).
 
+
 ## Building the docs locally
 
 You must install python3-venv before you can build the documentation, for example
@@ -32,4 +33,12 @@ Build and serve the docs locally:
 
 ```bash
 make run
+```
+
+
+## Running quality checks locally
+
+```bash
+cd docs
+make spellcheck
 ```

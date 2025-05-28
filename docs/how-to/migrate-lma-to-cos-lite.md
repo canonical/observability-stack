@@ -16,7 +16,7 @@ COS requires a Juju version `>=3.6`. Consult the [juju-cross-version-compatibili
 
 ## 2. Deploy COS to an isolated MicroK8s instance
 
-This model needs to be running Juju `>=3.6`. For instructions, see the [deploy COS on microk8s](https://documentation.ubuntu.com/observability/tutorial/installation/getting-started-with-cos-lite/) tutorial.
+This model needs to be running Juju `>=3.6`. For instructions, see the [Deploy COS on MicroK8s](https://documentation.ubuntu.com/observability/tutorial/installation/getting-started-with-cos-lite/) tutorial.
 
 It will now look somewhat like this:
 
@@ -38,7 +38,8 @@ to COS.
 
 ## 4. Evaluate solution parity
 
-You'll now receive your telemetry in both LMA and COS. At this point, you should evaluate coverage for the checks and alarms you're used to when using LMA in COS before deciding to decomission LMA.
+You'll now receive your telemetry in both LMA and COS. At this point, you should evaluate coverage for the checks and
+alarms you're used to when using LMA in COS before deciding to decommission LMA.
 
 ## 5. Decommission LMA
 

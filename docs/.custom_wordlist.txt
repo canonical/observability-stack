@@ -14,6 +14,7 @@ cjk
 CMR
 CMRs
 config
+configs
 contextualize
 cpu
 cryptographic
@@ -25,6 +26,7 @@ DNS
 dvipng
 extracurriculars
 Filebeat
+filesystem
 fonts
 FQDN
 freefont
@@ -71,10 +73,12 @@ plantuml
 postgresql
 programmatically
 prometheus
+PromLens
 PromQL
 Promtail
 provisioner
 proxied
+Relabeler
 routable
 SDK
 SHA
