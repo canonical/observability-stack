@@ -111,7 +111,7 @@ epub: install
 	. $(VENV); $(SPHINXBUILD) -b epub "$(SOURCEDIR)" "$(BUILDDIR)" -w $(SPHINXDIR)/warnings.txt $(SPHINXOPTS)
 
 serve: html
-	cd "$(BUILDDIR)"; python3 -m http.server --bind 127.0.0.1 8000
+	cd "$(BUILDDIR)"; python3 -m http.server --bind 0.0.0.0 8000
 
 clean: clean-doc
 	@test ! -e "$(VENVDIR)" -o -d "$(VENVDIR)" -a "$(abspath $(VENVDIR))" != "$(VENVDIR)"
