@@ -4,7 +4,10 @@ Deploying the observability stack
 *********************************
 
 .. toctree::
-   :maxdepth: 1 
+   :maxdepth: 1
+   
+   A. COS Lite on MicroK8s <getting-started-with-cos-lite>
+   B. COS Lite on Canonical K8s <cos-lite-canonical-k8s-sandbox>
 
 
 .. list-table:: Installation tutorials
@@ -19,16 +22,16 @@ Deploying the observability stack
      - Resource requirements
      - Reproducer
    * - Sandbox
-     - COS Lite on MicroK8s <getting-started-with-cos-lite>
+     - :doc:`COS Lite on MicroK8s <getting-started-with-cos-lite>`
      - COS Lite
      - MicroK8s
      - hostPath
      - 4cpu8gb
      - 
    * - Sandbox
-     - COS Lite on Canonical K8s <cos-lite-canonical-k8s-sandbox>
+     - :doc:`COS Lite on Canonical K8s <cos-lite-canonical-k8s-sandbox>`
      - COS Lite
      - Canonical K8s (snap)
      - hostPath
      - 4cpu8gb
-     - cloud-config <cos-lite-canonical-k8s-sandbox.conf>
+     - :download:`cloud-config <cos-lite-canonical-k8s-sandbox.conf>`
