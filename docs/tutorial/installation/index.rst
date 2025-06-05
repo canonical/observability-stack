@@ -17,18 +17,18 @@ Deploying the observability stack
      - Kubernetes
      - Storage
      - Resource requirements
-	 - Reproducer
+     - Reproducer
    * - Sandbox
      - COS Lite on MicroK8s <getting-started-with-cos-lite>
      - COS Lite
      - MicroK8s
      - hostPath
      - 4cpu8gb
-	 - 
+     - 
    * - Sandbox
      - COS Lite on Canonical K8s <cos-lite-canonical-k8s-sandbox>
      - COS Lite
      - Canonical K8s (snap)
      - hostPath
      - 4cpu8gb
-	 - cloud-config <cos-lite-canonical-k8s-sandbox.conf>
+     - cloud-config <cos-lite-canonical-k8s-sandbox.conf>
