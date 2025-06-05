@@ -10,28 +10,20 @@ Deploying the observability stack
    B. COS Lite on Canonical K8s <cos-lite-canonical-k8s-sandbox>
 
 
+## Sandbox-grade tutorials
 .. list-table:: Installation tutorials
    :widths: auto
    :header-rows: 1
 
-   * - Grade
-     - Tutorial
-     - Distribution
-     - Kubernetes
+   * - Tutorial
      - Storage
      - Resource requirements
      - Reproducer
-   * - Sandbox
-     - :doc:`COS Lite on MicroK8s <getting-started-with-cos-lite>`
-     - COS Lite
-     - MicroK8s
+   * - :doc:`COS Lite on MicroK8s <getting-started-with-cos-lite>`
      - hostPath
      - 4cpu8gb
      - 
-   * - Sandbox
-     - :doc:`COS Lite on Canonical K8s <cos-lite-canonical-k8s-sandbox>`
-     - COS Lite
-     - Canonical K8s (snap)
+   * - :doc:`COS Lite on Canonical K8s <cos-lite-canonical-k8s-sandbox>`
      - hostPath
      - 4cpu8gb
      - :download:`cloud-config <cos-lite-canonical-k8s-sandbox.conf>`
