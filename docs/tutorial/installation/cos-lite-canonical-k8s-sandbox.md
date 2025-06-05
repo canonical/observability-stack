@@ -1,5 +1,7 @@
 # Getting started with COS Lite on Canonical K8s
 
+In this tutorial you deploy a single-node COS Lite appliance, backed by hostPath storage.
+
 ## Prerequisites
 - A 4cpu8gb node or better, with at least 40Gi disk space.
 - Juju v3.6 installed ([doc](https://documentation.ubuntu.com/juju/3.6/howto/manage-juju/#install-juju)).
@@ -121,3 +123,5 @@ loki-logging                     loki          loki-k8s          190  0/0       
 prometheus-receive-remote-write  prometheus    prometheus-k8s    234  0/0        receive-remote-write  prometheus_remote_write  provider
 ```
 
+## Reproducer
+You can reproduce the entire tutorial with a :download:`cloud-config <cos-lite-canonical-k8s-sandbox.conf>` script.

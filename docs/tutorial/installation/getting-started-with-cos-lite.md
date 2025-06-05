@@ -1,9 +1,12 @@
 # Getting started with COS Lite on MicroK8s
 
+In this tutorial you deploy a single-node COS Lite appliance, backed by hostPath storage.
+
 ## Prerequisites
 
 This tutorial assumes you have a Juju controller bootstrapped on a 
-MicroK8s cloud that is ready to use. A typical setup using [snaps](https://snapcraft.io/) 
+MicroK8s cloud that is ready to use, on a 4cpu8gb node or better, with at least 40Gi disk space.
+Typical setup using [snaps](https://snapcraft.io/) 
 can be found in the [Juju docs](https://documentation.ubuntu.com/juju/3.6/howto/manage-your-deployment/).
 
 Follow the instructions there to install Juju and MicroK8s.
