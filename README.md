@@ -32,7 +32,7 @@ pip install -r .sphinx/requirements.txt
 Build and serve the docs locally:
 
 ```bash
-make run
+make serve
 ```
 
 
