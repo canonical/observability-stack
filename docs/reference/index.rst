@@ -6,6 +6,7 @@ Reference
 .. toctree::
    :maxdepth: 1
 
+    Supported Tracks <supported-tracks>
     Cryptographic Documentation <cryptographic-documentation>
     Deployment Best Practices <deployment-best-practices>
     Integration Matrix <integration-matrix>
