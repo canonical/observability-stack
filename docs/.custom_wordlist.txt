@@ -31,6 +31,7 @@ fonts
 FQDN
 freefont
 gb
+Gi
 github
 GitOps
 GPG
@@ -38,6 +39,7 @@ grafana
 Grafana's
 gRPCs
 gyre
+hostPath
 https
 HTTPS
 instantiation
