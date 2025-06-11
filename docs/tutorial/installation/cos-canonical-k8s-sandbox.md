@@ -1,1 +1,82 @@
-Add the tutorial here!
+# Getting started with COS Lite on Canonical K8s
+
+In this tutorial you deploy a multi-node COS solution, backed by s3 storage. The s3 storage is assumed to be already deployed.
+
+You can reproduce the COS deployment with a [Terraform module](cos-canonical-k8s-sandbox.tf).
+
+## Prerequisites
+
+- You should have at least three 8-cpu 16GB-RAM nodes, with at least 100GB disk space
+- Juju v3.6 installed ([doc](https://documentation.ubuntu.com/juju/3.6/howto/manage-juju/#install-juju))
+- ([doc](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/networking/proxy/)) and ([doc](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/networking/default-dns/)) for K8s are configured (if applicable)
+- Canonical K8s is already installed and configured ([doc](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/tutorial/getting-started/))
+- You have in Ingress controller (for Canonical K8s, it’s Cilium) installed and configured ([doc](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/networking/default-loadbalancer/))
+- `ceph` with `radosgw` are up and running, and we know their address. S3 access and secret keys already exist
+- `ceph-csi` was already added to Kubernetes (meaning we’re not using hostPath storage)
+
+# Deploy COS using Terraform
+
+Create a `cos-canonical-k8s-sandbox.tf` file with the following Terraform module, or include it in your Terraform plan:
+
+```
+module "cos" {
+  source                        = "git::https://github.com/canonical/observability//terraform/modules/cos"
+  model_name                    = "cos"
+  channel                       = "1/stable"
+  s3_endpoint                   = "http://{{IPADDR}}:8080"
+  s3_password                   = "secret-key"
+  s3_user                       = "access-key"
+  loki_bucket                   = "loki"
+  mimir_bucket                  = "mimir"
+  tempo_bucket                  = "tempo"
+  ssc_channel                   = "1/stable"
+  anti_affinity                 = true
+}
+```
+
+TODO: add enable_external_tls when available
+TODO: probably set the default track in the COS module to `1/stable`, then remove the key from the tutorial
+TODO: change s3_user to s3_access_key (and s3_password to s3_secret_key) once it's changed in the module
+TODO: if Field wants, allow setting anti_affinity by something other than kubernetes hostname
+
+**Note**: You can customize further the number of units of each distributed charm and other aspects of COS: have a look at the [`variables.tf`](https://github.com/canonical/observability/blob/main/terraform/modules/cos/variables.tf) file of the COS Terraform module for the complete documentation.
+
+**Note**: soon(tm) you'll be able to enable internal tls/external tls individually, making the COS module suitable for 3 use cases: no tls, tls termination, end-to-end tls. Add a section about this in the tutorial once we have it.
+
+**Note**: anti-affinity is currently only applied to the Kubernetes hostname. If this isn't enough, we need to expand it from a boolean flag, either additively or by letting people set the constraints string themselves.
+
+---
+
+To deploy COS on a new model, run:
+
+```
+terraform init
+terraform apply  ./cos-canonical-k8s-sandbox.md  # verify the changes you're applying before accepting!
+```
+
+You can watch the model as it settles with:
+```
+juju status --model cos --relations --watch=5s
+```
+
+The status of your deployment should eventually be very similar to the following:
+
+```
+insert final cos deployment
+```
+
+## Add offers to enable cross-model relations
+
+TODO: Soon we'll have these in Terraform automatically; when that happens, remove this section and simply explain that.
+
+Run the following:
+```bash
+juju offer traefik:receive-ca-cert
+juju offer grafana:receive-ca-cert
+# do we need more offers like for Mimir, Loki etc?
+```
+
+The status of your deployment now should look like:
+
+`panic.jpg`
+
