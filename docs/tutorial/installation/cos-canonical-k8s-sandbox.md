@@ -34,22 +34,18 @@ module "cos" {
 }
 ```
 
-TODO: add enable_external_tls when available
-TODO: probably set the default track in the COS module to `1/stable`, then remove the key from the tutorial
-TODO: change s3_user to s3_access_key (and s3_password to s3_secret_key) once it's changed in the module
-TODO: if Field wants, allow setting anti_affinity by something other than `kubernetes/hostname`
+<!-- add `enable_external_tls` when available -->
+<!-- probably set the default track in the COS module to `1/stable`, then remove the key from the tutorial -->
+<!-- change `s3_user` to `s3_access_key` (and `s3_password` to `s3_secret_key`) once it's changed in the module -->
+<!-- if Field wants, allow setting `anti_affinity` by something other than `kubernetes/hostname` -->
 
 **Note**: You can customize further the number of units of each distributed charm and other aspects of COS: have a look at the [`variables.tf`](https://github.com/canonical/observability/blob/main/terraform/modules/cos/variables.tf) file of the COS Terraform module for the complete documentation.
 
-**Note**: soon you'll be able to enable internal TLS/external TLS individually, making the COS module suitable for 3 use cases: no TLS, TLS termination, end-to-end TLS. Add a section about this in the tutorial once we have it.
-
-**Note**: anti-affinity is currently only applied to the Kubernetes hostname. If this isn't enough, we need to expand it from a boolean flag, either in an additive fashion or by letting people set the constraints string themselves.
-
----
+<!-- Once we allow enabling internal TLS and external TLS separately, add the explanation to this tutorial -->
 
 To deploy COS on a new model, run:
 
-```
+```bash
 terraform init
 terraform apply  ./cos-canonical-k8s-sandbox.md  # verify the changes you're applying before accepting!
 ```
