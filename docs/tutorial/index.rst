@@ -17,7 +17,7 @@ or COS Lite, Juju-based observability stacks running on Kubernetes.
 .. toctree::
    :maxdepth: 1
 
-   1. Deploy the observability stack <installation/index>
+   Deploy the observability stack <installation/index>
 
 Configuration
 =============
@@ -29,7 +29,7 @@ charm.
 .. toctree::
    :maxdepth: 1
 
-   2. Sync alert rules from Git <sync-alert-rules-from-git>
+   Sync alert rules from Git <sync-alert-rules-from-git>
 
 Instrumentation
 ===============
@@ -41,4 +41,4 @@ application using the Grafana Agent machine charm.
 .. toctree::
    :maxdepth: 1
 
-   3. Instrument machine charms <instrument-machine-charms>
+   Instrument machine charms <instrument-machine-charms>
