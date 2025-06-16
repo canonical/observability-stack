@@ -9,7 +9,7 @@ output "offers" {
   }
 }
 
-# -------------- # Sub-modules -------------- #
+# -------------- # Submodules -------------- #
 
 output "components" {
   value = {

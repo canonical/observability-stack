@@ -15,16 +15,22 @@ lint: lint-terraform lint-workflows
 [group("Format")]
 fmt: format-terraform
 
+# Lint the Github workflows
+[group("Lint")]
+lint-workflows:
+  uvx --from=actionlint-py actionlint
+
 # Lint the Terraform modules
 [group("Lint")]
 lint-terraform:
   if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
   $terraform fmt -check -recursive -diff
 
-# Lint the Github workflows
-[group("Lint")]
-lint-workflows:
-  uvx --from=actionlint-py actionlint
+# Validate the Terraform modules
+[group("Validate")]
+validate-terraform:
+  if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
+  $terraform validate
 
 # Format the Terraform modules
 [group("Format")]

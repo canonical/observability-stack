@@ -2,8 +2,9 @@
 
 This is a Terraform module facilitating the deployment of COS solution, using the [Terraform juju provider](https://github.com/juju/terraform-provider-juju/). For more information, refer to the provider [documentation](https://registry.terraform.io/providers/juju/juju/latest/docs).
 
-The HA solution consists of the following Terraform modules:
+The HA solution consists of the following components:
 - [alertmanager-k8s](https://github.com/canonical/alertmanager-k8s-operator/tree/main/terraform): Handles alerts sent by clients applications.
+- [catalogue-k8s](https://github.com/canonical/catalogue-k8s-operator/tree/main/terraform): UI catalogue.
 - [grafana-k8s](https://github.com/canonical/grafana-k8s-operator/tree/main/terraform): Visualization, monitoring, and dashboards.
 - [grafana-agent-k8s](https://github.com/canonical/grafana-agent-k8s-operator/tree/main/terraform): Aggregate and send telemetry data.
 - [loki](https://github.com/canonical/observability/tree/main/terraform/modules/loki): Backend for logs.
@@ -74,15 +75,8 @@ Upon application, the module exports the following outputs:
 
 | Name | Type | Description |
 | - | - | - |
-| `alertmanager`| module | Alertmanager module |
-| `catalogue`| module | Catalogue module |
-| `grafana`| module | Grafana module |
-| `grafana_agent`| module | Grafana agent module |
-| `loki`| module | Loki module |
-| `mimir`| module | Mimir module |
-| `ssc`| module | Self-signed certificates module |
-| `tempo`| module | Tempo module |
-| `traefik`| module | Traefik module |
+| `components`| map(any) | All TF charm submodule which make up this product module |
+| `offers`| map(any) | All offers which are exposed by this product module |
 
 
 ## Usage
