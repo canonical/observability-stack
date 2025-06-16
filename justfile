@@ -1,6 +1,9 @@
 set quiet  # Recipes are silent by default
 set export  # Just variables are exported to the environment
 
+repo-root := invocation_directory()
+tf-dir := 'terraform/modules'
+
 terraform := `which terraform || which tofu || echo ""` # require 'terraform' or 'opentofu'
 
 [private]
@@ -24,16 +27,16 @@ lint-workflows:
 [group("Lint")]
 lint-terraform:
   if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
-  $terraform fmt -check -recursive -diff
-
-# Validate the Terraform modules
-[group("Validate")]
-validate-terraform:
-  if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
-  $terraform validate
+  cd {{tf-dir}} && $terraform fmt -check -recursive -diff && cd {{repo-root}}
 
 # Format the Terraform modules
 [group("Format")]
 format-terraform:
   if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
-  $terraform fmt -recursive -diff
+  cd {{tf-dir}} && $terraform fmt -recursive -diff && cd {{repo-root}}
+
+# Validate the Terraform modules
+[group("Validate")]
+validate-terraform:
+  if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
+  cd {{tf-dir}} && $terraform validate && cd {{repo-root}}
