@@ -1,9 +1,6 @@
 set quiet  # Recipes are silent by default
 set export  # Just variables are exported to the environment
 
-repo-root := invocation_directory()
-tf-dir := 'terraform/modules'
-
 terraform := `which terraform || which tofu || echo ""` # require 'terraform' or 'opentofu'
 
 [private]
@@ -12,7 +9,7 @@ default:
 
 # Lint everything
 [group("Lint")]
-lint: lint-terraform lint-workflows
+lint: lint-workflows lint-terraform
 
 # Format everything 
 [group("Format")]
@@ -25,18 +22,21 @@ lint-workflows:
 
 # Lint the Terraform modules
 [group("Lint")]
+[working-directory("./terraform/modules")]
 lint-terraform:
   if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
-  cd {{tf-dir}} && $terraform fmt -check -recursive -diff && cd {{repo-root}}
+  for repo in */; do (cd "$repo" && echo "Processing ${repo%/}..." && $terraform init -upgrade -reconfigure && $terraform fmt -check -recursive -diff); done
 
 # Format the Terraform modules
 [group("Format")]
+[working-directory("./terraform/modules")]
 format-terraform:
   if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
-  cd {{tf-dir}} && $terraform fmt -recursive -diff && cd {{repo-root}}
+  for repo in */; do (cd "$repo" && echo "Processing ${repo%/}..." && $terraform init -upgrade -reconfigure && $terraform fmt -recursive -diff); done
 
 # Validate the Terraform modules
 [group("Validate")]
+[working-directory("./terraform/modules")]
 validate-terraform:
   if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
-  cd {{tf-dir}} && $terraform validate && cd {{repo-root}}
+  for repo in */; do (cd "$repo" && echo "Processing ${repo%/}..." && $terraform init -upgrade -reconfigure && $terraform validate); done
