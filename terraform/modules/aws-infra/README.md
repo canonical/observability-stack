@@ -31,7 +31,7 @@ In order to provision the AWS infrastructure required for COS, create a `main.tf
 
 ```hcl
 module "aws_infra" {
-  source              = "git::https://github.com/canonical/observability//terraform/modules/aws-infra"
+  source              = "git::https://github.com/canonical/observability-stack//terraform/modules/aws-infra"
   region              = var.region
   cos_cloud_name      = var.cos_cloud_name
   cos_controller_name = var.cos_controller_name
