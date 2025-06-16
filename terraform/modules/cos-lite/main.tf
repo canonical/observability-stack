@@ -29,7 +29,7 @@ module "loki" {
 }
 
 module "prometheus" {
-  source     = "git::https://github.com/canonical/prometheus-k8s-operator//terraform"
+  source     = "git::https://github.com/canonical/prometheus-k8s-operator//terraform?ref=v44"
   app_name   = "prometheus"
   model_name = var.model
   channel    = var.channel
