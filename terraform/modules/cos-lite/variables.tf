@@ -14,3 +14,18 @@ variable "use_tls" {
   type        = bool
   default     = true
 }
+
+# -------------- # External channels --------------
+# O11y does not own these charms, so we allow users to specify their channels directly.
+
+variable "ssc_channel" {
+  description = "Channel that the self-signed certificates charm is deployed from"
+  type        = string
+  default     = "1/stable"
+}
+
+variable "traefik_channel" {
+  description = "Channel that the Traefik charm is deployed from"
+  type        = string
+  default     = "latest/stable"
+}

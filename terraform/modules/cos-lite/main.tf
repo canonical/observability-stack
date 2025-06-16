@@ -39,14 +39,14 @@ module "ssc" {
   count   = var.use_tls ? 1 : 0
   source  = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
   model   = var.model
-  channel = var.channel
+  channel = var.ssc_channel
 }
 
 module "traefik" {
   source   = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
   app_name = "traefik"
   model    = var.model
-  channel  = var.channel
+  channel  = var.traefik_channel
 }
 
 # -------------- # Integrations --------------
@@ -109,7 +109,6 @@ resource "juju_integration" "alertmanager_loki" {
   }
 }
 
-
 resource "juju_integration" "grafana_source_alertmanager" {
   model = var.model
 
@@ -140,7 +139,6 @@ resource "juju_integration" "grafana_self_monitoring_prometheus" {
   }
 }
 
-
 # Provided by Prometheus
 
 resource "juju_integration" "prometheus_grafana_dashboards_provider" {
@@ -170,9 +168,6 @@ resource "juju_integration" "prometheus_grafana_source" {
     endpoint = module.grafana.endpoints.grafana_source
   }
 }
-
-
-
 
 # Provided by Loki
 
@@ -218,7 +213,6 @@ resource "juju_integration" "loki_self_monitoring_prometheus" {
   }
 }
 
-
 # Provided by Catalogue
 
 resource "juju_integration" "catalogue_alertmanager" {
@@ -263,7 +257,6 @@ resource "juju_integration" "catalogue_prometheus" {
   }
 }
 
-
 # Provided by Traefik
 
 resource "juju_integration" "alertmanager_ingress" {
@@ -279,7 +272,6 @@ resource "juju_integration" "alertmanager_ingress" {
     endpoint = module.alertmanager.endpoints.ingress
   }
 }
-
 
 resource "juju_integration" "catalogue_ingress" {
   model = var.model
@@ -348,6 +340,98 @@ resource "juju_integration" "traefik_self_monitoring_prometheus" {
   application {
     name     = module.traefik.app_name
     endpoint = module.traefik.endpoints.metrics_endpoint
+  }
+}
+
+# Provided by Self-Signed-Certificates
+
+resource "juju_integration" "traefik_certificates" {
+  count = var.use_tls ? 1 : 0
+  model = var.model
+
+  application {
+    name     = module.ssc[0].app_name
+    endpoint = module.ssc[0].provides.certificates
+  }
+
+  application {
+    name     = module.traefik.app_name
+    endpoint = module.traefik.endpoints.certificates
+  }
+}
+
+resource "juju_integration" "alertmanager_certificates" {
+  count = var.use_tls ? 1 : 0
+  model = var.model
+
+  application {
+    name     = module.ssc[0].app_name
+    endpoint = module.ssc[0].provides.certificates
+  }
+
+  application {
+    name     = module.alertmanager.app_name
+    endpoint = module.alertmanager.endpoints.certificates
+  }
+}
+
+resource "juju_integration" "catalogue_certificates" {
+  count = var.use_tls ? 1 : 0
+  model = var.model
+
+  application {
+    name     = module.ssc[0].app_name
+    endpoint = module.ssc[0].provides.certificates
+  }
+
+  application {
+    name     = module.catalogue.app_name
+    endpoint = module.catalogue.endpoints.certificates
+  }
+}
+
+resource "juju_integration" "grafana_certificates" {
+  count = var.use_tls ? 1 : 0
+  model = var.model
+
+  application {
+    name     = module.ssc[0].app_name
+    endpoint = module.ssc[0].provides.certificates
+  }
+
+  application {
+    name     = module.grafana.app_name
+    endpoint = module.grafana.endpoints.certificates
+  }
+}
+
+resource "juju_integration" "loki_certificates" {
+  count = var.use_tls ? 1 : 0
+  model = var.model
+
+  application {
+    name     = module.ssc[0].app_name
+    endpoint = module.ssc[0].provides.certificates
+  }
+
+  application {
+    name     = module.loki.app_name
+    endpoint = module.loki.endpoints.certificates
+  }
+}
+
+resource "juju_integration" "prometheus_certificates" {
+  count = var.use_tls ? 1 : 0
+  model = var.model
+
+  application {
+    name     = module.ssc[0].app_name
+    endpoint = module.ssc[0].provides.certificates
+  }
+
+  application {
+    name     = module.prometheus.app_name
+    endpoint = module.prometheus.endpoints.certificates
   }
 }
 
