@@ -39,7 +39,7 @@ module "cos" {
 <!-- probably set the default track in the COS module to `1/stable`, then remove the key from the tutorial -->
 <!-- if Field wants, allow setting `anti_affinity` by something other than `kubernetes/hostname` -->
 
-**Note**: You can customize further the number of units of each distributed charm and other aspects of COS: have a look at the [`variables.tf`](https://github.com/canonical/observability-stack/blob/main/terraform/cos/variables.tf) file of the COS Terraform module for the complete documentation.
+**Note**: You can customize further the number of units of each distributed charm and other aspects of COS: have a look at the [`variables.tf`](../../../terraform/cos/variables.tf) file of the COS Terraform module for the complete documentation.
 
 <!-- Once we allow enabling internal TLS and external TLS separately, add the explanation to this tutorial -->
 
