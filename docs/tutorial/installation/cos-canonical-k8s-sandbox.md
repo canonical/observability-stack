@@ -34,9 +34,9 @@ module "cos" {
 }
 ```
 
+<!-- warn users of the 2 Juju Provider bugs -->
 <!-- add `enable_external_tls` when available -->
 <!-- probably set the default track in the COS module to `1/stable`, then remove the key from the tutorial -->
-<!-- change `s3_user` to `s3_access_key` (and `s3_password` to `s3_secret_key`) once it's changed in the module -->
 <!-- if Field wants, allow setting `anti_affinity` by something other than `kubernetes/hostname` -->
 
 **Note**: You can customize further the number of units of each distributed charm and other aspects of COS: have a look at the [`variables.tf`](https://github.com/canonical/observability-stack/blob/main/terraform/cos/variables.tf) file of the COS Terraform module for the complete documentation.

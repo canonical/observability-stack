@@ -321,7 +321,7 @@ In order to deploy COS on AWS, create a `main.tf` file with the following conten
 # COS module that deploy the whole Canonical Observability Stack
 module "cos" {
   source                        = "git::https://github.com/canonical/observability-stack//terraform/cos"
-  model_name                    = var.model_name
+  model                         = var.model
   channel                       = var.channel
   s3_endpoint                   = var.s3_endpoint
   s3_access_key                 = var.s3_access_key
@@ -351,7 +351,7 @@ variable "channel" {
   default     = "latest/edge"
 }
 
-variable "model_name" {
+variable "model" {
   description = "Model name"
   type        = string
 }

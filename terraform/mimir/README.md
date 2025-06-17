@@ -52,9 +52,9 @@ Upon application, the module exports the following outputs:
 
 Users should ensure that Terraform is aware of the `juju_model` dependency of the charm module.
 
-To deploy this module with its needed dependency, you can run `terraform apply -var="model_name=<MODEL_NAME>" -auto-approve`. This would deploy all Mimir HA solution modules in the same model.
+To deploy this module with its needed dependency, you can run `terraform apply -var="model=<MODEL_NAME>" -auto-approve`. This would deploy all Mimir HA solution modules in the same model.
 
 ### Microservice deployment
 
-By default, this Terraform module will deploy each Mimir worker with `1` unit. To configure the module to run `x` units of any worker role, you can run `terraform apply -var="model_name=<MODEL_NAME>" -var="<ROLE>_units=<x>" -auto-approve`.
+By default, this Terraform module will deploy each Mimir worker with `1` unit. To configure the module to run `x` units of any worker role, you can run `terraform apply -var="model=<MODEL_NAME>" -var="<ROLE>_units=<x>" -auto-approve`.
 See [Mimir worker roles](https://discourse.charmhub.io/t/mimir-worker-roles/15484) for the recommended scale for each role.

@@ -1,7 +1,7 @@
 resource "juju_application" "minio" {
   # Coordinator requires s3
   name  = var.minio_app
-  model = var.model_name
+  model = var.model
   trust = true
 
   charm {
@@ -18,7 +18,7 @@ resource "juju_application" "minio" {
 
 resource "null_resource" "s3management" {
   triggers = {
-    # model_name = var.model_name
+    # model = var.model
     always_run = timestamp()
   }
   provisioner "local-exec" {
@@ -28,10 +28,10 @@ resource "null_resource" "s3management" {
     }
     command = <<-EOT
       bash "${path.module}/scripts/s3management.sh" \
-        --model-name ${var.model_name} \
+        --model-name ${var.model} \
         --minio-app ${var.minio_app} \
         --mc-binary-url ${var.mc_binary_url} \
-        --minio-url "http://${var.minio_app}-0.${var.minio_app}-endpoints.${var.model_name}.svc.cluster.local:9000" \
+        --minio-url "http://${var.minio_app}-0.${var.minio_app}-endpoints.${var.model}.svc.cluster.local:9000" \
         --loki-bucket ${var.loki.bucket_name} \
         --mimir-bucket ${var.mimir.bucket_name} \
         --tempo-bucket ${var.tempo.bucket_name} \

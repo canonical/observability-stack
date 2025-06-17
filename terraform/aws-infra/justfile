@@ -17,9 +17,9 @@ apply_cos:
         -var="tempo_bucket=$(terraform output -raw tempo_bucket)" \
         -var="mimir_bucket=$(terraform output -raw mimir_bucket)" \
         -var="s3_endpoint=$(terraform output -raw s3_endpoint)" \
-        -var="s3_user=$(terraform output -raw s3_user)" \
-        -var="s3_password=$(terraform output -raw s3_password)" \
-        -var="model_name=$(terraform output -raw cos_model)" \
+        -var="s3_access_key=$(terraform output -raw s3_access_key)" \
+        -var="s3_secret_key=$(terraform output -raw s3_secret_key)" \
+        -var="model=$(terraform output -raw cos_model)" \
         -var="ssc_channel=1/edge" \
         -var="cloud=aws" \
 
@@ -32,8 +32,8 @@ destroy_cos:
         -var="tempo_bucket=$(terraform output -raw tempo_bucket)" \
         -var="mimir_bucket=$(terraform output -raw mimir_bucket)" \
         -var="s3_endpoint=$(terraform output -raw s3_endpoint)" \
-        -var="s3_user=$(terraform output -raw s3_user)" \
-        -var="s3_password=$(terraform output -raw s3_password)" \
-        -var="model_name=$(terraform output -raw cos_model)" \
+        -var="s3_access_key=$(terraform output -raw s3_access_key)" \
+        -var="s3_secret_key=$(terraform output -raw s3_secret_key)" \
+        -var="model=$(terraform output -raw cos_model)" \
         -var="ssc_channel=1/edge" \
         -var="cloud=aws" \
