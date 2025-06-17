@@ -20,7 +20,7 @@ Create a `cos-canonical-k8s-sandbox.tf` file with the following Terraform module
 
 ```
 module "cos" {
-  source                        = "git::https://github.com/canonical/observability//terraform/modules/cos"
+  source                        = "git::https://github.com/canonical/observability-stack//terraform/cos"
   model_name                    = "cos"
   channel                       = "1/stable"
   s3_endpoint                   = "http://{{IPADDR}}:8080"
@@ -39,7 +39,7 @@ module "cos" {
 <!-- change `s3_user` to `s3_access_key` (and `s3_password` to `s3_secret_key`) once it's changed in the module -->
 <!-- if Field wants, allow setting `anti_affinity` by something other than `kubernetes/hostname` -->
 
-**Note**: You can customize further the number of units of each distributed charm and other aspects of COS: have a look at the [`variables.tf`](https://github.com/canonical/observability/blob/main/terraform/modules/cos/variables.tf) file of the COS Terraform module for the complete documentation.
+**Note**: You can customize further the number of units of each distributed charm and other aspects of COS: have a look at the [`variables.tf`](https://github.com/canonical/observability-stack/blob/main/terraform/cos/variables.tf) file of the COS Terraform module for the complete documentation.
 
 <!-- Once we allow enabling internal TLS and external TLS separately, add the explanation to this tutorial -->
 

@@ -2,7 +2,7 @@
 
 ## COS
 
-When deploying COS using [the provided Terraform module](https://github.com/canonical/observability/tree/main/terraform/modules/cos), it will by default be deployed using a self-signed certificate authority. If you have other certificate requirements, you'll be able to replace the self-signed-certificates operator with another TLS operator of your liking, consulting the "Providing" section of [the `tls-certificates` interface page on Charmhub](https://charmhub.io/integrations/tls-certificates).
+When deploying COS using [the provided Terraform module](https://github.com/canonical/observability-stack/tree/main/terraform/cos), it will by default be deployed using a self-signed certificate authority. If you have other certificate requirements, you'll be able to replace the self-signed-certificates operator with another TLS operator of your liking, consulting the "Providing" section of [the `tls-certificates` interface page on Charmhub](https://charmhub.io/integrations/tls-certificates).
 
 ## COS Lite
 
