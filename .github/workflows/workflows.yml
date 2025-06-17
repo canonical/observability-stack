@@ -1,4 +1,4 @@
-name: Pull Requests
+name: GH Workflows
 
 on:
   pull_request:

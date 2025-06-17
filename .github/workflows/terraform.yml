@@ -1,4 +1,4 @@
-name: Pull Requests
+name: Terraform
 
 on:
   pull_request:
