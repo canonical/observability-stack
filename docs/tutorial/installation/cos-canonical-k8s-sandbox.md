@@ -18,20 +18,7 @@ You can reproduce the COS deployment with a [Terraform module](cos-canonical-k8s
 
 Create a `cos-canonical-k8s-sandbox.tf` file with the following Terraform module, or include it in your Terraform plan:
 
-```
-module "cos" {
-  source                        = "git::https://github.com/canonical/observability-stack//terraform/cos"
-  model_name                    = "cos"
-  channel                       = "1/stable"
-  s3_endpoint                   = "http://{{IPADDR}}:8080"
-  s3_password                   = "secret-key"
-  s3_user                       = "access-key"
-  loki_bucket                   = "loki"
-  mimir_bucket                  = "mimir"
-  tempo_bucket                  = "tempo"
-  ssc_channel                   = "1/stable"
-  anti_affinity                 = true
-}
+```{literalinclude} /tutorial/installation/cos-canonical-k8s-sandbox.tf
 ```
 
 <!-- warn users of the 2 Juju Provider bugs -->
