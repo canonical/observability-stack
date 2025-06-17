@@ -151,7 +151,7 @@ module "cos" {
     mimir_coordinator_revision    = null
     mimir_worker_revision         = null
     ssc_revision                  = null
-    s3_integrator_revision        = 157 # FIXME: This is a temporary fix until the spec for the s3-integrator is stable.
+    s3_integrator_revision        = 157 # FIXME: https://github.com/canonical/observability/issues/342
     tempo_coordinator_revision    = null
     tempo_worker_revision         = null
     traefik_revision              = null
