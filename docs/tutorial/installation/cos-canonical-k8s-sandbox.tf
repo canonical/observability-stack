@@ -1,5 +1,5 @@
 module "cos" {
-  source        = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=feat/tf-migration"
+  source        = "git::https://github.com/canonical/observability-stack//terraform/cos"
   model         = "cos-2"
   channel       = "1/stable"
   s3_endpoint   = "http://192.168.88.12:8080"
