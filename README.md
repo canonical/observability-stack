@@ -26,7 +26,7 @@ and install sphinx dependencies:
 ```bash
 cd docs
 source .sphinx/venv/bin/activate
-pip install -r .sphinx/requirements.txt
+pip install -r requirements.txt
 ```
 
 Build and serve the docs locally:
