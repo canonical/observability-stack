@@ -1,11 +1,10 @@
 variable "channel" {
-  description = "Charms channel"
+  description = "Channel that the charms are (unless overwritten by external_channels) deployed from"
   type        = string
-  default     = "latest/edge"
 }
 
 variable "model" {
-  description = "Model name"
+  description = "Reference to an existing model resource or data source for the model to deploy to"
   type        = string
 }
 
