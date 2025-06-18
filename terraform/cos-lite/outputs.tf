@@ -25,3 +25,8 @@ output "loki" {
   description = "Outputs from the Loki module"
   value       = module.loki
 }
+
+output "traefik" {
+  description = "Outputs from the Traefik module"
+  value       = module.traefik
+}
