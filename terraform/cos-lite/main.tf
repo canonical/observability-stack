@@ -39,14 +39,14 @@ module "ssc" {
   count   = var.use_tls ? 1 : 0
   source  = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
   model   = var.model
-  channel = var.channel
+  channel = var.ssc_channel
 }
 
 module "traefik" {
   source   = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
   app_name = "traefik"
   model    = var.model
-  channel  = var.channel
+  channel  = var.traefik_channel
 }
 
 # -------------- # Integrations --------------
