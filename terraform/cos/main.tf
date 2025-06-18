@@ -33,8 +33,7 @@ module "grafana_agent" {
 }
 
 module "loki" {
-  # TODO: Update to remove the modules path
-  source                 = "git::https://github.com/canonical/observability-stack//terraform/modules/loki?ref=feat/tf-migration"
+  source                 = "git::https://github.com/canonical/observability-stack//terraform/loki"
   model                  = var.model
   channel                = var.channel
   s3_integrator_channel  = var.s3_integrator_channel
@@ -53,8 +52,7 @@ module "loki" {
 }
 
 module "mimir" {
-  # TODO: Update to remove the modules path
-  source                 = "git::https://github.com/canonical/observability-stack//terraform/modules/mimir?ref=feat/tf-migration"
+  source                 = "git::https://github.com/canonical/observability-stack//terraform/mimir"
   model                  = var.model
   channel                = var.channel
   s3_integrator_channel  = var.s3_integrator_channel
@@ -81,8 +79,7 @@ module "ssc" {
 }
 
 module "tempo" {
-  # TODO: Update to remove the modules path
-  source                  = "git::https://github.com/canonical/observability-stack//terraform/modules/tempo?ref=feat/tf-migration"
+  source                  = "git::https://github.com/canonical/observability-stack//terraform/tempo"
   model                   = var.model
   channel                 = var.channel
   s3_integrator_channel   = var.s3_integrator_channel

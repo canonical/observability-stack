@@ -24,23 +24,15 @@ module "grafana" {
 module "loki" {
   source     = "git::https://github.com/canonical/loki-k8s-operator//terraform"
   app_name   = "loki"
-  model_name      = var.model
-  channel    = var.charms["loki"].channel
-  config     = var.charms["loki"].config
-  constraints = var.charms["loki"].constraints
-  revision    = var.charms["loki"].revision
-  units       = var.charms["loki"].units
+  model_name = var.model
+  channel    = var.channel
 }
 
 module "prometheus" {
   source     = "git::https://github.com/canonical/prometheus-k8s-operator//terraform"
   app_name   = "prometheus"
   model_name = var.model
-  channel    = var.charms["prometheus"].channel
-  config     = var.charms["prometheus"].config
-  constraints = var.charms["prometheus"].constraints
-  revision    = var.charms["prometheus"].revision
-  units       = var.charms["prometheus"].units
+  channel    = var.channel
 }
 
 module "ssc" {
@@ -452,21 +444,21 @@ resource "juju_offer" "alertmanager_karma_dashboard" {
   endpoint         = "karma-dashboard"
 }
 
-resource "juju_offer" "grafana_dashboards" {
+resource "juju_offer" "grafana-dashboards" {
   name             = "grafana-dashboards"
   model            = var.model
   application_name = module.grafana.app_name
   endpoint         = "grafana-dashboard"
 }
 
-resource "juju_offer" "loki_logging" {
+resource "juju_offer" "loki-logging" {
   name             = "loki-logging"
   model            = var.model
   application_name = module.loki.app_name
   endpoint         = "logging"
 }
 
-resource "juju_offer" "prometheus_receive_remote_write" {
+resource "juju_offer" "prometheus-receive-remote-write" {
   name             = "prometheus-receive-remote-write"
   model            = var.model
   application_name = module.prometheus.app_name

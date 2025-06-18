@@ -15,11 +15,11 @@ output "s3_endpoint" {
   value = "https://s3.${var.region}.amazonaws.com"
 }
 
-output "s3_user" {
+output "s3_access_key" {
   value = aws_iam_access_key.s3_access_key.id
 }
 
-output "s3_password" {
+output "s3_secret_key" {
   value     = aws_iam_access_key.s3_access_key.secret
   sensitive = true
 }

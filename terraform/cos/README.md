@@ -7,9 +7,9 @@ The HA solution consists of the following components:
 - [catalogue-k8s](https://github.com/canonical/catalogue-k8s-operator/tree/main/terraform): UI catalogue.
 - [grafana-k8s](https://github.com/canonical/grafana-k8s-operator/tree/main/terraform): Visualization, monitoring, and dashboards.
 - [grafana-agent-k8s](https://github.com/canonical/grafana-agent-k8s-operator/tree/main/terraform): Aggregate and send telemetry data.
-- [loki](https://github.com/canonical/observability-stack/tree/main/terraform/modules/loki): Backend for logs.
-- [mimir](https://github.com/canonical/observability-stack/tree/main/terraform/modules/mimir): Backend for metrics.
-- [tempo](https://github.com/canonical/observability-stack/tree/main/terraform/modules/tempo): Backend for traces.
+- [loki](https://github.com/canonical/observability-stack/tree/main/terraform/loki): Backend for logs.
+- [mimir](https://github.com/canonical/observability-stack/tree/main/terraform/mimir): Backend for metrics.
+- [tempo](https://github.com/canonical/observability-stack/tree/main/terraform/tempo): Backend for traces.
 - [s3-integrator](https://github.com/canonical/s3-integrator): facade for S3 storage configurations.
 - [self-signed-certificates](https://github.com/canonical/self-signed-certificates-operator/tree/main/terraform): certificates operator to secure traffic with TLS.
 - [traefik](https://github.com/canonical/traefik-k8s-operator/tree/main/terraform): ingress.
@@ -113,7 +113,7 @@ terraform {
 
 # COS module that deploy the whole Canonical Observability Stack
 module "cos" {
-    source                        = "git::https://github.com/canonical/observability-stack//terraform/modules/cos"
+    source                        = "git::https://github.com/canonical/observability-stack//terraform/cos"
     model                         = "cos"
     channel                       = "2/edge"
     s3_integrator_channel         = "2/edge"
@@ -151,7 +151,7 @@ module "cos" {
     mimir_coordinator_revision    = null
     mimir_worker_revision         = null
     ssc_revision                  = null
-    s3_integrator_revision        = 157 # FIXME: This is a temporary fix until the spec for the s3-integrator is stable.
+    s3_integrator_revision        = 157 # FIXME: https://github.com/canonical/observability/issues/342
     tempo_coordinator_revision    = null
     tempo_worker_revision         = null
     traefik_revision              = null
@@ -320,8 +320,8 @@ In order to deploy COS on AWS, create a `main.tf` file with the following conten
 ```hcl
 # COS module that deploy the whole Canonical Observability Stack
 module "cos" {
-  source                        = "git::https://github.com/canonical/observability-stack//terraform/modules/cos"
-  model_name                    = var.model_name
+  source                        = "git::https://github.com/canonical/observability-stack//terraform/cos"
+  model                         = var.model
   channel                       = var.channel
   s3_endpoint                   = var.s3_endpoint
   s3_access_key                 = var.s3_access_key
@@ -351,7 +351,7 @@ variable "channel" {
   default     = "latest/edge"
 }
 
-variable "model_name" {
+variable "model" {
   description = "Model name"
   type        = string
 }
