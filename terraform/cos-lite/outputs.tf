@@ -11,6 +11,11 @@ output "app_names" {
   )
 }
 
+output "catalogue" {
+  description = "Outputs from the Catalogue module"
+  value       = module.catalogue
+}
+
 output "grafana" {
   description = "Outputs from the Grafana module"
   value       = module.grafana
