@@ -2,10 +2,10 @@
 
 output "offers" {
   value = {
-    alertmanager_karma_dashboard    = juju_offer.alertmanager-karma-dashboard
-    grafana_dashboards              = juju_offer.grafana-dashboards
-    loki_logging                    = juju_offer.loki-logging
-    prometheus_receive_remote_write = juju_offer.prometheus-receive-remote-write
+    alertmanager_karma_dashboard    = juju_offer.alertmanager_karma_dashboard
+    grafana_dashboards              = juju_offer.grafana_dashboards
+    loki_logging                    = juju_offer.loki_logging
+    prometheus_receive_remote_write = juju_offer.prometheus_receive_remote_write
   }
 }
 
