@@ -33,6 +33,7 @@ module "grafana_agent" {
 }
 
 module "loki" {
+  # TODO: Update to remove the modules path
   source                 = "git::https://github.com/canonical/observability-stack//terraform/modules/loki?ref=feat/tf-migration"
   model                  = var.model
   channel                = var.channel
@@ -52,6 +53,7 @@ module "loki" {
 }
 
 module "mimir" {
+  # TODO: Update to remove the modules path
   source                 = "git::https://github.com/canonical/observability-stack//terraform/modules/mimir?ref=feat/tf-migration"
   model                  = var.model
   channel                = var.channel
@@ -79,6 +81,7 @@ module "ssc" {
 }
 
 module "tempo" {
+  # TODO: Update to remove the modules path
   source                  = "git::https://github.com/canonical/observability-stack//terraform/modules/tempo?ref=feat/tf-migration"
   model                   = var.model
   channel                 = var.channel
@@ -573,6 +576,128 @@ resource "juju_integration" "grafana_tracing_grafana_agent_traicing_provider" {
   application {
     name     = module.grafana_agent.app_name
     endpoint = module.grafana_agent.endpoints.tracing_provider
+  }
+}
+
+# Provided by Self-Signed-Certificates
+
+resource "juju_integration" "alertmanager_certificates" {
+  count = var.use_tls ? 1 : 0
+  model = var.model
+
+  application {
+    name     = module.ssc[0].app_name
+    endpoint = module.ssc[0].provides.certificates
+  }
+
+  application {
+    name     = module.alertmanager.app_name
+    endpoint = module.alertmanager.endpoints.certificates
+  }
+}
+
+resource "juju_integration" "catalogue_certificates" {
+  count = var.use_tls ? 1 : 0
+  model = var.model
+
+  application {
+    name     = module.ssc[0].app_name
+    endpoint = module.ssc[0].provides.certificates
+  }
+
+  application {
+    name     = module.catalogue.app_name
+    endpoint = module.catalogue.endpoints.certificates
+  }
+}
+
+resource "juju_integration" "grafana_certificates" {
+  count = var.use_tls ? 1 : 0
+  model = var.model
+
+  application {
+    name     = module.ssc[0].app_name
+    endpoint = module.ssc[0].provides.certificates
+  }
+
+  application {
+    name     = module.grafana.app_name
+    endpoint = module.grafana.endpoints.certificates
+  }
+}
+
+resource "juju_integration" "grafana_agent_certificates" {
+  count = var.use_tls ? 1 : 0
+  model = var.model
+
+  application {
+    name     = module.ssc[0].app_name
+    endpoint = module.ssc[0].provides.certificates
+  }
+
+  application {
+    name     = module.grafana_agent.app_name
+    endpoint = module.grafana_agent.endpoints.certificates
+  }
+}
+
+resource "juju_integration" "loki_certificates" {
+  count = var.use_tls ? 1 : 0
+  model = var.model
+
+  application {
+    name     = module.ssc[0].app_name
+    endpoint = module.ssc[0].provides.certificates
+  }
+
+  application {
+    name     = module.loki.app_names.loki_coordinator
+    endpoint = module.loki.endpoints.certificates
+  }
+}
+
+resource "juju_integration" "mimir_certificates" {
+  count = var.use_tls ? 1 : 0
+  model = var.model
+
+  application {
+    name     = module.ssc[0].app_name
+    endpoint = module.ssc[0].provides.certificates
+  }
+
+  application {
+    name     = module.mimir.app_names.mimir_coordinator
+    endpoint = module.mimir.endpoints.certificates
+  }
+}
+
+resource "juju_integration" "tempo_certificates" {
+  count = var.use_tls ? 1 : 0
+  model = var.model
+
+  application {
+    name     = module.ssc[0].app_name
+    endpoint = module.ssc[0].provides.certificates
+  }
+
+  application {
+    name     = module.tempo.app_names.tempo_coordinator
+    endpoint = module.tempo.endpoints.certificates
+  }
+}
+
+resource "juju_integration" "traefik_certificates" {
+  count = var.use_tls ? 1 : 0
+  model = var.model
+
+  application {
+    name     = module.ssc[0].app_name
+    endpoint = module.ssc[0].provides.certificates
+  }
+
+  application {
+    name     = module.traefik.app_name
+    endpoint = module.traefik.endpoints.certificates
   }
 }
 

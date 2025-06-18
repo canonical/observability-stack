@@ -24,15 +24,23 @@ module "grafana" {
 module "loki" {
   source     = "git::https://github.com/canonical/loki-k8s-operator//terraform"
   app_name   = "loki"
-  model_name = var.model
-  channel    = var.channel
+  model_name      = var.model
+  channel    = var.charms["loki"].channel
+  config     = var.charms["loki"].config
+  constraints = var.charms["loki"].constraints
+  revision    = var.charms["loki"].revision
+  units       = var.charms["loki"].units
 }
 
 module "prometheus" {
   source     = "git::https://github.com/canonical/prometheus-k8s-operator//terraform"
   app_name   = "prometheus"
   model_name = var.model
-  channel    = var.channel
+  channel    = var.charms["prometheus"].channel
+  config     = var.charms["prometheus"].config
+  constraints = var.charms["prometheus"].constraints
+  revision    = var.charms["prometheus"].revision
+  units       = var.charms["prometheus"].units
 }
 
 module "ssc" {
@@ -345,21 +353,6 @@ resource "juju_integration" "traefik_self_monitoring_prometheus" {
 
 # Provided by Self-Signed-Certificates
 
-resource "juju_integration" "traefik_certificates" {
-  count = var.use_tls ? 1 : 0
-  model = var.model
-
-  application {
-    name     = module.ssc[0].app_name
-    endpoint = module.ssc[0].provides.certificates
-  }
-
-  application {
-    name     = module.traefik.app_name
-    endpoint = module.traefik.endpoints.certificates
-  }
-}
-
 resource "juju_integration" "alertmanager_certificates" {
   count = var.use_tls ? 1 : 0
   model = var.model
@@ -435,30 +428,45 @@ resource "juju_integration" "prometheus_certificates" {
   }
 }
 
+resource "juju_integration" "traefik_certificates" {
+  count = var.use_tls ? 1 : 0
+  model = var.model
+
+  application {
+    name     = module.ssc[0].app_name
+    endpoint = module.ssc[0].provides.certificates
+  }
+
+  application {
+    name     = module.traefik.app_name
+    endpoint = module.traefik.endpoints.certificates
+  }
+}
+
 # -------------- # Offers --------------
 
-resource "juju_offer" "alertmanager-karma-dashboard" {
+resource "juju_offer" "alertmanager_karma_dashboard" {
   name             = "alertmanager-karma-dashboard"
   model            = var.model
   application_name = module.alertmanager.app_name
   endpoint         = "karma-dashboard"
 }
 
-resource "juju_offer" "grafana-dashboards" {
+resource "juju_offer" "grafana_dashboards" {
   name             = "grafana-dashboards"
   model            = var.model
   application_name = module.grafana.app_name
   endpoint         = "grafana-dashboard"
 }
 
-resource "juju_offer" "loki-logging" {
+resource "juju_offer" "loki_logging" {
   name             = "loki-logging"
   model            = var.model
   application_name = module.loki.app_name
   endpoint         = "logging"
 }
 
-resource "juju_offer" "prometheus-receive-remote-write" {
+resource "juju_offer" "prometheus_receive_remote_write" {
   name             = "prometheus-receive-remote-write"
   model            = var.model
   application_name = module.prometheus.app_name
