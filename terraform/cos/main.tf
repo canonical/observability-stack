@@ -213,7 +213,7 @@ resource "juju_integration" "mimir_grafana_source" {
   }
 }
 
-resource "juju_integration" "mimir_tracing_grafana_agent_traicing_provider" {
+resource "juju_integration" "mimir_tracing_grafana_agent_tracing_provider" {
   model = var.model
 
   application {
@@ -239,6 +239,21 @@ resource "juju_integration" "mimir_self_metrics_endpoint_grafana_agent_metrics_e
   application {
     name     = module.grafana_agent.app_name
     endpoint = module.grafana_agent.endpoints.metrics_endpoint
+  }
+}
+
+
+resource "juju_integration" "mimir_logging_consumer_grafana_agent_logging_provider" {
+  model = var.model
+
+  application {
+    name     = module.mimir.app_names.mimir_coordinator
+    endpoint = module.mimir.endpoints.logging_consumer
+  }
+
+  application {
+    name     = module.grafana_agent.app_name
+    endpoint = module.grafana_agent.endpoints.logging_provider
   }
 }
 
@@ -383,6 +398,20 @@ resource "juju_integration" "tempo_send_remote_write_mimir_receive_remote_write"
   application {
     name     = module.mimir.app_names.mimir_coordinator
     endpoint = module.mimir.endpoints.receive_remote_write
+  }
+}
+
+resource "juju_integration" "tempo_grafana_dashboard_grafana_grafana_dashboard" {
+  model = var.model
+
+  application {
+    name     = module.tempo.app_names.tempo_coordinator
+    endpoint = module.tempo.endpoints.grafana_dashboard
+
+  }
+  application {
+    name     = module.grafana.app_name
+    endpoint = module.grafana.endpoints.grafana_dashboard
   }
 }
 
