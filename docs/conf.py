@@ -1,5 +1,6 @@
 import datetime
-import ast
+import os
+import yaml
 
 # Configuration for the Sphinx documentation builder.
 # All configuration specific to your project should be done in this file.
@@ -33,7 +34,7 @@ author = "Canonical Ltd."
 #
 # TODO: To disable the title, set to an empty string.
 
-html_title = "Observability Documentation"
+html_title = project + " documentation"
 
 
 # Copyright string; shown at the bottom of the page
@@ -69,7 +70,7 @@ copyright = "%s CC-BY-SA, %s" % (datetime.date.today().year, author)
 # NOTE: The Open Graph Protocol (OGP) enhances page display in a social graph
 #       and is used by social media platforms; see https://ogp.me/
 
-# ogp_site_url = "https://canonical-starter-pack.readthedocs-hosted.com/"
+ogp_site_url = "https://documentation.ubuntu.com/observability/"
 
 
 # Preview name of the documentation website
@@ -148,6 +149,17 @@ html_context = {
     "github_issues": 'enabled',
 }
 
+# TODO: To enable the edit button on pages, uncomment and change the link to a
+# public repository on GitHub or Launchpad. Any of the following link domains
+# are accepted:
+# - https://github.com/example-org/example"
+# - https://launchpad.net/example
+# - https://git.launchpad.net/example
+#
+# html_theme_options = {
+# 'source_edit_link': 'https://github.com/canonical/sphinx-docs-starter-pack',
+# }
+
 # Project slug; see https://meta.discourse.org/t/what-is-category-slug/87897
 #
 # TODO: If your documentation is hosted on https://docs.ubuntu.com/,
@@ -155,11 +167,27 @@ html_context = {
 
 # slug = ''
 
+#######################
+# Sitemap configuration: https://sphinx-sitemap.readthedocs.io/
+#######################
+
+# Base URL of RTD hosted project
+
+html_baseurl = 'https://documentation.ubuntu.com/observability/'
+
+# URL scheme. Add language and version scheme elements.
+# When configured with RTD variables, check for RTD environment so manual runs succeed:
+
+if 'READTHEDOCS_VERSION' in os.environ:
+    version = os.environ["READTHEDOCS_VERSION"]
+    sitemap_url_scheme = '{version}{link}'
+else:
+    sitemap_url_scheme = 'MANUAL/{link}'
 
 # Template and asset locations
 
-html_static_path = [".sphinx/_static"]
-templates_path = [".sphinx/_templates"]
+#html_static_path = ["_static"]
+#templates_path = ["_templates"]
 
 
 #############
@@ -239,6 +267,8 @@ extensions = [
     "canonical_sphinx",
     "sphinxcontrib.cairosvgconverter",
     "sphinx_last_updated_by_git",
+    "sphinx.ext.intersphinx",
+    "sphinx_sitemap",
     "sphinxcontrib.mermaid",
 ]
 
@@ -250,9 +280,7 @@ exclude_patterns = [
 
 # Adds custom CSS files, located under 'html_static_path'
 
-html_css_files = [
-    "css/pdf.css",
-]
+# html_css_files = []
 
 
 # Adds custom JavaScript files, located under 'html_static_path'
@@ -275,13 +303,15 @@ rst_epilog = """
 
 # Your manpage URL
 #
-# TODO: To enable manpage links, uncomment and update as needed.
+# TODO: To enable manpage links, uncomment and replace {codename} with required
+#       release, preferably an LTS release (e.g. noble). Do *not* substitute
+#       {section} or {page}; these will be replaced by sphinx at build time
 #
 # NOTE: If set, adding ':manpage:' to an .rst file
 #       adds a link to the corresponding man section at the bottom of the page.
 
-# manpages_url = f'https://manpages.ubuntu.com/manpages/{codename}/en/' + \
-#     f'man{section}/{page}.{section}.html'
+# manpages_url = 'https://manpages.ubuntu.com/manpages/{codename}/en/' + \
+#     'man{section}/{page}.{section}.html'
 
 
 # Specifies a reST snippet to be prepended to each .rst file
@@ -293,6 +323,10 @@ rst_prolog = """
    :class: align-center
 .. role:: h2
     :class: hclass2
+.. role:: woke-ignore
+    :class: woke-ignore
+.. role:: vale-ignore
+    :class: vale-ignore
 """
 
 # Workaround for https://github.com/canonical/canonical-sphinx/issues/34
