@@ -1,5 +1,5 @@
 The easiest way to report a security issue is through a 
-[Github Private Security Report](https://github.com/canonical/observability-docs/security/advisories/new)
+[Github Private Security Report](https://github.com/canonical/observability-stack/security/advisories/new)
 with a description of the issue, the steps you took to create the issue, affected versions, and, if 
 known, mitigations for the issue.
 
