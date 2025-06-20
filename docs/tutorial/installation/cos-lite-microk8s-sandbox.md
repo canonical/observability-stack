@@ -32,7 +32,8 @@ $ microk8s enable dns
 ```
 
 ```{note}
-While the following setup is sufficient for non-production environments, if you're looking for a more resilient storage option, consider deploying MicroCeph on MicroK8s using this [tutorial](https://microk8s.io/docs/how-to-ceph).
+While the following setup is sufficient for non-production environments, if you're looking for a more resilient storage option,
+consider deploying MicroCeph on MicroK8s using this [guide](https://microk8s.io/docs/how-to-ceph).
 ```
 
 ```bash

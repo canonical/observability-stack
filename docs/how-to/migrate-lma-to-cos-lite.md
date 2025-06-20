@@ -14,9 +14,9 @@ Let's assume this is our, heavily simplified, existing environment:
 
 COS requires a Juju version `>=3.6`. Consult the [juju-cross-version-compatibility](https://documentation.ubuntu.com/juju/latest/reference/juju/juju-cross-version-compatibility/) docs to ensure your Juju controller is compatible before continuing. If necessary, [upgrade the Juju controller](https://documentation.ubuntu.com/juju/latest/howto/manage-controllers/#upgrade-a-controller) accordingly.
 
-## 2. Deploy COS to an isolated MicroK8s instance
+## 2. Deploy COS Lite to an isolated MicroK8s instance
 
-This model needs to be running Juju `>=3.6`. For instructions, see the [Deploy COS on MicroK8s](https://documentation.ubuntu.com/observability/tutorial/installation/getting-started-with-cos-lite/) tutorial.
+This model needs to be running Juju `>=3.6`. For instructions, see the [Deploy COS Lite on MicroK8s](../../tutorial/installation/cos-lite-microk8s-sandbox) tutorial.
 
 It will now look somewhat like this:
 

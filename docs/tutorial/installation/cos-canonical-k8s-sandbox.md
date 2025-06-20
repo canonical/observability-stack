@@ -1,4 +1,4 @@
-# Getting started with COS Lite on Canonical K8s
+# Getting started with COS on Canonical K8s
 
 In this tutorial you deploy a multi-node COS solution, backed by s3 storage. The s3 storage is assumed to be already deployed.
 

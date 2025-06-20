@@ -20,7 +20,7 @@ Canonical in migrating to COS Lite or the full COS.
 .. toctree::
    :maxdepth: 1
 
-   Migrate from LMA to COS <migrate-lma-to-cos-lite>
+   Migrate from LMA to COS Lite <migrate-lma-to-cos-lite>
    Migrate from COS Lite to COS <migrate-cos-lite-to-cos>
    Migrate from Grafana Agent to OpenTelemetry Collector <migrate-gagent-to-otelcol>
 
