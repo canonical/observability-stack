@@ -59,7 +59,4 @@ juju offer grafana:receive-ca-cert
 # do we need more offers like for Mimir, Loki etc?
 ```
 
-The status of your deployment now should look like:
-
-`panic.jpg`
-
+<!-- TODO: Add screenshot here -->
