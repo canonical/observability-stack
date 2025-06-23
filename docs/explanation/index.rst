@@ -8,6 +8,7 @@ Explanation
 
    Charmed alert rules <charmed-rules>
    COS Lite <cos-lite>
+   COS vs. COS Lite <cos-vs-cos-lite>
    Design Goals <design-goals>
    Juju Topology <juju-topology>
    Data Integrity <data-integrity>
