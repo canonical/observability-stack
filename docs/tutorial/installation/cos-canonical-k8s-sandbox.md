@@ -14,7 +14,7 @@ You can reproduce the COS deployment with a [Terraform module](cos-canonical-k8s
 - `ceph` with `radosgw` are up and running, and we know their address. S3 access and secret keys already exist
 - `ceph-csi` was already added to Kubernetes (meaning we’re not using hostPath storage)
 
-# Deploy COS using Terraform
+## Deploy COS using Terraform
 
 Create a `cos-canonical-k8s-sandbox.tf` file with the following Terraform module, or include it in your Terraform plan:
 
