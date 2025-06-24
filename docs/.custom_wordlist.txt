@@ -82,6 +82,7 @@ provisioner
 proxied
 Relabeler
 routable
+scalable
 SDK
 SHA
 Snapcraft
