@@ -80,6 +80,7 @@ PromQL
 Promtail
 provisioner
 proxied
+PVC
 Relabeler
 routable
 scalable

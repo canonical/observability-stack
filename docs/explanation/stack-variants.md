@@ -2,15 +2,15 @@
 
 ## Quick comparison
 
-|                             | COS                                                            | COS Lite                                                                                             |
-|-----------------------------|----------------------------------------------------------------|------------------------------------------------------------------------------------------------------|
-| Purpose                     | Horizontally scalable, enterprise-ready                        | Resource-constrained or near-edge deployment                                                         |
-| Telemetry types             | Logs, metrics, traces                                          | Logs, metrics                                                                                        |
-| Resiliency                  | HA                                                             | Not HA (multi-node non-identical replication)                                                        |
-| Storage                     | S3 (managed independently)                                     | Via PVCs, e.g. ceph-csi (managed independently)                                                      |
-| Load balancing              | Dedicated nginx for loki, mimir, tempo; traefik on top of that | Traefik balances across units externally, but separate grafana datasources for loki/prometheus units |
-| Self-monitoring             | Logs, metrics, traces via in-model otelcol charm               | Metrics only, via direct relations                                                                   |
-| Minimum system requirements | 1x 8cpu16gb + storage nodes                                    | 1x 4cpu8gb (+storage nodes, if any)                                                                  |
+|                             | COS                                                              | COS Lite                                                                                             |
+|-----------------------------|------------------------------------------------------------------|------------------------------------------------------------------------------------------------------|
+| Purpose                     | Horizontally scalable, enterprise-ready                          | Resource-constrained or near-edge deployment                                                         |
+| Telemetry types             | Logs, metrics, traces                                            | Logs, metrics                                                                                        |
+| Resiliency                  | HA                                                               | Not HA (multi-node non-identical replication)                                                        |
+| Storage                     | S3 (managed independently)                                       | Via PVCs, e.g. `ceph-csi` (managed independently)                                                    |
+| Load balancing              | Dedicated Nginx for Loki, Mimir, Tempo; Traefik on top of that   | Traefik balances across units externally, but separate grafana datasources for loki/prometheus units |
+| Self-monitoring             | Logs, metrics, traces via in-model opentelemetry-collector charm | Metrics only, via direct relations                                                                   |
+| Minimum system requirements | 1x 8cpu16gb + storage nodes                                      | 1x 4cpu8gb (+storage nodes, if any)                                                                  |
 
 
 ## COS Lite
