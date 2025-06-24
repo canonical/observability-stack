@@ -81,6 +81,7 @@ Promtail
 provisioner
 proxied
 PVC
+PVCs
 Relabeler
 routable
 scalable
