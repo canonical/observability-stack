@@ -733,26 +733,26 @@ resource "juju_offer" "alertmanager_karma_dashboard" {
   name             = "alertmanager-karma-dashboard"
   model            = var.model
   application_name = module.alertmanager.app_name
-  endpoint         = "karma-dashboard"
+  endpoints        = ["karma-dashboard"]
 }
 
 resource "juju_offer" "grafana_dashboards" {
   name             = "grafana-dashboards"
   model            = var.model
   application_name = module.grafana.app_name
-  endpoint         = "grafana-dashboard"
+  endpoints        = ["grafana-dashboard"]
 }
 
 resource "juju_offer" "loki_logging" {
   name             = "loki-logging"
   model            = var.model
   application_name = module.loki.app_names.loki_coordinator
-  endpoint         = "logging"
+  endpoints        = ["logging"]
 }
 
 resource "juju_offer" "mimir_receive_remote_write" {
   name             = "mimir-receive-remote-write"
   model            = var.model
   application_name = module.mimir.app_names.mimir_coordinator
-  endpoint         = "receive-remote-write"
+  endpoints        = ["receive-remote-write"]
 }
