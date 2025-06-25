@@ -59,6 +59,8 @@ MetalLB
 Microceph
 MicroK
 MicroK8s
+microservice
+microservices
 Mimir
 Minio
 Nginx
@@ -80,8 +82,11 @@ PromQL
 Promtail
 provisioner
 proxied
+PVC
+PVCs
 Relabeler
 routable
+scalable
 SDK
 SHA
 Snapcraft
