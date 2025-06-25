@@ -6,7 +6,7 @@
 |-----------------------------|------------------------------------------------------------------|------------------------------------------------------------------------------------------------------|
 | Purpose                     | Horizontally scalable, enterprise-ready                          | Resource-constrained or near-edge deployment                                                         |
 | Telemetry types             | Logs, metrics, traces                                            | Logs, metrics                                                                                        |
-| Resiliency                  | HA                                                               | Not HA (multi-node non-identical replication)                                                        |
+| Resiliency                  | Scalable microservices with node anti-affinity (HA-ready)        | Monolithic mode (multi-node non-identical replication)                                               |
 | Storage                     | S3 (managed independently)                                       | Via PVCs, e.g. `ceph-csi` (managed independently)                                                    |
 | Load balancing              | Dedicated Nginx for Loki, Mimir, Tempo; Traefik on top of that   | Traefik balances across units externally, but separate grafana datasources for loki/prometheus units |
 | Self-monitoring             | Logs, metrics, traces via in-model opentelemetry-collector charm | Metrics only, via direct relations                                                                   |
