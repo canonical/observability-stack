@@ -59,6 +59,8 @@ MetalLB
 Microceph
 MicroK
 MicroK8s
+microservice
+microservices
 Mimir
 Minio
 Nginx
