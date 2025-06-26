@@ -42,11 +42,7 @@ You can watch the model as it settles with:
 juju status --model cos --relations --watch=5s
 ```
 
-The status of your deployment should eventually be very similar to the following:
-
-```
-insert final cos deployment
-```
+<!-- TODO: Add terminal output in codeblock here -->
 
 ## Add offers to enable cross-model relations
 
@@ -59,4 +55,4 @@ juju offer grafana:receive-ca-cert
 # do we need more offers like for Mimir, Loki etc?
 ```
 
-<!-- TODO: Add screenshot here -->
+<!-- TODO: Add terminal output in codeblock here -->
