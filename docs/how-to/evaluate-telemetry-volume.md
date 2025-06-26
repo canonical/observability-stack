@@ -14,7 +14,7 @@ curl -s --data-urlencode 'query=count({__name__=~".+"})' \
 ```
 
 Compare the output to the number of metrics exposed by individual applications.
-For example, for the postgres charm,
+For example, for the postgresql charm,
 
 ```bash
 juju ssh pg/0 curl localhost:9187/metrics | grep -v '^# ' | wc -l
@@ -26,8 +26,8 @@ A simplified Juju relations diagram would look as follows:
 
 ```{mermaid}
 graph LR
-load[load generator] ---|db| postgres
-postgres ---|metrics-endpoint| prometheus
+load[load generator] ---|db| postgresql
+postgresql ---|metrics-endpoint| prometheus
 ```
 
 
@@ -44,8 +44,8 @@ be to relate Loki to Prometheus.
 
 ```{mermaid}
 graph LR
-load[load generator] ---|db| postgres
-postgres ---|logging| loki
+load[load generator] ---|db| postgresql
+postgresql ---|logging| loki
 loki ---|metrics-endpoint| prometheus
 ```
 
