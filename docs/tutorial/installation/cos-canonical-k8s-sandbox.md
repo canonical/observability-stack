@@ -2,7 +2,7 @@
 
 In this tutorial you deploy a multi-node COS solution, backed by s3 storage. The s3 storage is assumed to be already deployed.
 
-You can reproduce the COS deployment with a [Terraform module](cos-canonical-k8s-sandbox.tf).
+You can reproduce the COS deployment in this tutorial with a [cloud-config](cos-canonical-k8s-sandbox.conf) script.
 
 ## Prerequisites
 
@@ -16,9 +16,13 @@ You can reproduce the COS deployment with a [Terraform module](cos-canonical-k8s
 
 # Deploy COS using Terraform
 
-Create a `cos-canonical-k8s-sandbox.tf` file with the following Terraform module, or include it in your Terraform plan:
+Create a `cos-canonical-k8s-sandbox.tf` file as follows:
 
-```{literalinclude} /tutorial/installation/cos-canonical-k8s-sandbox.tf
+```{literalinclude} /tutorial/installation/cos-canonical-k8s-sandbox.conf
+    :language: hcl
+    :start-after: [docs:create-terraform-module]
+    :end-before: [docs:create-terraform-module-end]
+    :dedent: 2
 ```
 
 <!-- warn users of the 2 Juju Provider bugs -->
