@@ -7,7 +7,7 @@ Explanation
    :maxdepth: 1
 
    Charmed alert rules <charmed-rules>
-   COS Lite <cos-lite>
+   Stack variants <stack-variants>
    Design Goals <design-goals>
    Juju Topology <juju-topology>
    Data Integrity <data-integrity>

@@ -33,6 +33,7 @@ with COS to actually observe them.
 .. toctree::
    :maxdepth: 1
 
+   Evaluate telemetry volume <evaluate-telemetry-volume>
    Add tracing to COS Lite <add-tracing-to-cos-lite>
    Add alert rules <adding-alert-rules>
    Configure scrape jobs <configure-scrape-jobs>

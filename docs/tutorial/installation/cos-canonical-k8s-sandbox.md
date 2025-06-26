@@ -14,7 +14,7 @@ You can reproduce the COS deployment in this tutorial with a [cloud-config](cos-
 - `ceph` with `radosgw` are up and running, and we know their address. S3 access and secret keys already exist
 - `ceph-csi` was already added to Kubernetes (meaning we’re not using hostPath storage)
 
-# Deploy COS using Terraform
+## Deploy COS using Terraform
 
 Create a `cos-canonical-k8s-sandbox.tf` file as follows:
 
@@ -46,11 +46,7 @@ You can watch the model as it settles with:
 juju status --model cos --relations --watch=5s
 ```
 
-The status of your deployment should eventually be very similar to the following:
-
-```
-insert final cos deployment
-```
+<!-- TODO: Add terminal output in codeblock here -->
 
 ## Add offers to enable cross-model relations
 
@@ -63,7 +59,4 @@ juju offer grafana:receive-ca-cert
 # do we need more offers like for Mimir, Loki etc?
 ```
 
-The status of your deployment now should look like:
-
-`panic.jpg`
-
+<!-- TODO: Add terminal output in codeblock here -->

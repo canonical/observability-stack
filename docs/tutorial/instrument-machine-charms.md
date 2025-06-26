@@ -19,7 +19,7 @@ Subordinate units scale together with their principal.
 
 ## Ensure COS Lite is up and running
 
-Before we get started, we will make sure that the Observability Stack is up and running in our `cos` model (follow the tutorial on [getting started with COS Lite](/tutorial/installation/getting-started-with-cos-lite)) in a Kubernetes controller, like this:
+Before we get started, we will make sure that the Observability Stack is up and running in our `cos` model (follow the tutorial on [getting started with COS Lite](/tutorial/installation/cos-lite-microk8s-sandbox)) in a Kubernetes controller, like this:
 
 ```text
 $ juju status --relations
