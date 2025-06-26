@@ -1,6 +1,6 @@
 # Getting started with COS on Canonical K8s
 
-In this tutorial you deploy a single-node, multi-unit COS, backed by S3 storage. The S3 storage is assumed to be already deployed.
+In this tutorial you deploy a single-node, multi-unit COS, backed by S3 storage.
 
 You can reproduce the COS deployment in this tutorial with a [cloud-config](cos-canonical-k8s-sandbox.conf) script.
 
@@ -10,34 +10,51 @@ You can reproduce the COS deployment in this tutorial with a [cloud-config](cos-
 - Juju v3.6 installed ([doc](https://documentation.ubuntu.com/juju/3.6/howto/manage-juju/#install-juju)).
 - Canonical K8s (snap) installed, with local-storage ([doc](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/tutorial/getting-started/))
   and load-balancer ([doc](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/networking/default-loadbalancer/)) enabled.
-- Proxy ([doc](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/networking/proxy/)) and
+  Proxy ([doc](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/networking/proxy/)) and
   DNS ([doc](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/networking/default-dns/)) for K8s are configured (if applicable).
 - K8s cloud added to Juju ([doc](https://documentation.ubuntu.com/juju/3.6/howto/manage-clouds/#add-a-kubernetes-cloud)).
-- Microceph (snap) installed ([doc](https://canonical-microceph.readthedocs-hosted.com/en/latest/tutorial/get-started/))
-  and RadosGW listening on port 8080 ([doc](https://canonical-microceph.readthedocs-hosted.com/en/latest/reference/commands/enable/#rgw)).
-- The IP address of RadosGW is stored in `$IPADDR`.
-- Buckets named "loki", "mimir", and "tempo" already exist.
-- A Juju model named "cos" exists and is empty.
+- A Juju kubernetes controller is bootstrapped and ready.
 
+
+## Set up S3
+For S3, we will install the Microceph snap ([doc](https://canonical-microceph.readthedocs-hosted.com/en/latest/tutorial/get-started/))
+and configure RadosGW to listen on port 8080 ([doc](https://canonical-microceph.readthedocs-hosted.com/en/latest/reference/commands/enable/#rgw)).
+
+```{literalinclude} /tutorial/installation/cos-canonical-k8s-sandbox.conf
+    :language: bash
+    :start-after: [docs:setup-s3]
+    :end-before: [docs:setup-s3-end]
+    :dedent: 4
+```
+
+### Create buckets for Loki, Mimir and Tempo
+
+```{literalinclude} /tutorial/installation/cos-canonical-k8s-sandbox.conf
+    :language: bash
+    :start-after: [docs:create-buckets]
+    :end-before: [docs:create-buckets-end]
+    :dedent: 4
+```
 
 ## Deploy COS using Terraform
 
-Create a `cos-canonical-k8s-sandbox.tf` file as follows:
+Assuming you are using the username `ubuntu`, create a `cos-demo.tf` file as follows:
 
 ```{literalinclude} /tutorial/installation/cos-canonical-k8s-sandbox.conf
-    :language: hcl
+    :language: bash
     :start-after: [docs:create-terraform-module]
     :end-before: [docs:create-terraform-module-end]
-    :dedent: 2
+    :dedent: 4
 ```
 
 **Note**: You can customize further the number of units of each distributed charm and other aspects of COS: have a look at the [`variables.tf`](../../../terraform/cos/variables.tf) file of the COS Terraform module for the complete documentation.
 
 <!-- TODO: Add TLS relations with both internal and external CAs. -->
 
-To deploy COS in a new model, run:
+To deploy COS in a new model named `cos`, run:
 
 ```bash
+juju add-model cos
 terraform init
 terraform apply
 ```
@@ -49,7 +66,7 @@ juju status --model cos --relations --watch=5s
 
 ## Result
 
-The status of your deployment should eventually be very similar to the following:
+The output of `juju status --relations` for your deployment should eventually be very similar to the following:
 
 ```
 Model  Controller  Cloud/Region  Version  SLA          Timestamp
