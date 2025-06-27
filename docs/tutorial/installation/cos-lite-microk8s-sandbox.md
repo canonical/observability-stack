@@ -189,7 +189,7 @@ Create a `cos-lite-microk8s-sandbox.tf` file with the following Terraform module
 
 <!-- Once we allow enabling internal TLS and external TLS separately, add the explanation to this tutorial -->
 
-It is usually a good idea to create a dedicated model for the COS Lite bundle. So let's do just that and call the new model `cos`:
+It is usually a good idea to create a dedicated model for COS Lite. So let's do just that and call the new model `cos`:
 
 ```bash
 $ juju add-model cos
