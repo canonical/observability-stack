@@ -29,7 +29,7 @@ module "loki" {
   app_name   = "loki"
   model_name = var.model
   channel    = var.channel
-  revision = var.loki_revision
+  revision   = var.loki_revision
 }
 
 module "prometheus" {
@@ -37,14 +37,14 @@ module "prometheus" {
   app_name   = "prometheus"
   model_name = var.model
   channel    = var.channel
-  revision = var.prometheus_revision
+  revision   = var.prometheus_revision
 }
 
 module "ssc" {
-  count   = var.use_tls ? 1 : 0
-  source  = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
-  model   = var.model
-  channel = var.ssc_channel
+  count    = var.use_tls ? 1 : 0
+  source   = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
+  model    = var.model
+  channel  = var.ssc_channel
   revision = var.ssc_revision
 }
 
