@@ -13,7 +13,7 @@ You can reproduce the COS deployment in this tutorial with a [cloud-config](cos-
   Proxy ([doc](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/networking/proxy/)) and
   DNS ([doc](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/networking/default-dns/)) for K8s are configured (if applicable).
 - K8s cloud added to Juju ([doc](https://documentation.ubuntu.com/juju/3.6/howto/manage-clouds/#add-a-kubernetes-cloud)).
-- A Juju kubernetes controller is bootstrapped and ready.
+- A Juju Kubernetes controller is bootstrapped and ready.
 
 
 ## Set up S3
