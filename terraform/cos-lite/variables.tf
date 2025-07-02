@@ -28,3 +28,47 @@ variable "traefik_channel" {
   type        = string
   default     = "latest/stable"
 }
+
+# -------------- # Charm revisions --------------
+
+variable "alertmanager_revision" {
+  description = "Revision number of the Alertmanager charm"
+  type        = number
+  default     = null
+}
+
+variable "catalogue_revision" {
+  description = "Revision number of the Catalogue charm"
+  type        = number
+  default     = null
+}
+
+variable "grafana_revision" {
+  description = "Revision number of the Grafana charm"
+  type        = number
+  default     = null
+}
+
+variable "loki_revision" {
+  description = "Revision number of the Loki charm"
+  type        = number
+  default     = null
+}
+
+variable "prometheus_revision" {
+  description = "Revision number of the Prometheus charm"
+  type        = number
+  default     = null
+}
+
+variable "ssc_revision" {
+  description = "Revision number of the self-signed certificates charm"
+  type        = number
+  default     = null
+}
+
+variable "traefik_revision" {
+  description = "Revision number of the Traefik charm"
+  type        = number
+  default     = null
+}
