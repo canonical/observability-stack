@@ -37,8 +37,8 @@ See the [Microceph tutorial](https://microk8s.io/docs/how-to-ceph).
 
 ### Ingress
 
-MetalLB, or an equivalent load balancer, should be configured on the Kubernetes environment COS is running on.
-COS and COS Lite use Traefik to provide network ingress for the stack components.
+MetalLB, or an equivalent load balancer, should be configured on the Kubernetes environment COS Lite is running on.
+COS Lite uses Traefik to provide network ingress for the stack components.
 Make sure the load balancer provides Traefik with **a static IP**, or some other identity that remains stable over time.
 
 ### Egress
@@ -72,24 +72,24 @@ Note that these config values can only be set at bootstrap time, and are read-on
 
 
 ## Deployment topology
-Deploy in isolation. COS (or COS Lite) should at the very least be deployed in its own Juju model, but preferably even on a separate substrate with a dedicated Juju controller.
+Deploy in isolation. COS Lite should at the very least be deployed in its own Juju model, but preferably even on a separate substrate with a dedicated Juju controller.
 
 ```{mermaid}
 flowchart LR
 
 subgraph Infra A
-A[Your workloads] -->|telemetry| otelcol["OpenTelemetry Collector<br/>(or Grafana Agent)"]
+A[Your workloads] -->|telemetry| gagent[Grafana Agent]
 end
 
 subgraph Infra B
-B(COS)
+B(COS Lite)
 end
 
 subgraph Infra C
 C[COS Alerter]
 end
 
-otelcol-->|telemetry| B
+gagent-->|telemetry| B
 B -->|heartbeat| C
 ```
 
@@ -101,31 +101,30 @@ These precautions help to limit the blast radius in case of outages in the workl
 
 ### Reliability
 
-For COS, deploy at least three nodes per worker, with anti-affinity set to hostname.
-
-For COS Lite, we **strongly** recommend using [a separate three-node MicroK8s cluster](https://microk8s.io/docs/high-availability).
+For higher reliability, scale Prometheus and Loki to three units each, using [a separate three-node MicroK8s cluster](https://microk8s.io/docs/high-availability).
+Note that telemetry may slightly differ across units and that each unit would be a separate datasource in Grafana.
 
 
 ## Juju relation topology
 #### Avoid pulling data cross-model
 
 Cross-model relations using the `prometheus_scrape` interface should be avoided.
-Instead, deploy a Grafana agent in each of the models you want to observe and let the agents be a fan-in point pushing the data to COS.
+Instead, deploy a Grafana agent in each of the models you want to observe and let the agents be a fan-in point pushing the data to COS Lite.
 This makes for a less error-prone networking topology that is easier to reason about, especially at scale.
 
 
 ## Maintenance
-Before restarting a Kubernetes node with COS applications on it, you should cordon and drain it so that the StatefulSets are moved to another node.
+Before restarting a Kubernetes node with COS Lite applications on it, you should cordon and drain it so that the StatefulSets are moved to another node.
 This process will ensure the least amount of downtime.
 
-In the event that a node goes down unexpectedly and cannot be recovered, you can manually recover the COS units by force deleting the pod and any
+In the event that a node goes down unexpectedly and cannot be recovered, you can manually recover the COS Lite units by force deleting the pod and any
 volume attachments that existed on the inaccessible node. The pods will then be rescheduled to a working node.
 
 
 ### Known issues
 - High availability during maintenance is only possible on clusters utilizing distributed storage, such as MicroCeph.
-- All of the COS applications use StatefulSets, so these pods will not self-heal and deploy to another node automatically.
-- The juju controller needs to be up for COS pods to start, otherwise their charm container will fail, causing the pod to go into a crash loop.
+- All of the COS Lite applications use StatefulSets, so these pods will not self-heal and deploy to another node automatically.
+- The juju controller needs to be up for the pods to start, otherwise their charm container will fail, causing the pod to go into a crash loop.
 
 
 ## Upgrading

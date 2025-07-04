@@ -20,17 +20,12 @@ has a growth rate of about 50GB per day under normal operations.
 So, if you want a retention interval of about two months, you'll need 3TB of storage only for the telemetry.
 
 ### Set up distributed storage
-In production, **do not** use hostPath storage ([`hostpath-storage`](https://microk8s.io/docs/addon-hostpath-storage) in MicroK8s; `local-storage` in Canonical K8s):
+In production, **do not** use hostPath storage (called `local-storage` in Canonical K8s):
  * `PersistentVolumeClaims` created by the host path storage provisioner are bound to the local node, so it is *impossible to move them to a different node*.
  * A `hostpath` volume can *grow beyond the capacity set in the volume claim manifest*.
 
-#### Canonical K8s
 Use ceph-csi. Refer to Canonical Kubernetes [snap](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/storage/ceph/)
 and [charm](https://documentation.ubuntu.com/canonical-kubernetes/latest/charm/howto/ceph-csi/) docs.
-
-#### MicroK8s
-Use the [`rook-ceph`](https://microk8s.io/docs/addon-rook-ceph) add-on together with Microceph.
-See the [Microceph tutorial](https://microk8s.io/docs/how-to-ceph).
 
 
 ## Networking
@@ -38,7 +33,7 @@ See the [Microceph tutorial](https://microk8s.io/docs/how-to-ceph).
 ### Ingress
 
 MetalLB, or an equivalent load balancer, should be configured on the Kubernetes environment COS is running on.
-COS and COS Lite use Traefik to provide network ingress for the stack components.
+COS uses Traefik to provide network ingress for the stack components.
 Make sure the load balancer provides Traefik with **a static IP**, or some other identity that remains stable over time.
 
 ### Egress
@@ -51,8 +46,7 @@ As a common requirement, the environment should be able to reach:
 
 There are other charm-specific URLs that some charms access by default:
 * `https://objects.githubusercontent.com/`, needed by [Loki](https://charmhub.io/loki-k8s/docs/network);
-* `stats.grafana.org`, needed by [Grafana](https://charmhub.io/grafana-k8s/docs/network-requirements) and
-  [Grafana Agent](https://charmhub.io/grafana-k8s/docs/network-requirements).
+* `stats.grafana.org`, needed by [Grafana](https://charmhub.io/grafana-k8s/docs/network-requirements).
 
 To disable the functionalities that require those URLs, please refer to linked docs for the relevant charms.
 
@@ -63,7 +57,7 @@ If the network topology is anything other than flat, the Juju controllers will n
 routable identities for your cross--controller relations. For example:
 
 ```
-juju bootstrap microk8s uk8s \
+juju bootstrap k8s ck8s \
   --config controller-service-type=loadbalancer \
   --config controller-external-ips=[10.0.0.2]
 ```
@@ -72,13 +66,13 @@ Note that these config values can only be set at bootstrap time, and are read-on
 
 
 ## Deployment topology
-Deploy in isolation. COS (or COS Lite) should at the very least be deployed in its own Juju model, but preferably even on a separate substrate with a dedicated Juju controller.
+Deploy in isolation. COS should at the very least be deployed in its own Juju model, but preferably even on a separate substrate with a dedicated Juju controller.
 
 ```{mermaid}
 flowchart LR
 
 subgraph Infra A
-A[Your workloads] -->|telemetry| otelcol["OpenTelemetry Collector<br/>(or Grafana Agent)"]
+A[Your workloads] -->|telemetry| otelcol[OpenTelemetry Collector]
 end
 
 subgraph Infra B
@@ -93,24 +87,22 @@ otelcol-->|telemetry| B
 B -->|heartbeat| C
 ```
 
-[COS Alerter](https://github.com/canonical/cos-alerter) should be deployed to let operators know whenever the routing of notifications from COS Lite stops working,
-preventing a false sense of security. We advise to deploy COS Alerter on dedicated infra, separate from the COS Lite infra.
+[COS Alerter](https://github.com/canonical/cos-alerter) should be deployed to let operators know whenever the routing of notifications from COS stops working,
+preventing a false sense of security. We advise to deploy COS Alerter on dedicated infra, separate from the COS infra.
 
 These precautions help to limit the blast radius in case of outages in the workloads you observe, or the observability stack itself.
 
 
 ### Reliability
 
-For COS, deploy at least three nodes per worker, with anti-affinity set to hostname.
-
-For COS Lite, we **strongly** recommend using [a separate three-node MicroK8s cluster](https://microk8s.io/docs/high-availability).
+Deploy at least three nodes per worker, with anti-affinity set to hostname.
 
 
 ## Juju relation topology
 #### Avoid pulling data cross-model
 
 Cross-model relations using the `prometheus_scrape` interface should be avoided.
-Instead, deploy a Grafana agent in each of the models you want to observe and let the agents be a fan-in point pushing the data to COS.
+Instead, deploy OpenTelemetry Collector in each of the models you want to observe and let the agents be a fan-in point pushing the data to COS.
 This makes for a less error-prone networking topology that is easier to reason about, especially at scale.
 
 
