@@ -73,10 +73,10 @@ The module offers the following configurable inputs:
 ### Outputs
 Upon application, the module exports the following outputs:
 
-| Name | Type | Description |
-| - | - | - |
-| `components`| map(any) | All TF charm submodule which make up this product module |
-| `offers`| map(any) | All offers which are exposed by this product module |
+| Name       | Description                 |
+|------------|-----------------------------|
+| `components` | map(any) | All Terraform charm modules which make up this product module |
+| `offers` | map(any) | All Juju offers which are exposed by this product module |
 
 
 ## Usage
