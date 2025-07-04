@@ -84,6 +84,7 @@ provisioner
 proxied
 PVC
 PVCs
+RadosGW
 Relabeler
 routable
 scalable
@@ -99,6 +100,7 @@ TLS
 TOC
 Traefik
 Traefik's
+ubuntu
 uncharmed
 unencrypted
 Unencrypted
