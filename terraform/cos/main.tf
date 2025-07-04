@@ -24,12 +24,12 @@ module "grafana" {
   revision = var.grafana_revision
 }
 
-module "grafana_agent" {
-  source   = "git::https://github.com/canonical/grafana-agent-k8s-operator//terraform"
-  app_name = "grafana-agent"
+module "opentelemetry_collector" {
+  source   = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform?ref=constraints"
+  app_name = "otelcol"
   model    = var.model
   channel  = var.channel
-  revision = var.grafana_agent_revision
+  revision = var.opentelemetry_collector_revision
 }
 
 module "loki" {
@@ -155,7 +155,7 @@ resource "juju_integration" "loki_alertmanager" {
   }
 }
 
-resource "juju_integration" "agent_alertmanager_metrics" {
+resource "juju_integration" "otelcol_alertmanager_metrics" {
   model = var.model
 
   application {
@@ -164,8 +164,8 @@ resource "juju_integration" "agent_alertmanager_metrics" {
   }
 
   application {
-    name     = module.grafana_agent.app_name
-    endpoint = module.grafana_agent.endpoints.metrics_endpoint
+    name     = module.opentelemetry_collector.app_name
+    endpoint = module.opentelemetry_collector.endpoints.metrics_endpoint
   }
 }
 
@@ -213,7 +213,9 @@ resource "juju_integration" "mimir_grafana_source" {
   }
 }
 
-resource "juju_integration" "mimir_tracing_grafana_agent_tracing_provider" {
+# TODO: Add charm_tracing to opentelemetry-collector
+
+resource "juju_integration" "mimir_tracing_otelcol_tracing_provider" {
   model = var.model
 
   application {
@@ -222,13 +224,13 @@ resource "juju_integration" "mimir_tracing_grafana_agent_tracing_provider" {
   }
 
   application {
-    name     = module.grafana_agent.app_name
-    endpoint = module.grafana_agent.endpoints.tracing_provider
+    name     = module.opentelemetry_collector.app_name
+    endpoint = module.opentelemetry_collector.endpoints.receive_traces
   }
 }
 
 
-resource "juju_integration" "mimir_self_metrics_endpoint_grafana_agent_metrics_endpoint" {
+resource "juju_integration" "mimir_self_metrics_endpoint_otelcol_metrics_endpoint" {
   model = var.model
 
   application {
@@ -237,13 +239,13 @@ resource "juju_integration" "mimir_self_metrics_endpoint_grafana_agent_metrics_e
   }
 
   application {
-    name     = module.grafana_agent.app_name
-    endpoint = module.grafana_agent.endpoints.metrics_endpoint
+    name     = module.opentelemetry_collector.app_name
+    endpoint = module.opentelemetry_collector.endpoints.metrics_endpoint
   }
 }
 
 
-resource "juju_integration" "mimir_logging_consumer_grafana_agent_logging_provider" {
+resource "juju_integration" "mimir_logging_consumer_otelcol_logging_provider" {
   model = var.model
 
   application {
@@ -252,8 +254,8 @@ resource "juju_integration" "mimir_logging_consumer_grafana_agent_logging_provid
   }
 
   application {
-    name     = module.grafana_agent.app_name
-    endpoint = module.grafana_agent.endpoints.logging_provider
+    name     = module.opentelemetry_collector.app_name
+    endpoint = module.opentelemetry_collector.endpoints.receive_loki_logs
   }
 }
 
@@ -288,7 +290,7 @@ resource "juju_integration" "loki_grafana_source" {
   }
 }
 
-resource "juju_integration" "loki_logging_consumer_grafana_agent_logging_provider" {
+resource "juju_integration" "loki_logging_consumer_otelcol_logging_provider" {
   model = var.model
 
   application {
@@ -297,12 +299,12 @@ resource "juju_integration" "loki_logging_consumer_grafana_agent_logging_provide
   }
 
   application {
-    name     = module.grafana_agent.app_name
-    endpoint = module.grafana_agent.endpoints.logging_provider
+    name     = module.opentelemetry_collector.app_name
+    endpoint = module.opentelemetry_collector.endpoints.receive_loki_logs
   }
 }
 
-resource "juju_integration" "loki_logging_grafana_agent_logging_consumer" {
+resource "juju_integration" "loki_logging_otelcol_logging_consumer" {
   model = var.model
 
   application {
@@ -311,12 +313,12 @@ resource "juju_integration" "loki_logging_grafana_agent_logging_consumer" {
   }
 
   application {
-    name     = module.grafana_agent.app_name
-    endpoint = module.grafana_agent.endpoints.logging_consumer
+    name     = module.opentelemetry_collector.app_name
+    endpoint = module.opentelemetry_collector.endpoints.send_loki_logs
   }
 }
 
-resource "juju_integration" "loki_tracing_grafana_agent_traicing_provider" {
+resource "juju_integration" "loki_tracing_otelcol_traicing_provider" {
   model = var.model
 
   application {
@@ -325,8 +327,8 @@ resource "juju_integration" "loki_tracing_grafana_agent_traicing_provider" {
   }
 
   application {
-    name     = module.grafana_agent.app_name
-    endpoint = module.grafana_agent.endpoints.tracing_provider
+    name     = module.opentelemetry_collector.app_name
+    endpoint = module.opentelemetry_collector.endpoints.receive_traces
   }
 }
 
@@ -345,7 +347,7 @@ resource "juju_integration" "tempo_grafana_source" {
   }
 }
 
-resource "juju_integration" "tempo_tracing_grafana_agent_tracing" {
+resource "juju_integration" "tempo_tracing_otelcol_tracing" {
   model = var.model
 
   application {
@@ -354,12 +356,12 @@ resource "juju_integration" "tempo_tracing_grafana_agent_tracing" {
   }
 
   application {
-    name     = module.grafana_agent.app_name
-    endpoint = module.grafana_agent.endpoints.tracing
+    name     = module.opentelemetry_collector.app_name
+    endpoint = module.opentelemetry_collector.endpoints.send_traces
   }
 }
 
-resource "juju_integration" "tempo_metrics_endpoint_grafana_agent_metrics_endpoint" {
+resource "juju_integration" "tempo_metrics_endpoint_otelcol_metrics_endpoint" {
   model = var.model
 
   application {
@@ -368,12 +370,12 @@ resource "juju_integration" "tempo_metrics_endpoint_grafana_agent_metrics_endpoi
   }
 
   application {
-    name     = module.grafana_agent.app_name
-    endpoint = module.grafana_agent.endpoints.metrics_endpoint
+    name     = module.opentelemetry_collector.app_name
+    endpoint = module.opentelemetry_collector.endpoints.metrics_endpoint
   }
 }
 
-resource "juju_integration" "tempo_logging_grafana_agent_logging_provider" {
+resource "juju_integration" "tempo_logging_otelcol_logging_provider" {
   model = var.model
 
   application {
@@ -382,8 +384,8 @@ resource "juju_integration" "tempo_logging_grafana_agent_logging_provider" {
   }
 
   application {
-    name     = module.grafana_agent.app_name
-    endpoint = module.grafana_agent.endpoints.logging_provider
+    name     = module.opentelemetry_collector.app_name
+    endpoint = module.opentelemetry_collector.endpoints.receive_loki_logs
   }
 }
 
@@ -570,8 +572,8 @@ resource "juju_integration" "agent_loki_metrics" {
   }
 
   application {
-    name     = module.grafana_agent.app_name
-    endpoint = module.grafana_agent.endpoints.metrics_endpoint
+    name     = module.opentelemetry_collector.app_name
+    endpoint = module.opentelemetry_collector.endpoints.metrics_endpoint
   }
 }
 
@@ -584,14 +586,14 @@ resource "juju_integration" "agent_mimir_metrics" {
   }
 
   application {
-    name     = module.grafana_agent.app_name
-    endpoint = module.grafana_agent.endpoints.send_remote_write
+    name     = module.opentelemetry_collector.app_name
+    endpoint = module.opentelemetry_collector.endpoints.send_remote_write
   }
 }
 
 # Provided by Grafana
 
-resource "juju_integration" "grafana_tracing_grafana_agent_traicing_provider" {
+resource "juju_integration" "grafana_tracing_otelcol_traicing_provider" {
   model = var.model
 
   application {
@@ -600,8 +602,8 @@ resource "juju_integration" "grafana_tracing_grafana_agent_traicing_provider" {
   }
 
   application {
-    name     = module.grafana_agent.app_name
-    endpoint = module.grafana_agent.endpoints.tracing_provider
+    name     = module.opentelemetry_collector.app_name
+    endpoint = module.opentelemetry_collector.endpoints.receive_traces
   }
 }
 

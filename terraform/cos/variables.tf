@@ -113,7 +113,7 @@ variable "grafana_revision" {
   default     = null
 }
 
-variable "grafana_agent_revision" {
+variable "opentelemetry_collector_revision" {
   description = "Revision number of the Grafana agent charm"
   type        = number
   default     = null
