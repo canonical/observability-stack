@@ -88,4 +88,4 @@ If going via grafana-agent is not an option for you, you are yourself responsibl
 - In the future (2025) `grafana-agent` will be replaced by `otlp-collector`. The general data flow should remain unchanged.
 
 ## See also
-- [Model-driven observability: the magic of Juju topology for metrics](https://juju.is/blog/model-driven-observability-part-2-juju-topology-metrics)
+- [Model-driven observability: the magic of Juju topology for metrics](https://ubuntu.com/blog/model-driven-observability-part-2-juju-topology-metrics)
