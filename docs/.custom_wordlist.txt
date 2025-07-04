@@ -100,6 +100,7 @@ TLS
 TOC
 Traefik
 Traefik's
+ubuntu
 uncharmed
 unencrypted
 Unencrypted
