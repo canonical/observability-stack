@@ -1,7 +1,6 @@
-
-# the list of kubernetes clouds where this COS module can be deployed.
 locals {
-  clouds = ["aws", "self-managed"]
+  clouds = ["aws", "self-managed"]  # list of k8s clouds where this COS module can be deployed.
+  tls_termination = var.external_certificates_offer_url != null ? true : false
 }
 
 variable "channel" {
@@ -14,10 +13,16 @@ variable "model" {
   type        = string
 }
 
-variable "use_tls" {
-  description = "Specify whether to use TLS or not for coordinator-worker communication. By default, TLS is enabled through self-signed-certificates"
+variable "internal_tls" {
+  description = "Specify whether to use TLS or not for internal COS communication. By default, TLS is enabled using self-signed-certificates"
   type        = bool
   default     = true
+}
+
+variable "external_certificates_offer_url" {
+  description = "A Juju offer URL of a CA providing the 'tls_certificates' integration for Traefik to supply it with server certificates"
+  type        = string
+  default     = null
 }
 
 variable "cloud" {

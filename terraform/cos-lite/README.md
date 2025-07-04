@@ -24,8 +24,18 @@ The module offers the following configurable inputs:
 | Name | Type | Description | Default |
 |--|--|--|--|
 | `channel` | string | Channel that all the charms (unless overwritten) are deployed from |
+| `external_certificates_offer_url` | string | A Juju offer URL of a CA providing the 'tls_certificates' integration for Traefik to supply it with server certificates | null |
+| `internal_tls` | bool | Specify whether to use TLS or not for internal COS communication. By default, TLS is enabled using self-signed-certificates | true |
 | `model` | string | Reference to an existing model resource or data source for the model to deploy to |
-| `use_tls` | bool   | Specify whether to use TLS or not for coordinator-worker communication | true |
+| `ssc_channel` | string | Channel that the self-signed certificates charm is deployed from | 1/stable |
+| `traefik_channel` | string | Channel that the Traefik charm is deployed from | latest/stable |
+| `alertmanager_revision` | number | Revision number of the charm | null |
+| `catalogue_revision` | number | Revision number of the charm | null |
+| `grafana_revision` | number | Revision number of the charm | null |
+| `loki_revision` | number | Revision number of the charm | null |
+| `prometheus_revision` | number | Revision number of the charm | null |
+| `ssc_revision` | number | Revision number of the charm | null |
+| `traefik_revision` | number | Revision number of the charm | null |
 
 ### Outputs
 
@@ -33,9 +43,8 @@ Upon application, the module exports the following outputs:
 
 | Name       | Description                 |
 |------------|-----------------------------|
-| `app_name` | Application name            |
-| `provides` | Map of `provides` endpoints |
-| `requires` | Map of `requires` endpoints |
+| `components` | map(any) | All Terraform charm modules which make up this product module |
+| `offers` | map(any) | All Juju offers which are exposed by this product module |
 
 ## Usage
 
