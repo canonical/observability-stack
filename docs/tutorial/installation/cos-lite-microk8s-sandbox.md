@@ -68,7 +68,6 @@ By default, MicroK8s will use `8.8.8.8` and `8.8.4.4` as DNS servers, which can 
 
 It is usually a good idea to create a dedicated model for the COS Lite bundle. So let's do just that and call the new model `cos`:
 
-
 ```bash
 $ juju add-model cos
 $ juju switch cos
@@ -172,6 +171,42 @@ $ juju deploy cos-lite \
         --trust \
         --overlay ./offers-overlay.yaml \
         --overlay ./storage-small-overlay.yaml
+```
+
+## Deploy COS Lite using Terraform
+
+Create a `cos-lite-microk8s-sandbox.tf` file with the following Terraform module, or include it in your Terraform plan:
+
+```{literalinclude} /tutorial/installation/cos-lite-microk8s-sandbox.tf
+```
+
+<!-- warn users of the 2 Juju Provider bugs -->
+<!-- add `enable_external_tls` when available -->
+<!-- probably set the default track in the COS module to `1/stable`, then remove the key from the tutorial -->
+<!-- if Field wants, allow setting `anti_affinity` by something other than `kubernetes/hostname` -->
+
+**Note**: You can customize further the revisions of each charm and other aspects of COS Lite: have a look at the [`variables.tf`](../../../terraform/cos/variables.tf) file of the COS Lite Terraform module for the complete documentation.
+
+<!-- Once we allow enabling internal TLS and external TLS separately, add the explanation to this tutorial -->
+
+It is usually a good idea to create a dedicated model for COS Lite. So let's do just that and call the new model `cos`:
+
+```bash
+$ juju add-model cos
+$ juju switch cos
+```
+
+Next, deploy COS Lite on a new model, run:
+
+```bash
+terraform init
+terraform apply ./cos-canonical-k8s-sandbox.md  # verify the changes you're applying before accepting!
+```
+
+Now you can sit back and watch the deployment take place:
+
+```bash
+$ juju status --relations --watch=5s
 ```
 
 ## Browse dashboards

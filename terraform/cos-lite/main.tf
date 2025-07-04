@@ -5,6 +5,7 @@ module "alertmanager" {
   app_name = "alertmanager"
   model    = var.model
   channel  = var.channel
+  revision = var.alertmanager_revision
 }
 
 module "catalogue" {
@@ -12,6 +13,7 @@ module "catalogue" {
   app_name = "catalogue"
   model    = var.model
   channel  = var.channel
+  revision = var.catalogue_revision
 }
 
 module "grafana" {
@@ -19,6 +21,7 @@ module "grafana" {
   app_name = "grafana"
   model    = var.model
   channel  = var.channel
+  revision = var.grafana_revision
 }
 
 module "loki" {
@@ -26,6 +29,7 @@ module "loki" {
   app_name   = "loki"
   model_name = var.model
   channel    = var.channel
+  revision   = var.loki_revision
 }
 
 module "prometheus" {
@@ -33,13 +37,15 @@ module "prometheus" {
   app_name   = "prometheus"
   model_name = var.model
   channel    = var.channel
+  revision   = var.prometheus_revision
 }
 
 module "ssc" {
-  count   = var.use_tls ? 1 : 0
-  source  = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
-  model   = var.model
-  channel = var.ssc_channel
+  count    = var.use_tls ? 1 : 0
+  source   = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
+  model    = var.model
+  channel  = var.ssc_channel
+  revision = var.ssc_revision
 }
 
 module "traefik" {
@@ -47,6 +53,7 @@ module "traefik" {
   app_name = "traefik"
   model    = var.model
   channel  = var.traefik_channel
+  revision = var.traefik_revision
 }
 
 # -------------- # Integrations --------------
