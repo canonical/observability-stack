@@ -4,4 +4,4 @@ The Juju topology is a set of metadata associated with each piece of telemetry c
 
 See also:
 - [Juju Topology Labels](/reference/juju-topology-labels)
-- https://juju.is/blog/model-driven-observability-part-2-juju-topology-metrics
+- https://ubuntu.com/blog/model-driven-observability-part-2-juju-topology-metrics
