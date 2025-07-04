@@ -44,7 +44,7 @@ to bridge the gap between your current LMA-enabled charms that utilize Filebeat,
 Then deploy [Grafana Agent](https://charmhub.io/grafana-agent), and relate it to all your principal charms.
 You will need to make offers from the COS Lite model (if they are not already in place), for example:
 
-```{bash}
+```bash
 juju offer grafana:grafana-dashboard
 juju offer loki:logging
 juju offer prometheus:receive-remote-write
@@ -52,7 +52,7 @@ juju offer prometheus:receive-remote-write
 
 And then consume them from the VM model, for example:
 
-```{bash}
+```bash
 juju consume ck8s:admin/cos.grafana
 juju consume ck8s:admin/cos.loki
 juju consume ck8s:admin/cos.prometheus
@@ -72,8 +72,8 @@ to COS.
 You'll now receive your telemetry in both LMA and COS. At this point, you should evaluate coverage for the checks and
 alarms you're used to when using LMA in COS before deciding to decommission LMA. Specifically:
 
-- Inspect the list of scrape jobs in Prometheus. These should match 1:1 to nrpe checks. Make sure they are all green (healthy).
-- Inspect the list of nrpe alarms evaluated by Prometheus.
+- Inspect the list of scrape jobs in Prometheus. These should match 1:1 to NRPE checks. Make sure they are all green (healthy).
+- Inspect the list of NRPE alarms evaluated by Prometheus.
 - Inspect the dashboards available in Grafana. There should be NRPE, Ceph and other dashboards. Confirm the data makes sense.
 
 ## 5. Decommission LMA

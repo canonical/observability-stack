@@ -1,14 +1,14 @@
 # Deployment Best Practices
 
 ## Support window
-Refer to [Supported tracks](supported-tracks) to choose the right track for your needs.
+Refer to [Supported tracks](../supported-tracks) to choose the right track for your needs.
 Note that different tracks may have different ubuntu bases or minimum Juju version requirement.
 
 
 ## Storage
 
 ### Evaluate storage volume needs
-Evaluate the [telemetry volume needed](../how-to/evaluate-telemetry-volume) for your solution
+Evaluate the [telemetry volume needed](../../how-to/evaluate-telemetry-volume) for your solution
 and refer to the storage [sizing guideline](https://discourse.charmhub.io/t/cos-lite-ingestion-limits-for-8cpu-16gb-ssd/13005) for concrete numbers.
 
 For example, a deployment that handles roughly:
@@ -24,7 +24,7 @@ In production, **do not** use hostPath storage (called `local-storage` in Canoni
  * `PersistentVolumeClaims` created by the host path storage provisioner are bound to the local node, so it is *impossible to move them to a different node*.
  * A `hostpath` volume can *grow beyond the capacity set in the volume claim manifest*.
 
-Use ceph-csi. Refer to Canonical Kubernetes [snap](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/storage/ceph/)
+Use Ceph CSI. Refer to Canonical Kubernetes [snap](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/storage/ceph/)
 and [charm](https://documentation.ubuntu.com/canonical-kubernetes/latest/charm/howto/ceph-csi/) docs.
 
 
@@ -99,7 +99,7 @@ Deploy at least three nodes per worker, with anti-affinity set to hostname.
 
 
 ## Juju relation topology
-#### Avoid pulling data cross-model
+### Avoid pulling data cross-model
 
 Cross-model relations using the `prometheus_scrape` interface should be avoided.
 Instead, deploy OpenTelemetry Collector in each of the models you want to observe and let the agents be a fan-in point pushing the data to COS.

@@ -20,8 +20,10 @@ cpu
 cryptographic
 Cryptographic
 cryptographically
+CSI
 CSRs
 customizable
+datasource
 DNS
 dvipng
 extracurriculars
@@ -39,6 +41,7 @@ grafana
 Grafana's
 gRPCs
 gyre
+hostname
 hostPath
 https
 HTTPS
