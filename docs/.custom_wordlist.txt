@@ -20,8 +20,10 @@ cpu
 cryptographic
 Cryptographic
 cryptographically
+CSI
 CSRs
 customizable
+datasource
 DNS
 dvipng
 extracurriculars
@@ -30,6 +32,7 @@ filesystem
 fonts
 FQDN
 freefont
+frontend
 gb
 Gi
 github
@@ -39,9 +42,11 @@ grafana
 Grafana's
 gRPCs
 gyre
+hostname
 hostPath
 https
 HTTPS
+ingester
 instantiation
 integrations
 io
@@ -84,6 +89,7 @@ provisioner
 proxied
 PVC
 PVCs
+querier
 RadosGW
 Relabeler
 routable
