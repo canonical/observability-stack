@@ -32,6 +32,7 @@ filesystem
 fonts
 FQDN
 freefont
+frontend
 gb
 Gi
 github
@@ -45,6 +46,7 @@ hostname
 hostPath
 https
 HTTPS
+ingester
 instantiation
 integrations
 io
@@ -87,6 +89,7 @@ provisioner
 proxied
 PVC
 PVCs
+querier
 RadosGW
 Relabeler
 routable
