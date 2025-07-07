@@ -329,3 +329,4 @@ snapcrafting
 subcluster
 swrast
 zSystems
+mimir
