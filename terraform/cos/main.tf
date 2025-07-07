@@ -713,6 +713,7 @@ resource "juju_integration" "tempo_certificates" {
 }
 
 resource "juju_integration" "traefik_receive_ca_certificate" {
+  count = var.internal_tls ? 1 : 0
   model = var.model
 
   application {
@@ -723,21 +724,6 @@ resource "juju_integration" "traefik_receive_ca_certificate" {
   application {
     name     = module.traefik.app_name
     endpoint = module.traefik.endpoints.receive_ca_cert
-  }
-}
-
-resource "juju_integration" "traefik_certificates" {
-  count = var.internal_tls ? 1 : 0
-  model = var.model
-
-  application {
-    name     = module.ssc[0].app_name
-    endpoint = module.ssc[0].provides.certificates
-  }
-
-  application {
-    name     = module.traefik.app_name
-    endpoint = module.traefik.endpoints.certificates
   }
 }
 

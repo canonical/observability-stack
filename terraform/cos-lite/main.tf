@@ -428,6 +428,7 @@ resource "juju_integration" "prometheus_certificates" {
 }
 
 resource "juju_integration" "traefik_receive_ca_certificate" {
+  count = var.internal_tls ? 1 : 0
   model = var.model
 
   application {
