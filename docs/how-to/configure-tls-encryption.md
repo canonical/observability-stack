@@ -29,7 +29,7 @@ flowchart TB
     route53[route53-acme-operator]
   end
 
-  subgraph ObserveModel [model-to-observe]
+  subgraph ObserveModel [observable-model]
     grafana[grafana-agent]
   end
 

@@ -3,12 +3,12 @@
 #   'terraform apply'
 
 module "ssc" {
-  source = "git::https://github.com/MichaelThamm/self-signed-certificates-operator//terraform?ref=feat/tf-output-offers"  # FIXME
+  source = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
   model  = "external-ca"
 }
 
 module "cos-lite" {
-  source                          = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=feat/tls-termination"
+  source                          = "git::https://github.com/canonical/observability-stack//terraform/cos-lite"
   model                           = "cos"
   channel                         = "1/stable"
   traefik_channel                 = "latest/edge"
