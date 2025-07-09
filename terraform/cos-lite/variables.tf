@@ -19,7 +19,7 @@ variable "internal_tls" {
 }
 
 variable "external_certificates_offer_url" {
-  description = "A Juju offer URL of a CA providing the 'tls_certificates' integration for Traefik to supply it with server certificates"
+  description = "A Juju offer URL (e.g. admin/external-ca.certificates) of a CA providing the 'tls_certificates' integration for Traefik to supply it with server certificates."
   type        = string
   default     = null
 }
