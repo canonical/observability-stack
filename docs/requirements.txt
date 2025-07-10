@@ -4,4 +4,3 @@ sphinxcontrib-svg2pdfconverter[CairoSVG]
 sphinx-last-updated-by-git
 sphinx-sitemap
 sphinxcontrib-mermaid
-sphinxcontrib-drawio
