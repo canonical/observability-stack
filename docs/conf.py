@@ -273,6 +273,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx_sitemap",
     "sphinxcontrib.mermaid",
+    "sphinxcontrib.drawio",
 ]
 
 # Excludes files or directories from processing
