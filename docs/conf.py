@@ -220,6 +220,7 @@ linkcheck_ignore = [
     "http://127.0.0.1:8000",
     "https://github.com/canonical/ACME/*",
     "troubleshooting/",
+    "https://github.com/canonical/observability-stack//terraform/cos-lite",
     ]
 
 

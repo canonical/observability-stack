@@ -56,7 +56,7 @@ module "prometheus" {
 }
 
 module "ssc" {
-  count       = var.use_tls ? 1 : 0
+  count       = var.internal_tls ? 1 : 0
   source      = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
   channel     = var.ssc_channel
   config      = var.ssc_config
@@ -373,7 +373,7 @@ resource "juju_integration" "traefik_self_monitoring_prometheus" {
 # Provided by Self-Signed-Certificates
 
 resource "juju_integration" "alertmanager_certificates" {
-  count = var.use_tls ? 1 : 0
+  count = var.internal_tls ? 1 : 0
   model = var.model
 
   application {
@@ -388,7 +388,7 @@ resource "juju_integration" "alertmanager_certificates" {
 }
 
 resource "juju_integration" "catalogue_certificates" {
-  count = var.use_tls ? 1 : 0
+  count = var.internal_tls ? 1 : 0
   model = var.model
 
   application {
@@ -403,7 +403,7 @@ resource "juju_integration" "catalogue_certificates" {
 }
 
 resource "juju_integration" "grafana_certificates" {
-  count = var.use_tls ? 1 : 0
+  count = var.internal_tls ? 1 : 0
   model = var.model
 
   application {
@@ -418,7 +418,7 @@ resource "juju_integration" "grafana_certificates" {
 }
 
 resource "juju_integration" "loki_certificates" {
-  count = var.use_tls ? 1 : 0
+  count = var.internal_tls ? 1 : 0
   model = var.model
 
   application {
@@ -433,7 +433,7 @@ resource "juju_integration" "loki_certificates" {
 }
 
 resource "juju_integration" "prometheus_certificates" {
-  count = var.use_tls ? 1 : 0
+  count = var.internal_tls ? 1 : 0
   model = var.model
 
   application {
@@ -447,13 +447,29 @@ resource "juju_integration" "prometheus_certificates" {
   }
 }
 
-resource "juju_integration" "traefik_certificates" {
-  count = var.use_tls ? 1 : 0
+resource "juju_integration" "traefik_receive_ca_certificate" {
+  count = var.internal_tls ? 1 : 0
   model = var.model
 
   application {
     name     = module.ssc[0].app_name
-    endpoint = module.ssc[0].provides.certificates
+    endpoint = module.ssc[0].provides.send-ca-cert
+  }
+
+  application {
+    name     = module.traefik.app_name
+    endpoint = module.traefik.endpoints.receive_ca_cert
+  }
+}
+
+# Provided by an external CA
+
+resource "juju_integration" "external_traefik_certificates" {
+  count = local.tls_termination ? 1 : 0
+  model = var.model
+
+  application {
+    offer_url = var.external_certificates_offer_url
   }
 
   application {

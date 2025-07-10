@@ -14,6 +14,5 @@ Explanation
    Telemetry Flow <telemetry-flow>
    Telemetry Labels <telemetry-labels>
    Logging Architecture <logging-architecture>
-   TLS encryption in COS <tls-encryption-in-cos>
    Model-Driven Observability <https://ubuntu.com/blog/tag/model-driven-observability>
    What is Observability? <https://canonical.com/observability/what-is-observability>
