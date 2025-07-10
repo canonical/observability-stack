@@ -1,3 +1,7 @@
+locals {
+  tls_termination = var.external_certificates_offer_url != null ? true : false
+}
+
 variable "channel" {
   description = "Channel that the charms are (unless overwritten by external_channels) deployed from"
   type        = string
@@ -8,10 +12,16 @@ variable "model" {
   type        = string
 }
 
-variable "use_tls" {
-  description = "Specify whether to use TLS or not for coordinator-worker communication. By default, TLS is enabled through self-signed-certificates"
+variable "internal_tls" {
+  description = "Specify whether to use TLS or not for internal COS communication. By default, TLS is enabled using self-signed-certificates"
   type        = bool
   default     = true
+}
+
+variable "external_certificates_offer_url" {
+  description = "A Juju offer URL (e.g. admin/external-ca.certificates) of a CA providing the 'tls_certificates' integration for Traefik to supply it with server certificates."
+  type        = string
+  default     = null
 }
 
 # -------------- # External channels --------------

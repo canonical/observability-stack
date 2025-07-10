@@ -329,3 +329,5 @@ snapcrafting
 subcluster
 swrast
 zSystems
+mimir
+terraform
