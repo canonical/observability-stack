@@ -29,6 +29,50 @@ variable "traefik_channel" {
   default     = "latest/stable"
 }
 
+# -------------- # Application configs --------------
+
+variable "alertmanager_config" {
+  description = "Map of the Alertmanager configuration options"
+  type        = map(string)
+  default     = {}
+}
+
+variable "catalogue_config" {
+  description = "Map of the Catalogue configuration options"
+  type        = map(string)
+  default     = {}
+}
+
+variable "grafana_config" {
+  description = "Map of the Grafana configuration options"
+  type        = map(string)
+  default     = {}
+}
+
+variable "loki_config" {
+  description = "Map of the Loki configuration options"
+  type        = map(string)
+  default     = {}
+}
+
+variable "prometheus_config" {
+  description = "Map of the Prometheus configuration options"
+  type        = map(string)
+  default     = {}
+}
+
+variable "ssc_config" {
+  description = "Map of the self-signed certificates configuration options"
+  type        = map(string)
+  default     = {}
+}
+
+variable "traefik_config" {
+  description = "Map of the Traefik configuration options"
+  type        = map(string)
+  default     = {}
+}
+
 # -------------- # Application constraints --------------
 
 # We use constraints to set AntiAffinity in K8s
@@ -122,50 +166,6 @@ variable "traefik_revision" {
   default     = null
 }
 
-# -------------- # Application configs --------------
-
-variable "alertmanager_config" {
-  description = "Map of the Alertmanager configuration options"
-  type        = map(string)
-  default     = {}
-}
-
-variable "catalogue_config" {
-  description = "Map of the Catalogue configuration options"
-  type        = map(string)
-  default     = {}
-}
-
-variable "grafana_config" {
-  description = "Map of the Grafana configuration options"
-  type        = map(string)
-  default     = {}
-}
-
-variable "loki_config" {
-  description = "Map of the Loki configuration options"
-  type        = map(string)
-  default     = {}
-}
-
-variable "prometheus_config" {
-  description = "Map of the Prometheus configuration options"
-  type        = map(string)
-  default     = {}
-}
-
-variable "ssc_config" {
-  description = "Map of the self-signed certificates configuration options"
-  type        = map(string)
-  default     = {}
-}
-
-variable "traefik_config" {
-  description = "Map of the Traefik configuration options"
-  type        = map(string)
-  default     = {}
-}
-
 # -------------- # Application storage directives --------------
 
 variable "alertmanager_storage_directives" {
@@ -182,24 +182,6 @@ variable "catalogue_storage_directives" {
 
 variable "grafana_storage_directives" {
   description = "Map of storage used by the Grafana application, which defaults to 1 GB, allocated by Juju"
-  type        = map(string)
-  default     = {}
-}
-
-variable "loki_storage_directives" {
-  description = "Map of storage used by the Loki application, which defaults to 1 GB, allocated by Juju"
-  type        = map(string)
-  default     = {}
-}
-
-variable "prometheus_storage_directives" {
-  description = "Map of storage used by the Prometheus application, which defaults to 1 GB, allocated by Juju"
-  type        = map(string)
-  default     = {}
-}
-
-variable "ssc_storage_directives" {
-  description = "Map of storage used by the self-signed certificates application, which defaults to 1 GB, allocated by Juju"
   type        = map(string)
   default     = {}
 }

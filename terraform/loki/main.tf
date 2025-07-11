@@ -18,79 +18,80 @@ resource "juju_access_secret" "loki_s3_secret_access" {
 
 # TODO: Replace s3_integrator resource to use its remote terraform module once available
 resource "juju_application" "s3_integrator" {
-  name  = var.s3_integrator_name
+  config = {
+    endpoint    = var.s3_endpoint
+    bucket      = var.s3_bucket
+    credentials = "secret:${juju_secret.loki_s3_credentials_secret.secret_id}"
+  }
   model = var.model
+  name  = var.s3_integrator_name
   trust = true
+  units = 1
 
   charm {
     name     = "s3-integrator"
     channel  = var.s3_integrator_channel
     revision = var.s3_integrator_revision
   }
-  config = {
-    endpoint    = var.s3_endpoint
-    bucket      = var.s3_bucket
-    credentials = "secret:${juju_secret.loki_s3_credentials_secret.secret_id}"
-  }
-  units = 1
 }
 
 module "loki_coordinator" {
   source      = "git::https://github.com/canonical/loki-coordinator-k8s-operator//terraform"
   app_name    = "loki"
-  model       = var.model
   channel     = var.channel
+  constraints = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=loki,anti-pod.topology-key=kubernetes.io/hostname" : var.coordinator_constraints
+  model       = var.model
   revision    = var.coordinator_revision
+  storage_directives = var.coordinator_storage_directives
   units       = var.coordinator_units
-  constraints = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=loki,anti-pod.topology-key=kubernetes.io/hostname" : null
 }
 
 module "loki_backend" {
-  source      = "git::https://github.com/canonical/loki-worker-k8s-operator//terraform"
+  source     = "git::https://github.com/canonical/loki-worker-k8s-operator//terraform"
+  depends_on = [module.loki_coordinator]
+
   app_name    = var.backend_name
-  model       = var.model
   channel     = var.channel
-  constraints = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=${var.backend_name},anti-pod.topology-key=kubernetes.io/hostname" : null
-  config = {
+  constraints = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=${var.backend_name},anti-pod.topology-key=kubernetes.io/hostname" : var.worker_constraints
+  config = merge({
     role-backend = true
-  }
+  }, var.worker_config)
+  model    = var.model
   revision = var.worker_revision
+  storage_directives = var.worker_storage_directives
   units    = var.backend_units
-  depends_on = [
-    module.loki_coordinator
-  ]
 }
 
 module "loki_read" {
-  source      = "git::https://github.com/canonical/loki-worker-k8s-operator//terraform"
+  source     = "git::https://github.com/canonical/loki-worker-k8s-operator//terraform"
+  depends_on = [module.loki_coordinator]
+
   app_name    = var.read_name
-  model       = var.model
   channel     = var.channel
-  constraints = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=${var.read_name},anti-pod.topology-key=kubernetes.io/hostname" : null
-  config = {
+  constraints = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=${var.read_name},anti-pod.topology-key=kubernetes.io/hostname" : var.worker_constraints
+  config = merge({
     role-read = true
-  }
+  }, var.worker_config)
+  model    = var.model
   revision = var.worker_revision
+  storage_directives = var.worker_storage_directives
   units    = var.read_units
-  depends_on = [
-    module.loki_coordinator
-  ]
 }
 
 module "loki_write" {
-  source      = "git::https://github.com/canonical/loki-worker-k8s-operator//terraform"
+  source     = "git::https://github.com/canonical/loki-worker-k8s-operator//terraform"
+  depends_on = [module.loki_coordinator]
+
   app_name    = var.write_name
-  model       = var.model
   channel     = var.channel
-  constraints = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=${var.write_name},anti-pod.topology-key=kubernetes.io/hostname" : null
-  config = {
+  constraints = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=${var.write_name},anti-pod.topology-key=kubernetes.io/hostname" : var.worker_constraints
+  config = merge({
     role-write = true
-  }
+  }, var.worker_config)
+  model    = var.model
   revision = var.worker_revision
+  storage_directives = var.worker_storage_directives
   units    = var.write_units
-  depends_on = [
-    module.loki_coordinator
-  ]
 }
 
 # -------------- # Integrations --------------
