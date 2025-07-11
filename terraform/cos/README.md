@@ -33,7 +33,7 @@ The module offers the following configurable inputs:
 | `ssc_channel` | string | Channel that the self-signed certificates charm is deployed from | latest/edge |
 | `traefik_channel` | string | Channel that the traefik charm is deployed from | latest/edge |
 | `model` | string | Reference to an existing model resource or data source for the model to deploy to |
-| `use_tls` | bool | Specify whether to use TLS or not for in-cluster communication |
+| `internal_tls` | bool | Specify whether to use TLS or not for in-cluster communication |
 | `cloud` | string | Kubernetes cloud or environment where this COS module will be deployed | self-managed |
 | `loki_coordinator_units` | number | Number of Loki coordinator units |
 | `loki_backend_units` | number | Number of Loki worker units with `backend` role |
@@ -120,7 +120,7 @@ module "cos" {
     ssc_channel                   = "1/edge"
     traefik_channel               = "latest/edge"
     cloud                         = "self-managed"
-    use_tls                       = true
+    internal_tls                       = true
     s3_endpoint                   = "http://S3_HOST_IP:8080"
     s3_secret_key                 = "secret-key"
     s3_access_key                 = "access-key"
@@ -356,7 +356,7 @@ variable "model" {
   type        = string
 }
 
-variable "use_tls" {
+variable "internal_tls" {
   description = "Specify whether to use TLS or not for coordinator-worker communication. By default, TLS is enabled through self-signed-certificates"
   type        = bool
   default     = true
