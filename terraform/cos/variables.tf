@@ -48,6 +48,51 @@ variable "anti_affinity" {
   default     = true
 }
 
+# -------------- # S3 storage configuration --------------
+
+variable "s3_integrator_channel" {
+  description = "Channel that the s3-integrator application is deployed from"
+  type        = string
+  default     = "2/edge"
+}
+
+variable "s3_endpoint" {
+  description = "S3 endpoint"
+  type        = string
+}
+
+variable "s3_access_key" {
+  description = "S3 access-key credential"
+  type        = string
+  sensitive   = true
+}
+
+variable "s3_secret_key" {
+  description = "S3 secret-key credential"
+  type        = string
+  sensitive   = true
+}
+
+variable "loki_bucket" {
+  description = "Loki bucket name"
+  type        = string
+  sensitive   = true
+}
+
+variable "mimir_bucket" {
+  description = "Mimir bucket name"
+  type        = string
+  sensitive   = true
+}
+
+variable "tempo_bucket" {
+  description = "Tempo bucket name"
+  type        = string
+  sensitive   = true
+}
+
+# -------------- # Application configurations --------------
+
 variable "alertmanager" {
   type = object({
     app_name           = optional(string, "alertmanager") # without default, will give "known after apply"
@@ -210,47 +255,4 @@ variable "traefik" {
     units              = optional(number, 1)
   })
   default = {}
-}
-
-# -------------- # S3 storage configuration --------------
-
-variable "s3_integrator_channel" {
-  description = "Channel that the s3-integrator application is deployed from"
-  type        = string
-  default     = "2/edge"
-}
-
-variable "s3_endpoint" {
-  description = "S3 endpoint"
-  type        = string
-}
-
-variable "s3_access_key" {
-  description = "S3 access-key credential"
-  type        = string
-  sensitive   = true
-}
-
-variable "s3_secret_key" {
-  description = "S3 secret-key credential"
-  type        = string
-  sensitive   = true
-}
-
-variable "loki_bucket" {
-  description = "Loki bucket name"
-  type        = string
-  sensitive   = true
-}
-
-variable "mimir_bucket" {
-  description = "Mimir bucket name"
-  type        = string
-  sensitive   = true
-}
-
-variable "tempo_bucket" {
-  description = "Tempo bucket name"
-  type        = string
-  sensitive   = true
 }
