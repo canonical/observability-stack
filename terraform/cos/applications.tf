@@ -63,7 +63,9 @@ module "loki" {
   coordinator_revision           = var.loki_coordinator.revision
   coordinator_storage_directives = var.loki_coordinator.storage_directives
   coordinator_units              = var.loki_coordinator.units
-  worker_config                  = var.loki_worker.config
+  backend_config                 = var.loki_worker.backend_config
+  read_config                    = var.loki_worker.read_config
+  write_config                   = var.loki_worker.write_config
   worker_constraints             = var.loki_worker.constraints
   worker_revision                = var.loki_worker.revision
   worker_storage_directives      = var.loki_worker.storage_directives
@@ -89,7 +91,9 @@ module "mimir" {
   coordinator_revision           = var.mimir_coordinator.revision
   coordinator_storage_directives = var.mimir_coordinator.storage_directives
   coordinator_units              = var.mimir_coordinator.units
-  worker_config                  = var.mimir_worker.config
+  backend_config                 = var.mimir_worker.backend_config
+  read_config                    = var.mimir_worker.read_config
+  write_config                   = var.mimir_worker.write_config
   worker_constraints             = var.mimir_worker.constraints
   worker_revision                = var.mimir_worker.revision
   worker_storage_directives      = var.mimir_worker.storage_directives
@@ -127,7 +131,12 @@ module "tempo" {
   coordinator_revision           = var.tempo_coordinator.revision
   coordinator_storage_directives = var.tempo_coordinator.storage_directives
   coordinator_units              = var.tempo_coordinator.units
-  worker_config                  = var.tempo_worker.config
+  querier_config                 = var.tempo_worker.querier_config
+  query_frontend_config          = var.tempo_worker.query_frontend_config
+  ingester_config                = var.tempo_worker.ingester_config
+  distributor_config             = var.tempo_worker.distributor_config
+  compactor_config               = var.tempo_worker.compactor_config
+  metrics_generator_config       = var.tempo_worker.metrics_generator_config
   worker_constraints             = var.tempo_worker.constraints
   worker_revision                = var.tempo_worker.revision
   worker_storage_directives      = var.tempo_worker.storage_directives

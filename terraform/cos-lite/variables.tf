@@ -33,86 +33,130 @@ variable "external_certificates_offer_url" {
 
 variable "alertmanager" {
   type = object({
-    app_name    = optional(string, "alertmanager")
-    config      = optional(map(string), {})
-    constraints = optional(string, "arch=amd64")
-    revision    = optional(number, null)
+    app_name           = optional(string, "alertmanager")
+    config             = optional(map(string), {})
+    constraints        = optional(string, "arch=amd64")
+    revision           = optional(number, null)
     storage_directives = optional(map(string), {})
-    units       = optional(number, 1)
+    units              = optional(number, 1)
   })
   default = {}
 }
 
 variable "catalogue" {
   type = object({
-    app_name    = optional(string, "catalogue")
-    config      = optional(map(string), {})
-    constraints = optional(string, "arch=amd64")
-    revision    = optional(number, null)
+    app_name           = optional(string, "catalogue")
+    config             = optional(map(string), {})
+    constraints        = optional(string, "arch=amd64")
+    revision           = optional(number, null)
     storage_directives = optional(map(string), {})
-    units       = optional(number, 1)
+    units              = optional(number, 1)
   })
   default = {}
 }
 
 variable "grafana" {
   type = object({
-    app_name    = optional(string, "grafana")
-    config      = optional(map(string), {})
-    constraints = optional(string, "arch=amd64")
-    revision    = optional(number, null)
+    app_name           = optional(string, "grafana")
+    config             = optional(map(string), {})
+    constraints        = optional(string, "arch=amd64")
+    revision           = optional(number, null)
     storage_directives = optional(map(string), {})
-    units       = optional(number, 1)
+    units              = optional(number, 1)
   })
   default = {}
 }
 
 variable "loki" {
   type = object({
-    app_name    = optional(string, "loki")
-    config      = optional(map(string), {})
-    constraints = optional(string, "arch=amd64")
-    revision    = optional(number, null)
+    app_name           = optional(string, "loki")
+    config             = optional(map(string), {})
+    constraints        = optional(string, "arch=amd64")
+    revision           = optional(number, null)
     storage_directives = optional(map(string), {})
-    units       = optional(number, 1)
+    units              = optional(number, 1)
   })
   default = {}
 }
 
 variable "prometheus" {
   type = object({
-    app_name    = optional(string, "prometheus")
-    config      = optional(map(string), {})
-    constraints = optional(string, "arch=amd64")
-    revision    = optional(number, null)
+    app_name           = optional(string, "prometheus")
+    config             = optional(map(string), {})
+    constraints        = optional(string, "arch=amd64")
+    revision           = optional(number, null)
     storage_directives = optional(map(string), {})
-    units       = optional(number, 1)
+    units              = optional(number, 1)
   })
   default = {}
 }
 
 variable "ssc" {
   type = object({
-    app_name    = optional(string, "ca")
-    channel     = optional(string, "1/stable")
-    config      = optional(map(string), {})
-    constraints = optional(string, "arch=amd64")
-    revision    = optional(number, null)
+    app_name           = optional(string, "ca")
+    channel            = optional(string, "1/stable")
+    config             = optional(map(string), {})
+    constraints        = optional(string, "arch=amd64")
+    revision           = optional(number, null)
     storage_directives = optional(map(string), {})
-    units       = optional(number, 1)
+    units              = optional(number, 1)
   })
   default = {}
 }
 
 variable "traefik" {
   type = object({
-    app_name    = optional(string, "traefik")
-    channel     = optional(string, "latest/stable")
-    config      = optional(map(string), {})
-    constraints = optional(string, "arch=amd64")
-    revision    = optional(number, null)
+    app_name           = optional(string, "traefik")
+    channel            = optional(string, "latest/stable")
+    config             = optional(map(string), {})
+    constraints        = optional(string, "arch=amd64")
+    revision           = optional(number, null)
     storage_directives = optional(map(string), {})
-    units       = optional(number, 1)
+    units              = optional(number, 1)
   })
   default = {}
+}
+
+# -------------- # Application unit/scale --------------
+
+variable "alertmanager_units" {
+  description = "Unit count/scale of the Alertmanager application"
+  type        = number
+  default     = 1
+}
+
+variable "catalogue_units" {
+  description = "Unit count/scale of the Catalogue application"
+  type        = number
+  default     = 1
+}
+
+variable "grafana_units" {
+  description = "Unit count/scale of the Grafana application"
+  type        = number
+  default     = 1
+}
+
+variable "loki_units" {
+  description = "Unit count/scale of the Loki application"
+  type        = number
+  default     = 1
+}
+
+variable "prometheus_units" {
+  description = "Unit count/scale of the Prometheus application"
+  type        = number
+  default     = 1
+}
+
+variable "ssc_units" {
+  description = "Unit count/scale of the self-signed certificates application"
+  type        = number
+  default     = 1
+}
+
+variable "traefik_units" {
+  description = "Unit count/scale of the Traefik application"
+  type        = number
+  default     = 1
 }

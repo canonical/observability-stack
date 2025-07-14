@@ -18,15 +18,17 @@ resource "juju_access_secret" "loki_s3_secret_access" {
 
 # TODO: Replace s3_integrator resource to use its remote terraform module once available
 resource "juju_application" "s3_integrator" {
-  config = {
+  config = merge({
     endpoint    = var.s3_endpoint
     bucket      = var.s3_bucket
     credentials = "secret:${juju_secret.loki_s3_credentials_secret.secret_id}"
-  }
-  model = var.model
-  name  = var.s3_integrator_name
-  trust = true
-  units = 1
+  }, var.s3_integrator_config)
+  constraints        = var.s3_integrator_constraints
+  model              = var.model
+  name               = var.s3_integrator_name
+  storage_directives = var.s3_integrator_storage_directives
+  trust              = true
+  units              = var.s3_integrator_units
 
   charm {
     name     = "s3-integrator"
@@ -55,7 +57,7 @@ module "loki_backend" {
   constraints = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=${var.backend_name},anti-pod.topology-key=kubernetes.io/hostname" : var.worker_constraints
   config = merge({
     role-backend = true
-  }, var.worker_config)
+  }, var.backend_config)
   model              = var.model
   revision           = var.worker_revision
   storage_directives = var.worker_storage_directives
@@ -71,7 +73,7 @@ module "loki_read" {
   constraints = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=${var.read_name},anti-pod.topology-key=kubernetes.io/hostname" : var.worker_constraints
   config = merge({
     role-read = true
-  }, var.worker_config)
+  }, var.read_config)
   model              = var.model
   revision           = var.worker_revision
   storage_directives = var.worker_storage_directives
@@ -87,7 +89,7 @@ module "loki_write" {
   constraints = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=${var.write_name},anti-pod.topology-key=kubernetes.io/hostname" : var.worker_constraints
   config = merge({
     role-write = true
-  }, var.worker_config)
+  }, var.write_config)
   model              = var.model
   revision           = var.worker_revision
   storage_directives = var.worker_storage_directives

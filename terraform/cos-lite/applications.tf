@@ -35,27 +35,29 @@ module "grafana" {
 }
 
 module "loki" {
-  source             = "git::https://github.com/canonical/loki-k8s-operator//terraform"
-  app_name           = var.loki.app_name
-  channel            = var.channel
-  config             = var.loki.config
-  constraints        = var.loki.constraints
-  model              = var.model
-  storage_directives = var.loki.storage_directives
-  revision           = var.loki.revision
-  units              = var.loki.units
+  source      = "git::https://github.com/canonical/loki-k8s-operator//terraform"
+  app_name    = var.loki.app_name
+  channel     = var.channel
+  config      = var.loki.config
+  constraints = var.loki.constraints
+  model_name  = var.model
+  # model              = var.model
+  # storage_directives = var.loki.storage_directives
+  revision = var.loki.revision
+  units    = var.loki.units
 }
 
 module "prometheus" {
-  source             = "git::https://github.com/canonical/prometheus-k8s-operator//terraform"
-  app_name           = var.prometheus.app_name
-  channel            = var.channel
-  config             = var.prometheus.config
-  constraints        = var.prometheus.constraints
-  model              = var.model
-  storage_directives = var.prometheus.storage_directives
-  revision           = var.prometheus.revision
-  units              = var.prometheus.units
+  source      = "git::https://github.com/canonical/prometheus-k8s-operator//terraform"
+  app_name    = var.prometheus.app_name
+  channel     = var.channel
+  config      = var.prometheus.config
+  constraints = var.prometheus.constraints
+  model_name  = var.model
+  # model              = var.model
+  # storage_directives = var.prometheus.storage_directives
+  revision = var.prometheus.revision
+  units    = var.prometheus.units
 }
 
 module "ssc" {

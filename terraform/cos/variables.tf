@@ -50,7 +50,7 @@ variable "anti_affinity" {
 
 variable "alertmanager" {
   type = object({
-    app_name           = optional(string, "alertmanager")  # without default, will give "known after apply"
+    app_name           = optional(string, "alertmanager") # without default, will give "known after apply"
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
     revision           = optional(number, null)
@@ -103,7 +103,6 @@ variable "loki_coordinator" {
     revision               = optional(number, null)
     s3_integrator_channel  = optional(string, "2/edge")
     s3_integrator_revision = optional(number, 157) # FIXME: https://github.com/canonical/observability/issues/342
-    s3_bucket              = optional(string, "loki")
     storage_directives     = optional(map(string), {})
     units                  = optional(number, 3)
   })
@@ -112,8 +111,10 @@ variable "loki_coordinator" {
 
 variable "loki_worker" {
   type = object({
-    config             = optional(map(string), {})      # FIXME
-    constraints        = optional(string, "arch=amd64") # FIXME
+    backend_config     = optional(map(string), {})
+    read_config        = optional(map(string), {})
+    write_config       = optional(map(string), {})
+    constraints        = optional(string, "arch=amd64")
     revision           = optional(number, null)
     storage_directives = optional(map(string), {})
     backend_units      = optional(number, 3)
@@ -125,22 +126,23 @@ variable "loki_worker" {
 
 variable "mimir_coordinator" {
   type = object({
-    config                 = optional(map(string), {})      # FIXME
-    constraints            = optional(string, "arch=amd64") # FIXME
+    config                 = optional(map(string), {})
+    constraints            = optional(string, "arch=amd64")
     revision               = optional(number, null)
     s3_integrator_channel  = optional(string, "2/edge")
     s3_integrator_revision = optional(number, 157) # FIXME: https://github.com/canonical/observability/issues/342
-    s3_bucket              = optional(string, "mimir")
     storage_directives     = optional(map(string), {})
-    units                  = optional(number, 3) # FIXME
+    units                  = optional(number, 3)
   })
   default = {}
 }
 
 variable "mimir_worker" {
   type = object({
-    config             = optional(map(string), {})      # FIXME
-    constraints        = optional(string, "arch=amd64") # FIXME
+    backend_config     = optional(map(string), {})
+    read_config        = optional(map(string), {})
+    write_config       = optional(map(string), {})
+    constraints        = optional(string, "arch=amd64")
     revision           = optional(number, null)
     storage_directives = optional(map(string), {})
     backend_units      = optional(number, 3)
@@ -165,31 +167,34 @@ variable "ssc" {
 
 variable "tempo_coordinator" {
   type = object({
-    config                 = optional(map(string), {})      # FIXME
-    constraints            = optional(string, "arch=amd64") # FIXME
+    config                 = optional(map(string), {})
+    constraints            = optional(string, "arch=amd64")
     revision               = optional(number, null)
     storage_directives     = optional(map(string), {})
     units                  = optional(number, 3)
     s3_integrator_channel  = optional(string, "2/edge")
     s3_integrator_revision = optional(number, 157) # FIXME: https://github.com/canonical/observability/issues/342
-    s3_bucket              = optional(string, "tempo")
   })
   default = {}
 }
 
 variable "tempo_worker" {
   type = object({
-    config                 = optional(map(string), {})
-    constraints            = optional(string, "arch=amd64")
-    revision               = optional(number, null)
-    s3_integrator_channel  = optional(string, "2/edge")
-    storage_directives     = optional(map(string), {})
-    compactor_units        = optional(number, 3)
-    distributor_units      = optional(number, 3)
-    ingester_units         = optional(number, 3)
-    metrics_generator_units= optional(number, 3)
-    querier_units          = optional(number, 3)
-    query_frontend_units   = optional(number, 3)
+    querier_config           = optional(map(string), {})
+    query_frontend_config    = optional(map(string), {})
+    ingester_config          = optional(map(string), {})
+    distributor_config       = optional(map(string), {})
+    compactor_config         = optional(map(string), {})
+    metrics_generator_config = optional(map(string), {})
+    constraints              = optional(string, "arch=amd64")
+    revision                 = optional(number, null)
+    storage_directives       = optional(map(string), {})
+    compactor_units          = optional(number, 3)
+    distributor_units        = optional(number, 3)
+    ingester_units           = optional(number, 3)
+    metrics_generator_units  = optional(number, 3)
+    querier_units            = optional(number, 3)
+    query_frontend_units     = optional(number, 3)
   })
   default = {}
 }
@@ -207,16 +212,13 @@ variable "traefik" {
   default = {}
 }
 
-# -------------- # External channels --------------
-# O11y does not own these applications, so we allow users to specify their channels directly.
+# -------------- # S3 storage configuration --------------
 
 variable "s3_integrator_channel" {
   description = "Channel that the s3-integrator application is deployed from"
   type        = string
   default     = "2/edge"
 }
-
-# -------------- # S3 storage configuration --------------
 
 variable "s3_endpoint" {
   description = "S3 endpoint"
