@@ -36,14 +36,14 @@ resource "juju_application" "s3_integrator" {
 }
 
 module "loki_coordinator" {
-  source      = "git::https://github.com/canonical/loki-coordinator-k8s-operator//terraform"
-  app_name    = "loki"
-  channel     = var.channel
-  constraints = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=loki,anti-pod.topology-key=kubernetes.io/hostname" : var.coordinator_constraints
-  model       = var.model
-  revision    = var.coordinator_revision
+  source             = "git::https://github.com/canonical/loki-coordinator-k8s-operator//terraform"
+  app_name           = "loki"
+  channel            = var.channel
+  constraints        = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=loki,anti-pod.topology-key=kubernetes.io/hostname" : var.coordinator_constraints
+  model              = var.model
+  revision           = var.coordinator_revision
   storage_directives = var.coordinator_storage_directives
-  units       = var.coordinator_units
+  units              = var.coordinator_units
 }
 
 module "loki_backend" {
@@ -56,10 +56,10 @@ module "loki_backend" {
   config = merge({
     role-backend = true
   }, var.worker_config)
-  model    = var.model
-  revision = var.worker_revision
+  model              = var.model
+  revision           = var.worker_revision
   storage_directives = var.worker_storage_directives
-  units    = var.backend_units
+  units              = var.backend_units
 }
 
 module "loki_read" {
@@ -72,10 +72,10 @@ module "loki_read" {
   config = merge({
     role-read = true
   }, var.worker_config)
-  model    = var.model
-  revision = var.worker_revision
+  model              = var.model
+  revision           = var.worker_revision
   storage_directives = var.worker_storage_directives
-  units    = var.read_units
+  units              = var.read_units
 }
 
 module "loki_write" {
@@ -88,10 +88,10 @@ module "loki_write" {
   config = merge({
     role-write = true
   }, var.worker_config)
-  model    = var.model
-  revision = var.worker_revision
+  model              = var.model
+  revision           = var.worker_revision
   storage_directives = var.worker_storage_directives
-  units    = var.write_units
+  units              = var.write_units
 }
 
 # -------------- # Integrations --------------

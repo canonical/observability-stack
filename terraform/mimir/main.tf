@@ -56,11 +56,11 @@ module "mimir_read" {
   config = merge({
     role-read = true
   }, var.worker_config)
-  constraints = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=${var.read_name},anti-pod.topology-key=kubernetes.io/hostname" : var.worker_constraints
-  model       = var.model
-  revision = var.worker_revision
+  constraints        = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=${var.read_name},anti-pod.topology-key=kubernetes.io/hostname" : var.worker_constraints
+  model              = var.model
+  revision           = var.worker_revision
   storage_directives = var.worker_storage_directives
-  units       = var.read_units
+  units              = var.read_units
 }
 
 module "mimir_write" {
@@ -72,11 +72,11 @@ module "mimir_write" {
   config = merge({
     role-write = true
   }, var.worker_config)
-  constraints = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=${var.write_name},anti-pod.topology-key=kubernetes.io/hostname" : var.worker_constraints
-  model       = var.model
-  revision    = var.worker_revision
+  constraints        = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=${var.write_name},anti-pod.topology-key=kubernetes.io/hostname" : var.worker_constraints
+  model              = var.model
+  revision           = var.worker_revision
   storage_directives = var.worker_storage_directives
-  units       = var.write_units
+  units              = var.write_units
 }
 
 module "mimir_backend" {
@@ -89,10 +89,10 @@ module "mimir_backend" {
   config = merge({
     role-backend = true
   }, var.worker_config)
-  model    = var.model
-  revision = var.worker_revision
+  model              = var.model
+  revision           = var.worker_revision
   storage_directives = var.worker_storage_directives
-  units    = var.backend_units
+  units              = var.backend_units
 }
 
 # -------------- # Integrations --------------

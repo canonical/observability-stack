@@ -1,147 +1,152 @@
-# -------------- # Applications --------------
-
 module "alertmanager" {
   source             = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform"
-  app_name           = "alertmanager"
+  app_name           = var.alertmanager.app_name
   channel            = var.channel
-  config             = var.alertmanager_config
-  constraints        = var.alertmanager_constraints
+  config             = var.alertmanager.config
+  constraints        = var.alertmanager.constraints
   model              = var.model
-  revision           = var.alertmanager_revision
-  storage_directives = var.alertmanager_storage_directives
+  revision           = var.alertmanager.revision
+  storage_directives = var.alertmanager.storage_directives
+  units              = var.alertmanager.units
 }
 
 module "catalogue" {
   source             = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
-  app_name           = "catalogue"
+  app_name           = var.catalogue.app_name
   channel            = var.channel
-  config             = var.catalogue_config
-  constraints        = var.catalogue_constraints
+  config             = var.catalogue.config
+  constraints        = var.catalogue.constraints
   model              = var.model
-  revision           = var.catalogue_revision
-  storage_directives = var.catalogue_storage_directives
+  revision           = var.catalogue.revision
+  storage_directives = var.catalogue.storage_directives
+  units              = var.catalogue.units
 }
 
 module "grafana" {
   source             = "git::https://github.com/canonical/grafana-k8s-operator//terraform"
-  app_name           = "grafana"
+  app_name           = var.grafana.app_name
   channel            = var.channel
-  config             = var.grafana_config
-  constraints        = var.grafana_constraints
+  config             = var.grafana.config
+  constraints        = var.grafana.constraints
   model              = var.model
-  revision           = var.grafana_revision
-  storage_directives = var.grafana_storage_directives
+  revision           = var.grafana.revision
+  storage_directives = var.grafana.storage_directives
+  units              = var.grafana.units
 }
 
 module "grafana_agent" {
   source             = "git::https://github.com/canonical/grafana-agent-k8s-operator//terraform"
-  app_name           = "grafana-agent"
+  app_name           = var.grafana_agent.app_name
   channel            = var.channel
-  config             = var.grafana_agent_config
-  constraints        = var.grafana_agent_constraints
+  config             = var.grafana_agent.config
+  constraints        = var.grafana_agent.constraints
   model              = var.model
-  revision           = var.grafana_agent_revision
-  storage_directives = var.grafana_agent_storage_directives
+  revision           = var.grafana_agent.revision
+  storage_directives = var.grafana_agent.storage_directives
+  units              = var.grafana_agent.units
 }
 
 module "loki" {
   # source                 = "git::https://github.com/canonical/observability-stack//terraform/loki"
-  source                         = "../loki"  # FIXME
+  source                         = "../loki" # FIXME
   anti_affinity                  = var.anti_affinity
   channel                        = var.channel
   model                          = var.model
   s3_integrator_channel          = var.s3_integrator_channel
-  s3_integrator_revision         = var.s3_integrator_revision
   s3_endpoint                    = var.s3_endpoint
   s3_secret_key                  = var.s3_secret_key
   s3_access_key                  = var.s3_access_key
   s3_bucket                      = var.loki_bucket
-  coordinator_config             = var.loki_coordinator_config
-  coordinator_constraints        = var.loki_coordinator_constraints
-  coordinator_revision           = var.loki_coordinator_revision
-  coordinator_storage_directives = var.loki_coordinator_storage_directives
-  coordinator_units              = var.loki_coordinator_units
-  worker_config                  = var.loki_worker_config
-  worker_constraints             = var.loki_worker_constraints
-  worker_revision                = var.loki_worker_revision
-  worker_storage_directives      = var.loki_worker_storage_directives
-  backend_units                  = var.loki_backend_units
-  read_units                     = var.loki_read_units
-  write_units                    = var.loki_write_units
+  s3_integrator_revision         = var.loki_coordinator.s3_integrator_revision
+  coordinator_config             = var.loki_coordinator.config
+  coordinator_constraints        = var.loki_coordinator.constraints
+  coordinator_revision           = var.loki_coordinator.revision
+  coordinator_storage_directives = var.loki_coordinator.storage_directives
+  coordinator_units              = var.loki_coordinator.units
+  worker_config                  = var.loki_worker.config
+  worker_constraints             = var.loki_worker.constraints
+  worker_revision                = var.loki_worker.revision
+  worker_storage_directives      = var.loki_worker.storage_directives
+  backend_units                  = var.loki_worker.backend_units
+  read_units                     = var.loki_worker.read_units
+  write_units                    = var.loki_worker.write_units
 }
 
 module "mimir" {
   # source                 = "git::https://github.com/canonical/observability-stack//terraform/mimir"
-  source                         = "../mimir"  # FIXME
+  source                         = "../mimir" # FIXME
   anti_affinity                  = var.anti_affinity
   channel                        = var.channel
   model                          = var.model
   s3_integrator_channel          = var.s3_integrator_channel
-  s3_integrator_revision         = var.s3_integrator_revision
   s3_endpoint                    = var.s3_endpoint
   s3_secret_key                  = var.s3_secret_key
   s3_access_key                  = var.s3_access_key
   s3_bucket                      = var.mimir_bucket
-  coordinator_config             = var.mimir_coordinator_config
-  coordinator_constraints        = var.mimir_coordinator_constraints
-  coordinator_revision           = var.mimir_coordinator_revision
-  coordinator_storage_directives = var.mimir_coordinator_storage_directives
-  coordinator_units              = var.mimir_coordinator_units
-  worker_config                  = var.mimir_worker_config
-  worker_constraints             = var.mimir_worker_constraints
-  worker_revision                = var.mimir_worker_revision
-  worker_storage_directives      = var.mimir_worker_storage_directives
-  backend_units                  = var.mimir_backend_units
-  read_units                     = var.mimir_read_units
-  write_units                    = var.mimir_write_units
+  s3_integrator_revision         = var.mimir_coordinator.s3_integrator_revision
+  coordinator_config             = var.mimir_coordinator.config
+  coordinator_constraints        = var.mimir_coordinator.constraints
+  coordinator_revision           = var.mimir_coordinator.revision
+  coordinator_storage_directives = var.mimir_coordinator.storage_directives
+  coordinator_units              = var.mimir_coordinator.units
+  worker_config                  = var.mimir_worker.config
+  worker_constraints             = var.mimir_worker.constraints
+  worker_revision                = var.mimir_worker.revision
+  worker_storage_directives      = var.mimir_worker.storage_directives
+  backend_units                  = var.mimir_worker.backend_units
+  read_units                     = var.mimir_worker.read_units
+  write_units                    = var.mimir_worker.write_units
 }
 
 module "ssc" {
   count       = var.internal_tls ? 1 : 0
   source      = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
-  channel     = var.ssc_channel
-  config      = var.ssc_config
-  constraints = var.ssc_constraints
+  app_name    = var.ssc.app_name
+  channel     = var.ssc.channel
+  config      = var.ssc.config
+  constraints = var.ssc.constraints
   model       = var.model
-  revision    = var.ssc_revision
+  revision    = var.ssc.revision
+  units       = var.ssc.units
 }
 
 module "tempo" {
-  source                  = "git::https://github.com/canonical/observability-stack//terraform/tempo"
-  source                         = "../tempo"  # FIXME
+  # source                  = "git::https://github.com/canonical/observability-stack//terraform/tempo"
+  source                         = "../tempo" # FIXME
   anti_affinity                  = var.anti_affinity
   channel                        = var.channel
   model                          = var.model
   s3_integrator_channel          = var.s3_integrator_channel
-  s3_integrator_revision         = var.s3_integrator_revision
   s3_endpoint                    = var.s3_endpoint
   s3_access_key                  = var.s3_access_key
   s3_secret_key                  = var.s3_secret_key
   s3_bucket                      = var.tempo_bucket
-  coordinator_config             = var.tempo_coordinator_config
-  coordinator_constraints        = var.tempo_coordinator_constraints
-  coordinator_revision           = var.tempo_coordinator_revision
-  coordinator_storage_directives = var.tempo_coordinator_storage_directives
-  coordinator_units              = var.tempo_coordinator_units
-  worker_config                  = var.tempo_worker_config
-  worker_constraints             = var.tempo_worker_constraints
-  worker_revision                = var.tempo_worker_revision
-  worker_storage_directives      = var.tempo_worker_storage_directives
-  compactor_units                = var.tempo_compactor_units
-  distributor_units              = var.tempo_distributor_units
-  ingester_units                 = var.tempo_ingester_units
-  metrics_generator_units        = var.tempo_metrics_generator_units
-  querier_units                  = var.tempo_querier_units
-  query_frontend_units           = var.tempo_query_frontend_units
+  s3_integrator_revision         = var.tempo_coordinator.s3_integrator_revision
+  coordinator_config             = var.tempo_coordinator.config
+  coordinator_constraints        = var.tempo_coordinator.constraints
+  coordinator_revision           = var.tempo_coordinator.revision
+  coordinator_storage_directives = var.tempo_coordinator.storage_directives
+  coordinator_units              = var.tempo_coordinator.units
+  worker_config                  = var.tempo_worker.config
+  worker_constraints             = var.tempo_worker.constraints
+  worker_revision                = var.tempo_worker.revision
+  worker_storage_directives      = var.tempo_worker.storage_directives
+  compactor_units                = var.tempo_worker.compactor_units
+  distributor_units              = var.tempo_worker.distributor_units
+  ingester_units                 = var.tempo_worker.ingester_units
+  metrics_generator_units        = var.tempo_worker.metrics_generator_units
+  querier_units                  = var.tempo_worker.querier_units
+  query_frontend_units           = var.tempo_worker.query_frontend_units
 }
 
 module "traefik" {
   source             = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
-  app_name           = "traefik"
-  channel            = var.traefik_channel
-  config             = var.cloud == "aws" ? { "loadbalancer_annotations" = "service.beta.kubernetes.io/aws-load-balancer-scheme=internet-facing" } : var.traefik_config
-  constraints        = var.traefik_constraints
+  app_name           = var.traefik.app_name
+  channel            = var.traefik.channel
+  config             = var.cloud == "aws" ? { "loadbalancer_annotations" = "service.beta.kubernetes.io/aws-load-balancer-scheme=internet-facing" } : var.traefik.config
+  constraints        = var.traefik.constraints
   model              = var.model
-  revision           = var.traefik_revision
-  storage_directives = var.traefik_storage_directives
+  revision           = var.traefik.revision
+  storage_directives = var.traefik.storage_directives
+  units              = var.traefik.units
 }

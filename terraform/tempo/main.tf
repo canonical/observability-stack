@@ -76,9 +76,9 @@ module "tempo_query_frontend" {
     role-all            = false
     role-query-frontend = true
   }, var.worker_config)
-  revision = var.worker_revision
+  revision           = var.worker_revision
   storage_directives = var.worker_storage_directives
-  units    = var.query_frontend_units
+  units              = var.query_frontend_units
 }
 
 module "tempo_ingester" {
@@ -93,9 +93,9 @@ module "tempo_ingester" {
     role-all      = false
     role-ingester = true
   }, var.worker_config)
-  revision = var.worker_revision
+  revision           = var.worker_revision
   storage_directives = var.worker_storage_directives
-  units    = var.ingester_units
+  units              = var.ingester_units
 }
 
 module "tempo_distributor" {
@@ -110,9 +110,9 @@ module "tempo_distributor" {
     role-all         = false
     role-distributor = true
   }, var.worker_config)
-  revision = var.worker_revision
+  revision           = var.worker_revision
   storage_directives = var.worker_storage_directives
-  units    = var.distributor_units
+  units              = var.distributor_units
 }
 
 module "tempo_compactor" {
@@ -127,9 +127,9 @@ module "tempo_compactor" {
     role-all       = false
     role-compactor = true
   }, var.worker_config)
-  revision = var.worker_revision
+  revision           = var.worker_revision
   storage_directives = var.worker_storage_directives
-  units    = var.compactor_units
+  units              = var.compactor_units
 }
 
 module "tempo_metrics_generator" {
@@ -144,9 +144,9 @@ module "tempo_metrics_generator" {
     role-all               = false
     role-metrics-generator = true
   }, var.worker_config)
-  revision = var.worker_revision
+  revision           = var.worker_revision
   storage_directives = var.worker_storage_directives
-  units    = var.metrics_generator_units
+  units              = var.metrics_generator_units
 }
 
 # -------------- # Integrations --------------
