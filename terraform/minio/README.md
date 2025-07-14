@@ -1,28 +1,10 @@
 <!-- BEGIN_TF_DOCS -->
-## Requirements
-
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5 |
-| <a name="requirement_juju"></a> [juju](#requirement\_juju) | ~> 0.14 |
-
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_juju"></a> [juju](#provider\_juju) | ~> 0.14 |
 | <a name="provider_null"></a> [null](#provider\_null) | n/a |
-
-## Modules
-
-No modules.
-
-## Resources
-
-| Name | Type |
-|------|------|
-| [juju_application.minio](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application) | resource |
-| [null_resource.s3management](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 
 ## Inputs
 

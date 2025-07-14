@@ -1,84 +1,11 @@
 # Terraform module for COS solution
 
 <!-- BEGIN_TF_DOCS -->
-## Requirements
-
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5 |
-| <a name="requirement_juju"></a> [juju](#requirement\_juju) | >= 0.20.0 |
-
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_juju"></a> [juju](#provider\_juju) | >= 0.20.0 |
-
-## Modules
-
-| Name | Source | Version |
-|------|--------|---------|
-| <a name="module_alertmanager"></a> [alertmanager](#module\_alertmanager) | git::https://github.com/canonical/alertmanager-k8s-operator//terraform | n/a |
-| <a name="module_catalogue"></a> [catalogue](#module\_catalogue) | git::https://github.com/canonical/catalogue-k8s-operator//terraform | n/a |
-| <a name="module_grafana"></a> [grafana](#module\_grafana) | git::https://github.com/canonical/grafana-k8s-operator//terraform | n/a |
-| <a name="module_grafana_agent"></a> [grafana\_agent](#module\_grafana\_agent) | git::https://github.com/canonical/grafana-agent-k8s-operator//terraform | n/a |
-| <a name="module_loki"></a> [loki](#module\_loki) | git::https://github.com/canonical/observability-stack//terraform/loki | n/a |
-| <a name="module_mimir"></a> [mimir](#module\_mimir) | git::https://github.com/canonical/observability-stack//terraform/mimir | n/a |
-| <a name="module_ssc"></a> [ssc](#module\_ssc) | git::https://github.com/canonical/self-signed-certificates-operator//terraform | n/a |
-| <a name="module_tempo"></a> [tempo](#module\_tempo) | git::https://github.com/canonical/observability-stack//terraform/tempo | n/a |
-| <a name="module_traefik"></a> [traefik](#module\_traefik) | git::https://github.com/canonical/traefik-k8s-operator//terraform | n/a |
-
-## Resources
-
-| Name | Type |
-|------|------|
-| [juju_integration.agent_alertmanager_metrics](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.agent_loki_metrics](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.agent_mimir_metrics](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.alertmanager_catalogue](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.alertmanager_certificates](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.alertmanager_grafana_dashboards](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.alertmanager_ingress](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.catalogue_certificates](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.catalogue_ingress](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.external_traefik_certificates](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.grafana_agent_certificates](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.grafana_catalogue](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.grafana_certificates](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.grafana_ingress](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.grafana_source_alertmanager](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.grafana_tracing_grafana_agent_traicing_provider](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.loki_alertmanager](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.loki_certificates](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.loki_grafana_dashboards_provider](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.loki_grafana_source](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.loki_ingress](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.loki_logging_consumer_grafana_agent_logging_provider](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.loki_logging_grafana_agent_logging_consumer](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.loki_tracing_grafana_agent_traicing_provider](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.mimir_alertmanager](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.mimir_catalogue](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.mimir_certificates](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.mimir_grafana_dashboards_provider](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.mimir_grafana_source](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.mimir_ingress](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.mimir_logging_consumer_grafana_agent_logging_provider](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.mimir_self_metrics_endpoint_grafana_agent_metrics_endpoint](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.mimir_tracing_grafana_agent_tracing_provider](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.tempo_catalogue](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.tempo_certificates](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.tempo_grafana_dashboard_grafana_grafana_dashboard](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.tempo_grafana_source](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.tempo_ingress](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.tempo_logging_grafana_agent_logging_provider](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.tempo_metrics_endpoint_grafana_agent_metrics_endpoint](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.tempo_send_remote_write_mimir_receive_remote_write](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.tempo_tracing_grafana_agent_tracing](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.traefik_receive_ca_certificate](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_offer.alertmanager_karma_dashboard](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/offer) | resource |
-| [juju_offer.grafana_dashboards](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/offer) | resource |
-| [juju_offer.loki_logging](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/offer) | resource |
-| [juju_offer.mimir_receive_remote_write](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/offer) | resource |
 
 ## Inputs
 
@@ -132,8 +59,8 @@
 
 | Name | Description |
 |------|-------------|
-| <a name="output_components"></a> [components](#output\_components) | n/a |
-| <a name="output_offers"></a> [offers](#output\_offers) | n/a |
+| <a name="output_components"></a> [components](#output\_components) | All Terraform charm modules which make up this product module |
+| <a name="output_offers"></a> [offers](#output\_offers) | All Juju offers which are exposed by this product module |
 <!-- END_TF_DOCS -->
 
 This is a Terraform module facilitating the deployment of COS solution, using the [Terraform juju provider](https://github.com/juju/terraform-provider-juju/). For more information, refer to the provider [documentation](https://registry.terraform.io/providers/juju/juju/latest/docs).

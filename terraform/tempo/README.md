@@ -63,45 +63,11 @@ By default, this Terraform module will deploy each Tempo worker with `1` unit. T
 See [Tempo worker roles](https://discourse.charmhub.io/t/tempo-worker-roles/15484) for the recommended scale for each role.
 
 <!-- BEGIN_TF_DOCS -->
-## Requirements
-
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5 |
-| <a name="requirement_juju"></a> [juju](#requirement\_juju) | >= 0.14.0 |
-
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_juju"></a> [juju](#provider\_juju) | >= 0.14.0 |
-
-## Modules
-
-| Name | Source | Version |
-|------|--------|---------|
-| <a name="module_tempo_compactor"></a> [tempo\_compactor](#module\_tempo\_compactor) | git::https://github.com/canonical/tempo-worker-k8s-operator//terraform | n/a |
-| <a name="module_tempo_coordinator"></a> [tempo\_coordinator](#module\_tempo\_coordinator) | git::https://github.com/canonical/tempo-coordinator-k8s-operator//terraform | n/a |
-| <a name="module_tempo_distributor"></a> [tempo\_distributor](#module\_tempo\_distributor) | git::https://github.com/canonical/tempo-worker-k8s-operator//terraform | n/a |
-| <a name="module_tempo_ingester"></a> [tempo\_ingester](#module\_tempo\_ingester) | git::https://github.com/canonical/tempo-worker-k8s-operator//terraform | n/a |
-| <a name="module_tempo_metrics_generator"></a> [tempo\_metrics\_generator](#module\_tempo\_metrics\_generator) | git::https://github.com/canonical/tempo-worker-k8s-operator//terraform | n/a |
-| <a name="module_tempo_querier"></a> [tempo\_querier](#module\_tempo\_querier) | git::https://github.com/canonical/tempo-worker-k8s-operator//terraform | n/a |
-| <a name="module_tempo_query_frontend"></a> [tempo\_query\_frontend](#module\_tempo\_query\_frontend) | git::https://github.com/canonical/tempo-worker-k8s-operator//terraform | n/a |
-
-## Resources
-
-| Name | Type |
-|------|------|
-| [juju_access_secret.tempo_s3_secret_access](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/access_secret) | resource |
-| [juju_application.s3_integrator](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application) | resource |
-| [juju_integration.coordinator_to_compactor](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.coordinator_to_distributor](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.coordinator_to_ingester](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.coordinator_to_metrics_generator](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.coordinator_to_querier](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.coordinator_to_query_frontend](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.coordinator_to_s3_integrator](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_secret.tempo_s3_credentials_secret](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/secret) | resource |
 
 ## Inputs
 

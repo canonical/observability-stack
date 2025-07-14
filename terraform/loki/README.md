@@ -59,39 +59,11 @@ By default, this Terraform module will deploy each Loki worker with `1` unit. To
 See [Loki worker roles](https://discourse.charmhub.io/t/loki-worker-roles/15484) for the recommended scale for each role.
 
 <!-- BEGIN_TF_DOCS -->
-## Requirements
-
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5 |
-| <a name="requirement_juju"></a> [juju](#requirement\_juju) | >= 0.14.0 |
-
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_juju"></a> [juju](#provider\_juju) | >= 0.14.0 |
-
-## Modules
-
-| Name | Source | Version |
-|------|--------|---------|
-| <a name="module_loki_backend"></a> [loki\_backend](#module\_loki\_backend) | git::https://github.com/canonical/loki-worker-k8s-operator//terraform | n/a |
-| <a name="module_loki_coordinator"></a> [loki\_coordinator](#module\_loki\_coordinator) | git::https://github.com/canonical/loki-coordinator-k8s-operator//terraform | n/a |
-| <a name="module_loki_read"></a> [loki\_read](#module\_loki\_read) | git::https://github.com/canonical/loki-worker-k8s-operator//terraform | n/a |
-| <a name="module_loki_write"></a> [loki\_write](#module\_loki\_write) | git::https://github.com/canonical/loki-worker-k8s-operator//terraform | n/a |
-
-## Resources
-
-| Name | Type |
-|------|------|
-| [juju_access_secret.loki_s3_secret_access](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/access_secret) | resource |
-| [juju_application.s3_integrator](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application) | resource |
-| [juju_integration.coordinator_to_backend](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.coordinator_to_read](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.coordinator_to_s3_integrator](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.coordinator_to_write](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_secret.loki_s3_credentials_secret](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/secret) | resource |
 
 ## Inputs
 
