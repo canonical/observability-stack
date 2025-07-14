@@ -7,6 +7,7 @@ output "offers" {
     loki_logging                 = juju_offer.loki_logging
     mimir_receive_remote_write   = juju_offer.mimir_receive_remote_write
   }
+  description = "All Juju offers which are exposed by this product module"
 }
 
 # -------------- # Submodules -------------- #
@@ -23,4 +24,5 @@ output "components" {
     tempo         = module.tempo
     traefik       = module.traefik
   }
+  description = "All Terraform charm modules which make up this product module"
 }

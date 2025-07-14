@@ -158,65 +158,7 @@ This Terraform module deploys COS with Mimir, Tempo and Loki in their microservi
 ## Requirements
 This module requires a `juju` model to be available. Refer to the [usage section](#usage) below for more details.
 
-## API
-
-### Inputs
-The module offers the following configurable inputs:
-
-| Name | Type | Description                                                    | Default |
-| - | - |----------------------------------------------------------------| - |
-| `channel` | string | Channel that all the charms (unless overwritten) are deployed from |
-| `ssc_channel` | string | Channel that the self-signed certificates charm is deployed from | latest/edge |
-| `traefik_channel` | string | Channel that the traefik charm is deployed from | latest/edge |
-| `model` | string | Reference to an existing model resource or data source for the model to deploy to |
-| `use_tls` | bool | Specify whether to use TLS or not for in-cluster communication |
-| `cloud` | string | Kubernetes cloud or environment where this COS module will be deployed | self-managed |
-| `loki_coordinator_units` | number | Number of Loki coordinator units |
-| `loki_backend_units` | number | Number of Loki worker units with `backend` role |
-| `loki_read_units` | number | Number of Loki worker units with `read` role |
-| `loki_write_units` | number | Number of Loki worker units with `write` role |
-| `mimir_coordinator_units` | number | Number of Mimir coordinator units |
-| `mimir_backend_units` | number | Number of Mimir worker units with `backend` role |
-| `mimir_read_units` | number | Number of Mimir worker units with `read` role |
-| `mimir_write_units` | number | Number of Mimir worker units with `write` role |
-| `tempo_coordinator_units` | number | Number of Tempo coordinator units |
-| `tempo_compactor_units` | number | Number of Tempo worker units with `compactor` role |
-| `tempo_distributor_units` | number | Number of Tempo worker units with `distributor` role |
-| `tempo_ingester_units` | number | Number of Tempo worker units with `ingester` role |
-| `tempo_metrics_generator_units` | number | Number of Tempo worker units with `metrics_generator` role |
-| `tempo_querier_units` | number | Number of Tempo worker units with `querier` role |
-| `tempo_query_frontend_units` | number | Number of Tempo worker units with `query_frontend` role |
-| `s3_access_key` | string | Access key credential to connect to the S3 provider | 1 |
-| `s3_secret_key` | string | Secret key credential to connect to the S3 provider | 1 |
-| `s3_endpoint` | string | S3 provider endpoint                                           | 1 |
-| `loki_bucket` | string | Name of the bucket in which Loki should store its logs         | 1 |
-| `mimir_bucket` | string | Name of the bucket in which Mimir should store its metrics     | 1 |
-| `tempo_bucket` | string | Name of the bucket in which Tempo should store its traces      | 1 |
-| `alertmanager_revision` | number | Revision number of the charm | null |
-| `catalogue_revision` | number | Revision number of the charm | null |
-| `grafana_revision` | number | Revision number of the charm | null |
-| `grafana_agent_revision` | number | Revision number of the charm | null |
-| `loki_coordinator_revision` | number | Revision number of the charm | null |
-| `loki_worker_revision` | number | Revision number of the charm | null |
-| `mimir_coordinator_revision` | number | Revision number of the charm | null |
-| `mimir_worker_revision` | number | Revision number of the charm | null |
-| `ssc_revision` | number | Revision number of the charm | null |
-| `s3_integrator_revision` | number | Revision number of the charm | null |
-| `tempo_coordinator_revision` | number | Revision number of the charm | null |
-| `tempo_worker_revision` | number | Revision number of the charm | null |
-| `traefik_revision` | number | Revision number of the charm | null |
-
-### Outputs
-Upon application, the module exports the following outputs:
-
-| Name | Type | Description |
-| - | - | - |
-| `components`| map(any) | All TF charm submodule which make up this product module |
-| `offers`| map(any) | All offers which are exposed by this product module |
-
-
 ## Usage
-
 
 ### Basic usage
 

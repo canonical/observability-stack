@@ -11,6 +11,7 @@ output "app_names" {
       tempo_metrics_generator = module.tempo_metrics_generator.app_name,
     }
   )
+  # FIXME, add these to outputs.tf description
 }
 
 output "endpoints" {

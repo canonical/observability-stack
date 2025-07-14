@@ -8,6 +8,7 @@ output "app_names" {
       mimir_backend       = module.mimir_backend.app_name,
     }
   )
+  # FIXME, add these to outputs.tf description
 }
 
 output "endpoints" {

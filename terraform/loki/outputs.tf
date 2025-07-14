@@ -8,6 +8,7 @@ output "app_names" {
       loki_write         = module.loki_write.app_name,
     }
   )
+  # FIXME, add these to outputs.tf description
 }
 
 output "endpoints" {
@@ -27,4 +28,5 @@ output "endpoints" {
     receive_remote_write        = "receive-remote-write",
     self_metrics_endpoint       = "self-metrics-endpoint",
   }
+  # FIXME, add these to outputs.tf description
 }
