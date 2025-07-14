@@ -1,5 +1,11 @@
 # Terraform module for COS solution
 
+<!-- BEGIN_TF_DOCS -->
+
+
+
+<!-- END_TF_DOCS -->
+
 This is a Terraform module facilitating the deployment of COS solution, using the [Terraform juju provider](https://github.com/juju/terraform-provider-juju/). For more information, refer to the provider [documentation](https://registry.terraform.io/providers/juju/juju/latest/docs).
 
 The HA solution consists of the following components:

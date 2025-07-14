@@ -43,7 +43,8 @@ jobs:
     - name: Render terraform docs and push changes back to PR
       uses: terraform-docs/gh-actions@main
       with:
-        working-dir: .
+        find-dir: terraform/
+        # working-dir: terraform/aws-infra,terraform/cos,terraform/cos-lite,terraform/loki,terraform/mimir,terraform/tempo
         output-file: README.md
         output-method: inject
         git-push: "true"
