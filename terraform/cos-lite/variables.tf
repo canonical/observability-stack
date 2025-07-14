@@ -72,3 +72,4 @@ variable "traefik_revision" {
   type        = number
   default     = null
 }
+
