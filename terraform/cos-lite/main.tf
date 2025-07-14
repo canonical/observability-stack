@@ -1,59 +1,89 @@
 # -------------- # Applications --------------
 
 module "alertmanager" {
-  source   = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform"
-  app_name = "alertmanager"
-  model    = var.model
-  channel  = var.channel
-  revision = var.alertmanager_revision
+  source             = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform"
+  app_name           = "alertmanager"
+  channel            = var.channel
+  config             = var.alertmanager_config
+  constraints        = var.alertmanager_constraints
+  model              = var.model
+  revision           = var.alertmanager_revision
+  storage_directives = var.alertmanager_storage_directives
+  units              = var.alertmanager_units
 }
 
 module "catalogue" {
-  source   = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
-  app_name = "catalogue"
-  model    = var.model
-  channel  = var.channel
-  revision = var.catalogue_revision
+  source             = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
+  app_name           = "catalogue"
+  channel            = var.channel
+  config             = var.catalogue_config
+  constraints        = var.catalogue_constraints
+  model              = var.model
+  revision           = var.catalogue_revision
+  storage_directives = var.catalogue_storage_directives
+  units              = var.catalogue_units
 }
 
 module "grafana" {
-  source   = "git::https://github.com/canonical/grafana-k8s-operator//terraform"
-  app_name = "grafana"
-  model    = var.model
-  channel  = var.channel
-  revision = var.grafana_revision
+  source             = "git::https://github.com/canonical/grafana-k8s-operator//terraform"
+  app_name           = "grafana"
+  channel            = var.channel
+  config             = var.grafana_config
+  constraints        = var.grafana_constraints
+  model              = var.model
+  revision           = var.grafana_revision
+  storage_directives = var.grafana_storage_directives
+  units              = var.grafana_units
 }
 
 module "loki" {
-  source     = "git::https://github.com/canonical/loki-k8s-operator//terraform"
-  app_name   = "loki"
-  model_name = var.model
-  channel    = var.channel
-  revision   = var.loki_revision
+  source      = "git::https://github.com/canonical/loki-k8s-operator//terraform"
+  app_name    = "loki"
+  channel     = var.channel
+  config      = var.loki_config
+  constraints = var.loki_constraints
+  model_name  = var.model
+  # model              = var.model
+  # storage_directives = var.loki_storage_directives
+  revision = var.loki_revision
+  units    = var.loki_units
 }
 
 module "prometheus" {
-  source     = "git::https://github.com/canonical/prometheus-k8s-operator//terraform"
-  app_name   = "prometheus"
-  model_name = var.model
-  channel    = var.channel
-  revision   = var.prometheus_revision
+  source      = "git::https://github.com/canonical/prometheus-k8s-operator//terraform"
+  app_name    = "prometheus"
+  channel     = var.channel
+  config      = var.prometheus_config
+  constraints = var.prometheus_constraints
+  model_name  = var.model
+  # model              = var.model
+  # storage_directives = var.prometheus_storage_directives
+  revision = var.prometheus_revision
+  units    = var.prometheus_units
 }
 
 module "ssc" {
-  count    = var.internal_tls ? 1 : 0
-  source   = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
-  model    = var.model
-  channel  = var.ssc_channel
-  revision = var.ssc_revision
+  count       = var.internal_tls ? 1 : 0
+  source      = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
+  channel     = var.ssc_channel
+  config      = var.ssc_config
+  constraints = var.ssc_constraints
+  model       = var.model
+  revision    = var.ssc_revision
+  # storage_directives = var.ssc_storage_directives
+  units = var.ssc_units
 }
 
 module "traefik" {
-  source   = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
-  app_name = "traefik"
-  model    = var.model
-  channel  = var.traefik_channel
-  revision = var.traefik_revision
+  source             = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
+  app_name           = "traefik"
+  channel            = var.traefik_channel
+  config             = var.traefik_config
+  constraints        = var.traefik_constraints
+  model              = var.model
+  revision           = var.traefik_revision
+  storage_directives = var.traefik_storage_directives
+  units              = var.traefik_units
 }
 
 # -------------- # Integrations --------------

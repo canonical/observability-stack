@@ -18,80 +18,83 @@ resource "juju_access_secret" "mimir_s3_secret_access" {
 
 # TODO: Replace s3_integrator resource to use its remote terraform module once available
 resource "juju_application" "s3_integrator" {
-  name  = var.s3_integrator_name
-  model = var.model
-  trust = true
+  config = merge({
+    endpoint    = var.s3_endpoint
+    bucket      = var.s3_bucket
+    credentials = "secret:${juju_secret.mimir_s3_credentials_secret.secret_id}"
+  }, var.s3_integrator_config)
+  constraints        = var.s3_integrator_constraints
+  model              = var.model
+  name               = var.s3_integrator_name
+  storage_directives = var.s3_integrator_storage_directives
+  trust              = true
+  units              = var.s3_integrator_units
 
   charm {
     name     = "s3-integrator"
     channel  = var.s3_integrator_channel
     revision = var.s3_integrator_revision
   }
-  config = {
-    endpoint    = var.s3_endpoint
-    bucket      = var.s3_bucket
-    credentials = "secret:${juju_secret.mimir_s3_credentials_secret.secret_id}"
-  }
-  units = 1
-
 }
 
 module "mimir_coordinator" {
-  source      = "git::https://github.com/canonical/mimir-coordinator-k8s-operator//terraform"
-  app_name    = "mimir"
-  model       = var.model
-  channel     = var.channel
-  revision    = var.coordinator_revision
-  units       = var.coordinator_units
-  constraints = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=mimir,anti-pod.topology-key=kubernetes.io/hostname" : null
-}
-
-module "mimir_read" {
-  source      = "git::https://github.com/canonical/mimir-worker-k8s-operator//terraform"
-  app_name    = var.read_name
-  model       = var.model
-  channel     = var.channel
-  revision    = var.worker_revision
-  constraints = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=${var.read_name},anti-pod.topology-key=kubernetes.io/hostname" : null
-  config = {
-    role-read = true
-  }
-  units = var.read_units
-  depends_on = [
-    module.mimir_coordinator
-  ]
-}
-
-module "mimir_write" {
-  source      = "git::https://github.com/canonical/mimir-worker-k8s-operator//terraform"
-  app_name    = var.write_name
-  model       = var.model
-  channel     = var.channel
-  revision    = var.worker_revision
-  constraints = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=${var.write_name},anti-pod.topology-key=kubernetes.io/hostname" : null
-  config = {
-    role-write = true
-  }
-  units = var.write_units
-  depends_on = [
-    module.mimir_coordinator
-  ]
+  source             = "git::https://github.com/canonical/mimir-coordinator-k8s-operator//terraform"
+  app_name           = "mimir"
+  channel            = var.channel
+  config             = var.coordinator_config
+  constraints        = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=mimir,anti-pod.topology-key=kubernetes.io/hostname" : var.coordinator_constraints
+  model              = var.model
+  revision           = var.coordinator_revision
+  storage_directives = var.coordinator_storage_directives
+  units              = var.coordinator_units
 }
 
 module "mimir_backend" {
-  source      = "git::https://github.com/canonical/mimir-worker-k8s-operator//terraform"
+  source     = "git::https://github.com/canonical/mimir-worker-k8s-operator//terraform"
+  depends_on = [module.mimir_coordinator]
+
   app_name    = var.backend_name
-  model       = var.model
   channel     = var.channel
-  revision    = var.worker_revision
-  constraints = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=${var.backend_name},anti-pod.topology-key=kubernetes.io/hostname" : null
-  config = {
+  constraints = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=${var.backend_name},anti-pod.topology-key=kubernetes.io/hostname" : var.worker_constraints
+  config = merge({
     role-backend = true
-  }
-  units = var.backend_units
-  depends_on = [
-    module.mimir_coordinator
-  ]
+  }, var.backend_config)
+  model              = var.model
+  revision           = var.worker_revision
+  storage_directives = var.worker_storage_directives
+  units              = var.backend_units
+}
+
+module "mimir_read" {
+  source     = "git::https://github.com/canonical/mimir-worker-k8s-operator//terraform"
+  depends_on = [module.mimir_coordinator]
+
+  app_name = var.read_name
+  channel  = var.channel
+  config = merge({
+    role-read = true
+  }, var.read_config)
+  constraints        = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=${var.read_name},anti-pod.topology-key=kubernetes.io/hostname" : var.worker_constraints
+  model              = var.model
+  revision           = var.worker_revision
+  storage_directives = var.worker_storage_directives
+  units              = var.read_units
+}
+
+module "mimir_write" {
+  source     = "git::https://github.com/canonical/mimir-worker-k8s-operator//terraform"
+  depends_on = [module.mimir_coordinator]
+
+  app_name = var.write_name
+  channel  = var.channel
+  config = merge({
+    role-write = true
+  }, var.write_config)
+  constraints        = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=${var.write_name},anti-pod.topology-key=kubernetes.io/hostname" : var.worker_constraints
+  model              = var.model
+  revision           = var.worker_revision
+  storage_directives = var.worker_storage_directives
+  units              = var.write_units
 }
 
 # -------------- # Integrations --------------
