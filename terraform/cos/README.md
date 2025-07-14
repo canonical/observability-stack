@@ -1,9 +1,139 @@
 # Terraform module for COS solution
 
 <!-- BEGIN_TF_DOCS -->
+## Requirements
 
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5 |
+| <a name="requirement_juju"></a> [juju](#requirement\_juju) | >= 0.20.0 |
 
+## Providers
 
+| Name | Version |
+|------|---------|
+| <a name="provider_juju"></a> [juju](#provider\_juju) | >= 0.20.0 |
+
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_alertmanager"></a> [alertmanager](#module\_alertmanager) | git::https://github.com/canonical/alertmanager-k8s-operator//terraform | n/a |
+| <a name="module_catalogue"></a> [catalogue](#module\_catalogue) | git::https://github.com/canonical/catalogue-k8s-operator//terraform | n/a |
+| <a name="module_grafana"></a> [grafana](#module\_grafana) | git::https://github.com/canonical/grafana-k8s-operator//terraform | n/a |
+| <a name="module_grafana_agent"></a> [grafana\_agent](#module\_grafana\_agent) | git::https://github.com/canonical/grafana-agent-k8s-operator//terraform | n/a |
+| <a name="module_loki"></a> [loki](#module\_loki) | git::https://github.com/canonical/observability-stack//terraform/loki | n/a |
+| <a name="module_mimir"></a> [mimir](#module\_mimir) | git::https://github.com/canonical/observability-stack//terraform/mimir | n/a |
+| <a name="module_ssc"></a> [ssc](#module\_ssc) | git::https://github.com/canonical/self-signed-certificates-operator//terraform | n/a |
+| <a name="module_tempo"></a> [tempo](#module\_tempo) | git::https://github.com/canonical/observability-stack//terraform/tempo | n/a |
+| <a name="module_traefik"></a> [traefik](#module\_traefik) | git::https://github.com/canonical/traefik-k8s-operator//terraform | n/a |
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [juju_integration.agent_alertmanager_metrics](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.agent_loki_metrics](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.agent_mimir_metrics](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.alertmanager_catalogue](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.alertmanager_certificates](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.alertmanager_grafana_dashboards](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.alertmanager_ingress](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.catalogue_certificates](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.catalogue_ingress](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.external_traefik_certificates](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.grafana_agent_certificates](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.grafana_catalogue](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.grafana_certificates](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.grafana_ingress](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.grafana_source_alertmanager](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.grafana_tracing_grafana_agent_traicing_provider](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.loki_alertmanager](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.loki_certificates](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.loki_grafana_dashboards_provider](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.loki_grafana_source](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.loki_ingress](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.loki_logging_consumer_grafana_agent_logging_provider](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.loki_logging_grafana_agent_logging_consumer](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.loki_tracing_grafana_agent_traicing_provider](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.mimir_alertmanager](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.mimir_catalogue](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.mimir_certificates](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.mimir_grafana_dashboards_provider](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.mimir_grafana_source](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.mimir_ingress](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.mimir_logging_consumer_grafana_agent_logging_provider](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.mimir_self_metrics_endpoint_grafana_agent_metrics_endpoint](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.mimir_tracing_grafana_agent_tracing_provider](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.tempo_catalogue](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.tempo_certificates](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.tempo_grafana_dashboard_grafana_grafana_dashboard](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.tempo_grafana_source](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.tempo_ingress](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.tempo_logging_grafana_agent_logging_provider](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.tempo_metrics_endpoint_grafana_agent_metrics_endpoint](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.tempo_send_remote_write_mimir_receive_remote_write](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.tempo_tracing_grafana_agent_tracing](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.traefik_receive_ca_certificate](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_offer.alertmanager_karma_dashboard](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/offer) | resource |
+| [juju_offer.grafana_dashboards](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/offer) | resource |
+| [juju_offer.loki_logging](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/offer) | resource |
+| [juju_offer.mimir_receive_remote_write](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/offer) | resource |
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_alertmanager_revision"></a> [alertmanager\_revision](#input\_alertmanager\_revision) | Revision number of the Alertmanager charm | `number` | `null` | no |
+| <a name="input_anti_affinity"></a> [anti\_affinity](#input\_anti\_affinity) | Enable anti-affinity constraints across all HA modules (Mimir, Loki, Tempo) | `bool` | `true` | no |
+| <a name="input_catalogue_revision"></a> [catalogue\_revision](#input\_catalogue\_revision) | Revision number of the Catalogue charm | `number` | `null` | no |
+| <a name="input_channel"></a> [channel](#input\_channel) | Channel that the charms are (unless overwritten by external\_channels) deployed from | `string` | n/a | yes |
+| <a name="input_cloud"></a> [cloud](#input\_cloud) | Kubernetes cloud or environment where this COS module will be deployed (e.g self-managed, aws) | `string` | `"self-managed"` | no |
+| <a name="input_external_certificates_offer_url"></a> [external\_certificates\_offer\_url](#input\_external\_certificates\_offer\_url) | A Juju offer URL of a CA providing the 'tls\_certificates' integration for Traefik to supply it with server certificates | `string` | `null` | no |
+| <a name="input_grafana_agent_revision"></a> [grafana\_agent\_revision](#input\_grafana\_agent\_revision) | Revision number of the Grafana agent charm | `number` | `null` | no |
+| <a name="input_grafana_revision"></a> [grafana\_revision](#input\_grafana\_revision) | Revision number of the Grafana charm | `number` | `null` | no |
+| <a name="input_internal_tls"></a> [internal\_tls](#input\_internal\_tls) | Specify whether to use TLS or not for internal COS communication. By default, TLS is enabled using self-signed-certificates | `bool` | `true` | no |
+| <a name="input_loki_backend_units"></a> [loki\_backend\_units](#input\_loki\_backend\_units) | Number of Loki worker units with backend role | `number` | `3` | no |
+| <a name="input_loki_bucket"></a> [loki\_bucket](#input\_loki\_bucket) | Loki bucket name | `string` | n/a | yes |
+| <a name="input_loki_coordinator_revision"></a> [loki\_coordinator\_revision](#input\_loki\_coordinator\_revision) | Revision number of the Loki coordinator charm | `number` | `null` | no |
+| <a name="input_loki_coordinator_units"></a> [loki\_coordinator\_units](#input\_loki\_coordinator\_units) | Number of Loki coordinator units | `number` | `3` | no |
+| <a name="input_loki_read_units"></a> [loki\_read\_units](#input\_loki\_read\_units) | Number of Loki worker units with read role | `number` | `3` | no |
+| <a name="input_loki_worker_revision"></a> [loki\_worker\_revision](#input\_loki\_worker\_revision) | Revision number of the Loki worker charm | `number` | `null` | no |
+| <a name="input_loki_write_units"></a> [loki\_write\_units](#input\_loki\_write\_units) | Number of Loki worker units with write roles | `number` | `3` | no |
+| <a name="input_mimir_backend_units"></a> [mimir\_backend\_units](#input\_mimir\_backend\_units) | Number of Mimir worker units with backend role | `number` | `3` | no |
+| <a name="input_mimir_bucket"></a> [mimir\_bucket](#input\_mimir\_bucket) | Mimir bucket name | `string` | n/a | yes |
+| <a name="input_mimir_coordinator_revision"></a> [mimir\_coordinator\_revision](#input\_mimir\_coordinator\_revision) | Revision number of the Mimir coordinator charm | `number` | `null` | no |
+| <a name="input_mimir_coordinator_units"></a> [mimir\_coordinator\_units](#input\_mimir\_coordinator\_units) | Number of Mimir coordinator units | `number` | `3` | no |
+| <a name="input_mimir_read_units"></a> [mimir\_read\_units](#input\_mimir\_read\_units) | Number of Mimir worker units with read role | `number` | `3` | no |
+| <a name="input_mimir_worker_revision"></a> [mimir\_worker\_revision](#input\_mimir\_worker\_revision) | Revision number of the Mimir worker charm | `number` | `null` | no |
+| <a name="input_mimir_write_units"></a> [mimir\_write\_units](#input\_mimir\_write\_units) | Number of Mimir worker units with write role | `number` | `3` | no |
+| <a name="input_model"></a> [model](#input\_model) | Reference to an existing model resource or data source for the model to deploy to | `string` | n/a | yes |
+| <a name="input_s3_access_key"></a> [s3\_access\_key](#input\_s3\_access\_key) | S3 access-key credential | `string` | n/a | yes |
+| <a name="input_s3_endpoint"></a> [s3\_endpoint](#input\_s3\_endpoint) | S3 endpoint | `string` | n/a | yes |
+| <a name="input_s3_integrator_channel"></a> [s3\_integrator\_channel](#input\_s3\_integrator\_channel) | Channel that the s3-integrator charm is deployed from | `string` | `"2/edge"` | no |
+| <a name="input_s3_integrator_revision"></a> [s3\_integrator\_revision](#input\_s3\_integrator\_revision) | Revision number of the s3-integrator charm | `number` | `157` | no |
+| <a name="input_s3_secret_key"></a> [s3\_secret\_key](#input\_s3\_secret\_key) | S3 secret-key credential | `string` | n/a | yes |
+| <a name="input_ssc_channel"></a> [ssc\_channel](#input\_ssc\_channel) | Channel that the self-signed certificates charm is deployed from | `string` | `"1/stable"` | no |
+| <a name="input_ssc_revision"></a> [ssc\_revision](#input\_ssc\_revision) | Revision number of the self-signed certificates charm | `number` | `null` | no |
+| <a name="input_tempo_bucket"></a> [tempo\_bucket](#input\_tempo\_bucket) | Tempo bucket name | `string` | n/a | yes |
+| <a name="input_tempo_compactor_units"></a> [tempo\_compactor\_units](#input\_tempo\_compactor\_units) | Number of Tempo worker units with compactor role | `number` | `3` | no |
+| <a name="input_tempo_coordinator_revision"></a> [tempo\_coordinator\_revision](#input\_tempo\_coordinator\_revision) | Revision number of the Tempo coordinator charm | `number` | `null` | no |
+| <a name="input_tempo_coordinator_units"></a> [tempo\_coordinator\_units](#input\_tempo\_coordinator\_units) | Number of Tempo coordinator units | `number` | `3` | no |
+| <a name="input_tempo_distributor_units"></a> [tempo\_distributor\_units](#input\_tempo\_distributor\_units) | Number of Tempo worker units with distributor role | `number` | `3` | no |
+| <a name="input_tempo_ingester_units"></a> [tempo\_ingester\_units](#input\_tempo\_ingester\_units) | Number of Tempo worker units with ingester role | `number` | `3` | no |
+| <a name="input_tempo_metrics_generator_units"></a> [tempo\_metrics\_generator\_units](#input\_tempo\_metrics\_generator\_units) | Number of Tempo worker units with metrics-generator role | `number` | `3` | no |
+| <a name="input_tempo_querier_units"></a> [tempo\_querier\_units](#input\_tempo\_querier\_units) | Number of Tempo worker units with querier role | `number` | `3` | no |
+| <a name="input_tempo_query_frontend_units"></a> [tempo\_query\_frontend\_units](#input\_tempo\_query\_frontend\_units) | Number of Tempo worker units with query-frontend role | `number` | `3` | no |
+| <a name="input_tempo_worker_revision"></a> [tempo\_worker\_revision](#input\_tempo\_worker\_revision) | Revision number of the Tempo worker charm | `number` | `null` | no |
+| <a name="input_traefik_channel"></a> [traefik\_channel](#input\_traefik\_channel) | Channel that the Traefik charm is deployed from | `string` | `"latest/stable"` | no |
+| <a name="input_traefik_revision"></a> [traefik\_revision](#input\_traefik\_revision) | Revision number of the Traefik charm | `number` | `null` | no |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| <a name="output_components"></a> [components](#output\_components) | n/a |
+| <a name="output_offers"></a> [offers](#output\_offers) | n/a |
 <!-- END_TF_DOCS -->
 
 This is a Terraform module facilitating the deployment of COS solution, using the [Terraform juju provider](https://github.com/juju/terraform-provider-juju/). For more information, refer to the provider [documentation](https://registry.terraform.io/providers/juju/juju/latest/docs).
