@@ -9,6 +9,7 @@ module "alertmanager" {
   model              = var.model
   revision           = var.alertmanager_revision
   storage_directives = var.alertmanager_storage_directives
+  units              = var.alertmanager_units
 }
 
 module "catalogue" {
@@ -20,6 +21,7 @@ module "catalogue" {
   model              = var.model
   revision           = var.catalogue_revision
   storage_directives = var.catalogue_storage_directives
+  units              = var.catalogue_units
 }
 
 module "grafana" {
@@ -31,6 +33,7 @@ module "grafana" {
   model              = var.model
   revision           = var.grafana_revision
   storage_directives = var.grafana_storage_directives
+  units              = var.grafana_units
 }
 
 module "grafana_agent" {
@@ -42,58 +45,71 @@ module "grafana_agent" {
   model              = var.model
   revision           = var.grafana_agent_revision
   storage_directives = var.grafana_agent_storage_directives
+  units              = var.grafana_agent_units
 }
 
 module "loki" {
   # source                 = "git::https://github.com/canonical/observability-stack//terraform/loki"
-  source                         = "../loki"
-  anti_affinity                  = var.anti_affinity
-  channel                        = var.channel
-  model                          = var.model
-  s3_integrator_channel          = var.s3_integrator_channel
-  s3_integrator_revision         = var.s3_integrator_revision
-  s3_endpoint                    = var.s3_endpoint
-  s3_secret_key                  = var.s3_secret_key
-  s3_access_key                  = var.s3_access_key
-  s3_bucket                      = var.loki_bucket
-  coordinator_config             = var.loki_coordinator_config
-  coordinator_constraints        = var.loki_coordinator_constraints
-  coordinator_revision           = var.loki_coordinator_revision
-  coordinator_storage_directives = var.loki_coordinator_storage_directives
-  coordinator_units              = var.loki_coordinator_units
-  worker_config                  = var.loki_worker_config
-  worker_constraints             = var.loki_worker_constraints
-  worker_revision                = var.loki_worker_revision
-  worker_storage_directives      = var.loki_worker_storage_directives
-  backend_units                  = var.loki_backend_units
-  read_units                     = var.loki_read_units
-  write_units                    = var.loki_write_units
+  source                           = "../loki"
+  anti_affinity                    = var.anti_affinity
+  channel                          = var.channel
+  model                            = var.model
+  s3_integrator_channel            = var.s3_integrator_channel
+  s3_integrator_config             = var.s3_integrator_config
+  s3_integrator_constraints        = var.s3_integrator_constraints
+  s3_integrator_revision           = var.s3_integrator_revision
+  s3_integrator_storage_directives = var.s3_integrator_storage_directives
+  s3_integrator_units              = var.s3_integrator_units
+  s3_endpoint                      = var.s3_endpoint
+  s3_secret_key                    = var.s3_secret_key
+  s3_access_key                    = var.s3_access_key
+  s3_bucket                        = var.loki_bucket
+  coordinator_config               = var.loki_coordinator_config
+  coordinator_constraints          = var.loki_coordinator_constraints
+  coordinator_revision             = var.loki_coordinator_revision
+  coordinator_storage_directives   = var.loki_coordinator_storage_directives
+  coordinator_units                = var.loki_coordinator_units
+  backend_config                   = var.loki_backend_config
+  read_config                      = var.loki_read_config
+  write_config                     = var.loki_write_config
+  worker_constraints               = var.loki_worker_constraints
+  worker_revision                  = var.loki_worker_revision
+  worker_storage_directives        = var.loki_worker_storage_directives
+  backend_units                    = var.loki_backend_units
+  read_units                       = var.loki_read_units
+  write_units                      = var.loki_write_units
 }
 
 module "mimir" {
   # source                 = "git::https://github.com/canonical/observability-stack//terraform/mimir"
-  source                         = "../mimir"
-  anti_affinity                  = var.anti_affinity
-  channel                        = var.channel
-  model                          = var.model
-  s3_integrator_channel          = var.s3_integrator_channel
-  s3_integrator_revision         = var.s3_integrator_revision
-  s3_endpoint                    = var.s3_endpoint
-  s3_secret_key                  = var.s3_secret_key
-  s3_access_key                  = var.s3_access_key
-  s3_bucket                      = var.mimir_bucket
-  coordinator_config             = var.mimir_coordinator_config
-  coordinator_constraints        = var.mimir_coordinator_constraints
-  coordinator_revision           = var.mimir_coordinator_revision
-  coordinator_storage_directives = var.mimir_coordinator_storage_directives
-  coordinator_units              = var.mimir_coordinator_units
-  worker_config                  = var.mimir_worker_config
-  worker_constraints             = var.mimir_worker_constraints
-  worker_revision                = var.mimir_worker_revision
-  worker_storage_directives      = var.mimir_worker_storage_directives
-  backend_units                  = var.mimir_backend_units
-  read_units                     = var.mimir_read_units
-  write_units                    = var.mimir_write_units
+  source                           = "../mimir"
+  anti_affinity                    = var.anti_affinity
+  channel                          = var.channel
+  model                            = var.model
+  s3_integrator_channel            = var.s3_integrator_channel
+  s3_integrator_config             = var.s3_integrator_config
+  s3_integrator_constraints        = var.s3_integrator_constraints
+  s3_integrator_revision           = var.s3_integrator_revision
+  s3_integrator_storage_directives = var.s3_integrator_storage_directives
+  s3_integrator_units              = var.s3_integrator_units
+  s3_endpoint                      = var.s3_endpoint
+  s3_secret_key                    = var.s3_secret_key
+  s3_access_key                    = var.s3_access_key
+  s3_bucket                        = var.mimir_bucket
+  coordinator_config               = var.mimir_coordinator_config
+  coordinator_constraints          = var.mimir_coordinator_constraints
+  coordinator_revision             = var.mimir_coordinator_revision
+  coordinator_storage_directives   = var.mimir_coordinator_storage_directives
+  coordinator_units                = var.mimir_coordinator_units
+  backend_config                   = var.mimir_backend_config
+  read_config                      = var.mimir_read_config
+  write_config                     = var.mimir_write_config
+  worker_constraints               = var.mimir_worker_constraints
+  worker_revision                  = var.mimir_worker_revision
+  worker_storage_directives        = var.mimir_worker_storage_directives
+  backend_units                    = var.mimir_backend_units
+  read_units                       = var.mimir_read_units
+  write_units                      = var.mimir_write_units
 }
 
 module "ssc" {
@@ -104,35 +120,46 @@ module "ssc" {
   constraints = var.ssc_constraints
   model       = var.model
   revision    = var.ssc_revision
+  # storage_directives = var.ssc_storage_directives
+  units = var.ssc_units
 }
 
 module "tempo" {
   # source                  = "git::https://github.com/canonical/observability-stack//terraform/tempo"
-  source                         = "../tempo"
-  anti_affinity                  = var.anti_affinity
-  channel                        = var.channel
-  model                          = var.model
-  s3_integrator_channel          = var.s3_integrator_channel
-  s3_integrator_revision         = var.s3_integrator_revision
-  s3_endpoint                    = var.s3_endpoint
-  s3_access_key                  = var.s3_access_key
-  s3_secret_key                  = var.s3_secret_key
-  s3_bucket                      = var.tempo_bucket
-  coordinator_config             = var.tempo_coordinator_config
-  coordinator_constraints        = var.tempo_coordinator_constraints
-  coordinator_revision           = var.tempo_coordinator_revision
-  coordinator_storage_directives = var.tempo_coordinator_storage_directives
-  coordinator_units              = var.tempo_coordinator_units
-  worker_config                  = var.tempo_worker_config
-  worker_constraints             = var.tempo_worker_constraints
-  worker_revision                = var.tempo_worker_revision
-  worker_storage_directives      = var.tempo_worker_storage_directives
-  compactor_units                = var.tempo_compactor_units
-  distributor_units              = var.tempo_distributor_units
-  ingester_units                 = var.tempo_ingester_units
-  metrics_generator_units        = var.tempo_metrics_generator_units
-  querier_units                  = var.tempo_querier_units
-  query_frontend_units           = var.tempo_query_frontend_units
+  source                           = "../tempo" # FIXME
+  anti_affinity                    = var.anti_affinity
+  channel                          = var.channel
+  model                            = var.model
+  s3_integrator_channel            = var.s3_integrator_channel
+  s3_integrator_config             = var.s3_integrator_config
+  s3_integrator_constraints        = var.s3_integrator_constraints
+  s3_integrator_revision           = var.s3_integrator_revision
+  s3_integrator_storage_directives = var.s3_integrator_storage_directives
+  s3_integrator_units              = var.s3_integrator_units
+  s3_endpoint                      = var.s3_endpoint
+  s3_access_key                    = var.s3_access_key
+  s3_secret_key                    = var.s3_secret_key
+  s3_bucket                        = var.tempo_bucket
+  coordinator_config               = var.tempo_coordinator_config
+  coordinator_constraints          = var.tempo_coordinator_constraints
+  coordinator_revision             = var.tempo_coordinator_revision
+  coordinator_storage_directives   = var.tempo_coordinator_storage_directives
+  coordinator_units                = var.tempo_coordinator_units
+  querier_config                   = var.tempo_querier_config
+  query_frontend_config            = var.tempo_query_frontend_config
+  ingester_config                  = var.tempo_ingester_config
+  distributor_config               = var.tempo_distributor_config
+  compactor_config                 = var.tempo_compactor_config
+  metrics_generator_config         = var.tempo_metrics_generator_config
+  worker_constraints               = var.tempo_worker_constraints
+  worker_revision                  = var.tempo_worker_revision
+  worker_storage_directives        = var.tempo_worker_storage_directives
+  compactor_units                  = var.tempo_compactor_units
+  distributor_units                = var.tempo_distributor_units
+  ingester_units                   = var.tempo_ingester_units
+  metrics_generator_units          = var.tempo_metrics_generator_units
+  querier_units                    = var.tempo_querier_units
+  query_frontend_units             = var.tempo_query_frontend_units
 }
 
 module "traefik" {
@@ -144,6 +171,7 @@ module "traefik" {
   model              = var.model
   revision           = var.traefik_revision
   storage_directives = var.traefik_storage_directives
+  units              = var.traefik_units
 }
 
 # -------------- # Integrations --------------

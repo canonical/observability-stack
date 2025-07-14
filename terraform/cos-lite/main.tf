@@ -9,6 +9,7 @@ module "alertmanager" {
   model              = var.model
   revision           = var.alertmanager_revision
   storage_directives = var.alertmanager_storage_directives
+  units              = var.alertmanager_units
 }
 
 module "catalogue" {
@@ -20,6 +21,7 @@ module "catalogue" {
   model              = var.model
   revision           = var.catalogue_revision
   storage_directives = var.catalogue_storage_directives
+  units              = var.catalogue_units
 }
 
 module "grafana" {
@@ -31,28 +33,33 @@ module "grafana" {
   model              = var.model
   revision           = var.grafana_revision
   storage_directives = var.grafana_storage_directives
+  units              = var.grafana_units
 }
 
 module "loki" {
-  source             = "git::https://github.com/canonical/loki-k8s-operator//terraform"
-  app_name           = "loki"
-  channel            = var.channel
-  config             = var.loki_config
-  constraints        = var.loki_constraints
-  model              = var.model
-  storage_directives = var.loki_storage_directives
-  revision           = var.loki_revision
+  source      = "git::https://github.com/canonical/loki-k8s-operator//terraform"
+  app_name    = "loki"
+  channel     = var.channel
+  config      = var.loki_config
+  constraints = var.loki_constraints
+  model_name  = var.model
+  # model              = var.model
+  # storage_directives = var.loki_storage_directives
+  revision = var.loki_revision
+  units    = var.loki_units
 }
 
 module "prometheus" {
-  source             = "git::https://github.com/canonical/prometheus-k8s-operator//terraform"
-  app_name           = "prometheus"
-  channel            = var.channel
-  config             = var.prometheus_config
-  constraints        = var.prometheus_constraints
-  model              = var.model
-  storage_directives = var.prometheus_storage_directives
-  revision           = var.prometheus_revision
+  source      = "git::https://github.com/canonical/prometheus-k8s-operator//terraform"
+  app_name    = "prometheus"
+  channel     = var.channel
+  config      = var.prometheus_config
+  constraints = var.prometheus_constraints
+  model_name  = var.model
+  # model              = var.model
+  # storage_directives = var.prometheus_storage_directives
+  revision = var.prometheus_revision
+  units    = var.prometheus_units
 }
 
 module "ssc" {
@@ -63,6 +70,8 @@ module "ssc" {
   constraints = var.ssc_constraints
   model       = var.model
   revision    = var.ssc_revision
+  # storage_directives = var.ssc_storage_directives
+  units = var.ssc_units
 }
 
 module "traefik" {
@@ -74,6 +83,7 @@ module "traefik" {
   model              = var.model
   revision           = var.traefik_revision
   storage_directives = var.traefik_storage_directives
+  units              = var.traefik_units
 }
 
 # -------------- # Integrations --------------

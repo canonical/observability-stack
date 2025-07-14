@@ -130,8 +130,20 @@ variable "loki_coordinator_config" {
   default     = {}
 }
 
-variable "loki_worker_config" {
-  description = "Map of the Loki worker configuration options"
+variable "loki_backend_config" {
+  description = "Map of the Loki backend worker configuration options"
+  type        = map(string)
+  default     = {}
+}
+
+variable "loki_read_config" {
+  description = "Map of the Loki read worker configuration options"
+  type        = map(string)
+  default     = {}
+}
+
+variable "loki_write_config" {
+  description = "Map of the Loki write worker configuration options"
   type        = map(string)
   default     = {}
 }
@@ -142,8 +154,20 @@ variable "mimir_coordinator_config" {
   default     = {}
 }
 
-variable "mimir_worker_config" {
-  description = "Map of the Mimir worker configuration options"
+variable "mimir_backend_config" {
+  description = "Map of the Mimir backend worker configuration options"
+  type        = map(string)
+  default     = {}
+}
+
+variable "mimir_read_config" {
+  description = "Map of the Mimir read worker configuration options"
+  type        = map(string)
+  default     = {}
+}
+
+variable "mimir_write_config" {
+  description = "Map of the Mimir write worker configuration options"
   type        = map(string)
   default     = {}
 }
@@ -166,8 +190,38 @@ variable "tempo_coordinator_config" {
   default     = {}
 }
 
-variable "tempo_worker_config" {
-  description = "Map of the Tempo worker configuration options"
+variable "tempo_querier_config" {
+  description = "Map of the Tempo querier worker configuration options"
+  type        = map(string)
+  default     = {}
+}
+
+variable "tempo_query_frontend_config" {
+  description = "Map of the Tempo query-frontend worker configuration options"
+  type        = map(string)
+  default     = {}
+}
+
+variable "tempo_ingester_config" {
+  description = "Map of the Tempo ingester worker configuration options"
+  type        = map(string)
+  default     = {}
+}
+
+variable "tempo_distributor_config" {
+  description = "Map of the Tempo distributor worker configuration options"
+  type        = map(string)
+  default     = {}
+}
+
+variable "tempo_compactor_config" {
+  description = "Map of the Tempo compactor worker configuration options"
+  type        = map(string)
+  default     = {}
+}
+
+variable "tempo_metrics_generator_config" {
+  description = "Map of the Tempo metrics-generator worker configuration options"
   type        = map(string)
   default     = {}
 }
@@ -425,94 +479,136 @@ variable "traefik_storage_directives" {
   default     = {}
 }
 
-# -------------- # Application unit counts --------------
+# -------------- # Application unit/scale --------------
+
+variable "alertmanager_units" {
+  description = "Unit count/scale of the Alertmanager application"
+  type        = number
+  default     = 1
+}
+
+variable "catalogue_units" {
+  description = "Unit count/scale of the Catalogue application"
+  type        = number
+  default     = 1
+}
+
+variable "grafana_units" {
+  description = "Unit count/scale of the Grafana application"
+  type        = number
+  default     = 1
+}
+
+variable "grafana_agent_units" {
+  description = "Unit count/scale of the Grafana agent application"
+  type        = number
+  default     = 1
+}
 
 variable "loki_backend_units" {
-  description = "Number of Loki worker units with backend role"
+  description = "Count/scale of Loki worker units with backend role"
   type        = number
   default     = 3
 }
 
 variable "loki_read_units" {
-  description = "Number of Loki worker units with read role"
+  description = "Count/scale of Loki worker units with read role"
   type        = number
   default     = 3
 }
 
 variable "loki_write_units" {
-  description = "Number of Loki worker units with write roles"
+  description = "Count/scale of Loki worker units with write roles"
   type        = number
   default     = 3
 }
 
 variable "loki_coordinator_units" {
-  description = "Number of Loki coordinator units"
+  description = "Count/scale of the Loki coordinator units"
   type        = number
   default     = 3
 }
 
 variable "mimir_backend_units" {
-  description = "Number of Mimir worker units with backend role"
+  description = "Count/scale of Mimir worker units with backend role"
   type        = number
   default     = 3
 }
 
 variable "mimir_read_units" {
-  description = "Number of Mimir worker units with read role"
+  description = "Count/scale of Mimir worker units with read role"
   type        = number
   default     = 3
 }
 
 variable "mimir_write_units" {
-  description = "Number of Mimir worker units with write role"
+  description = "Count/scale of Mimir worker units with write role"
   type        = number
   default     = 3
 }
 
 variable "mimir_coordinator_units" {
-  description = "Number of Mimir coordinator units"
+  description = "Count/scale of Mimir coordinator units"
   type        = number
   default     = 3
 }
 
+variable "ssc_units" {
+  description = "Unit count/scale of the self-signed certificates application"
+  type        = number
+  default     = 1
+}
+
+variable "s3_integrator_units" {
+  description = "Unit count/scale of the s3-integrator application"
+  type        = number
+  default     = 1
+}
+
 variable "tempo_compactor_units" {
-  description = "Number of Tempo worker units with compactor role"
+  description = "Count/scale of Tempo worker units with compactor role"
   type        = number
   default     = 3
 }
 
 variable "tempo_distributor_units" {
-  description = "Number of Tempo worker units with distributor role"
+  description = "Count/scale of Tempo worker units with distributor role"
   type        = number
   default     = 3
 }
 
 variable "tempo_ingester_units" {
-  description = "Number of Tempo worker units with ingester role"
+  description = "Count/scale of Tempo worker units with ingester role"
   type        = number
   default     = 3
 }
 
 variable "tempo_metrics_generator_units" {
-  description = "Number of Tempo worker units with metrics-generator role"
+  description = "Count/scale of Tempo worker units with metrics-generator role"
   type        = number
   default     = 3
 }
 
 variable "tempo_querier_units" {
-  description = "Number of Tempo worker units with querier role"
+  description = "Count/scale of Tempo worker units with querier role"
   type        = number
   default     = 3
 }
 
 variable "tempo_query_frontend_units" {
-  description = "Number of Tempo worker units with query-frontend role"
+  description = "Count/scale of Tempo worker units with query-frontend role"
   type        = number
   default     = 3
 }
 
 variable "tempo_coordinator_units" {
-  description = "Number of Tempo coordinator units"
+  description = "Count/scale of Tempo coordinator units"
   type        = number
   default     = 3
+}
+
+variable "traefik_units" {
+  description = "Unit count/scale of the Traefik application"
+  type        = number
+  default     = 1
 }

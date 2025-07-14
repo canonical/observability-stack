@@ -201,3 +201,47 @@ variable "traefik_storage_directives" {
   type        = map(string)
   default     = {}
 }
+
+# -------------- # Application unit/scale --------------
+
+variable "alertmanager_units" {
+  description = "Unit count/scale of the Alertmanager application"
+  type        = number
+  default     = 1
+}
+
+variable "catalogue_units" {
+  description = "Unit count/scale of the Catalogue application"
+  type        = number
+  default     = 1
+}
+
+variable "grafana_units" {
+  description = "Unit count/scale of the Grafana application"
+  type        = number
+  default     = 1
+}
+
+variable "loki_units" {
+  description = "Unit count/scale of the Loki application"
+  type        = number
+  default     = 1
+}
+
+variable "prometheus_units" {
+  description = "Unit count/scale of the Prometheus application"
+  type        = number
+  default     = 1
+}
+
+variable "ssc_units" {
+  description = "Unit count/scale of the self-signed certificates application"
+  type        = number
+  default     = 1
+}
+
+variable "traefik_units" {
+  description = "Unit count/scale of the Traefik application"
+  type        = number
+  default     = 1
+}

@@ -96,8 +96,44 @@ variable "coordinator_config" {
   default     = {}
 }
 
-variable "worker_config" {
-  description = "Map of the worker configuration options"
+variable "querier_config" {
+  description = "Map of the querier worker configuration options"
+  type        = map(string)
+  default     = {}
+}
+
+variable "query_frontend_config" {
+  description = "Map of the query-frontend worker configuration options"
+  type        = map(string)
+  default     = {}
+}
+
+variable "ingester_config" {
+  description = "Map of the ingester worker configuration options"
+  type        = map(string)
+  default     = {}
+}
+
+variable "distributor_config" {
+  description = "Map of the distributor worker configuration options"
+  type        = map(string)
+  default     = {}
+}
+
+variable "compactor_config" {
+  description = "Map of the compactor worker configuration options"
+  type        = map(string)
+  default     = {}
+}
+
+variable "metrics_generator_config" {
+  description = "Map of the metrics-generator worker configuration options"
+  type        = map(string)
+  default     = {}
+}
+
+variable "s3_integrator_config" {
+  description = "Map of the s3-integrator configuration options"
   type        = map(string)
   default     = {}
 }
@@ -133,6 +169,17 @@ variable "worker_constraints" {
   }
 }
 
+variable "s3_integrator_constraints" {
+  description = "String listing constraints for the s3-integrator application"
+  type        = string
+  default     = "arch=amd64"
+
+  validation {
+    condition     = !(var.anti_affinity && var.s3_integrator_constraints != "arch=amd64")
+    error_message = "Setting both custom charm constraints and anti-affinity to true is not allowed."
+  }
+}
+
 # -------------- # Revisions --------------
 
 variable "coordinator_revision" {
@@ -163,6 +210,12 @@ variable "coordinator_storage_directives" {
 
 variable "worker_storage_directives" {
   description = "Map of storage used by the worker application, which defaults to 1 GB, allocated by Juju"
+  type        = map(string)
+  default     = {}
+}
+
+variable "s3_integrator_storage_directives" {
+  description = "Map of storage used by the s3-integrator application, which defaults to 1 GB, allocated by Juju"
   type        = map(string)
   default     = {}
 }
@@ -234,6 +287,16 @@ variable "query_frontend_units" {
   default     = 1
   validation {
     condition     = var.query_frontend_units >= 1
+    error_message = "The number of units must be greater than or equal to 1."
+  }
+}
+
+variable "s3_integrator_units" {
+  description = "Number of S3 integrator units"
+  type        = number
+  default     = 1
+  validation {
+    condition     = var.s3_integrator_units >= 1
     error_message = "The number of units must be greater than or equal to 1."
   }
 }

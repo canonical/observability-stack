@@ -18,15 +18,17 @@ resource "juju_access_secret" "tempo_s3_secret_access" {
 
 # TODO: Replace s3_integrator resource to use its remote terraform module once available
 resource "juju_application" "s3_integrator" {
-  config = {
+  config = merge({
     endpoint    = var.s3_endpoint
     bucket      = var.s3_bucket
     credentials = "secret:${juju_secret.tempo_s3_credentials_secret.secret_id}"
-  }
-  model = var.model
-  name  = var.s3_integrator_name
-  trust = true
-  units = 1
+  }, var.s3_integrator_config)
+  constraints        = var.s3_integrator_constraints
+  model              = var.model
+  name               = var.s3_integrator_name
+  storage_directives = var.s3_integrator_storage_directives
+  trust              = true
+  units              = var.s3_integrator_units
 
   charm {
     name     = "s3-integrator"
@@ -56,7 +58,7 @@ module "tempo_querier" {
   config = merge({
     role-all     = false
     role-querier = true
-  }, var.worker_config)
+  }, var.querier_config)
   constraints        = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=${var.querier_name},anti-pod.topology-key=kubernetes.io/hostname" : var.worker_constraints
   model              = var.model
   revision           = var.worker_revision
@@ -75,10 +77,10 @@ module "tempo_query_frontend" {
   config = merge({
     role-all            = false
     role-query-frontend = true
-  }, var.worker_config)
-  revision = var.worker_revision
+  }, var.query_frontend_config)
+  revision           = var.worker_revision
   storage_directives = var.worker_storage_directives
-  units    = var.query_frontend_units
+  units              = var.query_frontend_units
 }
 
 module "tempo_ingester" {
@@ -92,10 +94,10 @@ module "tempo_ingester" {
   config = merge({
     role-all      = false
     role-ingester = true
-  }, var.worker_config)
-  revision = var.worker_revision
+  }, var.ingester_config)
+  revision           = var.worker_revision
   storage_directives = var.worker_storage_directives
-  units    = var.ingester_units
+  units              = var.ingester_units
 }
 
 module "tempo_distributor" {
@@ -109,10 +111,10 @@ module "tempo_distributor" {
   config = merge({
     role-all         = false
     role-distributor = true
-  }, var.worker_config)
-  revision = var.worker_revision
+  }, var.distributor_config)
+  revision           = var.worker_revision
   storage_directives = var.worker_storage_directives
-  units    = var.distributor_units
+  units              = var.distributor_units
 }
 
 module "tempo_compactor" {
@@ -126,10 +128,10 @@ module "tempo_compactor" {
   config = merge({
     role-all       = false
     role-compactor = true
-  }, var.worker_config)
-  revision = var.worker_revision
+  }, var.compactor_config)
+  revision           = var.worker_revision
   storage_directives = var.worker_storage_directives
-  units    = var.compactor_units
+  units              = var.compactor_units
 }
 
 module "tempo_metrics_generator" {
@@ -143,10 +145,10 @@ module "tempo_metrics_generator" {
   config = merge({
     role-all               = false
     role-metrics-generator = true
-  }, var.worker_config)
-  revision = var.worker_revision
+  }, var.metrics_generator_config)
+  revision           = var.worker_revision
   storage_directives = var.worker_storage_directives
-  units    = var.metrics_generator_units
+  units              = var.metrics_generator_units
 }
 
 # -------------- # Integrations --------------
