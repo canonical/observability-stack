@@ -4,32 +4,22 @@ variable "model" {
 }
 
 variable "channel" {
-  description = "Channel that the charms are deployed from"
+  description = "Channel that the applications are deployed from"
   type        = string
 }
+
+variable "anti_affinity" {
+  description = "Enable anti-affinity constraints."
+  type        = bool
+  default     = true
+}
+
+# -------------- # S3 object storage --------------
 
 variable "s3_integrator_channel" {
-  description = "Channel that the s3-integrator charm is deployed from"
+  description = "Channel that the s3-integrator application is deployed from"
   type        = string
   default     = "2/edge"
-}
-
-variable "coordinator_revision" {
-  description = "Revision number of the coordinator charm"
-  type        = number
-  default     = null
-}
-
-variable "worker_revision" {
-  description = "Revision number of the worker charm"
-  type        = number
-  default     = null
-}
-
-variable "s3_integrator_revision" {
-  description = "Revision number of the s3-integrator charm"
-  type        = number
-  default     = 157 # FIXME: https://github.com/canonical/observability/issues/342
 }
 
 variable "s3_bucket" {
@@ -52,12 +42,6 @@ variable "s3_secret_key" {
 variable "s3_endpoint" {
   description = "S3 endpoint"
   type        = string
-}
-
-variable "anti_affinity" {
-  description = "Enable anti-affinity constraints."
-  type        = bool
-  default     = true
 }
 
 # -------------- # App Names --------------
@@ -84,6 +68,120 @@ variable "s3_integrator_name" {
   description = "Name of the s3-integrator app"
   type        = string
   default     = "mimir-s3-integrator"
+}
+
+# -------------- # Configs --------------
+
+variable "coordinator_config" {
+  description = "Map of the coordinator configuration options"
+  type        = map(string)
+  default     = {}
+}
+
+variable "backend_config" {
+  description = "Map of the backend worker configuration options"
+  type        = map(string)
+  default     = {}
+}
+
+variable "read_config" {
+  description = "Map of the read worker configuration options"
+  type        = map(string)
+  default     = {}
+}
+
+variable "write_config" {
+  description = "Map of the write worker configuration options"
+  type        = map(string)
+  default     = {}
+}
+
+variable "s3_integrator_config" {
+  description = "Map of the s3-integrator configuration options"
+  type        = map(string)
+  default     = {}
+}
+
+# -------------- # Constraints --------------
+
+# We use constraints to set AntiAffinity in K8s
+# https://discourse.charmhub.io/t/pod-priority-and-affinity-in-juju-charms/4091/13?u=jose
+
+# FIXME: Passing an empty constraints value to the Juju Terraform provider currently
+# causes the operation to fail due to https://github.com/juju/terraform-provider-juju/issues/344
+# Therefore, we set a default value of "arch=amd64" for all applications.
+
+variable "coordinator_constraints" {
+  description = "String listing constraints for the coordinator application"
+  type        = string
+  default     = "arch=amd64"
+
+  validation {
+    condition     = !(var.anti_affinity && var.coordinator_constraints != "arch=amd64")
+    error_message = "Setting both custom charm constraints and anti-affinity to true is not allowed."
+  }
+}
+
+variable "worker_constraints" {
+  description = "String listing constraints for the worker application"
+  type        = string
+  default     = "arch=amd64"
+
+  validation {
+    condition     = !(var.anti_affinity && var.worker_constraints != "arch=amd64")
+    error_message = "Setting both custom charm constraints and anti-affinity to true is not allowed."
+  }
+}
+
+variable "s3_integrator_constraints" {
+  description = "String listing constraints for the s3-integrator application"
+  type        = string
+  default     = "arch=amd64"
+
+  validation {
+    condition     = !(var.anti_affinity && var.s3_integrator_constraints != "arch=amd64")
+    error_message = "Setting both custom charm constraints and anti-affinity to true is not allowed."
+  }
+}
+
+# -------------- # Revisions --------------
+
+variable "coordinator_revision" {
+  description = "Revision number of the coordinator application"
+  type        = number
+  default     = null
+}
+
+variable "worker_revision" {
+  description = "Revision number of the worker application"
+  type        = number
+  default     = null
+}
+
+variable "s3_integrator_revision" {
+  description = "Revision number of the s3-integrator application"
+  type        = number
+  default     = 157 # FIXME: https://github.com/canonical/observability/issues/342
+}
+
+# -------------- # Storage directives --------------
+
+variable "coordinator_storage_directives" {
+  description = "Map of storage used by the coordinator application, which defaults to 1 GB, allocated by Juju"
+  type        = map(string)
+  default     = {}
+}
+
+variable "worker_storage_directives" {
+  description = "Map of storage used by the worker application, which defaults to 1 GB, allocated by Juju"
+  type        = map(string)
+  default     = {}
+}
+
+variable "s3_integrator_storage_directives" {
+  description = "Map of storage used by the s3-integrator application, which defaults to 1 GB, allocated by Juju"
+  type        = map(string)
+  default     = {}
 }
 
 # -------------- # Units Per App --------------
@@ -124,6 +222,16 @@ variable "coordinator_units" {
   default     = 1
   validation {
     condition     = var.coordinator_units >= 1
+    error_message = "The number of units must be greater than or equal to 1."
+  }
+}
+
+variable "s3_integrator_units" {
+  description = "Number of S3 integrator units"
+  type        = number
+  default     = 1
+  validation {
+    condition     = var.s3_integrator_units >= 1
     error_message = "The number of units must be greater than or equal to 1."
   }
 }
