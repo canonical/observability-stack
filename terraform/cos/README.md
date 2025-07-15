@@ -37,49 +37,104 @@ This is a Terraform module facilitating the deployment of COS solution, using th
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_alertmanager_revision"></a> [alertmanager\_revision](#input\_alertmanager\_revision) | Revision number of the Alertmanager charm | `number` | `null` | no |
+| <a name="input_alertmanager_config"></a> [alertmanager\_config](#input\_alertmanager\_config) | Map of the Alertmanager configuration options | `map(string)` | `{}` | no |
+| <a name="input_alertmanager_constraints"></a> [alertmanager\_constraints](#input\_alertmanager\_constraints) | String listing constraints for the Alertmanager application | `string` | `"arch=amd64"` | no |
+| <a name="input_alertmanager_revision"></a> [alertmanager\_revision](#input\_alertmanager\_revision) | Revision number of the Alertmanager application | `number` | `null` | no |
+| <a name="input_alertmanager_storage_directives"></a> [alertmanager\_storage\_directives](#input\_alertmanager\_storage\_directives) | Map of storage used by the Alertmanager application, which defaults to 1 GB, allocated by Juju | `map(string)` | `{}` | no |
+| <a name="input_alertmanager_units"></a> [alertmanager\_units](#input\_alertmanager\_units) | Unit count/scale of the Alertmanager application | `number` | `1` | no |
 | <a name="input_anti_affinity"></a> [anti\_affinity](#input\_anti\_affinity) | Enable anti-affinity constraints across all HA modules (Mimir, Loki, Tempo) | `bool` | `true` | no |
-| <a name="input_catalogue_revision"></a> [catalogue\_revision](#input\_catalogue\_revision) | Revision number of the Catalogue charm | `number` | `null` | no |
-| <a name="input_channel"></a> [channel](#input\_channel) | Channel that the charms are (unless overwritten by external\_channels) deployed from | `string` | n/a | yes |
+| <a name="input_catalogue_config"></a> [catalogue\_config](#input\_catalogue\_config) | Map of the Catalogue configuration options | `map(string)` | `{}` | no |
+| <a name="input_catalogue_constraints"></a> [catalogue\_constraints](#input\_catalogue\_constraints) | String listing constraints for the Catalogue application | `string` | `"arch=amd64"` | no |
+| <a name="input_catalogue_revision"></a> [catalogue\_revision](#input\_catalogue\_revision) | Revision number of the Catalogue application | `number` | `null` | no |
+| <a name="input_catalogue_storage_directives"></a> [catalogue\_storage\_directives](#input\_catalogue\_storage\_directives) | Map of storage used by the Catalogue application, which defaults to 1 GB, allocated by Juju | `map(string)` | `{}` | no |
+| <a name="input_catalogue_units"></a> [catalogue\_units](#input\_catalogue\_units) | Unit count/scale of the Catalogue application | `number` | `1` | no |
+| <a name="input_channel"></a> [channel](#input\_channel) | Channel that the applications are (unless overwritten by external\_channels) deployed from | `string` | n/a | yes |
 | <a name="input_cloud"></a> [cloud](#input\_cloud) | Kubernetes cloud or environment where this COS module will be deployed (e.g self-managed, aws) | `string` | `"self-managed"` | no |
 | <a name="input_external_certificates_offer_url"></a> [external\_certificates\_offer\_url](#input\_external\_certificates\_offer\_url) | A Juju offer URL of a CA providing the 'tls\_certificates' integration for Traefik to supply it with server certificates | `string` | `null` | no |
-| <a name="input_grafana_agent_revision"></a> [grafana\_agent\_revision](#input\_grafana\_agent\_revision) | Revision number of the Grafana agent charm | `number` | `null` | no |
-| <a name="input_grafana_revision"></a> [grafana\_revision](#input\_grafana\_revision) | Revision number of the Grafana charm | `number` | `null` | no |
+| <a name="input_grafana_agent_config"></a> [grafana\_agent\_config](#input\_grafana\_agent\_config) | Map of the Grafana agent configuration options | `map(string)` | `{}` | no |
+| <a name="input_grafana_agent_constraints"></a> [grafana\_agent\_constraints](#input\_grafana\_agent\_constraints) | String listing constraints for the Grafana agent application | `string` | `"arch=amd64"` | no |
+| <a name="input_grafana_agent_revision"></a> [grafana\_agent\_revision](#input\_grafana\_agent\_revision) | Revision number of the Grafana agent application | `number` | `null` | no |
+| <a name="input_grafana_agent_storage_directives"></a> [grafana\_agent\_storage\_directives](#input\_grafana\_agent\_storage\_directives) | Map of storage used by the Grafana agent application, which defaults to 1 GB, allocated by Juju | `map(string)` | `{}` | no |
+| <a name="input_grafana_agent_units"></a> [grafana\_agent\_units](#input\_grafana\_agent\_units) | Unit count/scale of the Grafana agent application | `number` | `1` | no |
+| <a name="input_grafana_config"></a> [grafana\_config](#input\_grafana\_config) | Map of the Grafana configuration options | `map(string)` | `{}` | no |
+| <a name="input_grafana_constraints"></a> [grafana\_constraints](#input\_grafana\_constraints) | String listing constraints for the Grafana application | `string` | `"arch=amd64"` | no |
+| <a name="input_grafana_revision"></a> [grafana\_revision](#input\_grafana\_revision) | Revision number of the Grafana application | `number` | `null` | no |
+| <a name="input_grafana_storage_directives"></a> [grafana\_storage\_directives](#input\_grafana\_storage\_directives) | Map of storage used by the Grafana application, which defaults to 1 GB, allocated by Juju | `map(string)` | `{}` | no |
+| <a name="input_grafana_units"></a> [grafana\_units](#input\_grafana\_units) | Unit count/scale of the Grafana application | `number` | `1` | no |
 | <a name="input_internal_tls"></a> [internal\_tls](#input\_internal\_tls) | Specify whether to use TLS or not for internal COS communication. By default, TLS is enabled using self-signed-certificates | `bool` | `true` | no |
-| <a name="input_loki_backend_units"></a> [loki\_backend\_units](#input\_loki\_backend\_units) | Number of Loki worker units with backend role | `number` | `3` | no |
+| <a name="input_loki_backend_config"></a> [loki\_backend\_config](#input\_loki\_backend\_config) | Map of the Loki backend worker configuration options | `map(string)` | `{}` | no |
+| <a name="input_loki_backend_units"></a> [loki\_backend\_units](#input\_loki\_backend\_units) | Count/scale of Loki worker units with backend role | `number` | `3` | no |
 | <a name="input_loki_bucket"></a> [loki\_bucket](#input\_loki\_bucket) | Loki bucket name | `string` | n/a | yes |
-| <a name="input_loki_coordinator_revision"></a> [loki\_coordinator\_revision](#input\_loki\_coordinator\_revision) | Revision number of the Loki coordinator charm | `number` | `null` | no |
-| <a name="input_loki_coordinator_units"></a> [loki\_coordinator\_units](#input\_loki\_coordinator\_units) | Number of Loki coordinator units | `number` | `3` | no |
-| <a name="input_loki_read_units"></a> [loki\_read\_units](#input\_loki\_read\_units) | Number of Loki worker units with read role | `number` | `3` | no |
-| <a name="input_loki_worker_revision"></a> [loki\_worker\_revision](#input\_loki\_worker\_revision) | Revision number of the Loki worker charm | `number` | `null` | no |
-| <a name="input_loki_write_units"></a> [loki\_write\_units](#input\_loki\_write\_units) | Number of Loki worker units with write roles | `number` | `3` | no |
-| <a name="input_mimir_backend_units"></a> [mimir\_backend\_units](#input\_mimir\_backend\_units) | Number of Mimir worker units with backend role | `number` | `3` | no |
+| <a name="input_loki_coordinator_config"></a> [loki\_coordinator\_config](#input\_loki\_coordinator\_config) | Map of the Loki coordinator configuration options | `map(string)` | `{}` | no |
+| <a name="input_loki_coordinator_constraints"></a> [loki\_coordinator\_constraints](#input\_loki\_coordinator\_constraints) | String listing constraints for the Loki coordinator application | `string` | `"arch=amd64"` | no |
+| <a name="input_loki_coordinator_revision"></a> [loki\_coordinator\_revision](#input\_loki\_coordinator\_revision) | Revision number of the Loki coordinator application | `number` | `null` | no |
+| <a name="input_loki_coordinator_storage_directives"></a> [loki\_coordinator\_storage\_directives](#input\_loki\_coordinator\_storage\_directives) | Map of storage used by the Loki coordinator application, which defaults to 1 GB, allocated by Juju | `map(string)` | `{}` | no |
+| <a name="input_loki_coordinator_units"></a> [loki\_coordinator\_units](#input\_loki\_coordinator\_units) | Count/scale of the Loki coordinator units | `number` | `3` | no |
+| <a name="input_loki_read_config"></a> [loki\_read\_config](#input\_loki\_read\_config) | Map of the Loki read worker configuration options | `map(string)` | `{}` | no |
+| <a name="input_loki_read_units"></a> [loki\_read\_units](#input\_loki\_read\_units) | Count/scale of Loki worker units with read role | `number` | `3` | no |
+| <a name="input_loki_worker_constraints"></a> [loki\_worker\_constraints](#input\_loki\_worker\_constraints) | String listing constraints for the Loki worker application | `string` | `"arch=amd64"` | no |
+| <a name="input_loki_worker_revision"></a> [loki\_worker\_revision](#input\_loki\_worker\_revision) | Revision number of the Loki worker application | `number` | `null` | no |
+| <a name="input_loki_worker_storage_directives"></a> [loki\_worker\_storage\_directives](#input\_loki\_worker\_storage\_directives) | Map of storage used by the Loki worker application, which defaults to 1 GB, allocated by Juju | `map(string)` | `{}` | no |
+| <a name="input_loki_write_config"></a> [loki\_write\_config](#input\_loki\_write\_config) | Map of the Loki write worker configuration options | `map(string)` | `{}` | no |
+| <a name="input_loki_write_units"></a> [loki\_write\_units](#input\_loki\_write\_units) | Count/scale of Loki worker units with write roles | `number` | `3` | no |
+| <a name="input_mimir_backend_config"></a> [mimir\_backend\_config](#input\_mimir\_backend\_config) | Map of the Mimir backend worker configuration options | `map(string)` | `{}` | no |
+| <a name="input_mimir_backend_units"></a> [mimir\_backend\_units](#input\_mimir\_backend\_units) | Count/scale of Mimir worker units with backend role | `number` | `3` | no |
 | <a name="input_mimir_bucket"></a> [mimir\_bucket](#input\_mimir\_bucket) | Mimir bucket name | `string` | n/a | yes |
-| <a name="input_mimir_coordinator_revision"></a> [mimir\_coordinator\_revision](#input\_mimir\_coordinator\_revision) | Revision number of the Mimir coordinator charm | `number` | `null` | no |
-| <a name="input_mimir_coordinator_units"></a> [mimir\_coordinator\_units](#input\_mimir\_coordinator\_units) | Number of Mimir coordinator units | `number` | `3` | no |
-| <a name="input_mimir_read_units"></a> [mimir\_read\_units](#input\_mimir\_read\_units) | Number of Mimir worker units with read role | `number` | `3` | no |
-| <a name="input_mimir_worker_revision"></a> [mimir\_worker\_revision](#input\_mimir\_worker\_revision) | Revision number of the Mimir worker charm | `number` | `null` | no |
-| <a name="input_mimir_write_units"></a> [mimir\_write\_units](#input\_mimir\_write\_units) | Number of Mimir worker units with write role | `number` | `3` | no |
+| <a name="input_mimir_coordinator_config"></a> [mimir\_coordinator\_config](#input\_mimir\_coordinator\_config) | Map of the Mimir coordinator configuration options | `map(string)` | `{}` | no |
+| <a name="input_mimir_coordinator_constraints"></a> [mimir\_coordinator\_constraints](#input\_mimir\_coordinator\_constraints) | String listing constraints for the Mimir coordinator application | `string` | `"arch=amd64"` | no |
+| <a name="input_mimir_coordinator_revision"></a> [mimir\_coordinator\_revision](#input\_mimir\_coordinator\_revision) | Revision number of the Mimir coordinator application | `number` | `null` | no |
+| <a name="input_mimir_coordinator_storage_directives"></a> [mimir\_coordinator\_storage\_directives](#input\_mimir\_coordinator\_storage\_directives) | Map of storage used by the Mimir coordinator application, which defaults to 1 GB, allocated by Juju | `map(string)` | `{}` | no |
+| <a name="input_mimir_coordinator_units"></a> [mimir\_coordinator\_units](#input\_mimir\_coordinator\_units) | Count/scale of Mimir coordinator units | `number` | `3` | no |
+| <a name="input_mimir_read_config"></a> [mimir\_read\_config](#input\_mimir\_read\_config) | Map of the Mimir read worker configuration options | `map(string)` | `{}` | no |
+| <a name="input_mimir_read_units"></a> [mimir\_read\_units](#input\_mimir\_read\_units) | Count/scale of Mimir worker units with read role | `number` | `3` | no |
+| <a name="input_mimir_worker_constraints"></a> [mimir\_worker\_constraints](#input\_mimir\_worker\_constraints) | String listing constraints for the Mimir worker application | `string` | `"arch=amd64"` | no |
+| <a name="input_mimir_worker_revision"></a> [mimir\_worker\_revision](#input\_mimir\_worker\_revision) | Revision number of the Mimir worker application | `number` | `null` | no |
+| <a name="input_mimir_worker_storage_directives"></a> [mimir\_worker\_storage\_directives](#input\_mimir\_worker\_storage\_directives) | Map of storage used by the Mimir worker application, which defaults to 1 GB, allocated by Juju | `map(string)` | `{}` | no |
+| <a name="input_mimir_write_config"></a> [mimir\_write\_config](#input\_mimir\_write\_config) | Map of the Mimir write worker configuration options | `map(string)` | `{}` | no |
+| <a name="input_mimir_write_units"></a> [mimir\_write\_units](#input\_mimir\_write\_units) | Count/scale of Mimir worker units with write role | `number` | `3` | no |
 | <a name="input_model"></a> [model](#input\_model) | Reference to an existing model resource or data source for the model to deploy to | `string` | n/a | yes |
 | <a name="input_s3_access_key"></a> [s3\_access\_key](#input\_s3\_access\_key) | S3 access-key credential | `string` | n/a | yes |
 | <a name="input_s3_endpoint"></a> [s3\_endpoint](#input\_s3\_endpoint) | S3 endpoint | `string` | n/a | yes |
-| <a name="input_s3_integrator_channel"></a> [s3\_integrator\_channel](#input\_s3\_integrator\_channel) | Channel that the s3-integrator charm is deployed from | `string` | `"2/edge"` | no |
-| <a name="input_s3_integrator_revision"></a> [s3\_integrator\_revision](#input\_s3\_integrator\_revision) | Revision number of the s3-integrator charm | `number` | `157` | no |
+| <a name="input_s3_integrator_channel"></a> [s3\_integrator\_channel](#input\_s3\_integrator\_channel) | Channel that the s3-integrator application is deployed from | `string` | `"2/edge"` | no |
+| <a name="input_s3_integrator_config"></a> [s3\_integrator\_config](#input\_s3\_integrator\_config) | Map of the s3-integrator configuration options | `map(string)` | `{}` | no |
+| <a name="input_s3_integrator_constraints"></a> [s3\_integrator\_constraints](#input\_s3\_integrator\_constraints) | String listing constraints for the s3-integrator application | `string` | `"arch=amd64"` | no |
+| <a name="input_s3_integrator_revision"></a> [s3\_integrator\_revision](#input\_s3\_integrator\_revision) | Revision number of the s3-integrator application | `number` | `157` | no |
+| <a name="input_s3_integrator_storage_directives"></a> [s3\_integrator\_storage\_directives](#input\_s3\_integrator\_storage\_directives) | Map of storage used by the s3-integrator application, which defaults to 1 GB, allocated by Juju | `map(string)` | `{}` | no |
+| <a name="input_s3_integrator_units"></a> [s3\_integrator\_units](#input\_s3\_integrator\_units) | Unit count/scale of the s3-integrator application | `number` | `1` | no |
 | <a name="input_s3_secret_key"></a> [s3\_secret\_key](#input\_s3\_secret\_key) | S3 secret-key credential | `string` | n/a | yes |
-| <a name="input_ssc_channel"></a> [ssc\_channel](#input\_ssc\_channel) | Channel that the self-signed certificates charm is deployed from | `string` | `"1/stable"` | no |
-| <a name="input_ssc_revision"></a> [ssc\_revision](#input\_ssc\_revision) | Revision number of the self-signed certificates charm | `number` | `null` | no |
+| <a name="input_ssc_channel"></a> [ssc\_channel](#input\_ssc\_channel) | Channel that the self-signed certificates application is deployed from | `string` | `"1/stable"` | no |
+| <a name="input_ssc_config"></a> [ssc\_config](#input\_ssc\_config) | Map of the self-signed certificates configuration options | `map(string)` | `{}` | no |
+| <a name="input_ssc_constraints"></a> [ssc\_constraints](#input\_ssc\_constraints) | String listing constraints for the self-signed certificates application | `string` | `"arch=amd64"` | no |
+| <a name="input_ssc_revision"></a> [ssc\_revision](#input\_ssc\_revision) | Revision number of the self-signed certificates application | `number` | `null` | no |
+| <a name="input_ssc_storage_directives"></a> [ssc\_storage\_directives](#input\_ssc\_storage\_directives) | Map of storage used by the self-signed certificates application, which defaults to 1 GB, allocated by Juju | `map(string)` | `{}` | no |
+| <a name="input_ssc_units"></a> [ssc\_units](#input\_ssc\_units) | Unit count/scale of the self-signed certificates application | `number` | `1` | no |
 | <a name="input_tempo_bucket"></a> [tempo\_bucket](#input\_tempo\_bucket) | Tempo bucket name | `string` | n/a | yes |
-| <a name="input_tempo_compactor_units"></a> [tempo\_compactor\_units](#input\_tempo\_compactor\_units) | Number of Tempo worker units with compactor role | `number` | `3` | no |
-| <a name="input_tempo_coordinator_revision"></a> [tempo\_coordinator\_revision](#input\_tempo\_coordinator\_revision) | Revision number of the Tempo coordinator charm | `number` | `null` | no |
-| <a name="input_tempo_coordinator_units"></a> [tempo\_coordinator\_units](#input\_tempo\_coordinator\_units) | Number of Tempo coordinator units | `number` | `3` | no |
-| <a name="input_tempo_distributor_units"></a> [tempo\_distributor\_units](#input\_tempo\_distributor\_units) | Number of Tempo worker units with distributor role | `number` | `3` | no |
-| <a name="input_tempo_ingester_units"></a> [tempo\_ingester\_units](#input\_tempo\_ingester\_units) | Number of Tempo worker units with ingester role | `number` | `3` | no |
-| <a name="input_tempo_metrics_generator_units"></a> [tempo\_metrics\_generator\_units](#input\_tempo\_metrics\_generator\_units) | Number of Tempo worker units with metrics-generator role | `number` | `3` | no |
-| <a name="input_tempo_querier_units"></a> [tempo\_querier\_units](#input\_tempo\_querier\_units) | Number of Tempo worker units with querier role | `number` | `3` | no |
-| <a name="input_tempo_query_frontend_units"></a> [tempo\_query\_frontend\_units](#input\_tempo\_query\_frontend\_units) | Number of Tempo worker units with query-frontend role | `number` | `3` | no |
-| <a name="input_tempo_worker_revision"></a> [tempo\_worker\_revision](#input\_tempo\_worker\_revision) | Revision number of the Tempo worker charm | `number` | `null` | no |
-| <a name="input_traefik_channel"></a> [traefik\_channel](#input\_traefik\_channel) | Channel that the Traefik charm is deployed from | `string` | `"latest/stable"` | no |
-| <a name="input_traefik_revision"></a> [traefik\_revision](#input\_traefik\_revision) | Revision number of the Traefik charm | `number` | `null` | no |
+| <a name="input_tempo_compactor_config"></a> [tempo\_compactor\_config](#input\_tempo\_compactor\_config) | Map of the Tempo compactor worker configuration options | `map(string)` | `{}` | no |
+| <a name="input_tempo_compactor_units"></a> [tempo\_compactor\_units](#input\_tempo\_compactor\_units) | Count/scale of Tempo worker units with compactor role | `number` | `3` | no |
+| <a name="input_tempo_coordinator_config"></a> [tempo\_coordinator\_config](#input\_tempo\_coordinator\_config) | Map of the Tempo coordinator configuration options | `map(string)` | `{}` | no |
+| <a name="input_tempo_coordinator_constraints"></a> [tempo\_coordinator\_constraints](#input\_tempo\_coordinator\_constraints) | String listing constraints for the Tempo coordinator application | `string` | `"arch=amd64"` | no |
+| <a name="input_tempo_coordinator_revision"></a> [tempo\_coordinator\_revision](#input\_tempo\_coordinator\_revision) | Revision number of the Tempo coordinator application | `number` | `null` | no |
+| <a name="input_tempo_coordinator_storage_directives"></a> [tempo\_coordinator\_storage\_directives](#input\_tempo\_coordinator\_storage\_directives) | Map of storage used by the Tempo coordinator application, which defaults to 1 GB, allocated by Juju | `map(string)` | `{}` | no |
+| <a name="input_tempo_coordinator_units"></a> [tempo\_coordinator\_units](#input\_tempo\_coordinator\_units) | Count/scale of Tempo coordinator units | `number` | `3` | no |
+| <a name="input_tempo_distributor_config"></a> [tempo\_distributor\_config](#input\_tempo\_distributor\_config) | Map of the Tempo distributor worker configuration options | `map(string)` | `{}` | no |
+| <a name="input_tempo_distributor_units"></a> [tempo\_distributor\_units](#input\_tempo\_distributor\_units) | Count/scale of Tempo worker units with distributor role | `number` | `3` | no |
+| <a name="input_tempo_ingester_config"></a> [tempo\_ingester\_config](#input\_tempo\_ingester\_config) | Map of the Tempo ingester worker configuration options | `map(string)` | `{}` | no |
+| <a name="input_tempo_ingester_units"></a> [tempo\_ingester\_units](#input\_tempo\_ingester\_units) | Count/scale of Tempo worker units with ingester role | `number` | `3` | no |
+| <a name="input_tempo_metrics_generator_config"></a> [tempo\_metrics\_generator\_config](#input\_tempo\_metrics\_generator\_config) | Map of the Tempo metrics-generator worker configuration options | `map(string)` | `{}` | no |
+| <a name="input_tempo_metrics_generator_units"></a> [tempo\_metrics\_generator\_units](#input\_tempo\_metrics\_generator\_units) | Count/scale of Tempo worker units with metrics-generator role | `number` | `3` | no |
+| <a name="input_tempo_querier_config"></a> [tempo\_querier\_config](#input\_tempo\_querier\_config) | Map of the Tempo querier worker configuration options | `map(string)` | `{}` | no |
+| <a name="input_tempo_querier_units"></a> [tempo\_querier\_units](#input\_tempo\_querier\_units) | Count/scale of Tempo worker units with querier role | `number` | `3` | no |
+| <a name="input_tempo_query_frontend_config"></a> [tempo\_query\_frontend\_config](#input\_tempo\_query\_frontend\_config) | Map of the Tempo query-frontend worker configuration options | `map(string)` | `{}` | no |
+| <a name="input_tempo_query_frontend_units"></a> [tempo\_query\_frontend\_units](#input\_tempo\_query\_frontend\_units) | Count/scale of Tempo worker units with query-frontend role | `number` | `3` | no |
+| <a name="input_tempo_worker_constraints"></a> [tempo\_worker\_constraints](#input\_tempo\_worker\_constraints) | String listing constraints for the Tempo worker application | `string` | `"arch=amd64"` | no |
+| <a name="input_tempo_worker_revision"></a> [tempo\_worker\_revision](#input\_tempo\_worker\_revision) | Revision number of the Tempo worker application | `number` | `null` | no |
+| <a name="input_tempo_worker_storage_directives"></a> [tempo\_worker\_storage\_directives](#input\_tempo\_worker\_storage\_directives) | Map of storage used by the Tempo worker application, which defaults to 1 GB, allocated by Juju | `map(string)` | `{}` | no |
+| <a name="input_traefik_channel"></a> [traefik\_channel](#input\_traefik\_channel) | Channel that the Traefik application is deployed from | `string` | `"latest/stable"` | no |
+| <a name="input_traefik_config"></a> [traefik\_config](#input\_traefik\_config) | Map of the Traefik configuration options | `map(string)` | `{}` | no |
+| <a name="input_traefik_constraints"></a> [traefik\_constraints](#input\_traefik\_constraints) | String listing constraints for the Traefik application | `string` | `"arch=amd64"` | no |
+| <a name="input_traefik_revision"></a> [traefik\_revision](#input\_traefik\_revision) | Revision number of the Traefik application | `number` | `null` | no |
+| <a name="input_traefik_storage_directives"></a> [traefik\_storage\_directives](#input\_traefik\_storage\_directives) | Map of storage used by the Traefik application, which defaults to 1 GB, allocated by Juju | `map(string)` | `{}` | no |
+| <a name="input_traefik_units"></a> [traefik\_units](#input\_traefik\_units) | Unit count/scale of the Traefik application | `number` | `1` | no |
 
 ## Outputs
 

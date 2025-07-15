@@ -186,6 +186,12 @@ variable "grafana_storage_directives" {
   default     = {}
 }
 
+variable "prometheus_storage_directives" {
+  description = "Map of storage used by the Prometheus application, which defaults to 1 GB, allocated by Juju"
+  type        = map(string)
+  default     = {}
+}
+
 variable "traefik_storage_directives" {
   description = "Map of storage used by the Traefik application, which defaults to 1 GB, allocated by Juju"
   type        = map(string)
