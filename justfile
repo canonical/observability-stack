@@ -46,6 +46,6 @@ validate-terraform:
   set -e; for repo in */; do (cd "$repo" && echo "Processing ${repo%/}..." && $terraform init -upgrade -reconfigure && $terraform validate) || exit 1; done
 
 [group("Command")]
-create-terraform-docs:
+update-terraform-docs:
   # https://terraform-docs.io/user-guide/configuration/
   terraform-docs markdown table --output-file README.md --config .tfdocs-config.yml .

@@ -14,7 +14,7 @@ This is a Terraform module facilitating the deployment of COS solution, using th
 
 | Name | Version |
 |------|---------|
-| <a name="provider_juju"></a> [juju](#provider\_juju) | >= 0.20.0 |
+| <a name="provider_juju"></a> [juju](#provider\_juju) | 0.20.0 |
 
 ## Modules
 
@@ -58,6 +58,7 @@ This is a Terraform module facilitating the deployment of COS solution, using th
 | <a name="input_prometheus_config"></a> [prometheus\_config](#input\_prometheus\_config) | Map of the Prometheus configuration options | `map(string)` | `{}` | no |
 | <a name="input_prometheus_constraints"></a> [prometheus\_constraints](#input\_prometheus\_constraints) | String listing constraints for the Prometheus application | `string` | `"arch=amd64"` | no |
 | <a name="input_prometheus_revision"></a> [prometheus\_revision](#input\_prometheus\_revision) | Revision number of the Prometheus application | `number` | `null` | no |
+| <a name="input_prometheus_storage_directives"></a> [prometheus\_storage\_directives](#input\_prometheus\_storage\_directives) | Map of storage used by the Prometheus application, which defaults to 1 GB, allocated by Juju | `map(string)` | `{}` | no |
 | <a name="input_prometheus_units"></a> [prometheus\_units](#input\_prometheus\_units) | Unit count/scale of the Prometheus application | `number` | `1` | no |
 | <a name="input_ssc_channel"></a> [ssc\_channel](#input\_ssc\_channel) | Channel that the self-signed certificates application is deployed from | `string` | `"1/stable"` | no |
 | <a name="input_ssc_config"></a> [ssc\_config](#input\_ssc\_config) | Map of the self-signed certificates configuration options | `map(string)` | `{}` | no |

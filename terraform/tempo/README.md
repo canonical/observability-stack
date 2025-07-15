@@ -17,7 +17,7 @@ This is a Terraform module facilitating the deployment of Tempo solution, using 
 
 | Name | Version |
 |------|---------|
-| <a name="provider_juju"></a> [juju](#provider\_juju) | >= 0.14.0 |
+| <a name="provider_juju"></a> [juju](#provider\_juju) | 0.20.0 |
 
 ## Modules
 

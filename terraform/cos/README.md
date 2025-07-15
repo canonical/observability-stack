@@ -17,7 +17,7 @@ This is a Terraform module facilitating the deployment of COS solution, using th
 
 | Name | Version |
 |------|---------|
-| <a name="provider_juju"></a> [juju](#provider\_juju) | >= 0.20.0 |
+| <a name="provider_juju"></a> [juju](#provider\_juju) | 0.20.0 |
 
 ## Modules
 
