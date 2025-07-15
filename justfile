@@ -27,6 +27,10 @@ lint-terraform:
   if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
   set -e; for repo in */; do (cd "$repo" && echo "Processing ${repo%/}..." && $terraform init -upgrade -reconfigure && $terraform fmt -check -recursive -diff) || exit 1; done
 
+[group("Lint")]
+lint-terraform-docs:
+  terraform-docs --output-check markdown table --output-file README.md --config .tfdocs-config.yml .
+
 # Format the Terraform modules
 [group("Format")]
 [working-directory("./terraform")]
@@ -41,6 +45,7 @@ validate-terraform:
   if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
   set -e; for repo in */; do (cd "$repo" && echo "Processing ${repo%/}..." && $terraform init -upgrade -reconfigure && $terraform validate) || exit 1; done
 
-docs-terraform:
+[group("Command")]
+create-terraform-docs:
   # https://terraform-docs.io/user-guide/configuration/
   terraform-docs markdown table --output-file README.md --config .tfdocs-config.yml .

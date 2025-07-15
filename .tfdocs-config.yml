@@ -13,6 +13,8 @@ recursive:
 sections:
   hide: []
   show:
+    - requirements
+    - modules
     - providers
     - inputs
     - outputs

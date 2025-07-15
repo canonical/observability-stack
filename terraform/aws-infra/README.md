@@ -2,7 +2,6 @@
 
 This directory contains Terraform modules for automating the process of bootstrapping a fresh AWS account to a fully running instance of COS deployed on a 3-node EKS cluster.
 
-
 ## Prerequisites
 
 Make sure you have the following installed:
@@ -22,7 +21,6 @@ You can do this using one of the following methods:
 - [Credentials file](https://docs.aws.amazon.com/cli/v1/userguide/cli-configure-files.html)
 
 ---
-
 
 ## Usage
 
@@ -108,18 +106,6 @@ Then, run `just apply`
 
 ---
 
-
-## Inputs
-
-| Variable Name     | Description             |
-|----------|-------------------------|
-| region   | AWS region to provision resources in |
-| cos_cloud_name   | The name to assign to the Kubernetes cloud when running 'juju add-k8s' |
-| cos_controller_name   | The name to assign to the Juju controller that will manage COS |
-| cos_model_name   | The name of the Juju model where COS will be deployed |
-
----
-
 ## Available Commands (via `just`)
 
 - `just init` – Initialize Terraform for AWS infra and COS
@@ -128,9 +114,15 @@ Then, run `just apply`
 
 ---
 
-
-
 <!-- BEGIN_TF_DOCS -->
+## Requirements
+
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.0 |
+| <a name="requirement_null"></a> [null](#requirement\_null) | ~> 3.0 |
+
 ## Providers
 
 | Name | Version |
@@ -138,6 +130,10 @@ Then, run `just apply`
 | <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 5.0 |
 | <a name="provider_local"></a> [local](#provider\_local) | n/a |
 | <a name="provider_null"></a> [null](#provider\_null) | ~> 3.0 |
+
+## Modules
+
+No modules.
 
 ## Inputs
 

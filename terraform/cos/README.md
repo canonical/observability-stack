@@ -1,11 +1,37 @@
 # Terraform module for COS solution
 
+This is a Terraform module facilitating the deployment of COS solution, using the [Terraform juju provider](https://github.com/juju/terraform-provider-juju/). For more information, refer to the provider [documentation](https://registry.terraform.io/providers/juju/juju/latest/docs). This Terraform module deploys COS with Mimir, Tempo and Loki in their microservices modes, and other charms in monolithic mode.
+
+> [!NOTE]
+> `s3-integrator` itself doesn't act as an S3 object storage system. For the HA solution to be functional, `s3-integrator` needs to point to an S3-like storage. See [this guide](https://discourse.charmhub.io/t/cos-lite-docs-set-up-minio/15211) to learn how to connect to an S3-like storage for traces.
+
 <!-- BEGIN_TF_DOCS -->
+## Requirements
+
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5 |
+| <a name="requirement_juju"></a> [juju](#requirement\_juju) | >= 0.20.0 |
+
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_juju"></a> [juju](#provider\_juju) | >= 0.20.0 |
+
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_alertmanager"></a> [alertmanager](#module\_alertmanager) | git::https://github.com/canonical/alertmanager-k8s-operator//terraform | n/a |
+| <a name="module_catalogue"></a> [catalogue](#module\_catalogue) | git::https://github.com/canonical/catalogue-k8s-operator//terraform | n/a |
+| <a name="module_grafana"></a> [grafana](#module\_grafana) | git::https://github.com/canonical/grafana-k8s-operator//terraform | n/a |
+| <a name="module_grafana_agent"></a> [grafana\_agent](#module\_grafana\_agent) | git::https://github.com/canonical/grafana-agent-k8s-operator//terraform | n/a |
+| <a name="module_loki"></a> [loki](#module\_loki) | git::https://github.com/canonical/observability-stack//terraform/loki | n/a |
+| <a name="module_mimir"></a> [mimir](#module\_mimir) | git::https://github.com/canonical/observability-stack//terraform/mimir | n/a |
+| <a name="module_ssc"></a> [ssc](#module\_ssc) | git::https://github.com/canonical/self-signed-certificates-operator//terraform | n/a |
+| <a name="module_tempo"></a> [tempo](#module\_tempo) | git::https://github.com/canonical/observability-stack//terraform/tempo | n/a |
+| <a name="module_traefik"></a> [traefik](#module\_traefik) | git::https://github.com/canonical/traefik-k8s-operator//terraform | n/a |
 
 ## Inputs
 
@@ -63,29 +89,8 @@
 | <a name="output_offers"></a> [offers](#output\_offers) | All Juju offers which are exposed by this product module |
 <!-- END_TF_DOCS -->
 
-This is a Terraform module facilitating the deployment of COS solution, using the [Terraform juju provider](https://github.com/juju/terraform-provider-juju/). For more information, refer to the provider [documentation](https://registry.terraform.io/providers/juju/juju/latest/docs).
-
-The HA solution consists of the following components:
-- [alertmanager-k8s](https://github.com/canonical/alertmanager-k8s-operator/tree/main/terraform): Handles alerts sent by clients applications.
-- [catalogue-k8s](https://github.com/canonical/catalogue-k8s-operator/tree/main/terraform): UI catalogue.
-- [grafana-k8s](https://github.com/canonical/grafana-k8s-operator/tree/main/terraform): Visualization, monitoring, and dashboards.
-- [grafana-agent-k8s](https://github.com/canonical/grafana-agent-k8s-operator/tree/main/terraform): Aggregate and send telemetry data.
-- [loki](https://github.com/canonical/observability-stack/tree/main/terraform/loki): Backend for logs.
-- [mimir](https://github.com/canonical/observability-stack/tree/main/terraform/mimir): Backend for metrics.
-- [tempo](https://github.com/canonical/observability-stack/tree/main/terraform/tempo): Backend for traces.
-- [s3-integrator](https://github.com/canonical/s3-integrator): facade for S3 storage configurations.
-- [self-signed-certificates](https://github.com/canonical/self-signed-certificates-operator/tree/main/terraform): certificates operator to secure traffic with TLS.
-- [traefik](https://github.com/canonical/traefik-k8s-operator/tree/main/terraform): ingress.
-
-This Terraform module deploys COS with Mimir, Tempo and Loki in their microservices modes, and other charms in monolithic mode.
-
-> [!NOTE]
-> `s3-integrator` itself doesn't act as an S3 object storage system. For the HA solution to be functional, `s3-integrator` needs to point to an S3-like storage. See [this guide](https://discourse.charmhub.io/t/cos-lite-docs-set-up-minio/15211) to learn how to connect to an S3-like storage for traces.
-
-## Requirements
-This module requires a `juju` model to be available. Refer to the [usage section](#usage) below for more details.
-
 ## Usage
+
 
 ### Basic usage
 

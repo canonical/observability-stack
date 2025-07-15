@@ -11,7 +11,7 @@ output "app_names" {
       tempo_metrics_generator = module.tempo_metrics_generator.app_name,
     }
   )
-  # FIXME, add these to outputs.tf description
+  description = "All application names which make up this product module"
 }
 
 output "endpoints" {
@@ -31,4 +31,5 @@ output "endpoints" {
     metrics_endpoint  = "metrics-endpoint",
     tracing           = "tracing",
   }
+  description = "All Juju integration endpoints which make up this product module"
 }

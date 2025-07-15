@@ -8,7 +8,7 @@ output "app_names" {
       loki_write         = module.loki_write.app_name,
     }
   )
-  # FIXME, add these to outputs.tf description
+  description = "All application names which make up this product module"
 }
 
 output "endpoints" {
@@ -28,5 +28,5 @@ output "endpoints" {
     receive_remote_write        = "receive-remote-write",
     self_metrics_endpoint       = "self-metrics-endpoint",
   }
-  # FIXME, add these to outputs.tf description
+  description = "All Juju integration endpoints which make up this product module"
 }

@@ -8,7 +8,7 @@ output "app_names" {
       mimir_backend       = module.mimir_backend.app_name,
     }
   )
-  # FIXME, add these to outputs.tf description
+  description = "All application names which make up this product module"
 }
 
 output "endpoints" {
@@ -29,4 +29,5 @@ output "endpoints" {
     receive_remote_write        = "receive-remote-write",
     self_metrics_endpoint       = "self-metrics-endpoint",
   }
+  description = "All Juju integration endpoints which make up this product module"
 }

@@ -20,6 +20,18 @@ jobs:
           sudo snap install just --classic
       - name: Lint the Terraform modules
         run: just lint-terraform
+  lint-terraform-docs:
+    name: Lint terraform docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo snap install terraform --classic
+          sudo snap install just --classic
+      - name: Lint the Terraform docs
+        run: just lint-terraform-docs
   validate-terraform:
     name: Terraform validate
     runs-on: ubuntu-latest
@@ -32,19 +44,3 @@ jobs:
           sudo snap install just --classic
       - name: Validate the Terraform modules
         run: just validate-terraform
-  generate-terraform-docs:
-    name: Generate terraform docs
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        ref: ${{ github.event.pull_request.head.ref }}
-
-    - name: Render terraform docs and push changes back to PR
-      uses: terraform-docs/gh-actions@main
-      with:
-        find-dir: terraform/
-        # working-dir: terraform/aws-infra,terraform/cos,terraform/cos-lite,terraform/loki,terraform/mimir,terraform/tempo
-        output-file: README.md
-        output-method: inject
-        git-push: "true"
