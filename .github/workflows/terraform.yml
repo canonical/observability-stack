@@ -29,6 +29,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo snap install terraform --classic
+          sudo snap install terraform-docs
           sudo snap install just --classic
       - name: Lint the Terraform docs
         run: just lint-terraform-docs
