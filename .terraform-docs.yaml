@@ -1,8 +1,0 @@
-output:
-  file: README.md
-  mode: inject
-sections:
-  show:
-    - providers
-    - inputs
-    - outputs
