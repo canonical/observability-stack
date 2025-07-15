@@ -94,7 +94,7 @@ By default, this Terraform module will deploy each worker with `3` unit. If you 
 
 ### Minimal sample deployment.
 
-In order to deploy COS with just one unit per worker charm create a `main.tf` file with the following content:
+In order to deploy COS create a `main.tf` file with the following content:
 
 ```hcl
 terraform {
@@ -115,46 +115,14 @@ terraform {
 module "cos" {
     source                        = "git::https://github.com/canonical/observability-stack//terraform/cos"
     model                         = "cos"
-    channel                       = "2/edge"
-    s3_integrator_channel         = "2/edge"
-    ssc_channel                   = "1/edge"
-    traefik_channel               = "latest/edge"
+    channel                       = "1/stable"
     cloud                         = "self-managed"
-    internal_tls                       = true
     s3_endpoint                   = "http://S3_HOST_IP:8080"
     s3_secret_key                 = "secret-key"
     s3_access_key                 = "access-key"
     loki_bucket                   = "loki"
     mimir_bucket                  = "mimir"
     tempo_bucket                  = "tempo"
-    loki_coordinator_units        = 3
-    loki_backend_units            = 3
-    loki_read_units               = 3
-    loki_write_units              = 3
-    mimir_coordinator_units       = 3
-    mimir_backend_units           = 3
-    mimir_read_units              = 3
-    mimir_write_units             = 3
-    tempo_coordinator_units       = 3
-    tempo_compactor_units         = 3
-    tempo_distributor_units       = 3
-    tempo_ingester_units          = 3
-    tempo_metrics_generator_units = 3
-    tempo_querier_units           = 3
-    tempo_query_frontend_units    = 3
-    alertmanager_revision         = null
-    catalogue_revision            = null
-    grafana_revision              = null
-    grafana_agent_revision        = null
-    loki_coordinator_revision     = null
-    loki_worker_revision          = null
-    mimir_coordinator_revision    = null
-    mimir_worker_revision         = null
-    ssc_revision                  = null
-    s3_integrator_revision        = 157 # FIXME: https://github.com/canonical/observability/issues/342
-    tempo_coordinator_revision    = null
-    tempo_worker_revision         = null
-    traefik_revision              = null
 }
 ```
 
@@ -320,185 +288,139 @@ In order to deploy COS on AWS, create a `main.tf` file with the following conten
 ```hcl
 # COS module that deploy the whole Canonical Observability Stack
 module "cos" {
-  source                        = "git::https://github.com/canonical/observability-stack//terraform/cos"
-  model                         = var.model
-  channel                       = var.channel
-  s3_endpoint                   = var.s3_endpoint
-  s3_access_key                 = var.s3_access_key
-  s3_secret_key                 = var.s3_secret_key
-  loki_bucket                   = var.loki_bucket
-  mimir_bucket                  = var.mimir_bucket
-  tempo_bucket                  = var.tempo_bucket
-  loki_backend_units            = var.loki_backend_units
-  loki_read_units               = var.loki_read_units
-  loki_write_units              = var.loki_write_units
-  mimir_backend_units           = var.mimir_backend_units
-  mimir_read_units              = var.mimir_read_units
-  mimir_write_units             = var.mimir_write_units
-  tempo_compactor_units         = var.tempo_compactor_units
-  tempo_distributor_units       = var.tempo_distributor_units
-  tempo_ingester_units          = var.tempo_ingester_units
-  tempo_metrics_generator_units = var.tempo_metrics_generator_units
-  tempo_querier_units           = var.tempo_querier_units
-  tempo_query_frontend_units    = var.tempo_query_frontend_units
-  cloud                         = var.cloud
-  ssc_channel                   = var.ssc_channel
+  source        = "git::https://github.com/canonical/observability-stack//terraform/cos"
+  model         = "cos"
+  channel       = "1/stable"
+  cloud         = "aws"
+  s3_endpoint   = "http://S3_HOST_IP:8080"
+  s3_secret_key = "secret-key"
+  s3_access_key = "access-key"
+  loki_bucket   = "loki"
+  mimir_bucket  = "mimir"
+  tempo_bucket  = "tempo"
 }
-
-variable "channel" {
-  description = "Charms channel"
-  type        = string
-  default     = "latest/edge"
-}
-
-variable "model" {
-  description = "Model name"
-  type        = string
-}
-
-variable "internal_tls" {
-  description = "Specify whether to use TLS or not for coordinator-worker communication. By default, TLS is enabled through self-signed-certificates"
-  type        = bool
-  default     = true
-}
-
-variable "s3_endpoint" {
-  description = "S3 endpoint"
-  type        = string
-}
-
-variable "s3_access_key" {
-  description = "S3 access key"
-  type        = string
-  sensitive   = true
-}
-
-variable "s3_secret_key" {
-  description = "S3 secret key"
-  type        = string
-  sensitive   = true
-}
-
-variable "loki_bucket" {
-  description = "Loki bucket name"
-  type        = string
-  sensitive   = true
-}
-
-variable "mimir_bucket" {
-  description = "Mimir bucket name"
-  type        = string
-  sensitive   = true
-}
-
-variable "tempo_bucket" {
-  description = "Tempo bucket name"
-  type        = string
-  sensitive   = true
-}
-
-variable "loki_backend_units" {
-  description = "Number of Loki worker units with backend role"
-  type        = number
-  default     = 3
-}
-
-variable "loki_read_units" {
-  description = "Number of Loki worker units with read role"
-  type        = number
-  default     = 3
-}
-
-variable "loki_write_units" {
-  description = "Number of Loki worker units with write roles"
-  type        = number
-  default     = 3
-}
-
-variable "mimir_backend_units" {
-  description = "Number of Mimir worker units with backend role"
-  type        = number
-  default     = 3
-}
-
-variable "mimir_read_units" {
-  description = "Number of Mimir worker units with read role"
-  type        = number
-  default     = 3
-}
-
-variable "mimir_write_units" {
-  description = "Number of Mimir worker units with write role"
-  type        = number
-  default     = 3
-}
-
-variable "tempo_compactor_units" {
-  description = "Number of Tempo worker units with compactor role"
-  type        = number
-  default     = 3
-}
-
-variable "tempo_distributor_units" {
-  description = "Number of Tempo worker units with distributor role"
-  type        = number
-  default     = 3
-}
-
-variable "tempo_ingester_units" {
-  description = "Number of Tempo worker units with ingester role"
-  type        = number
-  default     = 3
-}
-
-variable "tempo_metrics_generator_units" {
-  description = "Number of Tempo worker units with metrics-generator role"
-  type        = number
-  default     = 3
-}
-
-variable "tempo_querier_units" {
-  description = "Number of Tempo worker units with querier role"
-  type        = number
-  default     = 3
-}
-variable "tempo_query_frontend_units" {
-  description = "Number of Tempo worker units with query-frontend role"
-  type        = number
-  default     = 3
-}
-
-variable "cloud" {
-  description = "Kubernetes cloud or environment where this COS module will be deployed (e.g self-managed, aws)"
-  type        = string
-  default     = "self-managed"
-}
-
-# ssc doesn't have a "latest" track for ubuntu@24.04 base.
-variable "ssc_channel" {
-  description = "self-signed certificates charm channel."
-  type        = string
-  default     = "latest/edge"
-}
-
-```
-Then, create a `aws.tfvars` file with the following content:
-
-```hcl
-cloud = "aws"
-# If you're deploying on an ubuntu@24.04 base
-ssc_channel  = "1/edge"
-model        = "<model-name>"
-s3_endpoint  = "<s3-endpoint>"
-s3_access_key  = "<s3-access-key>"
-s3_secret_key  = "<s3-secret-key>"
-loki_bucket  = "<loki-bucket>"
-mimir_bucket = "<mimir-bucket>"
-tempo_bucket = "<tempo-bucket>"
 ```
 
 Then, use terraform to deploy the module:
 ```bash
 terraform init
-terraform apply -var-file=aws.tfvars
+terraform apply
 ```
+
+<!-- BEGIN_TF_DOCS -->
+## Requirements
+
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5 |
+| <a name="requirement_juju"></a> [juju](#requirement\_juju) | >= 0.20.0 |
+
+## Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_juju"></a> [juju](#provider\_juju) | 0.20.0 |
+
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_alertmanager"></a> [alertmanager](#module\_alertmanager) | git::https://github.com/canonical/alertmanager-k8s-operator//terraform | n/a |
+| <a name="module_catalogue"></a> [catalogue](#module\_catalogue) | git::https://github.com/canonical/catalogue-k8s-operator//terraform | n/a |
+| <a name="module_grafana"></a> [grafana](#module\_grafana) | git::https://github.com/canonical/grafana-k8s-operator//terraform | n/a |
+| <a name="module_grafana_agent"></a> [grafana\_agent](#module\_grafana\_agent) | git::https://github.com/canonical/grafana-agent-k8s-operator//terraform | n/a |
+| <a name="module_loki"></a> [loki](#module\_loki) | ../loki | n/a |
+| <a name="module_mimir"></a> [mimir](#module\_mimir) | ../mimir | n/a |
+| <a name="module_ssc"></a> [ssc](#module\_ssc) | git::https://github.com/canonical/self-signed-certificates-operator//terraform | n/a |
+| <a name="module_tempo"></a> [tempo](#module\_tempo) | ../tempo | n/a |
+| <a name="module_traefik"></a> [traefik](#module\_traefik) | git::https://github.com/canonical/traefik-k8s-operator//terraform | n/a |
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [juju_integration.agent_alertmanager_metrics](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.agent_loki_metrics](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.agent_mimir_metrics](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.alertmanager_catalogue](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.alertmanager_certificates](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.alertmanager_grafana_dashboards](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.alertmanager_ingress](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.catalogue_certificates](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.catalogue_ingress](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.external_traefik_certificates](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.grafana_agent_certificates](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.grafana_catalogue](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.grafana_certificates](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.grafana_ingress](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.grafana_source_alertmanager](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.grafana_tracing_grafana_agent_traicing_provider](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.loki_alertmanager](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.loki_certificates](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.loki_grafana_dashboards_provider](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.loki_grafana_source](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.loki_ingress](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.loki_logging_consumer_grafana_agent_logging_provider](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.loki_logging_grafana_agent_logging_consumer](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.loki_tracing_grafana_agent_traicing_provider](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.mimir_alertmanager](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.mimir_catalogue](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.mimir_certificates](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.mimir_grafana_dashboards_provider](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.mimir_grafana_source](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.mimir_ingress](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.mimir_logging_consumer_grafana_agent_logging_provider](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.mimir_self_metrics_endpoint_grafana_agent_metrics_endpoint](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.mimir_tracing_grafana_agent_tracing_provider](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.tempo_catalogue](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.tempo_certificates](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.tempo_grafana_dashboard_grafana_grafana_dashboard](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.tempo_grafana_source](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.tempo_ingress](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.tempo_logging_grafana_agent_logging_provider](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.tempo_metrics_endpoint_grafana_agent_metrics_endpoint](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.tempo_send_remote_write_mimir_receive_remote_write](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.tempo_tracing_grafana_agent_tracing](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_integration.traefik_receive_ca_certificate](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
+| [juju_offer.alertmanager_karma_dashboard](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/offer) | resource |
+| [juju_offer.grafana_dashboards](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/offer) | resource |
+| [juju_offer.loki_logging](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/offer) | resource |
+| [juju_offer.mimir_receive_remote_write](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/offer) | resource |
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_alertmanager"></a> [alertmanager](#input\_alertmanager) | Application configuration for Alertmanager. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    app_name           = optional(string, "alertmanager") # without default, will give "known after apply"<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
+| <a name="input_anti_affinity"></a> [anti\_affinity](#input\_anti\_affinity) | Enable anti-affinity constraints across all HA modules (Mimir, Loki, Tempo) | `bool` | `true` | no |
+| <a name="input_catalogue"></a> [catalogue](#input\_catalogue) | n/a | <pre>object({<br/>    app_name           = optional(string, "catalogue")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
+| <a name="input_channel"></a> [channel](#input\_channel) | Channel that the applications are (unless overwritten by external\_channels) deployed from | `string` | n/a | yes |
+| <a name="input_cloud"></a> [cloud](#input\_cloud) | Kubernetes cloud or environment where this COS module will be deployed (e.g self-managed, aws) | `string` | `"self-managed"` | no |
+| <a name="input_external_certificates_offer_url"></a> [external\_certificates\_offer\_url](#input\_external\_certificates\_offer\_url) | A Juju offer URL of a CA providing the 'tls\_certificates' integration for Traefik to supply it with server certificates | `string` | `null` | no |
+| <a name="input_grafana"></a> [grafana](#input\_grafana) | n/a | <pre>object({<br/>    app_name           = optional(string, "grafana")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
+| <a name="input_grafana_agent"></a> [grafana\_agent](#input\_grafana\_agent) | n/a | <pre>object({<br/>    app_name           = optional(string, "grafana-agent")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
+| <a name="input_internal_tls"></a> [internal\_tls](#input\_internal\_tls) | Specify whether to use TLS or not for internal COS communication. By default, TLS is enabled using self-signed-certificates | `bool` | `true` | no |
+| <a name="input_loki_bucket"></a> [loki\_bucket](#input\_loki\_bucket) | Loki bucket name | `string` | n/a | yes |
+| <a name="input_loki_coordinator"></a> [loki\_coordinator](#input\_loki\_coordinator) | n/a | <pre>object({<br/>    config                 = optional(map(string), {})<br/>    constraints            = optional(string, "arch=amd64")<br/>    revision               = optional(number, null)<br/>    storage_directives     = optional(map(string), {})<br/>    units                  = optional(number, 3)<br/>  })</pre> | `{}` | no |
+| <a name="input_loki_worker"></a> [loki\_worker](#input\_loki\_worker) | Application configuration for Alertmanager. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    backend_config     = optional(map(string), {})<br/>    read_config        = optional(map(string), {})<br/>    write_config       = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    backend_units      = optional(number, 3)<br/>    read_units         = optional(number, 3)<br/>    write_units        = optional(number, 3)<br/>  })</pre> | `{}` | no |
+| <a name="input_mimir_bucket"></a> [mimir\_bucket](#input\_mimir\_bucket) | Mimir bucket name | `string` | n/a | yes |
+| <a name="input_mimir_coordinator"></a> [mimir\_coordinator](#input\_mimir\_coordinator) | n/a | <pre>object({<br/>    config                 = optional(map(string), {})<br/>    constraints            = optional(string, "arch=amd64")<br/>    revision               = optional(number, null)<br/>    storage_directives     = optional(map(string), {})<br/>    units                  = optional(number, 3)<br/>  })</pre> | `{}` | no |
+| <a name="input_mimir_worker"></a> [mimir\_worker](#input\_mimir\_worker) | n/a | <pre>object({<br/>    backend_config     = optional(map(string), {})<br/>    read_config        = optional(map(string), {})<br/>    write_config       = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    backend_units      = optional(number, 3)<br/>    read_units         = optional(number, 3)<br/>    write_units        = optional(number, 3)<br/>  })</pre> | `{}` | no |
+| <a name="input_model"></a> [model](#input\_model) | Reference to an existing model resource or data source for the model to deploy to | `string` | n/a | yes |
+| <a name="input_s3-integrator"></a> [s3-integrator](#input\_s3-integrator) | Note: this s3-integrator config applies to all coordinated-worker charms | <pre>object({<br/>    channel            = optional(string, "2/edge")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    revision           = optional(number, 157) # FIXME: https://github.com/canonical/observability/issues/342<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
+| <a name="input_s3_access_key"></a> [s3\_access\_key](#input\_s3\_access\_key) | S3 access-key credential | `string` | n/a | yes |
+| <a name="input_s3_endpoint"></a> [s3\_endpoint](#input\_s3\_endpoint) | S3 endpoint | `string` | n/a | yes |
+| <a name="input_s3_secret_key"></a> [s3\_secret\_key](#input\_s3\_secret\_key) | S3 secret-key credential | `string` | n/a | yes |
+| <a name="input_ssc"></a> [ssc](#input\_ssc) | n/a | <pre>object({<br/>    app_name           = optional(string, "ca")<br/>    channel            = optional(string, "1/stable")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
+| <a name="input_tempo_bucket"></a> [tempo\_bucket](#input\_tempo\_bucket) | Tempo bucket name | `string` | n/a | yes |
+| <a name="input_tempo_coordinator"></a> [tempo\_coordinator](#input\_tempo\_coordinator) | n/a | <pre>object({<br/>    config                 = optional(map(string), {})<br/>    constraints            = optional(string, "arch=amd64")<br/>    revision               = optional(number, null)<br/>    storage_directives     = optional(map(string), {})<br/>    units                  = optional(number, 3)<br/>  })</pre> | `{}` | no |
+| <a name="input_tempo_worker"></a> [tempo\_worker](#input\_tempo\_worker) | n/a | <pre>object({<br/>    querier_config           = optional(map(string), {})<br/>    query_frontend_config    = optional(map(string), {})<br/>    ingester_config          = optional(map(string), {})<br/>    distributor_config       = optional(map(string), {})<br/>    compactor_config         = optional(map(string), {})<br/>    metrics_generator_config = optional(map(string), {})<br/>    constraints              = optional(string, "arch=amd64")<br/>    revision                 = optional(number, null)<br/>    storage_directives       = optional(map(string), {})<br/>    compactor_units          = optional(number, 3)<br/>    distributor_units        = optional(number, 3)<br/>    ingester_units           = optional(number, 3)<br/>    metrics_generator_units  = optional(number, 3)<br/>    querier_units            = optional(number, 3)<br/>    query_frontend_units     = optional(number, 3)<br/>  })</pre> | `{}` | no |
+| <a name="input_traefik"></a> [traefik](#input\_traefik) | n/a | <pre>object({<br/>    app_name           = optional(string, "traefik")<br/>    channel            = optional(string, "latest/stable")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| <a name="output_components"></a> [components](#output\_components) | n/a |
+| <a name="output_offers"></a> [offers](#output\_offers) | n/a |
+<!-- END_TF_DOCS -->    
