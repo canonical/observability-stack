@@ -48,16 +48,15 @@ module "loki" {
 }
 
 module "prometheus" {
-  source      = "git::https://github.com/canonical/prometheus-k8s-operator//terraform"
-  app_name    = var.prometheus.app_name
-  channel     = var.channel
-  config      = var.prometheus.config
-  constraints = var.prometheus.constraints
-  model_name  = var.model
-  # model              = var.model
-  # storage_directives = var.prometheus.storage_directives
-  revision = var.prometheus.revision
-  units    = var.prometheus.units
+  source             = "git::https://github.com/canonical/prometheus-k8s-operator//terraform"
+  app_name           = var.prometheus.app_name
+  channel            = var.channel
+  config             = var.prometheus.config
+  constraints        = var.prometheus.constraints
+  model              = var.model
+  storage_directives = var.prometheus.storage_directives
+  revision           = var.prometheus.revision
+  units              = var.prometheus.units
 }
 
 module "ssc" {

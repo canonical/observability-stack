@@ -50,12 +50,6 @@ variable "anti_affinity" {
 
 # -------------- # S3 storage configuration --------------
 
-variable "s3_integrator_channel" {
-  description = "Channel that the s3-integrator application is deployed from"
-  type        = string
-  default     = "2/edge"
-}
-
 variable "s3_endpoint" {
   description = "S3 endpoint"
   type        = string
@@ -95,14 +89,15 @@ variable "tempo_bucket" {
 
 variable "alertmanager" {
   type = object({
-    app_name           = optional(string, "alertmanager") # without default, will give "known after apply"
+    app_name           = optional(string, "alertmanager")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
     revision           = optional(number, null)
     storage_directives = optional(map(string), {})
     units              = optional(number, 1)
   })
-  default = {}
+  default     = {}
+  description = "Application configuration for Alertmanager. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
 variable "catalogue" {
@@ -114,7 +109,8 @@ variable "catalogue" {
     storage_directives = optional(map(string), {})
     units              = optional(number, 1)
   })
-  default = {}
+  default     = {}
+  description = "Application configuration for Catalogue. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
 variable "grafana" {
@@ -126,7 +122,8 @@ variable "grafana" {
     storage_directives = optional(map(string), {})
     units              = optional(number, 1)
   })
-  default = {}
+  default     = {}
+  description = "Application configuration for Grafana. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
 variable "grafana_agent" {
@@ -138,20 +135,20 @@ variable "grafana_agent" {
     storage_directives = optional(map(string), {})
     units              = optional(number, 1)
   })
-  default = {}
+  default     = {}
+  description = "Application configuration for Grafana Agent. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
 variable "loki_coordinator" {
   type = object({
-    config                 = optional(map(string), {})
-    constraints            = optional(string, "arch=amd64")
-    revision               = optional(number, null)
-    s3_integrator_channel  = optional(string, "2/edge")
-    s3_integrator_revision = optional(number, 157) # FIXME: https://github.com/canonical/observability/issues/342
-    storage_directives     = optional(map(string), {})
-    units                  = optional(number, 3)
+    config             = optional(map(string), {})
+    constraints        = optional(string, "arch=amd64")
+    revision           = optional(number, null)
+    storage_directives = optional(map(string), {})
+    units              = optional(number, 3)
   })
-  default = {}
+  default     = {}
+  description = "Application configuration for Loki Coordinator. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
 variable "loki_worker" {
@@ -166,20 +163,20 @@ variable "loki_worker" {
     read_units         = optional(number, 3)
     write_units        = optional(number, 3)
   })
-  default = {}
+  default     = {}
+  description = "Application configuration for all Loki Workers. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
 variable "mimir_coordinator" {
   type = object({
-    config                 = optional(map(string), {})
-    constraints            = optional(string, "arch=amd64")
-    revision               = optional(number, null)
-    s3_integrator_channel  = optional(string, "2/edge")
-    s3_integrator_revision = optional(number, 157) # FIXME: https://github.com/canonical/observability/issues/342
-    storage_directives     = optional(map(string), {})
-    units                  = optional(number, 3)
+    config             = optional(map(string), {})
+    constraints        = optional(string, "arch=amd64")
+    revision           = optional(number, null)
+    storage_directives = optional(map(string), {})
+    units              = optional(number, 3)
   })
-  default = {}
+  default     = {}
+  description = "Application configuration for Mimir Coordinator. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
 variable "mimir_worker" {
@@ -194,7 +191,8 @@ variable "mimir_worker" {
     read_units         = optional(number, 3)
     write_units        = optional(number, 3)
   })
-  default = {}
+  default     = {}
+  description = "Application configuration for all Mimir Workers. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
 variable "ssc" {
@@ -207,20 +205,33 @@ variable "ssc" {
     storage_directives = optional(map(string), {})
     units              = optional(number, 1)
   })
-  default = {}
+  default     = {}
+  description = "Application configuration for Self-signed-certificates. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
+}
+
+variable "s3_integrator" {
+  type = object({
+    channel            = optional(string, "2/edge")
+    config             = optional(map(string), {})
+    constraints        = optional(string, "arch=amd64")
+    revision           = optional(number, 157) # FIXME: https://github.com/canonical/observability/issues/342
+    storage_directives = optional(map(string), {})
+    units              = optional(number, 1)
+  })
+  default     = {}
+  description = "Application configuration for all S3-integrators in coordinated workers. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
 variable "tempo_coordinator" {
   type = object({
-    config                 = optional(map(string), {})
-    constraints            = optional(string, "arch=amd64")
-    revision               = optional(number, null)
-    storage_directives     = optional(map(string), {})
-    units                  = optional(number, 3)
-    s3_integrator_channel  = optional(string, "2/edge")
-    s3_integrator_revision = optional(number, 157) # FIXME: https://github.com/canonical/observability/issues/342
+    config             = optional(map(string), {})
+    constraints        = optional(string, "arch=amd64")
+    revision           = optional(number, null)
+    storage_directives = optional(map(string), {})
+    units              = optional(number, 3)
   })
-  default = {}
+  default     = {}
+  description = "Application configuration for Tempo Coordinator. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
 variable "tempo_worker" {
@@ -241,7 +252,8 @@ variable "tempo_worker" {
     querier_units            = optional(number, 3)
     query_frontend_units     = optional(number, 3)
   })
-  default = {}
+  default     = {}
+  description = "Application configuration for all Tempo workers. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
 variable "traefik" {
@@ -254,5 +266,6 @@ variable "traefik" {
     storage_directives = optional(map(string), {})
     units              = optional(number, 1)
   })
-  default = {}
+  default     = {}
+  description = "Application configuration for Traefik. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }

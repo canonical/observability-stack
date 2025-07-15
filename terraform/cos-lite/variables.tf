@@ -42,7 +42,8 @@ variable "alertmanager" {
     storage_directives = optional(map(string), {})
     units              = optional(number, 1)
   })
-  default = {}
+  default     = {}
+  description = "Application configuration for Alertmanager. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
 variable "catalogue" {
@@ -54,7 +55,8 @@ variable "catalogue" {
     storage_directives = optional(map(string), {})
     units              = optional(number, 1)
   })
-  default = {}
+  default     = {}
+  description = "Application configuration for Catalogue. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
 variable "grafana" {
@@ -66,7 +68,8 @@ variable "grafana" {
     storage_directives = optional(map(string), {})
     units              = optional(number, 1)
   })
-  default = {}
+  default     = {}
+  description = "Application configuration for Grafana. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
 variable "loki" {
@@ -78,7 +81,8 @@ variable "loki" {
     storage_directives = optional(map(string), {})
     units              = optional(number, 1)
   })
-  default = {}
+  default     = {}
+  description = "Application configuration for Loki. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
 variable "prometheus" {
@@ -90,7 +94,8 @@ variable "prometheus" {
     storage_directives = optional(map(string), {})
     units              = optional(number, 1)
   })
-  default = {}
+  default     = {}
+  description = "Application configuration for Prometheus. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
 variable "ssc" {
@@ -103,7 +108,8 @@ variable "ssc" {
     storage_directives = optional(map(string), {})
     units              = optional(number, 1)
   })
-  default = {}
+  default     = {}
+  description = "Application configuration for self-signed-certificates. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
 variable "traefik" {
@@ -116,5 +122,6 @@ variable "traefik" {
     storage_directives = optional(map(string), {})
     units              = optional(number, 1)
   })
-  default = {}
+  default     = {}
+  description = "Application configuration for Traefik. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
