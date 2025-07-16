@@ -27,4 +27,4 @@ override.tf.json
 terraform.rc
 .terraform.lock.hcl
 
-terraform/testing/root.tf
+terraform/testing/**
