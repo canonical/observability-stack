@@ -17,7 +17,7 @@ This is a Terraform module facilitating the deployment of COS solution, using th
 
 | Name | Version |
 |------|---------|
-| <a name="provider_juju"></a> [juju](#provider\_juju) | 0.20.0 |
+| <a name="provider_juju"></a> [juju](#provider\_juju) | >= 0.20.0 |
 
 ## Modules
 
@@ -27,10 +27,10 @@ This is a Terraform module facilitating the deployment of COS solution, using th
 | <a name="module_catalogue"></a> [catalogue](#module\_catalogue) | git::https://github.com/canonical/catalogue-k8s-operator//terraform | n/a |
 | <a name="module_grafana"></a> [grafana](#module\_grafana) | git::https://github.com/canonical/grafana-k8s-operator//terraform | n/a |
 | <a name="module_grafana_agent"></a> [grafana\_agent](#module\_grafana\_agent) | git::https://github.com/canonical/grafana-agent-k8s-operator//terraform | n/a |
-| <a name="module_loki"></a> [loki](#module\_loki) | ../loki | n/a |
-| <a name="module_mimir"></a> [mimir](#module\_mimir) | ../mimir | n/a |
+| <a name="module_loki"></a> [loki](#module\_loki) | git::https://github.com/canonical/observability-stack//terraform/loki | n/a |
+| <a name="module_mimir"></a> [mimir](#module\_mimir) | git::https://github.com/canonical/observability-stack//terraform/mimir | n/a |
 | <a name="module_ssc"></a> [ssc](#module\_ssc) | git::https://github.com/canonical/self-signed-certificates-operator//terraform | n/a |
-| <a name="module_tempo"></a> [tempo](#module\_tempo) | ../tempo | n/a |
+| <a name="module_tempo"></a> [tempo](#module\_tempo) | git::https://github.com/canonical/observability-stack//terraform/tempo | n/a |
 | <a name="module_traefik"></a> [traefik](#module\_traefik) | git::https://github.com/canonical/traefik-k8s-operator//terraform | n/a |
 
 ## Inputs
