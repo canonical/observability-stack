@@ -68,7 +68,7 @@ This is a Terraform module facilitating the deployment of COS solution, using th
 | Name | Description |
 |------|-------------|
 | <a name="output_components"></a> [components](#output\_components) | All Terraform charm modules which make up this product module |
-| <a name="output_offers"></a> [offers](#output\_offers) | All Juju offers which are exposed by this product mood |
+| <a name="output_offers"></a> [offers](#output\_offers) | All Juju offers which are exposed by this product module |
 <!-- END_TF_DOCS -->
 
 ## Usage

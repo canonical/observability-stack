@@ -29,7 +29,7 @@ lint-terraform:
 
 [group("Lint")]
 lint-terraform-docs:
-  terraform-docs --output-check markdown table --output-file README.md --config .tfdocs-config.yml .
+  terraform-docs --output-check markdown table --output-file README.md --config .tfdocs-config.yml --lockfile=false .
 
 # Format the Terraform modules
 [group("Format")]
