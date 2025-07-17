@@ -25,7 +25,7 @@ module "grafana" {
 }
 
 module "opentelemetry_collector" {
-  source   = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform?ref=constraints"
+  source   = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform"
   app_name = "otelcol"
   model    = var.model
   channel  = var.channel
