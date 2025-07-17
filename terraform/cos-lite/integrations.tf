@@ -293,7 +293,7 @@ resource "juju_integration" "traefik_self_monitoring_prometheus" {
 # -------------- # Provided by Self-Signed-Certificates --------------
 
 resource "juju_integration" "alertmanager_certificates" {
-  count = var.use_tls ? 1 : 0
+  count = var.internal_tls ? 1 : 0
   model = var.model
 
   application {
@@ -308,7 +308,7 @@ resource "juju_integration" "alertmanager_certificates" {
 }
 
 resource "juju_integration" "catalogue_certificates" {
-  count = var.use_tls ? 1 : 0
+  count = var.internal_tls ? 1 : 0
   model = var.model
 
   application {
@@ -323,7 +323,7 @@ resource "juju_integration" "catalogue_certificates" {
 }
 
 resource "juju_integration" "grafana_certificates" {
-  count = var.use_tls ? 1 : 0
+  count = var.internal_tls ? 1 : 0
   model = var.model
 
   application {
@@ -338,7 +338,7 @@ resource "juju_integration" "grafana_certificates" {
 }
 
 resource "juju_integration" "loki_certificates" {
-  count = var.use_tls ? 1 : 0
+  count = var.internal_tls ? 1 : 0
   model = var.model
 
   application {
@@ -353,7 +353,7 @@ resource "juju_integration" "loki_certificates" {
 }
 
 resource "juju_integration" "prometheus_certificates" {
-  count = var.use_tls ? 1 : 0
+  count = var.internal_tls ? 1 : 0
   model = var.model
 
   application {
@@ -367,8 +367,8 @@ resource "juju_integration" "prometheus_certificates" {
   }
 }
 
-resource "juju_integration" "traefik_certificates" {
-  count = var.use_tls ? 1 : 0
+resource "juju_integration" "traefik_receive_ca_certificate" {
+  count = var.internal_tls ? 1 : 0
   model = var.model
 
   application {

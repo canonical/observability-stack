@@ -494,7 +494,7 @@ resource "juju_integration" "grafana_tracing_grafana_agent_traicing_provider" {
 # -------------- # Provided by Self-Signed-Certificates --------------
 
 resource "juju_integration" "alertmanager_certificates" {
-  count = var.use_tls ? 1 : 0
+  count = var.internal_tls ? 1 : 0
   model = var.model
 
   application {
@@ -509,7 +509,7 @@ resource "juju_integration" "alertmanager_certificates" {
 }
 
 resource "juju_integration" "catalogue_certificates" {
-  count = var.use_tls ? 1 : 0
+  count = var.internal_tls ? 1 : 0
   model = var.model
 
   application {
@@ -524,7 +524,7 @@ resource "juju_integration" "catalogue_certificates" {
 }
 
 resource "juju_integration" "grafana_certificates" {
-  count = var.use_tls ? 1 : 0
+  count = var.internal_tls ? 1 : 0
   model = var.model
 
   application {
@@ -539,7 +539,7 @@ resource "juju_integration" "grafana_certificates" {
 }
 
 resource "juju_integration" "grafana_agent_certificates" {
-  count = var.use_tls ? 1 : 0
+  count = var.internal_tls ? 1 : 0
   model = var.model
 
   application {
@@ -554,7 +554,7 @@ resource "juju_integration" "grafana_agent_certificates" {
 }
 
 resource "juju_integration" "loki_certificates" {
-  count = var.use_tls ? 1 : 0
+  count = var.internal_tls ? 1 : 0
   model = var.model
 
   application {
@@ -569,7 +569,7 @@ resource "juju_integration" "loki_certificates" {
 }
 
 resource "juju_integration" "mimir_certificates" {
-  count = var.use_tls ? 1 : 0
+  count = var.internal_tls ? 1 : 0
   model = var.model
 
   application {
@@ -584,7 +584,7 @@ resource "juju_integration" "mimir_certificates" {
 }
 
 resource "juju_integration" "tempo_certificates" {
-  count = var.use_tls ? 1 : 0
+  count = var.internal_tls ? 1 : 0
   model = var.model
 
   application {
@@ -598,8 +598,8 @@ resource "juju_integration" "tempo_certificates" {
   }
 }
 
-resource "juju_integration" "traefik_certificates" {
-  count = var.use_tls ? 1 : 0
+resource "juju_integration" "traefik_receive_ca_certificate" {
+  count = var.internal_tls ? 1 : 0
   model = var.model
 
   application {
