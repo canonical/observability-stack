@@ -20,7 +20,7 @@ apply_cos:
         -var="s3_access_key=$(terraform output -raw s3_access_key)" \
         -var="s3_secret_key=$(terraform output -raw s3_secret_key)" \
         -var="model=$(terraform output -raw cos_model)" \
-        -var="ssc_channel=1/edge" \
+        -var="channel=2/edge" \
         -var="cloud=aws" \
 
 destroy_infra:
@@ -35,5 +35,5 @@ destroy_cos:
         -var="s3_access_key=$(terraform output -raw s3_access_key)" \
         -var="s3_secret_key=$(terraform output -raw s3_secret_key)" \
         -var="model=$(terraform output -raw cos_model)" \
-        -var="ssc_channel=1/edge" \
+        -var="channel=2/edge" \
         -var="cloud=aws" \
