@@ -126,19 +126,6 @@ variable "grafana" {
   description = "Application configuration for Grafana. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
-variable "grafana_agent" {
-  type = object({
-    app_name           = optional(string, "grafana-agent")
-    config             = optional(map(string), {})
-    constraints        = optional(string, "arch=amd64")
-    revision           = optional(number, null)
-    storage_directives = optional(map(string), {})
-    units              = optional(number, 1)
-  })
-  default     = {}
-  description = "Application configuration for Grafana Agent. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
-}
-
 variable "loki_coordinator" {
   type = object({
     config             = optional(map(string), {})
@@ -194,6 +181,20 @@ variable "mimir_worker" {
   default     = {}
   description = "Application configuration for all Mimir Workers. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
+
+variable "opentelemetry_colector" {
+  type = object({
+    app_name           = optional(string, "otelcol")
+    config             = optional(map(string), {})
+    constraints        = optional(string, "arch=amd64")
+    revision           = optional(number, null)
+    storage_directives = optional(map(string), {})
+    units              = optional(number, 1)
+  })
+  default     = {}
+  description = "Application configuration for OpenTelemetry Collector. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
+}
+
 
 variable "ssc" {
   type = object({

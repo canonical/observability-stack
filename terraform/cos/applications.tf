@@ -34,18 +34,6 @@ module "grafana" {
   units              = var.grafana.units
 }
 
-module "grafana_agent" {
-  source             = "git::https://github.com/canonical/grafana-agent-k8s-operator//terraform"
-  app_name           = var.grafana_agent.app_name
-  channel            = var.channel
-  config             = var.grafana_agent.config
-  constraints        = var.grafana_agent.constraints
-  model              = var.model
-  revision           = var.grafana_agent.revision
-  storage_directives = var.grafana_agent.storage_directives
-  units              = var.grafana_agent.units
-}
-
 module "loki" {
   source                           = "git::https://github.com/canonical/observability-stack//terraform/loki"
   anti_affinity                    = var.anti_affinity
@@ -106,6 +94,18 @@ module "mimir" {
   backend_units                    = var.mimir_worker.backend_units
   read_units                       = var.mimir_worker.read_units
   write_units                      = var.mimir_worker.write_units
+}
+
+module "opentelemetry_collector" {
+  source             = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform"
+  app_name           = var.opentelemetry_colector.app_name
+  channel            = var.channel
+  config             = var.opentelemetry_colector.config
+  constraints        = var.opentelemetry_colector.constraints
+  model              = var.model
+  revision           = var.opentelemetry_colector.revision
+  storage_directives = var.opentelemetry_colector.storage_directives
+  units              = var.opentelemetry_colector.units
 }
 
 module "ssc" {
