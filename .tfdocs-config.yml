@@ -1,3 +1,5 @@
+# https://terraform-docs.io/user-guide/configuration/
+
 formatter: markdown table
 
 recursive:
@@ -6,7 +8,6 @@ recursive:
   include-main: false
 
 sections:
-  hide: []
   show:
     - requirements
     - modules
