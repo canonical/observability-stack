@@ -9,11 +9,11 @@ default:
 
 # Lint everything
 [group("Lint")]
-lint: lint-workflows lint-terraform
+lint: lint-workflows lint-terraform lint-terraform-docs
 
-# Format everything 
+# Format everything
 [group("Format")]
-fmt: format-terraform
+fmt: format-terraform format-terraform-docs
 
 # Lint the Github workflows
 [group("Lint")]
@@ -27,9 +27,10 @@ lint-terraform:
   if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
   set -e; for repo in */; do (cd "$repo" && echo "Processing ${repo%/}..." && $terraform init -upgrade -reconfigure && $terraform fmt -check -recursive -diff) || exit 1; done
 
+# Lint the Terraform documentation
 [group("Lint")]
 lint-terraform-docs:
-  terraform-docs --output-check markdown table --output-file README.md --config .tfdocs-config.yml --lockfile=false .
+  terraform-docs --config .tfdocs-config.yml .
 
 # Format the Terraform modules
 [group("Format")]
@@ -38,13 +39,13 @@ format-terraform:
   if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
   set -e; for repo in */; do (cd "$repo" && echo "Processing ${repo%/}..." && $terraform init -upgrade -reconfigure && $terraform fmt -recursive -diff) || exit 1; done
 
+# Format the Terraform documentation
+[group("Format")]
+format-terraform-docs:
+  terraform-docs --config .tfdocs-config.yml .
+
 # Validate the Terraform modules
-[group("Validate")]
 [working-directory("./terraform")]
 validate-terraform:
   if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
   set -e; for repo in */; do (cd "$repo" && echo "Processing ${repo%/}..." && $terraform init -upgrade -reconfigure && $terraform validate) || exit 1; done
-
-update-terraform-docs:
-  # https://terraform-docs.io/user-guide/configuration/
-  terraform-docs markdown table --output-file README.md --config .tfdocs-config.yml .
