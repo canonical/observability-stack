@@ -14,15 +14,15 @@ output "offers" {
 
 output "components" {
   value = {
-    alertmanager  = module.alertmanager
-    catalogue     = module.catalogue
-    grafana       = module.grafana
-    grafana_agent = module.grafana_agent
-    loki          = module.loki
-    mimir         = module.mimir
-    ssc           = module.ssc
-    tempo         = module.tempo
-    traefik       = module.traefik
+    alertmanager            = module.alertmanager
+    catalogue               = module.catalogue
+    grafana                 = module.grafana
+    opentelemetry_collector = module.opentelemetry_collector
+    loki                    = module.loki
+    mimir                   = module.mimir
+    ssc                     = module.ssc
+    tempo                   = module.tempo
+    traefik                 = module.traefik
   }
   description = "All Terraform charm modules which make up this product module"
 }
