@@ -80,6 +80,26 @@ Users should ensure that Terraform is aware of the `juju_model` dependency of th
 
 To deploy this module with its needed dependency, you can run `terraform apply -var="model=<MODEL_NAME>" -auto-approve`. This would deploy all COS HA solution modules in the same model.
 
+#### Known Juju issue.
+
+Because this [Juju issue](https://github.com/juju/juju/issues/20210) a message like this one can be seen after running `terraform apply`:
+
+```
+╷
+│ Error: Client Error
+│ 
+│   with module.cos.module.mimir.juju_secret.mimir_s3_credentials_secret,
+│   on /home/mt/work/canonical/repos/observability/terraform/modules/mimir/main.tf line 1, in resource "juju_secret" "mimir_s3_credentials_secret":
+│    1: resource "juju_secret" "mimir_s3_credentials_secret" {
+│ 
+│ Unable to add secret, got error: rolebindings.rbac.authorization.k8s.io "model-cos"
+│ already exists
+╵
+```
+
+Until this issue is solved, a workaround to this is to retry a `terraform apply`.
+
+
 ### High Availability
 
 By default, this Terraform module will deploy each worker with `3` unit. If you want to scale each Loki, Mimir or Tempo worker unit please check the variables available for that purpose in `variables.tf`.
