@@ -35,16 +35,15 @@ module "grafana" {
 }
 
 module "loki" {
-  source      = "git::https://github.com/canonical/loki-k8s-operator//terraform"
-  app_name    = var.loki.app_name
-  channel     = var.channel
-  config      = var.loki.config
-  constraints = var.loki.constraints
-  model_name  = var.model
-  # model              = var.model
-  # storage_directives = var.loki.storage_directives
-  revision = var.loki.revision
-  units    = var.loki.units
+  source             = "git::https://github.com/canonical/loki-k8s-operator//terraform"
+  app_name           = var.loki.app_name
+  channel            = var.channel
+  config             = var.loki.config
+  constraints        = var.loki.constraints
+  model              = var.model
+  storage_directives = var.loki.storage_directives
+  revision           = var.loki.revision
+  units              = var.loki.units
 }
 
 module "prometheus" {
