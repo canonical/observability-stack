@@ -35,7 +35,7 @@ module "grafana" {
 }
 
 module "loki" {
-  source                           = "git::https://github.com/canonical/observability-stack//terraform/loki"
+  source                           = "git::https://github.com/canonical/observability-stack//terraform/loki?ref=fix/otelcol-channel"
   anti_affinity                    = var.anti_affinity
   channel                          = var.channel
   model                            = var.model
@@ -66,7 +66,7 @@ module "loki" {
 }
 
 module "mimir" {
-  source                           = "git::https://github.com/canonical/observability-stack//terraform/mimir"
+  source                           = "git::https://github.com/canonical/observability-stack//terraform/mimir?ref=fix/otelcol-channel"
   anti_affinity                    = var.anti_affinity
   channel                          = var.channel
   model                            = var.model
@@ -99,7 +99,7 @@ module "mimir" {
 module "opentelemetry_collector" {
   source             = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform"
   app_name           = var.opentelemetry_collector.app_name
-  channel            = var.channel
+  channel            = var.opentelemetry_collector.channel  # FIXME Remove this once we have a 1/stable
   config             = var.opentelemetry_collector.config
   constraints        = var.opentelemetry_collector.constraints
   model              = var.model
@@ -121,7 +121,7 @@ module "ssc" {
 }
 
 module "tempo" {
-  source                           = "git::https://github.com/canonical/observability-stack//terraform/tempo"
+  source                           = "git::https://github.com/canonical/observability-stack//terraform/tempo?ref=fix/otelcol-channel"
   anti_affinity                    = var.anti_affinity
   channel                          = var.channel
   model                            = var.model

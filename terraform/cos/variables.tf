@@ -185,6 +185,7 @@ variable "mimir_worker" {
 variable "opentelemetry_collector" {
   type = object({
     app_name           = optional(string, "otelcol")
+    channel            = optional(string, "2/edge")  # FIXME Remove this once we have a 1/stable
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
     revision           = optional(number, null)
