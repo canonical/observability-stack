@@ -182,7 +182,7 @@ variable "mimir_worker" {
   description = "Application configuration for all Mimir Workers. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
-variable "opentelemetry_colector" {
+variable "opentelemetry_collector" {
   type = object({
     app_name           = optional(string, "otelcol")
     config             = optional(map(string), {})
