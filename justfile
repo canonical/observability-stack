@@ -30,7 +30,7 @@ lint-terraform:
 # Lint the Terraform documentation
 [group("Lint")]
 lint-terraform-docs:
-  terraform-docs --config .tfdocs-config.yml .
+  terraform-docs --output-check --config .tfdocs-config.yml .
 
 # Format the Terraform modules
 [group("Format")]

@@ -99,7 +99,7 @@ module "mimir" {
 module "opentelemetry_collector" {
   source             = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform"
   app_name           = var.opentelemetry_collector.app_name
-  channel            = var.opentelemetry_collector.channel  # FIXME Remove this once we have a 1/stable
+  channel            = var.opentelemetry_collector.channel # FIXME Remove this once we have a 1/stable
   config             = var.opentelemetry_collector.config
   constraints        = var.opentelemetry_collector.constraints
   model              = var.model
