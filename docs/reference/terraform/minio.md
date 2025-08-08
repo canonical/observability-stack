@@ -1,3 +1,5 @@
+# Terraform module for MinIO
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
