@@ -14,6 +14,7 @@ TracesData -> ResourceSpans -> ScopeSpans -> Span
 Generally speaking, `Data` is a collection of `Resource` items associated with specific resources such as a specific service or host.  Each `Resource` contains information about itself and multiple `Scope` items, for grouping based on their `InstrumentationScope` (the library or component responsible for generating the telemetry). The `LogRecord`, `Metric`, and `Span` are the core building blocks of the respective telemetry that represents a single operation or activity.
 
 Using the [debug exporter with normal verbosity](https://github.com/open-telemetry/opentelemetry-collector/tree/main/exporter/debugexporter#normal-verbosity), enabled per telemetry type, we can inspect the signals which make it through the pipeline.
+
 ```yaml
 exporters:
   debug:
@@ -30,6 +31,7 @@ service:
       exporters:
         - debug
 ```
+
 This allows us to understand the structure of the signal's resources and attributes prior to crafting our filtering. Before reaching an exporter, a signal is first processed by a processor and any modification to signals are propagated throughout the remainder of the pipeline. You can check the charm's debug exporter output with the command: `juju ssh --container otelcol OTELCOL_APP/0 "pebble logs -f"`. 
 
 ### Metrics
@@ -119,7 +121,7 @@ EOF
 ```
 
 ###  Via filter processor
-```{yaml}
+```yaml
 processors:
   filter/exclude:
       metrics:
@@ -129,7 +131,7 @@ processors:
             - "scrape_samples_.+"
 ```
 Alternatively, you can use an OTTL expression for the entire `otelcol` service:
-```{yaml}
+```yaml
 processors:
   filter/exclude:
     metrics:
@@ -139,7 +141,7 @@ processors:
 
 ## Drop logs
 The log bodies may contain successful (`2xx`) status codes. In some use cases, this telemetry is not desired and can be dropped using the filter processor.
-```{yaml}
+```yaml
 processors:
   filter/exclude:
     logs:
@@ -151,7 +153,7 @@ processors:
 
 ## Drop traces
 When an application is scaled, we receive traces for multiple units. In some use cases, this telemetry is not desired and can be dropped using the filter processor.
-```{yaml}
+```yaml
 processors:
   filter/exclude:
     traces:
