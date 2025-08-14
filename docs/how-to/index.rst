@@ -43,7 +43,7 @@ with COS to actually observe them.
    Testing with Minio <deploy-s3-integrator-and-minio>
    Configure TLS encryption <configure-tls-encryption>
    Selectively drop telemetry <selectively-drop-telemetry>
-   Chaining OpenTelemetry Collectors for telemetry stream processing <chaining-otelcols>
+   Tier the OpenTelemetry Collector with different pipelines per data stream <chaining-otelcols>
    
 Troubleshooting
 ===============
