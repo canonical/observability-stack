@@ -44,7 +44,7 @@ With Juju config we can set the [otelcol processor config](https://charmhub.io/o
 ```
 
 ## Tiering incoming data streams
-Another imaginable scenario is classifying log streams prior to ingestion in a common storage destination. Each `Flog` log source has unique downstream data processing, useful for environment classification and identification. Both datastream benefit from the `batching` otelcol. Additionally, both data streams have an [attributes processor](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/processor/attributesprocessor/README.md), uniquely configured, to classify the logging source environment. Finally, only the production data stream uses the redaction processor for compliance reasons.
+Another imaginable scenario is classifying log streams prior to ingestion in a common storage destination. Each `Flog` log source has unique downstream data processing, useful for environment classification and identification. Both data streams benefit from the `batching` otelcol. Additionally, they have an [attributes processor](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/processor/attributesprocessor/README.md), uniquely configured, to classify the logging source environment. Finally, only the production data stream uses the redaction processor for compliance reasons.
 
 ```{mermaid}
 flowchart TB
