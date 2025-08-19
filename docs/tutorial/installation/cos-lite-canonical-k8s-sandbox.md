@@ -114,7 +114,7 @@ curl -L https://raw.githubusercontent.com/canonical/cos-lite-bundle/main/overlay
 juju deploy cos-lite --trust --overlay ./offers-overlay.yaml
 ```
 
-This enables [cross-model relations](https://documentation.ubuntu.com/juju/3.6/reference/relation/#cross-model).
+This enables [cross-model relations](https://documentation.ubuntu.com/juju/3.6/reference/relation/#cross-model-relation).
 In the output of `juju status` you should now see the following new section:
 
 ```

@@ -11,26 +11,22 @@ applications:
       processors: |-
         filter:
           logs:
-            include:
-              match_type: regexp
-              bodies:
-                - '\| FATAL \|'
-                - '\| ERROR \|'
-                - '\| WARNING \|'
+            log_record:
+              - ParseJSON(body)["level"] == "INFO"
+              - ParseJSON(body)["level"] == "DEBUG"
+              - ParseJSON(body)["level"] == "TRACE"
     constraints: arch=amd64
     storage:
       persisted: kubernetes,1,1024M
     trust: true
   flog:
     charm: flog-k8s
-    channel: latest/stable
-    revision: 6
+    channel: latest/edge
+    revision: 9
     base: ubuntu@20.04/stable
     resources:
-      workload-image: 2
+      workload-image: 3
     scale: 1
-    options:
-      format: app_log
     constraints: arch=amd64
   hot-filter:
     charm: opentelemetry-collector-k8s
@@ -43,13 +39,9 @@ applications:
       processors: |-
         filter:
           logs:
-            include:
-              match_type: regexp
-              bodies:
-                - '\| FATAL \|'
-                - '\| ERROR \|'
-                - '\| WARNING \|'
-                - '\| INFO \|'
+            log_record:
+              - ParseJSON(body)["level"] == "DEBUG"
+              - ParseJSON(body)["level"] == "TRACE"
     constraints: arch=amd64
     storage:
       persisted: kubernetes,1,1024M
@@ -91,7 +83,6 @@ applications:
     scale: 1
     options:
       processors: |
-        batch:
         redaction:
           blocked_values:
             - "(dolorem|facilis|quo) .* (corporis|debitis|quis)"

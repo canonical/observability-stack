@@ -20,20 +20,20 @@ applications:
     trust: true
   flog-dev:
     charm: flog-k8s
-    channel: latest/stable
-    revision: 6
+    channel: latest/edge
+    revision: 9
     base: ubuntu@20.04/stable
     resources:
-      workload-image: 2
+      workload-image: 3
     scale: 1
     constraints: arch=amd64
   flog-prod:
     charm: flog-k8s
-    channel: latest/stable
-    revision: 6
+    channel: latest/edge
+    revision: 9
     base: ubuntu@20.04/stable
     resources:
-      workload-image: 2
+      workload-image: 3
     scale: 1
     constraints: arch=amd64
   loki:
@@ -77,7 +77,6 @@ applications:
     scale: 1
     options:
       processors: |-
-        batch:
         redaction:
           allow_all_keys: true
           blocked_values:
