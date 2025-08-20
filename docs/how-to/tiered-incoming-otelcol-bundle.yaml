@@ -9,7 +9,7 @@ applications:
     scale: 1
     options:
       processors: |-
-        attributes:
+        attributes/dev:
           actions:
             - key: "region-a.environment"
               value: "dev"
@@ -59,7 +59,7 @@ applications:
     scale: 1
     options:
       processors: |-
-        attributes:
+        attributes/prod:
           actions:
             - key: "region-a.environment"
               value: "prod"
@@ -77,6 +77,7 @@ applications:
     scale: 1
     options:
       processors: |-
+        batch:
         redaction:
           allow_all_keys: true
           blocked_values:

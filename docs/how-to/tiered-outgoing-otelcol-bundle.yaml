@@ -12,9 +12,10 @@ applications:
         filter:
           logs:
             log_record:
-              - ParseJSON(body)["level"] == "INFO"
-              - ParseJSON(body)["level"] == "DEBUG"
-              - ParseJSON(body)["level"] == "TRACE"
+              - ContainsValue(Keys(ParseJSON(body)), "level") and
+                (ParseJSON(body)["level"] == "INFO" or
+                ParseJSON(body)["level"] == "DEBUG" or
+                ParseJSON(body)["level"] == "TRACE")
     constraints: arch=amd64
     storage:
       persisted: kubernetes,1,1024M
@@ -40,8 +41,9 @@ applications:
         filter:
           logs:
             log_record:
-              - ParseJSON(body)["level"] == "DEBUG"
-              - ParseJSON(body)["level"] == "TRACE"
+              - ContainsValue(Keys(ParseJSON(body)), "level") and
+                (ParseJSON(body)["level"] == "DEBUG" or
+                ParseJSON(body)["level"] == "TRACE")
     constraints: arch=amd64
     storage:
       persisted: kubernetes,1,1024M
@@ -83,6 +85,7 @@ applications:
     scale: 1
     options:
       processors: |
+        batch:
         redaction:
           blocked_values:
             - "(dolorem|facilis|quo) .* (corporis|debitis|quis)"
@@ -91,13 +94,13 @@ applications:
       persisted: kubernetes,1,1024M
     trust: true
 relations:
-- - flog:log-proxy
-  - redact-and-batch:receive-loki-logs
-- - redact-and-batch:send-loki-logs
-  - hot-filter:receive-loki-logs
-- - redact-and-batch:send-loki-logs
-  - cold-filter:receive-loki-logs
-- - hot-filter:send-loki-logs
-  - loki-hot:logging
-- - cold-filter:send-loki-logs
-  - loki-cold:logging
+  - - flog:log-proxy
+    - redact-and-batch:receive-loki-logs
+  - - redact-and-batch:send-loki-logs
+    - hot-filter:receive-loki-logs
+  - - redact-and-batch:send-loki-logs
+    - cold-filter:receive-loki-logs
+  - - hot-filter:send-loki-logs
+    - loki-hot:logging
+  - - cold-filter:send-loki-logs
+    - loki-cold:logging

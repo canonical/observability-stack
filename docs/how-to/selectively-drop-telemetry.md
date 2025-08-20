@@ -138,7 +138,7 @@ A log signal flowing through the pipeline will look similar to:
 ```shell
 ResourceLog #0 loki.format=raw
 ScopeLog #0
-{"host":"173.119.110.173", "user-identifier":"-", "datetime":"11/Aug/2025:07:06:45 +0000", "method": "GET", "request": "/interactive/synthesize/monetize/best-of-breed", "protocol":"HTTP/2.0", "status":200, "bytes":16850, "referer": "http://www.internalback-end.com/syndicate", "message": "saepe assumenda non expedita ... corporis corporis facilis quo sit cumqu"} juju_unit=flog/0 filename=/bin/fake.log job=juju_how-to_7b30903e_flog juju_application=flog juju_charm=flog-k8s juju_model=how-to juju_model_uuid=7b30903e-8941-4a40-864c-0cbbf277c57f loki.attribute.labels=container, job, filename, juju_application, juju_charm, juju_model, juju_model_uuid, juju_unit, snap_name, path
+{"level":"WARNING", "host":"161.168.71.228", "user-identifier":"-", "datetime":"19/Aug/2025:15:33:08 +0000", "method": "PATCH", "request": "/portals/utilize", "protocol":"HTTP/1.1", "status":205, "bytes":9281, "referer": "http://www.leadportals.info/extensible/world-class/supply-chains", "message": "molestias et impedit ... fugiat error di"} job=juju_test-1-1_5599bed2_flog juju_application=flog juju_charm=flog-k8s juju_model=test-1-1 juju_model_uuid=5599bed2-5711-4573-8dbd-95f76fa60f3e juju_unit=flog/0 container=workload filename=/bin/fake.log loki.attribute.labels=container, job, filename, juju_application, juju_charm, juju_model, juju_model_uuid, juju_unit, snap_name, path
 ```
 **Note**: the log body is enclosed in curly braces.
 
