@@ -1,0 +1,106 @@
+bundle: kubernetes
+applications:
+  cold-filter:
+    charm: opentelemetry-collector-k8s
+    channel: 2/edge
+    revision: 74
+    resources:
+      opentelemetry-collector-image: 9
+    scale: 1
+    options:
+      processors: |-
+        filter:
+          logs:
+            log_record:
+              - ContainsValue(Keys(ParseJSON(body)), "level") and
+                (ParseJSON(body)["level"] == "INFO" or
+                ParseJSON(body)["level"] == "DEBUG" or
+                ParseJSON(body)["level"] == "TRACE")
+    constraints: arch=amd64
+    storage:
+      persisted: kubernetes,1,1024M
+    trust: true
+  flog:
+    charm: flog-k8s
+    channel: latest/edge
+    revision: 9
+    base: ubuntu@20.04/stable
+    resources:
+      workload-image: 3
+    scale: 1
+    constraints: arch=amd64
+  hot-filter:
+    charm: opentelemetry-collector-k8s
+    channel: 2/edge
+    revision: 74
+    resources:
+      opentelemetry-collector-image: 9
+    scale: 1
+    options:
+      processors: |-
+        filter:
+          logs:
+            log_record:
+              - ContainsValue(Keys(ParseJSON(body)), "level") and
+                (ParseJSON(body)["level"] == "DEBUG" or
+                ParseJSON(body)["level"] == "TRACE")
+    constraints: arch=amd64
+    storage:
+      persisted: kubernetes,1,1024M
+    trust: true
+  loki-cold:
+    charm: loki-k8s
+    channel: 1/stable
+    revision: 199
+    base: ubuntu@20.04/stable
+    resources:
+      loki-image: 101
+      node-exporter-image: 4
+    scale: 1
+    constraints: arch=amd64
+    storage:
+      active-index-directory: kubernetes,1,1024M
+      loki-chunks: kubernetes,1,1024M
+    trust: true
+  loki-hot:
+    charm: loki-k8s
+    channel: 1/stable
+    revision: 199
+    base: ubuntu@20.04/stable
+    resources:
+      loki-image: 101
+      node-exporter-image: 4
+    scale: 1
+    constraints: arch=amd64
+    storage:
+      active-index-directory: kubernetes,1,1024M
+      loki-chunks: kubernetes,1,1024M
+    trust: true
+  redact-and-batch:
+    charm: opentelemetry-collector-k8s
+    channel: 2/edge
+    revision: 74
+    resources:
+      opentelemetry-collector-image: 9
+    scale: 1
+    options:
+      processors: |
+        batch:
+        redaction:
+          blocked_values:
+            - "(dolorem|facilis|quo) .* (corporis|debitis|quis)"
+    constraints: arch=amd64
+    storage:
+      persisted: kubernetes,1,1024M
+    trust: true
+relations:
+  - - flog:log-proxy
+    - redact-and-batch:receive-loki-logs
+  - - redact-and-batch:send-loki-logs
+    - hot-filter:receive-loki-logs
+  - - redact-and-batch:send-loki-logs
+    - cold-filter:receive-loki-logs
+  - - hot-filter:send-loki-logs
+    - loki-hot:logging
+  - - cold-filter:send-loki-logs
+    - loki-cold:logging

@@ -1,0 +1,99 @@
+bundle: kubernetes
+applications:
+  dev-attributes:
+    charm: opentelemetry-collector-k8s
+    channel: 2/edge
+    revision: 74
+    resources:
+      opentelemetry-collector-image: 9
+    scale: 1
+    options:
+      processors: |-
+        attributes/dev:
+          actions:
+            - key: "region-a.environment"
+              value: "dev"
+              action: upsert
+    constraints: arch=amd64
+    storage:
+      persisted: kubernetes,1,1024M
+    trust: true
+  flog-dev:
+    charm: flog-k8s
+    channel: latest/edge
+    revision: 9
+    base: ubuntu@20.04/stable
+    resources:
+      workload-image: 3
+    scale: 1
+    constraints: arch=amd64
+  flog-prod:
+    charm: flog-k8s
+    channel: latest/edge
+    revision: 9
+    base: ubuntu@20.04/stable
+    resources:
+      workload-image: 3
+    scale: 1
+    constraints: arch=amd64
+  loki:
+    charm: loki-k8s
+    channel: 1/stable
+    revision: 199
+    base: ubuntu@20.04/stable
+    resources:
+      loki-image: 101
+      node-exporter-image: 4
+    scale: 1
+    constraints: arch=amd64
+    storage:
+      active-index-directory: kubernetes,1,1024M
+      loki-chunks: kubernetes,1,1024M
+    trust: true
+  prod-attributes:
+    charm: opentelemetry-collector-k8s
+    channel: 2/edge
+    revision: 74
+    resources:
+      opentelemetry-collector-image: 9
+    scale: 1
+    options:
+      processors: |-
+        attributes/prod:
+          actions:
+            - key: "region-a.environment"
+              value: "prod"
+              action: upsert
+    constraints: arch=amd64
+    storage:
+      persisted: kubernetes,1,1024M
+    trust: true
+  redact-and-batch:
+    charm: opentelemetry-collector-k8s
+    channel: 2/edge
+    revision: 74
+    resources:
+      opentelemetry-collector-image: 9
+    scale: 1
+    options:
+      processors: |-
+        batch:
+        redaction:
+          allow_all_keys: true
+          blocked_values:
+            - "(dolorem|facilis|quo) .* (corporis|debitis|quis)"
+    constraints: arch=amd64
+    storage:
+      persisted: kubernetes,1,1024M
+    trust: true
+relations:
+- - flog-dev:log-proxy
+  - dev-attributes:receive-loki-logs
+- - flog-prod:log-proxy
+  - prod-attributes:receive-loki-logs
+- - redact-and-batch:send-loki-logs
+  - loki:logging
+- - prod-attributes:send-loki-logs
+  - redact-and-batch:receive-loki-logs
+- - dev-attributes:send-loki-logs
+  - redact-and-batch:receive-loki-logs

@@ -92,6 +92,7 @@ PVCs
 querier
 RadosGW
 Relabeler
+relabeler
 routable
 scalable
 SDK
@@ -129,3 +130,16 @@ storages
 venv
 linkcheck
 rf
+otelcol
+OTTL
+OTLP
+filterprocessor
+promlabs
+promlens
+tanmay
+bhat
+robustperception
+gh
+MetricsEndpointProvider
+Tiering
+Dev
