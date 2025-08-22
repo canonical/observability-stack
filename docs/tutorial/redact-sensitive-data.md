@@ -93,7 +93,7 @@ Since we are in the context of a Juju deployment, none of these changes should b
 A file, say `transform.yaml`,  with the specific config for the transform processor needs to be created.
 
 ```yaml
-transform:
+transform/redact-referer:
   error_mode: ignore
   log_statements:
     - replace_pattern(log.body, "http[s]*://.*\",", "==REDACTED==\",")
