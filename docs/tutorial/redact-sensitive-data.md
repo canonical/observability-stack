@@ -6,7 +6,7 @@ For applications that deal with sensitive, private data, the ability to mask cer
 As OpentelemetryCollector charm serves as the entry point for log data, it can mask logs before they are sent to Loki or another destination.
 
 
-## Initial scenario
+## Deployment scenario
 
 Let's imagine a deployment with `flog` and `otelcol` in one Juju model, where `flog` sends its logs to Loki through `otelcol`.
 
