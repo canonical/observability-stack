@@ -24,9 +24,9 @@ flowchart LR
 	otelcol -- loki_push_api --> Loki
 ```
 
-A more concrete example of that deployment could be like this one:
+A concrete Juju example of that deployment with redaction in `otelcol` would be:
 
-```{shell}
+```shell
 Model  Controller  Cloud/Region        Version  SLA          Timestamp
 apps   microk8s    microk8s/localhost  3.6.8    unsupported  20:00:30-03:00
 
@@ -44,7 +44,6 @@ otelcol/0*  active    idle   10.1.167.68
 Integration provider       Requirer                Interface      Type     Message
 loki-logging:logging       otelcol:send-loki-logs  loki_push_api  regular
 otelcol:receive-loki-logs  flog:log-proxy          loki_push_api  regular
-```
 
 ## Logs produced by `flog`
 
