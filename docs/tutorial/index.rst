@@ -44,12 +44,12 @@ application using the Grafana Agent machine charm.
    3. Instrument machine charms <instrument-machine-charms>
 
 
-Sensitive data redaction
+Redaction
 ========================
 
-For applications that deal with sensitive, private data, the ability to mask certain information in their logs is important, in some cases required.
+By implementing a solid redaction strategy you can mitigate the risk of unwanted data leaks. This helps to comply with information security policies which outline the need for redacting personally identifiable information (PII), credentials, and other sensitive data.
 
 .. toctree::
    :maxdepth: 1
 
-   3. Redact sensitive data <redact-sensitive-data.md>
+   4. Redact sensitive data <redact-sensitive-data.md>
