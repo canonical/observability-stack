@@ -42,3 +42,14 @@ application using the Grafana Agent machine charm.
    :maxdepth: 1
 
    3. Instrument machine charms <instrument-machine-charms>
+
+
+Sensitive data redaction
+========================
+
+For applications that deal with sensitive, private data, the ability to mask certain information in their logs is important, in some cases required.
+
+.. toctree::
+   :maxdepth: 1
+
+   3. Redact sensitive data <redact-sensitive-data.md>
