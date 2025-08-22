@@ -1,4 +1,4 @@
-# Redacting sensitive data
+# Redact sensitive data
 
 ## Introduction
 
