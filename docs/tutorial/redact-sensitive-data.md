@@ -8,7 +8,7 @@ As OpentelemetryCollector charm serves as the entry point for log data, it can m
 
 ## Initial scenario
 
-Let's imagine that an application named `flog` send its logs to Loki through `otelcol`. A minimal deployment that let us redact logs is as follows, with `flog` and `otelcol`` in one Juju model, and `loki in another Juju model.
+Let's imagine a deployment with `flog` and `otelcol` in one Juju model, where `flog` sends its logs to Loki through `otelcol`.
 
 ```{mermaid}
 flowchart LR
