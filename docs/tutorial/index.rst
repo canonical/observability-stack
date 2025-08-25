@@ -45,7 +45,7 @@ application using the Grafana Agent machine charm.
 
 
 Redaction
-========================
+=========
 
 By implementing a solid redaction strategy you can mitigate the risk of unwanted data leaks. This helps to comply with information security policies which outline the need for redacting personally identifiable information (PII), credentials, and other sensitive data.
 
