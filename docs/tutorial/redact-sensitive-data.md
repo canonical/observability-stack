@@ -88,7 +88,7 @@ service:
       - loki
 ```
 
-Since we are in the context of a Juju deployment, none of these changes should be done manually. The `OpentelemetryCollector` charm provides a simple way to do this.
+Since we are in the context of a Juju deployment, none of these changes should be done manually. The [`OpentelemetryCollector` charm provides a simple way to do this](https://charmhub.io/opentelemetry-collector-k8s/configurations?channel=2/edge#processors).
 
 A file, say `transform.yaml`,  with the specific config for the transform processor needs to be created.
 
