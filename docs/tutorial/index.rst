@@ -42,3 +42,14 @@ application using the Grafana Agent machine charm.
    :maxdepth: 1
 
    3. Instrument machine charms <instrument-machine-charms>
+
+
+Redaction
+=========
+
+By implementing a solid redaction strategy you can mitigate the risk of unwanted data leaks. This helps to comply with information security policies which outline the need for redacting personally identifiable information (PII), credentials, and other sensitive data.
+
+.. toctree::
+   :maxdepth: 1
+
+   4. Redact sensitive data <redact-sensitive-data.md>
