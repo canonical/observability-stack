@@ -44,6 +44,7 @@ otelcol/0*  active    idle   10.1.167.68
 Integration provider       Requirer                Interface      Type     Message
 loki-logging:logging       otelcol:send-loki-logs  loki_push_api  regular
 otelcol:receive-loki-logs  flog:log-proxy          loki_push_api  regular
+```
 
 ## Logs produced by `flog`
 

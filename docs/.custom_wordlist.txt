@@ -134,6 +134,7 @@ otelcol
 OTTL
 OTLP
 OpentelemetryCollector
+PII
 filterprocessor
 promlabs
 promlens
