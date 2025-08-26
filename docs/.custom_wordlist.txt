@@ -133,6 +133,7 @@ rf
 otelcol
 OTTL
 OTLP
+OpentelemetryCollector
 filterprocessor
 promlabs
 promlens
