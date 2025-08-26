@@ -62,7 +62,7 @@ Now imagine that for privacy purposes we need to redact the `referer` field. In 
 
 In order to redact logs we use the [`transform`](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/transformprocessor#transform-processor) processor.
 
-To redact the `referer` field's value, the `transform` processor is configured like this:
+To redact the URLs present in the log, the `transform` processor is configured like this:
 
 ```yaml
 processors:
