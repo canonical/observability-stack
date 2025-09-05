@@ -43,3 +43,8 @@ check datasource connection.
 - In typical deplopyments, telemetry is pushed from outside the model. Make sure the backends have an ingress relation.
 - For deployment that are TLS-terminated, Grafana needs a `recieve-ca-cert` relation from Traefik.
 
+## Confirm backends are not out of disk space
+If a beckend (e.g. Prometheus) runs out of disk space, then it will not ingest new
+telemetry.
+
+## Confirm you can curl the backend via its ingress URL
