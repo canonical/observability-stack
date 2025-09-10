@@ -1,4 +1,4 @@
-# Troubleshooting `no data` in Grafana panels
+# Troubleshoot `no data` in Grafana panels
 
 Data in Grafana panels is obtained by querying datasources.
 
