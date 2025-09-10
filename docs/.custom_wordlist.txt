@@ -44,6 +44,7 @@ gRPCs
 gyre
 hostname
 hostPath
+http
 https
 HTTPS
 ingester
