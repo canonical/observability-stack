@@ -6,6 +6,7 @@ output "offers" {
     grafana_dashboards              = juju_offer.grafana_dashboards
     loki_logging                    = juju_offer.loki_logging
     prometheus_receive_remote_write = juju_offer.prometheus_receive_remote_write
+    prometheus_scrape               = juju_offer.prometheus_scrape
   }
   description = "All Juju offers which are exposed by this product module"
 }
