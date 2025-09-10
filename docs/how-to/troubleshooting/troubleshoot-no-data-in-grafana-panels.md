@@ -14,10 +14,10 @@ Perhaps you had "no data" all along or it started happening only recently.
 Drop-down [variables](https://grafana.com/docs/grafana/latest/dashboards/variables/)
 could be filtering out data incorrectly.
 Under dashboard settings, inspect the current values of the variables.
-- If you can find a combination of dropdown selections that resutlts in data being shown, then
+- If you can find a combination of dropdown selections that results in data being shown, then
   perhaps the offered variable options should be [narrowed down](https://grafana.com/docs/grafana/latest/dashboards/variables/add-template-variables/#add-a-query-variable) with a more accurate query.
-- If the options listed in the dropdowns are missing items you expect to see, then the datasource is
-  missing some telemetry, or because we refer to a metric that does not exist, or because we apply a combination of labels that does not produce a result.
+- If the options listed in the dropdown are missing items you expect to be there, then the datasource might be
+  missing some telemetry, or perhaps we refer to a metric that does not exist, or apply a combination of labels that does not produce a result.
 
 
 ## Confirm the query is valid
@@ -63,3 +63,6 @@ telemetry.
 
 
 ## Confirm you can curl the backend via its ingress URL
+- Can grafana reach the datasource URL?
+- Can grafana-agent or opentelemetry (or any other telemetry producer or aggregator) reach its backend?
+  For example, can grafana-agent reach prometheus? Pay attention to http vs. https.
