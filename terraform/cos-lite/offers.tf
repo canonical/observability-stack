@@ -30,5 +30,5 @@ resource "juju_offer" "prometheus_scrape" {
   name             = "prometheus-scrape"
   model            = var.model
   application_name = module.prometheus.app_name
-  endpoints        = ["prometheus-scrape"]
+  endpoints        = ["metrics-endpoint"]
 }
