@@ -26,8 +26,8 @@ resource "juju_offer" "prometheus_receive_remote_write" {
   endpoints        = ["receive-remote-write"]
 }
 
-resource "juju_offer" "prometheus_scrape" {
-  name             = "prometheus-scrape"
+resource "juju_offer" "prometheus_metrics_endpoint" {
+  name             = "prometheus-metrics-endpoint"
   model            = var.model
   application_name = module.prometheus.app_name
   endpoints        = ["metrics-endpoint"]
