@@ -1,4 +1,4 @@
-# Migration guide
+# Release notes
 
 This document will contain breaking changes and upgrade steps to move from a COS track to the next one.
 
