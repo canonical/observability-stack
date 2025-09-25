@@ -1,5 +1,7 @@
 # Charmed alert rules
 
+TEST PR - testing the RTD preview build runner - this will not be merged.
+
 ## What are alert rules?
 
 Prometheus and Loki would post alerts to Alertmanager when alert expressions are
