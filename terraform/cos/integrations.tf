@@ -32,6 +32,36 @@ resource "juju_integration" "grafana_dashboards" {
     endpoint = module.grafana.endpoints.grafana_dashboard
   }
 }
+# -------------- # Charm Tracing ------------------------
+
+resource "juju_integration" "mimir_tracing_otelcol_tracing_provider" {
+  for_each = {
+    mimir = {
+      app_name = module.mimir.app_names.mimir_coordinator
+      endpoint = module.mimir.endpoints.charm_tracing
+    }
+    loki = {
+      app_name = module.loki.app_names.loki_coordinator
+      endpoint = module.loki.endpoints.charm_tracing
+    }
+    grafana = {
+      app_name = module.grafana.app_name
+      endpoint = module.grafana.endpoints.charm_tracing
+    }
+  }
+  model = var.model
+
+  application {
+    name     = each.value.app_name
+    endpoint = each.value.endpoint
+  }
+
+  application {
+    name     = module.opentelemetry_collector.app_name
+    endpoint = module.opentelemetry_collector.endpoints.receive_traces
+  }
+}
+
 
 # -------------- # Provided by Alertmanager --------------
 
@@ -113,20 +143,6 @@ resource "juju_integration" "grafana_sources" {
 
 # -------------- # Provided by Mimir --------------
 
-resource "juju_integration" "mimir_tracing_otelcol_tracing_provider" {
-  model = var.model
-
-  application {
-    name     = module.mimir.app_names.mimir_coordinator
-    endpoint = module.mimir.endpoints.charm_tracing
-  }
-
-  application {
-    name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.receive_traces
-  }
-}
-
 resource "juju_integration" "mimir_self_metrics_endpoint_otelcol_metrics_endpoint" {
   model = var.model
 
@@ -185,19 +201,6 @@ resource "juju_integration" "loki_logging_otelcol_logging_consumer" {
   }
 }
 
-resource "juju_integration" "loki_tracing_otelcol_traicing_provider" {
-  model = var.model
-
-  application {
-    name     = module.loki.app_names.loki_coordinator
-    endpoint = module.loki.endpoints.charm_tracing
-  }
-
-  application {
-    name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.receive_traces
-  }
-}
 
 # -------------- # Provided by Tempo --------------
 
@@ -407,22 +410,6 @@ resource "juju_integration" "opentelemetry_collector_mimir_metrics" {
   application {
     name     = module.opentelemetry_collector.app_name
     endpoint = module.opentelemetry_collector.endpoints.send_remote_write
-  }
-}
-
-# -------------- # Provided by Grafana --------------
-
-resource "juju_integration" "grafana_tracing_otelcol_traicing_provider" {
-  model = var.model
-
-  application {
-    name     = module.grafana.app_name
-    endpoint = module.grafana.endpoints.charm_tracing
-  }
-
-  application {
-    name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.receive_traces
   }
 }
 
