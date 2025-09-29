@@ -1,11 +1,29 @@
-# -------------- # Provided by Alertmanager --------------
+# -------------- # Grafana Dashboard ---------------------
+resource "juju_integration" "grafana_dashboards" {
+  for_each = {
+    alertmanager = {
+      app_name = module.alertmanager.app_name
+      endpoint = module.alertmanager.endpoints.grafana_dashboard
+    }
+    mimir = {
+      app_name = module.mimir.app_names.mimir_coordinator
+      endpoint = module.mimir.endpoints.grafana_dashboards_provider
+    }
+    loki = {
+      app_name = module.loki.app_names.loki_coordinator
+      endpoint = module.loki.endpoints.grafana_dashboards_provider
+    }
+    tempo = {
+      app_name = module.tempo.app_names.tempo_coordinator
+      endpoint = module.tempo.endpoints.grafana_dashboard
+    }
+  }
 
-resource "juju_integration" "alertmanager_grafana_dashboards" {
   model = var.model
 
   application {
-    name     = module.alertmanager.app_name
-    endpoint = module.alertmanager.endpoints.grafana_dashboard
+    name     = each.value.app_name
+    endpoint = each.value.endpoint
   }
 
   application {
@@ -13,6 +31,8 @@ resource "juju_integration" "alertmanager_grafana_dashboards" {
     endpoint = module.grafana.endpoints.grafana_dashboard
   }
 }
+
+# -------------- # Provided by Alertmanager --------------
 
 resource "juju_integration" "mimir_alertmanager" {
   model = var.model
@@ -56,12 +76,32 @@ resource "juju_integration" "otelcol_alertmanager_metrics" {
   }
 }
 
-resource "juju_integration" "grafana_source_alertmanager" {
+# -------------- # Grafana Source Integrations --------------
+resource "juju_integration" "grafana_sources" {
+  for_each = {
+    alertmanager = {
+      app_name = module.alertmanager.app_name
+      endpoint = module.alertmanager.endpoints.grafana_source
+    }
+    mimir = {
+      app_name = module.mimir.app_names.mimir_coordinator
+      endpoint = module.mimir.endpoints.grafana_source
+    }
+    loki = {
+      app_name = module.loki.app_names.loki_coordinator
+      endpoint = module.loki.endpoints.grafana_source
+    }
+    tempo = {
+      app_name = module.tempo.app_names.tempo_coordinator
+      endpoint = module.tempo.endpoints.grafana_source
+    }
+  }
+
   model = var.model
 
   application {
-    name     = module.alertmanager.app_name
-    endpoint = module.alertmanager.endpoints.grafana_source
+    name     = each.value.app_name
+    endpoint = each.value.endpoint
   }
 
   application {
@@ -72,33 +112,8 @@ resource "juju_integration" "grafana_source_alertmanager" {
 
 # -------------- # Provided by Mimir --------------
 
-resource "juju_integration" "mimir_grafana_dashboards_provider" {
-  model = var.model
 
-  application {
-    name     = module.mimir.app_names.mimir_coordinator
-    endpoint = module.mimir.endpoints.grafana_dashboards_provider
-  }
 
-  application {
-    name     = module.grafana.app_name
-    endpoint = module.grafana.endpoints.grafana_dashboard
-  }
-}
-
-resource "juju_integration" "mimir_grafana_source" {
-  model = var.model
-
-  application {
-    name     = module.mimir.app_names.mimir_coordinator
-    endpoint = module.mimir.endpoints.grafana_source
-  }
-
-  application {
-    name     = module.grafana.app_name
-    endpoint = module.grafana.endpoints.grafana_source
-  }
-}
 
 resource "juju_integration" "mimir_tracing_otelcol_tracing_provider" {
   model = var.model
@@ -145,33 +160,7 @@ resource "juju_integration" "mimir_logging_consumer_otelcol_logging_provider" {
 
 # -------------- # Provided by Loki --------------
 
-resource "juju_integration" "loki_grafana_dashboards_provider" {
-  model = var.model
 
-  application {
-    name     = module.loki.app_names.loki_coordinator
-    endpoint = module.loki.endpoints.grafana_dashboards_provider
-  }
-
-  application {
-    name     = module.grafana.app_name
-    endpoint = module.grafana.endpoints.grafana_dashboard
-  }
-}
-
-resource "juju_integration" "loki_grafana_source" {
-  model = var.model
-
-  application {
-    name     = module.loki.app_names.loki_coordinator
-    endpoint = module.loki.endpoints.grafana_source
-  }
-
-  application {
-    name     = module.grafana.app_name
-    endpoint = module.grafana.endpoints.grafana_source
-  }
-}
 
 resource "juju_integration" "loki_logging_consumer_otelcol_logging_provider" {
   model = var.model
@@ -216,19 +205,6 @@ resource "juju_integration" "loki_tracing_otelcol_traicing_provider" {
 }
 # -------------- # Provided by Tempo --------------
 
-resource "juju_integration" "tempo_grafana_source" {
-  model = var.model
-
-  application {
-    name     = module.tempo.app_names.tempo_coordinator
-    endpoint = module.tempo.endpoints.grafana_source
-  }
-
-  application {
-    name     = module.grafana.app_name
-    endpoint = module.grafana.endpoints.grafana_source
-  }
-}
 
 resource "juju_integration" "tempo_tracing_otelcol_tracing" {
   model = var.model
@@ -286,23 +262,31 @@ resource "juju_integration" "tempo_send_remote_write_mimir_receive_remote_write"
   }
 }
 
-resource "juju_integration" "tempo_grafana_dashboard_grafana_grafana_dashboard" {
-  model = var.model
 
-  application {
-    name     = module.tempo.app_names.tempo_coordinator
-    endpoint = module.tempo.endpoints.grafana_dashboard
-
-  }
-  application {
-    name     = module.grafana.app_name
-    endpoint = module.grafana.endpoints.grafana_dashboard
-  }
-}
 
 # -------------- # Provided by Catalogue --------------
 
-resource "juju_integration" "alertmanager_catalogue" {
+# -------------- # Catalogue Integrations --------------
+resource "juju_integration" "catalogue_integrations" {
+  for_each = {
+    alertmanager = {
+      app_name = module.alertmanager.app_name
+      endpoint = module.alertmanager.endpoints.catalogue
+    }
+    grafana = {
+      app_name = module.grafana.app_name
+      endpoint = module.grafana.endpoints.catalogue
+    }
+    tempo = {
+      app_name = module.tempo.app_names.tempo_coordinator
+      endpoint = module.tempo.endpoints.catalogue
+    }
+    mimir = {
+      app_name = module.mimir.app_names.mimir_coordinator
+      endpoint = module.mimir.endpoints.catalogue
+    }
+  }
+
   model = var.model
 
   application {
@@ -311,52 +295,13 @@ resource "juju_integration" "alertmanager_catalogue" {
   }
 
   application {
-    name     = module.alertmanager.app_name
-    endpoint = module.alertmanager.endpoints.catalogue
+    name     = each.value.app_name
+    endpoint = each.value.endpoint
   }
 }
 
-resource "juju_integration" "grafana_catalogue" {
-  model = var.model
 
-  application {
-    name     = module.catalogue.app_name
-    endpoint = module.catalogue.endpoints.catalogue
-  }
 
-  application {
-    name     = module.grafana.app_name
-    endpoint = module.grafana.endpoints.catalogue
-  }
-}
-
-resource "juju_integration" "tempo_catalogue" {
-  model = var.model
-
-  application {
-    name     = module.catalogue.app_name
-    endpoint = module.catalogue.endpoints.catalogue
-  }
-
-  application {
-    name     = module.tempo.app_names.tempo_coordinator
-    endpoint = module.tempo.endpoints.catalogue
-  }
-}
-
-resource "juju_integration" "mimir_catalogue" {
-  model = var.model
-
-  application {
-    name     = module.catalogue.app_name
-    endpoint = module.catalogue.endpoints.catalogue
-  }
-
-  application {
-    name     = module.mimir.app_names.mimir_coordinator
-    endpoint = module.mimir.endpoints.catalogue
-  }
-}
 
 # -------------- # Provided by Traefik --------------
 
@@ -492,8 +437,39 @@ resource "juju_integration" "grafana_tracing_otelcol_traicing_provider" {
 
 # -------------- # Provided by Self-Signed-Certificates --------------
 
-resource "juju_integration" "alertmanager_certificates" {
-  count = var.internal_tls ? 1 : 0
+# -------------- # Certificate Integrations --------------
+resource "juju_integration" "internal_certificates" {
+  for_each = var.internal_tls ? {
+    alertmanager = {
+      app_name = module.alertmanager.app_name
+      endpoint = module.alertmanager.endpoints.certificates
+    }
+    catalogue = {
+      app_name = module.catalogue.app_name
+      endpoint = module.catalogue.endpoints.certificates
+    }
+    grafana = {
+      app_name = module.grafana.app_name
+      endpoint = module.grafana.endpoints.certificates
+    }
+    opentelemetry_collector = {
+      app_name = module.opentelemetry_collector.app_name
+      endpoint = module.opentelemetry_collector.endpoints.receive_server_cert
+    }
+    loki = {
+      app_name = module.loki.app_names.loki_coordinator
+      endpoint = module.loki.endpoints.certificates
+    }
+    mimir = {
+      app_name = module.mimir.app_names.mimir_coordinator
+      endpoint = module.mimir.endpoints.certificates
+    }
+    tempo = {
+      app_name = module.tempo.app_names.tempo_coordinator
+      endpoint = module.tempo.endpoints.certificates
+    }
+  } : {}
+
   model = var.model
 
   application {
@@ -502,100 +478,16 @@ resource "juju_integration" "alertmanager_certificates" {
   }
 
   application {
-    name     = module.alertmanager.app_name
-    endpoint = module.alertmanager.endpoints.certificates
+    name     = each.value.app_name
+    endpoint = each.value.endpoint
   }
 }
 
-resource "juju_integration" "catalogue_certificates" {
-  count = var.internal_tls ? 1 : 0
-  model = var.model
 
-  application {
-    name     = module.ssc[0].app_name
-    endpoint = module.ssc[0].provides.certificates
-  }
 
-  application {
-    name     = module.catalogue.app_name
-    endpoint = module.catalogue.endpoints.certificates
-  }
-}
 
-resource "juju_integration" "grafana_certificates" {
-  count = var.internal_tls ? 1 : 0
-  model = var.model
 
-  application {
-    name     = module.ssc[0].app_name
-    endpoint = module.ssc[0].provides.certificates
-  }
 
-  application {
-    name     = module.grafana.app_name
-    endpoint = module.grafana.endpoints.certificates
-  }
-}
-
-resource "juju_integration" "opentelemetry_collector_certificates" {
-  count = var.internal_tls ? 1 : 0
-  model = var.model
-
-  application {
-    name     = module.ssc[0].app_name
-    endpoint = module.ssc[0].provides.certificates
-  }
-
-  application {
-    name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.receive_server_cert
-  }
-}
-
-resource "juju_integration" "loki_certificates" {
-  count = var.internal_tls ? 1 : 0
-  model = var.model
-
-  application {
-    name     = module.ssc[0].app_name
-    endpoint = module.ssc[0].provides.certificates
-  }
-
-  application {
-    name     = module.loki.app_names.loki_coordinator
-    endpoint = module.loki.endpoints.certificates
-  }
-}
-
-resource "juju_integration" "mimir_certificates" {
-  count = var.internal_tls ? 1 : 0
-  model = var.model
-
-  application {
-    name     = module.ssc[0].app_name
-    endpoint = module.ssc[0].provides.certificates
-  }
-
-  application {
-    name     = module.mimir.app_names.mimir_coordinator
-    endpoint = module.mimir.endpoints.certificates
-  }
-}
-
-resource "juju_integration" "tempo_certificates" {
-  count = var.internal_tls ? 1 : 0
-  model = var.model
-
-  application {
-    name     = module.ssc[0].app_name
-    endpoint = module.ssc[0].provides.certificates
-  }
-
-  application {
-    name     = module.tempo.app_names.tempo_coordinator
-    endpoint = module.tempo.endpoints.certificates
-  }
-}
 
 resource "juju_integration" "traefik_receive_ca_certificate" {
   count = var.internal_tls ? 1 : 0
