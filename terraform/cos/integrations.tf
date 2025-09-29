@@ -95,37 +95,6 @@ resource "juju_integration" "otelcol_metrics_endpoint" {
   }
 }
 
-# -------------- # Provided by Alertmanager --------------
-
-resource "juju_integration" "mimir_alertmanager" {
-  model = var.model
-
-  application {
-    name     = module.mimir.app_names.mimir_coordinator
-    endpoint = module.mimir.endpoints.alertmanager
-  }
-
-  application {
-    name     = module.alertmanager.app_name
-    endpoint = module.alertmanager.endpoints.alerting
-  }
-}
-
-resource "juju_integration" "loki_alertmanager" {
-  model = var.model
-
-  application {
-    name     = module.loki.app_names.loki_coordinator
-    endpoint = module.loki.endpoints.alertmanager
-  }
-
-  application {
-    name     = module.alertmanager.app_name
-    endpoint = module.alertmanager.endpoints.alerting
-  }
-}
-
-
 
 # -------------- # Grafana Source Integrations --------------
 resource "juju_integration" "grafana_sources" {
@@ -158,6 +127,36 @@ resource "juju_integration" "grafana_sources" {
   application {
     name     = module.grafana.app_name
     endpoint = module.grafana.endpoints.grafana_source
+  }
+}
+
+# -------------- # Provided by Alertmanager --------------
+
+resource "juju_integration" "mimir_alertmanager" {
+  model = var.model
+
+  application {
+    name     = module.mimir.app_names.mimir_coordinator
+    endpoint = module.mimir.endpoints.alertmanager
+  }
+
+  application {
+    name     = module.alertmanager.app_name
+    endpoint = module.alertmanager.endpoints.alerting
+  }
+}
+
+resource "juju_integration" "loki_alertmanager" {
+  model = var.model
+
+  application {
+    name     = module.loki.app_names.loki_coordinator
+    endpoint = module.loki.endpoints.alertmanager
+  }
+
+  application {
+    name     = module.alertmanager.app_name
+    endpoint = module.alertmanager.endpoints.alerting
   }
 }
 
