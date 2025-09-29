@@ -1,4 +1,5 @@
 # -------------- # Grafana Dashboard ---------------------
+
 resource "juju_integration" "grafana_dashboards" {
   for_each = {
     alertmanager = {
@@ -112,9 +113,6 @@ resource "juju_integration" "grafana_sources" {
 
 # -------------- # Provided by Mimir --------------
 
-
-
-
 resource "juju_integration" "mimir_tracing_otelcol_tracing_provider" {
   model = var.model
 
@@ -128,7 +126,6 @@ resource "juju_integration" "mimir_tracing_otelcol_tracing_provider" {
     endpoint = module.opentelemetry_collector.endpoints.receive_traces
   }
 }
-
 
 resource "juju_integration" "mimir_self_metrics_endpoint_otelcol_metrics_endpoint" {
   model = var.model
@@ -159,8 +156,6 @@ resource "juju_integration" "mimir_logging_consumer_otelcol_logging_provider" {
 }
 
 # -------------- # Provided by Loki --------------
-
-
 
 resource "juju_integration" "loki_logging_consumer_otelcol_logging_provider" {
   model = var.model
@@ -203,8 +198,8 @@ resource "juju_integration" "loki_tracing_otelcol_traicing_provider" {
     endpoint = module.opentelemetry_collector.endpoints.receive_traces
   }
 }
-# -------------- # Provided by Tempo --------------
 
+# -------------- # Provided by Tempo --------------
 
 resource "juju_integration" "tempo_tracing_otelcol_tracing" {
   model = var.model
@@ -262,8 +257,6 @@ resource "juju_integration" "tempo_send_remote_write_mimir_receive_remote_write"
   }
 }
 
-
-
 # -------------- # Provided by Catalogue --------------
 
 # -------------- # Catalogue Integrations --------------
@@ -299,8 +292,6 @@ resource "juju_integration" "catalogue_integrations" {
     endpoint = each.value.endpoint
   }
 }
-
-
 
 
 # -------------- # Provided by Traefik --------------
@@ -482,12 +473,6 @@ resource "juju_integration" "internal_certificates" {
     endpoint = each.value.endpoint
   }
 }
-
-
-
-
-
-
 
 resource "juju_integration" "traefik_receive_ca_certificate" {
   count = var.internal_tls ? 1 : 0
