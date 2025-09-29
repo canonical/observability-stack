@@ -1,10 +1,16 @@
-# Release notes
+# Release notes for track 2
 
-This document will contain breaking changes and upgrade steps to move from a COS track to the next one.
+## Requirements and compatiblity
+See [system requirements](system-requirements.md).
 
-## Track 2
+Track 2 is compatible with Juju v3.6+.
 
-### Grafana workload
+## What's new
+
+### Terraform modules for COS and COS Lite
+
+
+### Grafana v12
 
 We upgraded the workload version from Grafana 9 to Grafana 12.
 
@@ -15,7 +21,7 @@ A thorough review of Grafana's breaking changes and how they affect us is availa
 Links to **repeated panels** in a dashboard changed slightly; previously bookmarked links specifically to a repeated panel (not its dashboard) won't work anymore.
 
 
-### Loki workload
+### Loki v3
 
 We upgraded the workload version from 2.9.x to 3.y. (TODO)
 
@@ -34,3 +40,12 @@ v3.4:
 - TODO: Promtail is deprecated. Will need to switch to pebble "eventually".
 
 See upstream release notes for more details: [v3.0](https://grafana.com/docs/loki/latest/release-notes/v3-0/).
+
+
+## Deprecations and removed functionality
+
+
+## Known issues
+
+
+## Upgrade notes
