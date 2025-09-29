@@ -162,8 +162,6 @@ resource "juju_integration" "loki_alertmanager" {
 
 # -------------- # Provided by Mimir --------------
 
-
-
 resource "juju_integration" "mimir_logging_consumer_otelcol_logging_provider" {
   model = var.model
 
@@ -378,8 +376,6 @@ resource "juju_integration" "tempo_ingress" {
 }
 
 # -------------- # Provided by OpenTelemetry Collector --------------
-
-
 
 resource "juju_integration" "opentelemetry_collector_mimir_metrics" {
   model = var.model
