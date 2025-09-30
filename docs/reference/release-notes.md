@@ -1,9 +1,16 @@
-# Release notes for track 2
+# COS 2 release notes
+October 2025
+
+These release notes cover new features and changes in COS 2.
+
+COS 2 is designated as a short-term support release. This means it will continue to receive security updates and critical bug fixes for 9 months.
+
+See our [release policy and schedule](release-policy.md).
 
 ## Requirements and compatiblity
 See [system requirements](system-requirements.md).
 
-Track 2 is compatible with Juju v3.6+.
+COS 2 is compatible with Juju v3.6+.
 
 ## What's new
 
@@ -16,7 +23,7 @@ for workloads without a web UI.
 - Multiple scripts in script-exporter. The script exporter VM charm can now take an archive of scripts. It can now be deployed on 20.04, 22.04 and 24.04.
 
 ## Breaking changes
-- Charms from track/2 can be deployed on juju models v3.6+.
+- Charms from track 2 can be deployed on juju models v3.6+.
 - Terraform module variable `model_name` renamed to `model` in all charms.
 - Changes in Grafana v12 to how the panel view URL is generated for repeated panels. Links to **repeated panels** in a dashboard changed slightly; previously bookmarked links specifically to a repeated panel (not its dashboard) won't work anymore.
 
@@ -30,7 +37,7 @@ for workloads without a web UI.
 
 ### COS
 
-Track 2 is the first release of COS.
+This is the first release of COS.
 
 ### COS Lite
 

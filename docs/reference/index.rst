@@ -7,7 +7,7 @@ Reference
    :maxdepth: 1
 
     Release Notes <release-notes>
-    Supported Tracks <supported-tracks>
+    <release-policy>
     <system-requirements>
     Cryptographic Documentation <cryptographic-documentation>
     Deployment Best Practices <best-practices/index>
