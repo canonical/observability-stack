@@ -6,7 +6,7 @@ backends
 blackbox
 BCrypt
 boolean
-Catalogue
+catalogue
 catalogue's
 Ceph
 Charmcraft
@@ -58,6 +58,7 @@ lang
 latexmk
 lifecycle
 LMA
+LogProxyConsumer
 LogQL
 loki
 matchers
@@ -98,6 +99,7 @@ routable
 scalable
 SDK
 SHA
+SLAs
 Snapcraft
 SNMP
 StatefulSets

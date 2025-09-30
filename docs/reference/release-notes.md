@@ -7,7 +7,7 @@ COS 2 is designated as a short-term support release. This means it will continue
 
 See our [release policy](release-policy.md) and [upgrade instructions](../how-to/upgrade.md).
 
-## Requirements and compatiblity
+## Requirements and compatibility
 See [system requirements](system-requirements.md).
 
 COS 2 is compatible with Juju v3.6+.
@@ -30,4 +30,4 @@ for workloads without a web UI.
 
 
 ## Deprecated features
-- The LogProxyConsumer charm library (owned by Loki) is deprecated in favor of pebble log forwarding.
+- The `LogProxyConsumer` charm library (owned by Loki) is deprecated in favor of pebble log forwarding.
