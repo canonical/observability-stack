@@ -130,7 +130,36 @@ resource "juju_integration" "grafana_sources" {
   }
 }
 
-# -------------- # Provided by Alertmanager --------------
+# -------------- # Receive Loki Logs ---------------------
+
+resource "juju_integration" "otelcol_logging_provider" {
+  for_each = {
+    mimir = {
+      app_name = module.mimir.app_names.mimir_coordinator
+      endpoint = module.mimir.endpoints.logging_consumer
+    }
+    loki = {
+      app_name = module.loki.app_names.loki_coordinator
+      endpoint = module.loki.endpoints.logging_consumer
+    }
+    tempo = {
+      app_name = module.tempo.app_names.tempo_coordinator
+      endpoint = module.tempo.endpoints.logging
+    }
+  }
+  model = var.model
+
+  application {
+    name     = each.value.app_name
+    endpoint = each.value.endpoint
+  }
+
+  application {
+    name     = module.opentelemetry_collector.app_name
+    endpoint = module.opentelemetry_collector.endpoints.receive_loki_logs
+  }
+}
+# -------- Provided by Alertmanager --------------
 
 resource "juju_integration" "mimir_alertmanager" {
   model = var.model
@@ -160,37 +189,7 @@ resource "juju_integration" "loki_alertmanager" {
   }
 }
 
-# -------------- # Provided by Mimir --------------
-
-resource "juju_integration" "mimir_logging_consumer_otelcol_logging_provider" {
-  model = var.model
-
-  application {
-    name     = module.mimir.app_names.mimir_coordinator
-    endpoint = module.mimir.endpoints.logging_consumer
-  }
-
-  application {
-    name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.receive_loki_logs
-  }
-}
-
 # -------------- # Provided by Loki --------------
-
-resource "juju_integration" "loki_logging_consumer_otelcol_logging_provider" {
-  model = var.model
-
-  application {
-    name     = module.loki.app_names.loki_coordinator
-    endpoint = module.loki.endpoints.logging_consumer
-  }
-
-  application {
-    name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.receive_loki_logs
-  }
-}
 
 resource "juju_integration" "loki_logging_otelcol_logging_consumer" {
   model = var.model
@@ -220,21 +219,6 @@ resource "juju_integration" "tempo_tracing_otelcol_tracing" {
   application {
     name     = module.opentelemetry_collector.app_name
     endpoint = module.opentelemetry_collector.endpoints.send_traces
-  }
-}
-
-
-resource "juju_integration" "tempo_logging_otelcol_logging_provider" {
-  model = var.model
-
-  application {
-    name     = module.tempo.app_names.tempo_coordinator
-    endpoint = module.tempo.endpoints.logging
-  }
-
-  application {
-    name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.receive_loki_logs
   }
 }
 
@@ -302,10 +286,6 @@ resource "juju_integration" "ingress" {
       app_name = module.catalogue.app_name
       endpoint = module.catalogue.endpoints.ingress
     }
-    grafana = {
-      app_name = module.grafana.app_name
-      endpoint = module.grafana.endpoints.ingress
-    }
     mimir = {
       app_name = module.mimir.app_names.mimir_coordinator
       endpoint = module.mimir.endpoints.ingress
@@ -313,10 +293,6 @@ resource "juju_integration" "ingress" {
     loki = {
       app_name = module.loki.app_names.loki_coordinator
       endpoint = module.loki.endpoints.ingress
-    }
-    tempo = {
-      app_name = module.tempo.app_names.tempo_coordinator
-      endpoint = module.tempo.endpoints.ingress
     }
   }
   model = var.model
@@ -332,6 +308,30 @@ resource "juju_integration" "ingress" {
   }
 }
 
+
+resource "juju_integration" "traefik_route" {
+  for_each = {
+    grafana = {
+      app_name = module.grafana.app_name
+      endpoint = module.grafana.endpoints.ingress
+    }
+    tempo = {
+      app_name = module.tempo.app_names.tempo_coordinator
+      endpoint = module.tempo.endpoints.ingress
+    }
+  }
+  model = var.model
+
+  application {
+    name     = module.traefik.app_name
+    endpoint = module.traefik.endpoints.traefik_route
+  }
+
+  application {
+    name     = each.value.app_name
+    endpoint = each.value.endpoint
+  }
+}
 # -------------- # Provided by OpenTelemetry Collector --------------
 
 resource "juju_integration" "opentelemetry_collector_mimir_metrics" {
