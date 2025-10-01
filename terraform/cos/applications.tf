@@ -121,7 +121,7 @@ module "ssc" {
 }
 
 module "tempo" {
-  source                           = "git::https://github.com/canonical/observability-stack//terraform/tempo"
+  source                           = "git::https://github.com/canonical/tempo-operators//terraform"
   anti_affinity                    = var.anti_affinity
   channel                          = var.channel
   model                            = var.model
