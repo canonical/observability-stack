@@ -2,7 +2,7 @@
 
 Our release policy includes two kinds of releases, short-term releases and long-term support (LTS) releases.
 
-We release every six months, same as Ubuntu, and our LTS releases coincide with Ubuntu.
+We release every six months, same as Ubuntu, and our LTS releases coincide with [Ubuntu's LTS release cadence](https://ubuntu.com/about/release-cycle).
 
 ## Short-term releases
 Short-term releases are supported for nine months by providing security patches and critical bug fixes.

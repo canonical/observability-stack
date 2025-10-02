@@ -7,8 +7,8 @@ Reference
    :maxdepth: 1
 
     Release Notes <release-notes>
-    <release-policy>
-    <system-requirements>
+    Release Policy <release-policy>
+    System Requirements <system-requirements>
     Cryptographic Documentation <cryptographic-documentation>
     Deployment Best Practices <best-practices/index>
     Integration Matrix <integration-matrix>

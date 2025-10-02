@@ -22,3 +22,4 @@ retention-based phase-out.
 5. Decommission COS Lite.
 
 ### Migrate from COS Lite 1 to COS Lite 2
+(TODO)
