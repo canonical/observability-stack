@@ -1,6 +1,6 @@
 # Sync alert rules from git
 
-In this tutorial you will learn how to make COS Lite automatically sync the alert rules of a git repository to Prometheus using the [COS Configuration charm](https://charmhub.io/cos-configuration-k8s/docs).
+In this tutorial you will learn how to make COS Lite automatically sync the alert rules of a git repository to Prometheus using the [COS Configuration charm](https://charmhub.io/cos-configuration-k8s).
 
 
 ## Prerequisites
