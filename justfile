@@ -30,7 +30,13 @@ lint-terraform:
 # Lint the Terraform documentation
 [group("Lint")]
 lint-terraform-docs:
-  terraform-docs --config .tfdocs-config.yml .
+  terraform-docs --config .tfdocs-config.yml terraform/aws-infra/ --output-file {{justfile_directory()}}/docs/reference/terraform/aws-infra.md
+  terraform-docs --config .tfdocs-config.yml terraform/cos/ --output-file {{justfile_directory()}}/docs/reference/terraform/cos.md
+  terraform-docs --config .tfdocs-config.yml terraform/cos-lite/ --output-file {{justfile_directory()}}/docs/reference/terraform/cos-lite.md
+  terraform-docs --config .tfdocs-config.yml terraform/loki/ --output-file {{justfile_directory()}}/docs/reference/terraform/loki.md
+  terraform-docs --config .tfdocs-config.yml terraform/mimir/ --output-file {{justfile_directory()}}/docs/reference/terraform/mimir.md
+  terraform-docs --config .tfdocs-config.yml terraform/minio/ --output-file {{justfile_directory()}}/docs/reference/terraform/minio.md
+  terraform-docs --config .tfdocs-config.yml terraform/tempo/ --output-file {{justfile_directory()}}/docs/reference/terraform/tempo.md
 
 # Format the Terraform modules
 [group("Format")]
@@ -42,7 +48,13 @@ format-terraform:
 # Format the Terraform documentation
 [group("Format")]
 format-terraform-docs:
-  terraform-docs --config .tfdocs-config.yml .
+  terraform-docs --config .tfdocs-config.yml terraform/aws-infra/ --output-file {{justfile_directory()}}/docs/reference/terraform/aws-infra.md
+  terraform-docs --config .tfdocs-config.yml terraform/cos/ --output-file {{justfile_directory()}}/docs/reference/terraform/cos.md
+  terraform-docs --config .tfdocs-config.yml terraform/cos-lite/ --output-file {{justfile_directory()}}/docs/reference/terraform/cos-lite.md
+  terraform-docs --config .tfdocs-config.yml terraform/loki/ --output-file {{justfile_directory()}}/docs/reference/terraform/loki.md
+  terraform-docs --config .tfdocs-config.yml terraform/mimir/ --output-file {{justfile_directory()}}/docs/reference/terraform/mimir.md
+  terraform-docs --config .tfdocs-config.yml terraform/minio/ --output-file {{justfile_directory()}}/docs/reference/terraform/minio.md
+  terraform-docs --config .tfdocs-config.yml terraform/tempo/ --output-file {{justfile_directory()}}/docs/reference/terraform/tempo.md
 
 # Validate the Terraform modules
 [working-directory("./terraform")]

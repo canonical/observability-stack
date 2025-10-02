@@ -2,11 +2,6 @@
 
 formatter: markdown table
 
-recursive:
-  enabled: true
-  path: terraform
-  include-main: false
-
 sections:
   show:
     - requirements
