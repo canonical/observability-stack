@@ -1,12 +1,13 @@
 # Leave a blank line at the end of this file to support concatenation
 Alerter
 alertmanager
+aws
 backend
 backends
 blackbox
 BCrypt
 boolean
-Catalogue
+catalogue
 catalogue's
 Ceph
 Charmcraft
@@ -69,6 +70,8 @@ microservice
 microservices
 Mimir
 Minio
+MinIO
+minio
 Nginx
 NRPE
 OCI
@@ -100,13 +103,14 @@ SDK
 SHA
 Snapcraft
 SNMP
+ssc
 StatefulSets
 Terraform
 tex
 texlive
 TLS
 TOC
-Traefik
+traefik
 Traefik's
 ubuntu
 uncharmed
@@ -146,3 +150,7 @@ gh
 MetricsEndpointProvider
 Tiering
 Dev
+url
+tls
+mc
+integrators

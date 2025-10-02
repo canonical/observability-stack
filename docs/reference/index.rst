@@ -16,4 +16,4 @@ Reference
     Rock OCI Images <rock-oci-images>
     Charms <charms>
     Snaps <snaps>
-    Terrafrom modules <terraform/index>
+    Terraform modules <terraform/index>
