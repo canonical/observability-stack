@@ -1,7 +1,7 @@
 module "cos-lite" {
-  source          = "git::https://github.com/canonical/observability-stack//terraform/cos-lite"
-  model           = "cos"
-  channel         = "1/stable"
+  source  = "git::https://github.com/canonical/observability-stack//terraform/cos-lite"
+  model   = "cos"
+  channel = "1/stable"
   ssc = {
     channel = "1/stable"
   }
