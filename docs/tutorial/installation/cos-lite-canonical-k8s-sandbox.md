@@ -102,7 +102,7 @@ Now COS Lite is good to go: you can relate software with it to begin the monitor
 ## Add "offers" to enable cross-model relations
 
 Download the [offers](https://github.com/canonical/cos-lite-bundle/blob/main/overlays/offers-overlay.yaml)
-[overlay](https://canonical-charmcraft.readthedocs-hosted.com/en/stable/reference/files/bundle-yaml-file/),
+[overlay](https://documentation.ubuntu.com/charmcraft/stable/reference/files/bundle-yaml-file/),
 
 ```bash
 curl -L https://raw.githubusercontent.com/canonical/cos-lite-bundle/main/overlays/offers-overlay.yaml -O

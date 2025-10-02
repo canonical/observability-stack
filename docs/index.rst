@@ -56,4 +56,4 @@ and constructive feedback.
 
 * `Code of conduct <https://ubuntu.com/community/ethos/code-of-conduct>`_
 * `Canonical contributor license agreement
-  <https://ubuntu.com/legal/contributors>`_
+  <https://canonical.com/legal/contributors>`_

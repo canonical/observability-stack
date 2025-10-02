@@ -17,8 +17,8 @@ You can reproduce the COS deployment in this tutorial with a [cloud-config](cos-
 
 
 ## Set up S3
-For S3, we will install the Microceph snap ([doc](https://canonical-microceph.readthedocs-hosted.com/en/latest/tutorial/get-started/))
-and configure RadosGW to listen on port 8080 ([doc](https://canonical-microceph.readthedocs-hosted.com/en/latest/reference/commands/enable/#rgw)).
+For S3, we will install the Microceph snap ([doc](https://canonical-microceph.readthedocs-hosted.com/latest/tutorial/get-started/))
+and configure RadosGW to listen on port 8080 ([doc](https://canonical-microceph.readthedocs-hosted.com/latest/reference/commands/enable/)).
 
 ```{literalinclude} /tutorial/installation/cos-canonical-k8s-sandbox.conf
     :language: bash
