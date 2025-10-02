@@ -145,7 +145,7 @@ overlays, which is what we'll cover next.
 
 ## Deploy the COS Lite bundle with overlays
 
-An [overlay](https://canonical-charmcraft.readthedocs-hosted.com/en/stable/reference/files/bundle-yaml-file/) is a set of model-specific modifications
+An [overlay](https://documentation.ubuntu.com/charmcraft/stable/reference/files/bundle-yaml-file/) is a set of model-specific modifications
 that avoid repetitive overhead in setting up bundles like COS Lite.
 
 Specifically, we offer the following overlays:

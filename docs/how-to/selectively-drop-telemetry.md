@@ -88,7 +88,7 @@ This allows us to understand the structure of the signal's resources and attribu
 
 ### Understanding processors
 
-Before reaching an exporter, a signal is first processed by a processor and any modification to signals are propagated throughout the remainder of the pipeline. The [filter](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/processor/filterprocessor/README.md) processor supports the [OpenTelemetry Transformation Language (OTTL)](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/pkg/ottl/README.md). This allows us to  define:
+Before reaching an exporter, a signal is first processed by a processor and any modification to signals are propagated throughout the remainder of the pipeline. The [filter](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/processor/filterprocessor/README.md) processor supports the [OpenTelemetry Transformation Language (OTTL)](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/pkg/ottl/README.md). This allows us to  define:
 1. A function that transforms (or drops) telemetry
 2. Optionally, a condition that determines whether the function is executed.
 

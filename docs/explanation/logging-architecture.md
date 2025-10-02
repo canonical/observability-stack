@@ -23,16 +23,16 @@ non-loki-client["Any workload + promtail\n(LogProxyConsumer)"] ---|"logging\n(lo
 end
 
 
-grafana-agent-k8s[Charmed\ngrafana-agent] ---|"<a href=https://charmhub.io/loki-k8s/integrations#logging>logging</a>\n(<a href=https://charmhub.io/interfaces/loki_push_api>loki_push_api</a>)"| loki
+grafana-agent-k8s[Charmed\ngrafana-agent] ---|"<a href=https://charmhub.io/loki-k8s/integrations#logging>logging</a>\n(<a href=https://charmhub.io/integrations/loki_push_api>loki_push_api</a>)"| loki
 
 click grafana-agent-k8s "https://charmhub.io/grafana-agent-k8s"
 click loki "https://charmhub.io/loki-k8s"
 
 
 subgraph VM model
-vm-charm[VM charm] ---|"cos-agent\n(<a href=https://charmhub.io/interfaces/cos_agent>cos_agent</a>)"| grafana-agent[Charmed\ngrafana agent]
+vm-charm[VM charm] ---|"cos-agent\n(<a href=https://charmhub.io/integrations/cos_agent>cos_agent</a>)"| grafana-agent[Charmed\ngrafana agent]
 any-vm-charm[Any VM charm] ---|"juju-info\n(juju-info)"| grafana-agent
-legacy-vm-charm[Legacy VM charm] ---|"filebeat\n(<a href=https://charmhub.io/interfaces/elastic-beats>elastic-beats</a>)"| cos-proxy
+legacy-vm-charm[Legacy VM charm] ---|"filebeat\n(<a href=https://charmhub.io/integrations/elastic-beats>elastic-beats</a>)"| cos-proxy
 end
 
 grafana-agent ---|"logging\n(loki_push_api)"| loki
@@ -236,7 +236,7 @@ You can set up [any client](https://grafana.com/docs/loki/latest/send-data/) tha
 You can [query loki](https://discourse.charmhub.io/t/loki-k8s-docs-http-api/13440) to obtain logs via [HTTP API](https://grafana.com/docs/loki/latest/reference/loki-http-api/#query-logs-within-a-range-of-time).
 
 ### Display in a Grafana panel
-A Loki [data source](https://grafana.com/docs/grafana/latest/datasources/loki/) is automatically created in grafana when a relation is formed [between loki and grafana](https://charmhub.io/interfaces/grafana_datasource).
+A Loki [data source](https://grafana.com/docs/grafana/latest/datasources/loki/) is automatically created in grafana when a relation is formed [between loki and grafana](https://charmhub.io/integrations/grafana_datasource).
 
 You can visualize logs in Grafana using [LogQL expressions](https://grafana.com/docs/loki/latest/query/). Grafana does not keep a copy of the Loki database. It queries loki for data, based on the `expr` in the panels.
 
@@ -253,4 +253,4 @@ The default retention period is 30 days. At the moment the loki charmed operator
 - [Collect logs with Grafana Agent](https://grafana.com/docs/grafana-cloud/send-data/logs/collect-logs-with-agent/)
 - [Loki HTTP API][Push API]
 
-[Push API]: https://grafana.com/docs/loki/latest/reference/api/
+[Push API]: https://grafana.com/docs/loki/latest/reference/loki-http-api/
