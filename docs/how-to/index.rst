@@ -19,7 +19,7 @@ These guides will help validating new and existing deployments.
 .. toctree::
    :maxdepth: 1
 
-   Manual deployment validation <validate-deployment>
+   Validate COS deployment <validate-cos-deployment>
 
 Migrating
 =========

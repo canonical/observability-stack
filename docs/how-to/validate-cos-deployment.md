@@ -1,4 +1,4 @@
-# Validate deployment
+# Validate COS deployment
 
 ## Juju model
 - `juju model-config automatically-retry-hooks` is set to True.
