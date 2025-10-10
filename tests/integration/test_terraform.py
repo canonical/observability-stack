@@ -19,11 +19,13 @@ def test_terraform_upgrade(juju: jubilant.Juju):
     run_live(
         f"terraform apply -var model={juju.model} -var channel=1/stable -auto-approve"
     )
-    juju.wait(jubilant.all_agents_idle, delay=30, timeout=60 * 10)
+    print("waiting for the model to settle ...")
+    juju.wait(jubilant.all_agents_idle, delay=5, timeout=60 * 10)
     run_live(
         f"terraform apply -var model={juju.model} -var channel=2/edge -auto-approve"
     )
-    juju.wait(jubilant.all_agents_idle, delay=30, timeout=60 * 10)
+    print("waiting for the model to settle ...")
+    juju.wait(jubilant.all_agents_idle, delay=5, timeout=60 * 10)
 
 
 @pytest.mark.abort_on_fail
