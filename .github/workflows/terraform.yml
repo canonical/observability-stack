@@ -6,15 +6,6 @@ on:
       - main
     paths:
       - "**/*.tf"
-  workflow_call:
-    inputs:
-      provider:
-        description: |
-          The substrate to set up prior to running the test 
-          (a concierge preset, e.g. 'machine' or 'microk8s').
-        default: 'microk8s'
-        required: false
-        type: string
 
 jobs:
   lint-terraform:
@@ -63,6 +54,6 @@ jobs:
       - name: Install dependencies
         run: |
           sudo snap install concierge --classic
-          sudo concierge prepare -p ${{ inputs.provider }} --extra-snaps just,astral-uv,terraform
+          sudo concierge prepare -p microk8s --extra-snaps just,astral-uv,terraform
       - name: Validate the Terraform modules
         run: just integration
