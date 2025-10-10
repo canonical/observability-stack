@@ -53,8 +53,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Install dependencies
         run: |
-          sudo snap install terraform --classic
-          sudo snap install just --classic
-          sudo snap install astral-uv --classic
+          sudo snap install concierge --classic
+          sudo concierge prepare -p ${{ inputs.provider }} --extra-snaps just,astral-uv,terraform
       - name: Validate the Terraform modules
         run: just integration
