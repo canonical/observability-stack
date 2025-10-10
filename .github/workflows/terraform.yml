@@ -55,5 +55,6 @@ jobs:
         run: |
           sudo snap install terraform --classic
           sudo snap install just --classic
+          sudo snap install astral-uv --classic
       - name: Validate the Terraform modules
         run: just integration
