@@ -166,7 +166,7 @@ resource "juju_integration" "alerting" {
     mimir = {
       app_name = module.mimir.app_names.mimir_coordinator
       endpoint = module.mimir.endpoints.alertmanager
-    } 
+    }
     loki = {
       app_name = module.loki.app_names.loki_coordinator
       endpoint = module.loki.endpoints.alertmanager
