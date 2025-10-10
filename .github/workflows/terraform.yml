@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - '**/*.tf'
+      - "**/*.tf"
 
 jobs:
   lint-terraform:
@@ -45,3 +45,15 @@ jobs:
           sudo snap install just --classic
       - name: Validate the Terraform modules
         run: just validate-terraform
+  terraform-integration:
+    name: Test deploy/upgrade Terraform product modules
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo snap install terraform --classic
+          sudo snap install just --classic
+      - name: Validate the Terraform modules
+        run: just integration
