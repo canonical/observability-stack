@@ -161,12 +161,22 @@ resource "juju_integration" "otelcol_logging_provider" {
 }
 # -------- Provided by Alertmanager --------------
 
-resource "juju_integration" "mimir_alertmanager" {
+resource "juju_integration" "alerting" {
+  for_each = {
+    mimir = {
+      app_name = module.mimir.app_names.mimir_coordinator
+      endpoint = module.mimir.endpoints.alertmanager
+    } 
+    loki = {
+      app_name = module.loki.app_names.loki_coordinator
+      endpoint = module.loki.endpoints.alertmanager
+    }
+  }
   model = var.model
 
   application {
-    name     = module.mimir.app_names.mimir_coordinator
-    endpoint = module.mimir.endpoints.alertmanager
+    name     = each.value.app_name
+    endpoint = each.value.endpoint
   }
 
   application {
@@ -175,19 +185,6 @@ resource "juju_integration" "mimir_alertmanager" {
   }
 }
 
-resource "juju_integration" "loki_alertmanager" {
-  model = var.model
-
-  application {
-    name     = module.loki.app_names.loki_coordinator
-    endpoint = module.loki.endpoints.alertmanager
-  }
-
-  application {
-    name     = module.alertmanager.app_name
-    endpoint = module.alertmanager.endpoints.alerting
-  }
-}
 
 # -------------- # Provided by Loki --------------
 
