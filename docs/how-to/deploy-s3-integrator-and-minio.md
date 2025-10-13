@@ -5,7 +5,7 @@ The Minio charm is not suitable for production usage. Instead, use [Charmed Ceph
 ```
 
 Minio is a lightweight S3-compatible object storage system. In its 
-single-node configuration, it is suitable for providing an S3 storage backend for certain charmed applications such as Tempo, Loki and Mimir. For more, see: https://www.min.io/.
+single-node configuration, it is suitable for providing an S3 storage backend for certain charmed applications such as Tempo, Loki and Mimir. For more, see: [`min.io`](https://www.min.io/).
 
 ## Using a script
 
