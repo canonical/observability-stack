@@ -97,6 +97,7 @@ otelcol
 otf
 OTLP
 OTTL
+PagerDuty
 PII
 plantuml
 postgresql
