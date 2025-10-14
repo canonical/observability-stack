@@ -70,11 +70,8 @@ jobs:
       - name: Deploy the COS TF product module
         if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.event.inputs.cos == 'true')
         run: |
-          just --list
-          just integration
           just integration "test_cos_upgrade.py"
       - name: Deploy the COS Lite TF product module
         if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.event.inputs.cos-lite == 'true')
         run: |
-          just --list
           just integration "test_cos_lite_upgrade.py"
