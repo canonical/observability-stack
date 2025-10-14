@@ -20,3 +20,7 @@ Short-term releases are supported for nine months by providing security patches 
 | Track   | Release date        | End of life         | Ubuntu base | Min. Juju version | Brief summary                                                                                     |
 |---------|---------------------|---------------------|-------------|-------------------|---------------------------------------------------------------------------------------------------|
 | `3-lts` | 2026-04 (predicted) | 2038-04 (predicted) | 26.04       |                   |                                                                                                   |
+
+## Charmhub tracks and git branches
+We create the charmhub track at beginning of a cycle, and a git branch at end of cycle.
+For example, during June-Septmeber 2025, we had track `2` on charmhub, but only `track/1` and `main` branches on github.
