@@ -1,5 +1,4 @@
 module "cos-lite" {
-  # TODO: Add a branch to the module
   source       = "git::https://github.com/canonical/observability-stack//terraform/cos-lite"
   model        = var.model
   channel      = "1/stable"

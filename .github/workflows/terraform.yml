@@ -55,5 +55,5 @@ jobs:
         run: |
           sudo snap install concierge --classic
           sudo concierge prepare -p microk8s --extra-snaps just,astral-uv,terraform
-      - name: Validate the Terraform modules
+      - name: Test Terraform product module upgrade scenarios
         run: just integration

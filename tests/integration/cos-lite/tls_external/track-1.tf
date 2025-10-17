@@ -8,7 +8,6 @@ variable "ca_model" {
 }
 
 module "cos-lite" {
-  # TODO: Add a branch to the module
   source       = "git::https://github.com/canonical/observability-stack//terraform/cos-lite"
   model        = var.cos_model
   channel      = "1/stable"
