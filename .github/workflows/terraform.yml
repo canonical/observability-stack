@@ -6,16 +6,6 @@ on:
       - main
     paths:
       - "**/*.tf"
-  workflow_dispatch:
-    inputs:
-      cos:
-        description: 'Deploy the COS TF product module'
-        required: true
-        default: false
-      cos-lite:
-        description: 'Deploy the COS Lite TF product module'
-        required: true
-        default: false
 
 jobs:
   lint-terraform:
@@ -55,23 +45,15 @@ jobs:
           sudo snap install just --classic
       - name: Validate the Terraform modules
         run: just validate-terraform
-  terraform-integration:
-    name: Test deploy/upgrade Terraform product modules
+  test-integration:
+    name: Terraform validate
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install dependencies
         run: |
-          sudo snap install --classic astral-uv
+          sudo snap install terraform --classic
           sudo snap install just --classic
-          # sudo snap install concierge --classic
-          # sudo concierge prepare -p microk8s --extra-snaps just,astral-uv,terraform
-      - name: Deploy the COS TF product module
-        if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.event.inputs.cos == 'true')
-        run: |
-          just integration "test_cos_upgrade.py"
-      - name: Deploy the COS Lite TF product module
-        if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.event.inputs.cos-lite == 'true')
-        run: |
-          just integration "test_cos_lite_upgrade.py"
+      - name: Validate the Terraform modules
+        run: just integration

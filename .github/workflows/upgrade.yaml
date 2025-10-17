@@ -1,0 +1,36 @@
+name: Test the Terraform product module
+
+on:
+  workflow_dispatch:
+    inputs:
+      product:
+        description: "The type of the product module"
+        required: true
+        type: choice
+        options:
+          - cos
+          - cos-lite
+      scenario:
+        description: "The cross-track upgrade scenario"
+        required: true
+        type: choice
+        options:
+          - tls_none
+          - tls_internal
+          - tls_none
+          - tls_full
+
+jobs:
+  terraform-test:
+    name: Test the Terraform product module
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo snap install concierge --classic
+          sudo concierge prepare -p microk8s --extra-snaps just,astral-uv,terraform
+      - name: Test deployment
+        run: |
+          just test tests/integration/${{ inputs.product }}/${{ inputs.scenario }}/test_upgrade_${{ inputs.scenario }}.py
