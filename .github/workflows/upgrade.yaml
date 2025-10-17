@@ -17,7 +17,7 @@ on:
         options:
           - tls_none
           - tls_internal
-          - tls_none
+          - tls_external
           - tls_full
 
 jobs:
