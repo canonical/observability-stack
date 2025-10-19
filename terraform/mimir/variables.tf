@@ -161,7 +161,7 @@ variable "worker_revision" {
 variable "s3_integrator_revision" {
   description = "Revision number of the s3-integrator application"
   type        = number
-  default     = null
+  default     = 157 # FIXME: https://github.com/canonical/observability/issues/342
 }
 
 # -------------- # Storage directives --------------

@@ -71,21 +71,18 @@ variable "loki_bucket" {
   description = "Loki bucket name"
   type        = string
   sensitive   = true
-  default     = "loki"
 }
 
 variable "mimir_bucket" {
   description = "Mimir bucket name"
   type        = string
   sensitive   = true
-  default     = "tempo"
 }
 
 variable "tempo_bucket" {
   description = "Tempo bucket name"
   type        = string
   sensitive   = true
-  default     = "tempo"
 }
 
 # -------------- # Application configurations --------------
