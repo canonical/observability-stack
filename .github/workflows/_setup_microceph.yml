@@ -1,0 +1,22 @@
+name: Terraform
+
+on:
+  workflow_call:
+
+jobs:
+  microceph:
+    name: microceph
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install and configure microceph
+        run: |
+          set -euo pipefail
+          sudo snap install microceph
+          sudo snap refresh --hold microceph
+          sudo microceph cluster bootstrap
+          sudo microceph disk add loop,4G,3
+          sudo microceph enable rgw --port 8080 --ssl-port 8443
+          sudo microceph.radosgw-admin user create --uid=user --display-name=User
+          sudo microceph.radosgw-admin key create --uid=user --key-type=s3 --access-key=access-key --secret-key=secret-key

@@ -51,6 +51,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Install and setup Microceph
+        # TODO: Fix branch
+        uses: canonical/observability-stack/.github/workflows/_setup_microceph.yml@feat/cos-upgrade
       - name: Install dependencies
         run: |
           sudo snap install concierge --classic
