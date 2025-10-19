@@ -48,7 +48,6 @@ jobs:
   setup-microceph:
     name: Install and setup Microceph
     uses: canonical/observability-stack/.github/workflows/_setup_microceph.yml@feat/cos-upgrade  # TODO: Fix branch
-    if: needs.ci-ignore.outputs.any_modified == 'true'
     secrets: inherit
     # with:
     #   charm-path: ${{ inputs.charm-path }}
