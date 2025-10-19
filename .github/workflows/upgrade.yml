@@ -33,4 +33,4 @@ jobs:
           sudo concierge prepare -p microk8s --extra-snaps just,astral-uv,terraform
       - name: Test deployment
         run: |
-          just integration ${{ inputs.product }}/${{ inputs.scenario }}/test_upgrade_${{ inputs.scenario }}.py
+          just integration ${{ inputs.product }}/${{ inputs.scenario }}/test_upgrade_${{ inputs.product }}_${{ inputs.scenario }}.py
