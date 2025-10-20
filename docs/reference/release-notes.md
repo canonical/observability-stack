@@ -23,7 +23,7 @@ for workloads without a web UI.
 
 ## Notable changes in peripheral charms
 - Multiple scripts in script-exporter. The script exporter VM charm can now take an archive of scripts. It can now be deployed on 20.04, 22.04 and 24.04.
-
+- Prior to cos-proxy `rev166`, duplicate telemetry exists after `upgrade` and `config-changed` hooks. Follow [these remediation steps](https://github.com/canonical/cos-proxy-operator/issues/208#issuecomment-3367094739) to resolve, requiring you to upgrade cos-proxy to `>=rev166` via `track2`. This also includes the feature of scrape-configs and alert rules for `cos-agent` relations.
 
 ## Backwards-incompatible changes
 - Charms from track 2 can be deployed on juju models v3.6+.
