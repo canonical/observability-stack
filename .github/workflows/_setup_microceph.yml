@@ -12,16 +12,13 @@ jobs:
         uses: actions/checkout@v4
       - name: Install and configure microceph
         run: |
-          set -euo pipefail
           sudo snap install microceph
-          # sudo snap refresh --hold microceph
           sudo microceph cluster bootstrap
           # sudo ceph config set mon osd_pool_default_size 1
-          sudo ceph status
+          sudo microceph status
           sudo microceph disk add loop,4G,3
-          sudo ceph status
+          sudo microceph status
           sudo ceph status
           sudo microceph enable rgw --port 8080 --ssl-port 8443
-          sudo microceph.ceph -s
           sudo microceph.radosgw-admin user create --uid=user --display-name=User
           sudo microceph.radosgw-admin key create --uid=user --key-type=s3 --access-key=access-key --secret-key=secret-key
