@@ -11,15 +11,14 @@ class TfDirManager:
     def __init__(self, base_tmpdir):
         self.base: str = str(base_tmpdir)
         self.dir: str = ""
+        self.tf_cmd = f"terraform -chdir={self.dir}"
 
     def init(self, tf_file: str):
         """Initialize a Terraform module in a subdirectory."""
         tf_dir = os.path.join(self.base, "terraform")
         os.makedirs(tf_dir, exist_ok=True)
         shutil.copy(tf_file, os.path.join(tf_dir, "main.tf"))
-        subprocess.run(
-            shlex.split(f"terraform -chdir={tf_dir} init -upgrade"), check=True
-        )
+        subprocess.run(shlex.split(f"{self.tf_cmd} init -upgrade"), check=True)
         self.dir = tf_dir
 
     @staticmethod
@@ -29,15 +28,11 @@ class TfDirManager:
         return "-auto-approve " + f"{target_arg} " + var_args
 
     def apply(self, target: Optional[str] = None, **kwargs):
-        cmd_str = f"terraform -chdir={self.dir} apply " + self._args_str(
-            target, **kwargs
-        )
+        cmd_str = f"{self.tf_cmd} apply " + self._args_str(target, **kwargs)
         subprocess.run(shlex.split(cmd_str), check=True)
 
     def destroy(self, **kwargs):
-        cmd_str = f"terraform -chdir={self.dir} destroy " + self._args_str(
-            None, **kwargs
-        )
+        cmd_str = f"{self.tf_cmd} destroy " + self._args_str(None, **kwargs)
         subprocess.run(shlex.split(cmd_str), check=True)
 
 
