@@ -4,6 +4,7 @@ communication. This python test file deploys COS with internal TLS, and without 
 For more further TLS configuration details, refer to our documentation:
 https://documentation.ubuntu.com/observability/latest/how-to/configure-tls-encryption/"""
 
+import os
 from pathlib import Path
 from subprocess import CalledProcessError
 
@@ -13,9 +14,9 @@ from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_fi
 
 TRACK_2_TF_FILE = Path(__file__).parent.resolve() / "track-2.tf"
 S3_ENDPOINT = {
-    "s3_endpoint": "http://192.168.88.12:8080",
-    "s3_secret_key": "secret-key",
-    "s3_access_key": "access-key",
+    "s3_endpoint": os.getenv("S3_ENDPOINT"),
+    "s3_secret_key": os.getenv("S3_SECRET_KEY"),
+    "s3_access_key": os.getenv("S3_ACCESS_KEY"),
 }
 
 

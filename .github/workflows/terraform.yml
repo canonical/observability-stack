@@ -62,4 +62,8 @@ jobs:
           sudo snap install concierge --classic
           sudo concierge prepare -p microk8s --extra-snaps just,astral-uv,terraform
       - name: Test Terraform product module upgrade scenarios
-        run: just integration
+        run: |
+          export S3_ENDPOINT=http://$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc'):8080
+          export S3_ACCESS_KEY=access-key
+          export S3_SECRET_KEY=secret-key
+          just integration

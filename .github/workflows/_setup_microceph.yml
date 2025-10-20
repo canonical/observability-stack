@@ -12,6 +12,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Install and configure microceph
         run: |
+          # https://github.com/canonical/microceph-action/blob/main/microceph.sh
           function check_ceph_ok_or_exit () {
               i=0
               for i in {1..5}; do
@@ -32,7 +33,7 @@ jobs:
           sudo microceph cluster bootstrap
           sleep 30s
           sudo microceph.ceph config set "mon.$(hostname)" mon_data_avail_warn 6
-          sudo microceph disk add loop,5G,3
+          sudo microceph disk add loop,2G,3
           check_ceph_ok_or_exit
 
           sudo microceph enable rgw --port 8080 --ssl-port 8443
