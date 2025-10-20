@@ -8,7 +8,6 @@ module "cos" {
   s3_secret_key     = var.s3_secret_key
   s3_access_key     = var.s3_access_key
 
-  s3_integrator     = { revision = 243 }
   loki_coordinator  = { units = 1 }
   loki_worker       = { backend_units = 1, read_units = 1, write_units = 1 }
   mimir_coordinator = { units = 1 }
