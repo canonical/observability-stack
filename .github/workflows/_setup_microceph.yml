@@ -16,10 +16,10 @@ jobs:
           sudo snap install microceph
           # sudo snap refresh --hold microceph
           sudo microceph cluster bootstrap
-          sudo ceph config set mon osd_pool_default_size 1
-          sudo ceph config set mon osd_pool_default_min_size 1
+          # sudo ceph config set mon osd_pool_default_size 1
           sudo ceph status
-          sudo microceph disk add loop,4G,1
+          sudo microceph disk add loop,4G,3
+          sudo ceph status
           sudo ceph status
           sudo microceph enable rgw --port 8080 --ssl-port 8443
           sudo microceph.ceph -s
