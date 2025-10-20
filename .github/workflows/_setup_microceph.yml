@@ -14,11 +14,24 @@ jobs:
         run: |
           sudo snap install microceph
           sudo microceph cluster bootstrap
-          # sudo ceph config set mon osd_pool_default_size 1
           sudo microceph status
           sudo microceph disk add loop,4G,3
-          sudo microceph status
-          sudo ceph status
+          function check_ceph_ok_or_exit () {
+              i=0
+              for i in {1..5}; do
+                  if sudo microceph.ceph status | grep HEALTH_OK; then
+                      break
+                  else
+                      sudo microceph.ceph status
+                      sleep 30
+                      sudo microceph.ceph health detail
+                  fi
+              done
+              if [ "$i" -eq 5 ]; then
+                  exit 1
+              fi
+          }
+          check_ceph_ok_or_exit
           sudo microceph enable rgw --port 8080 --ssl-port 8443
           sudo microceph.radosgw-admin user create --uid=user --display-name=User
           sudo microceph.radosgw-admin key create --uid=user --key-type=s3 --access-key=access-key --secret-key=secret-key
