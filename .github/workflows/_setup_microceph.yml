@@ -16,7 +16,7 @@ jobs:
           sudo snap install microceph
           sudo snap refresh --hold microceph
           sudo microceph cluster bootstrap
-          sudo microceph disk add loop,4G,3
+          sudo microceph disk add loop,2G,3
           sudo ceph status
           sudo microceph enable rgw --port 8080 --ssl-port 8443
           sudo microceph.ceph -s
