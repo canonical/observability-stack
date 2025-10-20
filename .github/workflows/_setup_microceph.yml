@@ -12,10 +12,6 @@ jobs:
         uses: actions/checkout@v4
       - name: Install and configure microceph
         run: |
-          sudo snap install microceph
-          sudo microceph cluster bootstrap
-          sudo microceph status
-          sudo microceph disk add loop,5G,3
           function check_ceph_ok_or_exit () {
               i=0
               for i in {1..5}; do
@@ -31,7 +27,14 @@ jobs:
                   exit 1
               fi
           }
+
+          sudo snap install microceph
+          sudo microceph cluster bootstrap
+          sleep 30s
+          sudo microceph.ceph config set "mon.$(hostname)" mon_data_avail_warn 6
+          sudo microceph disk add loop,5G,3
           check_ceph_ok_or_exit
+
           sudo microceph enable rgw --port 8080 --ssl-port 8443
           sudo microceph.radosgw-admin user create --uid=user --display-name=User
           sudo microceph.radosgw-admin key create --uid=user --key-type=s3 --access-key=access-key --secret-key=secret-key
