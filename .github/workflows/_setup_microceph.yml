@@ -15,7 +15,7 @@ jobs:
           sudo snap install microceph
           sudo microceph cluster bootstrap
           sudo microceph status
-          sudo microceph disk add loop,4G,3
+          sudo microceph disk add loop,5G,3
           function check_ceph_ok_or_exit () {
               i=0
               for i in {1..5}; do
