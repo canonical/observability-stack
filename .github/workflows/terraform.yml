@@ -49,19 +49,17 @@ jobs:
     name: Install and setup Microceph
     uses: canonical/observability-stack/.github/workflows/_setup_microceph.yml@feat/cos-upgrade  # TODO: Fix branch
     secrets: inherit
-    # with:
-    #   charm-path: ${{ inputs.charm-path }}
-  # test-integration:
-  #   name: Terraform integration
-  #   runs-on: ubuntu-latest
-  #   needs:
-  #     - setup-microceph
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
-  #     - name: Install dependencies
-  #       run: |
-  #         sudo snap install concierge --classic
-  #         sudo concierge prepare -p microk8s --extra-snaps just,astral-uv,terraform
-  #     - name: Test Terraform product module upgrade scenarios
-  #       run: just integration
+  test-integration:
+    name: Terraform integration
+    runs-on: ubuntu-latest
+    needs:
+      - setup-microceph
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo snap install concierge --classic
+          sudo concierge prepare -p microk8s --extra-snaps just,astral-uv,terraform
+      - name: Test Terraform product module upgrade scenarios
+        run: just integration
