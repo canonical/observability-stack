@@ -48,6 +48,12 @@ variable "anti_affinity" {
   default     = true
 }
 
+variable "telemetry_correlation" {
+  description = "Configure Loki, Tempo, and Mimir data sources to enable telemetry correlation across logs, metrics, and traces."
+  type        = bool
+  default     = false
+}
+
 # -------------- # S3 storage configuration --------------
 
 variable "s3_endpoint" {

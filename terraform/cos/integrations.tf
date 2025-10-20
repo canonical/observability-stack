@@ -427,6 +427,7 @@ resource "juju_integration" "external_traefik_certificates" {
 # -------------- # Telemetry correlations ---------------------
 
 resource "juju_integration" "traces_and_logs_correlation" {
+  count = var.telemetry_correlation ? 1 : 0
   model = var.model
 
   application {
@@ -441,6 +442,7 @@ resource "juju_integration" "traces_and_logs_correlation" {
 }
 
 resource "juju_integration" "traces_and_metrics_correlation" {
+  count = var.telemetry_correlation ? 1 : 0
   model = var.model
 
   application {

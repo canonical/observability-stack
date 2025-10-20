@@ -80,20 +80,23 @@ module "mimir" {
   s3_integrator_revision           = var.s3_integrator.revision
   s3_integrator_storage_directives = var.s3_integrator.storage_directives
   s3_integrator_units              = var.s3_integrator.units
-  coordinator_config               = var.mimir_coordinator.config
-  coordinator_constraints          = var.mimir_coordinator.constraints
-  coordinator_revision             = var.mimir_coordinator.revision
-  coordinator_storage_directives   = var.mimir_coordinator.storage_directives
-  coordinator_units                = var.mimir_coordinator.units
-  backend_config                   = var.mimir_worker.backend_config
-  read_config                      = var.mimir_worker.read_config
-  write_config                     = var.mimir_worker.write_config
-  worker_constraints               = var.mimir_worker.constraints
-  worker_revision                  = var.mimir_worker.revision
-  worker_storage_directives        = var.mimir_worker.storage_directives
-  backend_units                    = var.mimir_worker.backend_units
-  read_units                       = var.mimir_worker.read_units
-  write_units                      = var.mimir_worker.write_units
+  coordinator_config = merge(var.mimir_coordinator.config, var.telemetry_correlation ? {
+    # metrics-to-traces requires exemplar storage enabled
+    "max_global_exemplars_per_user" = "100000"
+  } : {})
+  coordinator_constraints        = var.mimir_coordinator.constraints
+  coordinator_revision           = var.mimir_coordinator.revision
+  coordinator_storage_directives = var.mimir_coordinator.storage_directives
+  coordinator_units              = var.mimir_coordinator.units
+  backend_config                 = var.mimir_worker.backend_config
+  read_config                    = var.mimir_worker.read_config
+  write_config                   = var.mimir_worker.write_config
+  worker_constraints             = var.mimir_worker.constraints
+  worker_revision                = var.mimir_worker.revision
+  worker_storage_directives      = var.mimir_worker.storage_directives
+  backend_units                  = var.mimir_worker.backend_units
+  read_units                     = var.mimir_worker.read_units
+  write_units                    = var.mimir_worker.write_units
 }
 
 module "opentelemetry_collector" {
