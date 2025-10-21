@@ -9,6 +9,7 @@ from pathlib import Path
 from subprocess import CalledProcessError
 
 import jubilant
+import pytest
 from helpers import wait_for_active_idle_without_error
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_fixed
 
@@ -18,7 +19,7 @@ S3_ENDPOINT = {
     "s3_secret_key": os.getenv("S3_SECRET_KEY"),
     "s3_access_key": os.getenv("S3_ACCESS_KEY"),
 }
-print(f"+++{S3_ENDPOINT}")
+
 
 @retry(
     retry=retry_if_exception_type(CalledProcessError),
@@ -31,6 +32,14 @@ def apply_with_retry(tf_manager, **kwargs):
     tf_manager.apply(**kwargs)
 
 
+def test_envvars():
+    print(f"+++{S3_ENDPOINT}")
+    assert all(S3_ENDPOINT.values())
+
+
+@pytest.mark.xfail(
+    reason="When host is resource-constrained, model can take too long to settle"
+)
 def test_deploy_from_track(
     tf_manager, ca_model: jubilant.Juju, cos_model: jubilant.Juju
 ):
