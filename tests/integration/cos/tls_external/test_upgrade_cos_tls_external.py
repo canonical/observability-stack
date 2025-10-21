@@ -18,7 +18,7 @@ S3_ENDPOINT = {
     "s3_secret_key": os.getenv("S3_SECRET_KEY"),
     "s3_access_key": os.getenv("S3_ACCESS_KEY"),
 }
-
+print(f"+++{S3_ENDPOINT}")
 
 @retry(
     retry=retry_if_exception_type(CalledProcessError),

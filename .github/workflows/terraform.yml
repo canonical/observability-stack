@@ -49,8 +49,8 @@ jobs:
     name: Install and setup Microceph
     uses: canonical/observability-stack/.github/workflows/_setup_microceph.yml@feat/cos-upgrade  # TODO: Fix branch
     secrets: inherit
-  test-integration:
-    name: Terraform integration
+  test-integration-cos-lite:
+    name: Terraform integration COS Lite
     runs-on: ubuntu-latest
     needs:
       - setup-microceph
@@ -66,4 +66,22 @@ jobs:
           export S3_ENDPOINT=http://$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc'):8080
           export S3_ACCESS_KEY=access-key
           export S3_SECRET_KEY=secret-key
-          just integration
+          just integration cos_lite
+  test-integration-cos:
+    name: Terraform integration COS
+    runs-on: ubuntu-latest
+    needs:
+      - setup-microceph
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo snap install concierge --classic
+          sudo concierge prepare -p microk8s --extra-snaps just,astral-uv,terraform
+      - name: Test Terraform product module upgrade scenarios
+        run: |
+          export S3_ENDPOINT=http://$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc'):8080
+          export S3_ACCESS_KEY=access-key
+          export S3_SECRET_KEY=secret-key
+          just integration cos
