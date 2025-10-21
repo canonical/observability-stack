@@ -52,13 +52,10 @@ def test_deploy_from_track(
         cos_model=cos_model.model,
         **S3_ENDPOINT,
     )
-    tf_manager.apply(
+    apply_with_retry(
+        tf_manager,
         ca_model=ca_model.model,
         cos_model=cos_model.model,
         **S3_ENDPOINT,
     )
-    # apply_with_retry(
-    #     tf_manager,
-    #     **{**{"ca_model": ca_model.model, "cos_model": cos_model.model}, **S3_ENDPOINT},
-    # )
     wait_for_active_idle_without_error([cos_model], timeout=21600)
