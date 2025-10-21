@@ -35,7 +35,7 @@ module "grafana" {
 }
 
 module "loki" {
-  source                           = "git::https://github.com/canonical/observability-stack//terraform/loki?ref=feat/refactor-buckets"
+  source                           = "git::https://github.com/canonical/observability-stack//terraform/loki"
   anti_affinity                    = var.anti_affinity
   channel                          = var.channel
   model                            = var.model
@@ -66,7 +66,7 @@ module "loki" {
 }
 
 module "mimir" {
-  source                           = "git::https://github.com/canonical/observability-stack//terraform/mimir?ref=feat/refactor-buckets"
+  source                           = "git::https://github.com/canonical/observability-stack//terraform/mimir"
   anti_affinity                    = var.anti_affinity
   channel                          = var.channel
   model                            = var.model
@@ -121,7 +121,7 @@ module "ssc" {
 }
 
 module "tempo" {
-  source                           = "git::https://github.com/canonical/observability-stack//terraform/tempo?ref=feat/refactor-buckets"
+  source                           = "git::https://github.com/canonical/observability-stack//terraform/tempo"
   anti_affinity                    = var.anti_affinity
   channel                          = var.channel
   model                            = var.model
