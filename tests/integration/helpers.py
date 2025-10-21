@@ -11,15 +11,17 @@ class TfDirManager:
     def __init__(self, base_tmpdir):
         self.base: str = str(base_tmpdir)
         self.dir: str = ""
-        self.tf_cmd = f"terraform -chdir={self.dir}"
+
+    @property
+    def tf_cmd(self):
+        return f"terraform -chdir={self.dir}"
 
     def init(self, tf_file: str):
         """Initialize a Terraform module in a subdirectory."""
-        tf_dir = os.path.join(self.base, "terraform")
-        os.makedirs(tf_dir, exist_ok=True)
-        shutil.copy(tf_file, os.path.join(tf_dir, "main.tf"))
+        self.dir = os.path.join(self.base, "terraform")
+        os.makedirs(self.dir, exist_ok=True)
+        shutil.copy(tf_file, os.path.join(self.dir, "main.tf"))
         subprocess.run(shlex.split(f"{self.tf_cmd} init -upgrade"), check=True)
-        self.dir = tf_dir
 
     @staticmethod
     def _args_str(target: Optional[str] = None, **kwargs) -> str:
