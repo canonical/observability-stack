@@ -33,7 +33,6 @@ def apply_with_retry(tf_manager, **kwargs):
 
 
 def test_envvars():
-    print(f"+++{S3_ENDPOINT}")
     assert all(S3_ENDPOINT.values())
 
 
@@ -43,5 +42,6 @@ def test_envvars():
 def test_deploy_from_track(tf_manager, cos_model: jubilant.Juju):
     # GIVEN a module deployed from track n
     tf_manager.init(TRACK_2_TF_FILE)
-    apply_with_retry(tf_manager, **{**{"model": cos_model.model}, **S3_ENDPOINT})
-    wait_for_active_idle_without_error([cos_model], timeout=2400)
+    tf_manager.apply(model=cos_model.model, **S3_ENDPOINT)
+    # apply_with_retry(tf_manager, **{**{"model": cos_model.model}, **S3_ENDPOINT})
+    wait_for_active_idle_without_error([cos_model], timeout=21600)

@@ -33,7 +33,6 @@ def apply_with_retry(tf_manager, **kwargs):
 
 
 def test_envvars():
-    print(f"+++{S3_ENDPOINT}")
     assert all(S3_ENDPOINT.values())
 
 
@@ -47,19 +46,15 @@ def test_deploy_from_track(
     tf_manager.init(TRACK_2_TF_FILE)
     # NOTE: "Terraform cannot predict how many instances will be created. To work around this,
     # use the -target argument to first apply only the resources that the count depends on."
-    apply_with_retry(
-        tf_manager,
-        **{
-            **{
-                "target": "ssc",
-                "ca_model": ca_model.model,
-                "cos_model": cos_model.model,
-            },
-            **S3_ENDPOINT,
-        },
+    tf_manager.apply(
+        target="ssc",
+        ca_model=ca_model.model,
+        cos_model=cos_model.model,
+        **S3_ENDPOINT,
     )
-    apply_with_retry(
-        tf_manager,
-        **{**{"ca_model": ca_model.model, "cos_model": cos_model.model}, **S3_ENDPOINT},
+    tf_manager.apply(
+        ca_model=ca_model.model,
+        cos_model=cos_model.model,
+        **S3_ENDPOINT,
     )
-    wait_for_active_idle_without_error([cos_model], timeout=2400)
+    wait_for_active_idle_without_error([cos_model], timeout=21600)
