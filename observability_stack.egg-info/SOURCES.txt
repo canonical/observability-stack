@@ -1,0 +1,8 @@
+LICENSE
+README.md
+pyproject.toml
+observability_stack.egg-info/PKG-INFO
+observability_stack.egg-info/SOURCES.txt
+observability_stack.egg-info/dependency_links.txt
+observability_stack.egg-info/requires.txt
+observability_stack.egg-info/top_level.txt
