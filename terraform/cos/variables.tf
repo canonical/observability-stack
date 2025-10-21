@@ -218,7 +218,7 @@ variable "s3_integrator" {
     channel            = optional(string, "2/edge")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
-    revision           = optional(number, 157) # FIXME: https://github.com/canonical/observability/issues/342
+    revision           = optional(number, null)
     storage_directives = optional(map(string), {})
     units              = optional(number, 1)
   })
