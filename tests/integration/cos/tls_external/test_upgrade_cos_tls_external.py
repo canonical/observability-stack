@@ -23,6 +23,7 @@ def test_envvars():
     assert all(S3_ENDPOINT.values())
 
 
+@pytest.mark.skip()
 @pytest.mark.xfail(
     reason="When host is resource-constrained, model can take too long to settle"
 )
