@@ -1,5 +1,5 @@
 module "cos" {
-  source       = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=feat/refactor-buckets"
+  source       = "git::https://github.com/canonical/observability-stack//terraform/cos"
   model        = var.model
   channel      = "2/edge"
   internal_tls = "true"

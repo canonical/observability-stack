@@ -39,5 +39,3 @@ jobs:
           sudo microceph enable rgw --port 8080 --ssl-port 8443
           sudo microceph.radosgw-admin user create --uid=user --display-name=User
           sudo microceph.radosgw-admin key create --uid=user --key-type=s3 --access-key=access-key --secret-key=secret-key
-          sudo microceph status
-          sudo ceph status
