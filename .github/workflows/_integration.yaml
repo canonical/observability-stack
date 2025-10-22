@@ -14,8 +14,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        product: ["cos_lite"]
-        scenario: ["tls_full", "tls_external", "tls_internal", "tls_none"]
+        product: [ "cos_lite" ]
+        scenario: [ "tls_full", "tls_external", "tls_internal", "tls_none" ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
