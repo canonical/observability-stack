@@ -12,7 +12,7 @@ catalogue
 catalogue's
 Ceph
 Charmcraft
-Charmcraft
+Charmhub
 cjk
 CMR
 CMRs

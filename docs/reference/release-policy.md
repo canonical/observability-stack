@@ -23,4 +23,4 @@ Short-term releases are supported for nine months by providing security patches 
 
 ## Charmhub tracks and git branches
 We create the charmhub track at beginning of a cycle, and a git branch at end of cycle.
-For example, during June-Septmeber 2025, we had track `2` on charmhub, but only `track/1` and `main` branches on github.
+For example, during June-September 2025, we had track `2` on charmhub, but only `track/1` and `main` branches on github.
