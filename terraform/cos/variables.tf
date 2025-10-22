@@ -71,18 +71,21 @@ variable "loki_bucket" {
   description = "Loki bucket name"
   type        = string
   sensitive   = true
+  default     = "loki"
 }
 
 variable "mimir_bucket" {
   description = "Mimir bucket name"
   type        = string
   sensitive   = true
+  default     = "mimir"
 }
 
 variable "tempo_bucket" {
   description = "Tempo bucket name"
   type        = string
   sensitive   = true
+  default     = "tempo"
 }
 
 # -------------- # Application configurations --------------
@@ -215,7 +218,7 @@ variable "s3_integrator" {
     channel            = optional(string, "2/edge")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
-    revision           = optional(number, 157) # FIXME: https://github.com/canonical/observability/issues/342
+    revision           = optional(number, null)
     storage_directives = optional(map(string), {})
     units              = optional(number, 1)
   })
