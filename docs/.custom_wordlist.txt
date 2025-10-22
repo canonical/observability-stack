@@ -57,6 +57,7 @@ hostPath
 http
 https
 HTTPS
+HostHealth
 ingester
 instantiation
 integrations

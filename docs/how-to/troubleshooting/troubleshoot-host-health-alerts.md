@@ -15,8 +15,8 @@ Use `juju ssh` to check if the workload is running:
 - run `snap list` for machine charms
 - run `pebble services` for k8s charms
 
-### Inspect existing `up` timeseries
-Perhaps the metrics *do* reach Prometheus, but the `expr` labels we have rendered in the alert do not match the actual metric labels. You can confirm by going to the Prometheus (or Grafana) UI and querying for `up`. Compare the set of labels you get for the returned `up` timeseries.
+### Inspect existing `up` time series
+Perhaps the metrics *do* reach Prometheus, but the `expr` labels we have rendered in the alert do not match the actual metric labels. You can confirm by going to the Prometheus (or Grafana) UI and querying for `up`. Compare the set of labels you get for the returned `up` time series.
 
 
 ## `HostMetricsMissing` alert
@@ -32,7 +32,7 @@ Use `juju ssh` to check if the workload is running:
 - run `pebble services` for k8s charms
 
 ### Confirm the backend is reachable
-Use `juju ssh` to try and curl the Prometheus (or Mimir) api URL. If the host is unreachable, then this may indicate a network / firewall issue.
+Use `juju ssh` to try and curl the Prometheus (or Mimir) API URL. If the host is unreachable, then this may indicate a network / firewall issue.
 
-### Inspect existing `up` timeseries
-Perhaps the metrics *do* reach Prometheus, but the `expr` labels we have rendered in the alert do not match the actual metric labels. You can confirm by going to the Prometheus (or Grafana) UI and querying for `up`. Compare the set of labels you get for the returned `up` timeseries.
+### Inspect existing `up` time series
+Perhaps the metrics *do* reach Prometheus, but the `expr` labels we have rendered in the alert do not match the actual metric labels. You can confirm by going to the Prometheus (or Grafana) UI and querying for `up`. Compare the set of labels you get for the returned `up` time series.
