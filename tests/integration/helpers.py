@@ -2,9 +2,11 @@ import os
 import shlex
 import shutil
 import subprocess
-from typing import List, Optional
+from pathlib import Path
+from typing import Dict, List, Optional
 
 import jubilant
+from jinja2 import Template
 
 
 class TfDirManager:
@@ -53,3 +55,21 @@ def wait_for_active_idle_without_error(
             timeout=60 * 5,
             error=jubilant.any_error,
         )
+
+
+def render_bundle(
+    template: Path, output: Path, variables: Optional[Dict[str, str]] = None
+):
+    """The main function for rendering the bundle template."""
+    if variables is None:
+        variables = {}
+    breakpoint()
+    with open(template) as t:
+        jinja_template = Template(t.read(), autoescape=True)
+
+    # print(jinja_template.render(**variables))
+    with open(output, "wt") as o:
+        # Type-ignore because pyright complains:
+        # Argument 1 to "dump" of "TemplateStream" has
+        # incompatible type "TextIOWrapper"; expected "Union[str, IO[bytes]]"
+        jinja_template.stream(**variables).dump(o)  # type: ignore[arg-type]
