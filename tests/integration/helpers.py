@@ -60,10 +60,8 @@ def wait_for_active_idle_without_error(
 def render_bundle(
     template: Path, output: Path, variables: Optional[Dict[str, str]] = None
 ):
-    """The main function for rendering the bundle template."""
     if variables is None:
         variables = {}
-    breakpoint()
     with open(template) as t:
         jinja_template = Template(t.read(), autoescape=True)
 
