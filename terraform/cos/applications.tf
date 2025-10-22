@@ -80,10 +80,15 @@ module "mimir" {
   s3_integrator_revision           = var.s3_integrator.revision
   s3_integrator_storage_directives = var.s3_integrator.storage_directives
   s3_integrator_units              = var.s3_integrator.units
-  coordinator_config = merge(var.mimir_coordinator.config, {
-    # metrics-to-traces requires exemplar storage enabled
-    "max_global_exemplars_per_user" = "100000"
-  })
+  coordinator_config = merge(
+    var.mimir_coordinator.config,
+    # enable exemplar storage (required for metrics-to-traces).
+    # This config option is not supported in track `1`, so we'll set it only
+    # for newer tracks to maintain backward compatibility.
+    can(regex("^1/", var.channel)) ? {} : {
+      "max_global_exemplars_per_user" = "100000"
+    }
+  )
   coordinator_constraints        = var.mimir_coordinator.constraints
   coordinator_revision           = var.mimir_coordinator.revision
   coordinator_storage_directives = var.mimir_coordinator.storage_directives
