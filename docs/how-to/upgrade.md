@@ -22,4 +22,5 @@ retention-based phase-out.
 5. Decommission COS Lite.
 
 ### Migrate from COS Lite 1 to COS Lite 2
-(TODO)
+1. Refresh all track 1 charms so they point to the latest revision on `1/stable`.
+2. Refresh to track 2.
