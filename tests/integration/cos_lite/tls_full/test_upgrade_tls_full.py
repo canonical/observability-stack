@@ -1,5 +1,5 @@
 """There are 2 sections of the COS deployment (internal and external) which can implement TLS
-communication. This python test file deploys COS with external TLS, and without internal TLS.
+communication. This python test file deploys COS with external and internal TLS.
 
 For more further TLS configuration details, refer to our documentation:
 https://documentation.ubuntu.com/observability/latest/how-to/configure-tls-encryption/"""
@@ -7,14 +7,12 @@ https://documentation.ubuntu.com/observability/latest/how-to/configure-tls-encry
 from pathlib import Path
 
 import jubilant
-import pytest
 from helpers import wait_for_active_idle_without_error
 
 TRACK_1_TF_FILE = Path(__file__).parent.resolve() / "track-1.tf"
 TRACK_2_TF_FILE = Path(__file__).parent.resolve() / "track-2.tf"
 
 
-@pytest.mark.abort_on_fail
 def test_deploy_from_track(
     tf_manager, ca_model: jubilant.Juju, cos_model: jubilant.Juju
 ):
@@ -31,7 +29,6 @@ def test_deploy_from_track(
     wait_for_active_idle_without_error([ca_model, cos_model])
 
 
-@pytest.mark.abort_on_fail
 def test_deploy_to_track(tf_manager, ca_model: jubilant.Juju, cos_model: jubilant.Juju):
     # WHEN upgraded to track n
     tf_manager.init(TRACK_2_TF_FILE)

@@ -38,16 +38,16 @@ class TfDirManager:
         subprocess.run(shlex.split(cmd_str), check=True)
 
 
-def wait_for_active_idle_without_error(jujus: List[jubilant.Juju]):
+def wait_for_active_idle_without_error(jujus: List[jubilant.Juju], timeout: int = 60 * 20):
     for juju in jujus:
         print(f"\nwaiting for the model ({juju.model}) to settle ...\n")
-        juju.wait(jubilant.all_active, delay=5, timeout=60 * 10)
+        juju.wait(jubilant.all_active, delay=5, timeout=timeout)
         juju.wait(
-            jubilant.all_active, delay=5, timeout=60 * 10, error=jubilant.any_error
+            jubilant.all_active, delay=5, timeout=60 * 5, error=jubilant.any_error
         )
         juju.wait(
             jubilant.all_agents_idle,
             delay=5,
-            timeout=60 * 10,
+            timeout=60 * 5,
             error=jubilant.any_error,
         )

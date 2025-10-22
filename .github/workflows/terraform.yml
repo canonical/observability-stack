@@ -51,7 +51,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        product: [ "cos-lite" ]
+        product: [ "cos_lite" ]
         scenario: [ "tls_full", "tls_external", "tls_internal", "tls_none" ]
     steps:
       - name: Checkout
