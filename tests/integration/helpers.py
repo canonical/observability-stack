@@ -65,7 +65,6 @@ def render_bundle(
     with open(template) as t:
         jinja_template = Template(t.read(), autoescape=True)
 
-    # print(jinja_template.render(**variables))
     with open(output, "wt") as o:
         # Type-ignore because pyright complains:
         # Argument 1 to "dump" of "TemplateStream" has

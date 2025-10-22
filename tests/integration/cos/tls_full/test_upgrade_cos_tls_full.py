@@ -64,7 +64,6 @@ def test_deploy_bundle_from_track(
         TRACK_2_RENDERED_BUNDLE,
         variables={"s3_endpoint": os.getenv("S3_ENDPOINT"), "ca_model": ca_model.model},
     )
-    breakpoint()
     cos_model.deploy(TRACK_2_RENDERED_BUNDLE, trust=True)
     s3_creds = cos_model.add_secret(
         "s3creds", {"access-key": "access-key", "secret-key": "secret-key"}
