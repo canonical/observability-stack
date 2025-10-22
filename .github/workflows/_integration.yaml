@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        product: [ "cos", "cos_lite" ]
+        product: [ "cos" ]  # TODO: enable "cos_lite" tests
         scenario: [ "tls_full", "tls_external", "tls_internal", "tls_none" ]
     steps:
       - name: Checkout
@@ -28,4 +28,4 @@ jobs:
           export S3_ENDPOINT=http://$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc'):8080
           export S3_ACCESS_KEY=access-key
           export S3_SECRET_KEY=secret-key
-          just integration ${{ matrix.product }}/${{ matrix.scenario }}/test_upgrade_${{ matrix.product }}_${{ matrix.scenario }}.py
+          just integration ${{ matrix.product }}/${{ matrix.scenario }}

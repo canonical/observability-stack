@@ -1,0 +1,271 @@
+bundle: kubernetes
+saas:
+  certificates:
+    url: admin/{{ ca_model }}.certificates
+applications:
+  alertmanager:
+    charm: alertmanager-k8s
+    channel: 2/edge
+    revision: 188
+    resources:
+      alertmanager-image: 101
+    scale: 1
+    constraints: arch=amd64
+    storage:
+      data: kubernetes,1,1024M
+    trust: true
+  catalogue:
+    charm: catalogue-k8s
+    channel: 2/edge
+    revision: 108
+    resources:
+      catalogue-image: 37
+    scale: 1
+    constraints: arch=amd64
+    trust: true
+  grafana:
+    charm: grafana-k8s
+    channel: 2/edge
+    revision: 169
+    resources:
+      grafana-image: 77
+      litestream-image: 46
+    scale: 1
+    constraints: arch=amd64
+    storage:
+      database: kubernetes,1,1024M
+    trust: true
+  loki:
+    charm: loki-coordinator-k8s
+    channel: 2/edge
+    revision: 49
+    resources:
+      nginx-image: 7
+      nginx-prometheus-exporter-image: 3
+    scale: 1
+    constraints: arch=amd64 tags=anti-pod.app.kubernetes.io/name=loki,anti-pod.topology-key=kubernetes.io/hostname
+    trust: true
+  loki-s3-integrator:
+    charm: s3-integrator
+    channel: 2/edge
+    revision: 243
+    scale: 1
+    options:
+      bucket: loki
+      endpoint: {{ s3_endpoint }}
+    constraints: arch=amd64
+    trust: true
+  loki-worker:
+    charm: loki-worker-k8s
+    channel: 2/edge
+    revision: 50
+    resources:
+      loki-image: 3
+    scale: 1
+    options:
+      role-all: true
+    constraints: arch=amd64
+    storage:
+      loki-persisted: kubernetes,1,1024M
+    trust: true
+  mimir:
+    charm: mimir-coordinator-k8s
+    channel: 2/edge
+    revision: 68
+    resources:
+      nginx-image: 15
+      nginx-prometheus-exporter-image: 4
+    scale: 1
+    constraints: arch=amd64 tags=anti-pod.app.kubernetes.io/name=mimir,anti-pod.topology-key=kubernetes.io/hostname
+    trust: true
+  mimir-s3-integrator:
+    charm: s3-integrator
+    channel: 2/edge
+    revision: 243
+    scale: 1
+    options:
+      bucket: mimir
+      endpoint: {{ s3_endpoint }}
+    constraints: arch=amd64
+    trust: true
+  mimir-worker:
+    charm: mimir-worker-k8s
+    channel: 2/edge
+    revision: 58
+    resources:
+      mimir-image: 16
+    scale: 1
+    options:
+      role-all: true
+    constraints: arch=amd64
+    storage:
+      data: kubernetes,1,1024M
+      recovery-data: kubernetes,1,1024M
+    trust: true
+  otelcol:
+    charm: opentelemetry-collector-k8s
+    channel: 2/edge
+    revision: 99
+    resources:
+      opentelemetry-collector-image: 9
+    scale: 1
+    constraints: arch=amd64
+    storage:
+      persisted: kubernetes,1,1024M
+    trust: true
+  tempo:
+    charm: tempo-coordinator-k8s
+    channel: 2/edge
+    revision: 128
+    resources:
+      nginx-image: 8
+      nginx-prometheus-exporter-image: 4
+    scale: 1
+    constraints: arch=amd64 tags=anti-pod.app.kubernetes.io/name=tempo,anti-pod.topology-key=kubernetes.io/hostname
+    trust: true
+  tempo-s3-integrator:
+    charm: s3-integrator
+    channel: 2/edge
+    revision: 243
+    scale: 1
+    options:
+      bucket: tempo
+      endpoint: {{ s3_endpoint }}
+    constraints: arch=amd64
+    trust: true
+  tempo-worker:
+    charm: tempo-worker-k8s
+    channel: 2/edge
+    revision: 86
+    resources:
+      tempo-image: 12
+    scale: 1
+    constraints: arch=amd64
+    storage:
+      wal: kubernetes,1,1024M
+    trust: true
+  traefik:
+    charm: traefik-k8s
+    channel: latest/stable
+    revision: 254
+    base: ubuntu@20.04/stable
+    resources:
+      traefik-image: 162
+    scale: 1
+    constraints: arch=amd64
+    storage:
+      configurations: kubernetes,1,1024M
+    trust: true
+relations:
+- - mimir:s3
+  - mimir-s3-integrator:s3-credentials
+- - loki:s3
+  - loki-s3-integrator:s3-credentials
+- - tempo:s3
+  - tempo-s3-integrator:s3-credentials
+- - traefik:certificates
+  - certificates:certificates
+- - mimir:receive-remote-write
+  - otelcol:send-remote-write
+- - mimir:receive-remote-write
+  - tempo:send-remote-write
+- - otelcol:send-traces
+  - tempo:tracing
+- - catalogue:catalogue
+  - tempo:catalogue
+- - catalogue:catalogue
+  - mimir:catalogue
+- - alertmanager:catalogue
+  - catalogue:catalogue
+- - catalogue:catalogue
+  - grafana:catalogue
+- - tempo:ingress
+  - traefik:traefik-route
+- - grafana:ingress
+  - traefik:traefik-route
+- - catalogue:ingress
+  - traefik:ingress
+- - grafana:grafana-source
+  - loki:grafana-source
+- - alertmanager:ingress
+  - traefik:ingress
+- - otelcol:metrics-endpoint
+  - alertmanager:self-metrics-endpoint
+- - grafana:grafana-source
+  - mimir:grafana-source
+- - grafana:grafana-source
+  - tempo:grafana-source
+- - alertmanager:grafana-source
+  - grafana:grafana-source
+- - otelcol:metrics-endpoint
+  - tempo:metrics-endpoint
+- - otelcol:metrics-endpoint
+  - loki:self-metrics-endpoint
+- - otelcol:metrics-endpoint
+  - mimir:self-metrics-endpoint
+- - loki:ingress
+  - traefik:ingress
+- - mimir:ingress
+  - traefik:ingress
+- - mimir:charm-tracing
+  - otelcol:receive-traces
+- - loki:logging
+  - otelcol:send-loki-logs
+- - loki:charm-tracing
+  - otelcol:receive-traces
+- - grafana:charm-tracing
+  - otelcol:receive-traces
+- - alertmanager:alerting
+  - loki:alertmanager
+- - alertmanager:alerting
+  - mimir:alertmanager
+- - loki:logging-consumer
+  - otelcol:receive-loki-logs
+- - grafana:grafana-dashboard
+  - mimir:grafana-dashboards-provider
+- - grafana:grafana-dashboard
+  - loki:grafana-dashboards-provider
+- - tempo:logging
+  - otelcol:receive-loki-logs
+- - alertmanager:grafana-dashboard
+  - grafana:grafana-dashboard
+- - grafana:grafana-dashboard
+  - tempo:grafana-dashboard
+- - mimir:logging-consumer
+  - otelcol:receive-loki-logs
+- - tempo-worker:tempo-cluster
+  - tempo:tempo-cluster
+- - mimir-worker:mimir-cluster
+  - mimir:mimir-cluster
+- - loki-worker:loki-cluster
+  - loki:loki-cluster
+--- # overlay.yaml
+applications:
+  alertmanager:
+    offers:
+      alertmanager-karma-dashboard:
+        endpoints:
+        - karma-dashboard
+        acl:
+          admin: admin
+  grafana:
+    offers:
+      grafana-dashboards:
+        endpoints:
+        - grafana-dashboard
+        acl:
+          admin: admin
+  loki:
+    offers:
+      loki-logging:
+        endpoints:
+        - logging
+        acl:
+          admin: admin
+  mimir:
+    offers:
+      mimir-receive-remote-write:
+        endpoints:
+        - receive-remote-write
+        acl:
+          admin: admin
