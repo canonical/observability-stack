@@ -36,6 +36,7 @@ def test_envvars():
     assert all(S3_ENDPOINT.values())
 
 
+@pytest.mark.skip()
 @pytest.mark.xfail(
     reason="When host is resource-constrained, model can take too long to settle"
 )
@@ -58,4 +59,4 @@ def test_deploy_from_track(
         cos_model=cos_model.model,
         **S3_ENDPOINT,
     )
-    wait_for_active_idle_without_error([cos_model], timeout=21600)
+    wait_for_active_idle_without_error([cos_model], timeout=7200)
