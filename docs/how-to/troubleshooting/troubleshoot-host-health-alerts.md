@@ -5,7 +5,23 @@ These are generic (synthetically generated) alert rules, alleviating charm autho
 
 The `HostHealth` alert rule group is applicable to the following deployment scenarios:
 
-![alerting-scenarios](../assets/alerting-scenarios.png)
+```{mermaid}
+graph LR
+
+subgraph lxd
+vm-charm1 ---|cos_agent| grafana-agent
+vm-charm2 ---|monitors| cos-proxy
+end
+
+subgraph k8s
+k8s-charm1 ---|metrics_endpoint| prometheus
+k8s-charm2 ---|metrics_endpoint| grafana-agent-k8s
+grafana-agent-k8s ---|prometheus_remote_write| prometheus
+end
+
+grafana-agent ---|prometheus_remote_write| prometheus
+cos-proxy ---|metrics_endpoint| prometheus
+```
 
 ## `HostDown` alert
 The purpose of this alert is to notify when Prometheus (or Mimir) failed to scrape the target. The alert expression executes `up{...} < 1` with labels including the target's Juju topology: `juju_model`, `juju_application`, etc.
