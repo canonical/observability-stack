@@ -47,18 +47,4 @@ jobs:
         run: just validate-terraform
   test-integration:
     name: Terraform integration
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        product: [ "cos_lite" ]
-        scenario: [ "tls_full", "tls_external", "tls_internal", "tls_none" ]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Install dependencies
-        run: |
-          sudo snap install concierge --classic
-          sudo concierge prepare -p microk8s --extra-snaps just,astral-uv,terraform
-      - name: Test Terraform product module upgrade scenarios
-        run: just integration ${{ matrix.product }}/${{ matrix.scenario }}/test_upgrade_${{ matrix.scenario }}.py
+    uses: canonical/observability-stack/.github/workflows/_integration.yaml@feat/cos-lite-upgrade

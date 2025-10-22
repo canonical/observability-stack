@@ -2,6 +2,7 @@ name: Test the Terraform product module
 
 on:
   workflow_dispatch:
+  workflow_call:
 
 jobs:
   terraform-test:
@@ -10,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        product: [ "cos-lite" ]
+        product: [ "cos_lite" ]
         scenario: [ "tls_full", "tls_external", "tls_internal", "tls_none" ]
     steps:
       - name: Checkout
