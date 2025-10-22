@@ -10,11 +10,14 @@ See our [release policy](release-policy.md) and [upgrade instructions](../how-to
 ## Requirements and compatibility
 See [system requirements](system-requirements.md).
 
-COS 2 is compatible with Juju v3.6+.
+COS 2 is compatible with Juju v3.6+. When deployed using terraform, Juju v3.6.11+ is recommended.
 
 ## What's new in COS 2
 
-- Terraform modules for COS and COS Lite.
+- Terraform modules for [COS](https://github.com/canonical/observability-stack/tree/main/terraform/cos)
+  and [COS Lite](https://github.com/canonical/observability-stack/tree/main/terraform/cos-lite).
+  As Juju bundles are deprecated, the standard way of deploying COS is now using the
+  [Juju Terraform provider](https://registry.terraform.io/providers/juju/juju/latest/docs).
 - **Grafana v12**. We upgraded the workload version from Grafana 9 to Grafana 12. A thorough review of Grafana's breaking changes and how they affect us is available [on Discourse](https://discourse.charmhub.io/t/cos-will-start-using-grafana-12-what-changed/18868).
 - **Opentelemetry collector**. Opentelemetry-collector was released and is to replace the deprecated grafana-agent (goes EOL in November 2025).
 - `extra_alert_labels` config option. A new config option in grafana-agent and opentelemetry-collector enabled adding custom labels to alert rules. Custom labels are useful for differentiating alerts coming from sites with different SLAs.
