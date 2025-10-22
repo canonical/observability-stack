@@ -11,6 +11,16 @@ These guides accompany you through the complete COS stack operations life cycle.
    If you are looking for instructions on how to get started with COS Lite, see
    :ref:`the tutorial section <tutorial>`.
 
+Validating
+==========
+
+These guides will help validating new and existing deployments.
+
+.. toctree::
+   :maxdepth: 1
+
+   Validate COS deployment <validate-cos-deployment>
+
 Migrating
 =========
 

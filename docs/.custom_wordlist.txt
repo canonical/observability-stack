@@ -1,11 +1,12 @@
+# Leave a blank line at the end of this file to support concatenation
 alerter
+Alerter
 alertmanager
 backend
 backends
 BCrypt
 bhat
 blackbox
-boolean
 boolean
 catalogue
 catalogue's
@@ -96,6 +97,7 @@ otelcol
 otf
 OTLP
 OTTL
+PagerDuty
 PII
 plantuml
 postgresql
@@ -142,6 +144,7 @@ utils
 venv
 visualizes
 VPN
+WAL
 WCAG
 www
 xetex
