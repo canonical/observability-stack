@@ -47,13 +47,17 @@ jobs:
         run: just validate-terraform
   test-integration-cos-lite:
     name: COS Lite Terraform integration
-    uses: canonical/observability-stack/.github/workflows/_integration.yaml@feat/cos-upgrade  # TODO: Fix branch
+    uses: canonical/observability-stack/.github/workflows/_integration.yaml@feat/cos-upgrade # TODO: Fix branch
     with:
       product: cos_lite
       runner-labels: '["ubuntu-latest"]'
+  setup-microceph:
+    name: Install and setup Microceph
+    uses: canonical/observability-stack/.github/workflows/_setup_microceph.yml@feat/cos-upgrade # TODO: Fix branch
   test-integration-cos:
     name: COS Terraform integration
-    uses: canonical/observability-stack/.github/workflows/_integration.yaml@feat/cos-upgrade  # TODO: Fix branch
+    needs: setup-microceph
+    uses: canonical/observability-stack/.github/workflows/_integration.yaml@feat/cos-upgrade # TODO: Fix branch
     with:
       product: cos
       runner-labels: '["self-hosted","linux","amd64","noble","xlarge"]'
