@@ -53,7 +53,6 @@ jobs:
       runner-labels: '["ubuntu-latest"]'
   test-integration-cos:
     name: COS Terraform integration
-    needs: setup-microceph
     uses: canonical/observability-stack/.github/workflows/_integration.yaml@feat/cos-upgrade # TODO: Fix branch
     with:
       product: cos
