@@ -8,7 +8,6 @@ import os
 from pathlib import Path
 
 import jubilant
-import pytest
 from helpers import wait_for_active_idle_without_error
 
 TRACK_2_TF_FILE = Path(__file__).parent.resolve() / "track-2.tf"
@@ -23,10 +22,6 @@ def test_envvars():
     assert all(S3_ENDPOINT.values())
 
 
-@pytest.mark.skip()
-@pytest.mark.xfail(
-    reason="When host is resource-constrained, model can take too long to settle"
-)
 def test_deploy_from_track(
     tf_manager, ca_model: jubilant.Juju, cos_model: jubilant.Juju
 ):
@@ -45,4 +40,4 @@ def test_deploy_from_track(
         cos_model=cos_model.model,
         **S3_ENDPOINT,
     )
-    wait_for_active_idle_without_error([cos_model], timeout=7200)
+    wait_for_active_idle_without_error([cos_model], timeout=7200)  # TODO: Reduce if not needed
