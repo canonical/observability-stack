@@ -50,10 +50,10 @@ jobs:
     uses: canonical/observability-stack/.github/workflows/_integration.yaml@feat/cos-upgrade # TODO: Fix branch
     with:
       product: cos_lite
-      runner-labels: '["ubuntu-latest"]'
+      runner-labels: ubuntu-latest
   test-integration-cos:
     name: COS Terraform integration
     uses: canonical/observability-stack/.github/workflows/_integration.yaml@feat/cos-upgrade # TODO: Fix branch
     with:
       product: cos
-      runner-labels: '["self-hosted-linux-amd64-noble-xlarge"]'
+      runner-labels: self-hosted-linux-amd64-noble-2xlarge

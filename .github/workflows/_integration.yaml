@@ -9,12 +9,12 @@ on:
         type: string
       runner-labels:
         type: string
-        default: '["ubuntu-latest"]'
+        default: ubuntu-latest
 
 jobs:
   terraform-test:
     name: Test product module
-    runs-on: ${{ fromJson(inputs.runner-labels) }}
+    runs-on: ${{ inputs.runner-labels }}
     strategy:
       fail-fast: false
       matrix:
