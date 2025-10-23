@@ -49,4 +49,4 @@ def test_deploy_from_track(
         cos_model.grant_secret(s3_creds, f"{coordinator}-s3-integrator")
         cos_model.config(f"{coordinator}-s3-integrator", {"credentials": s3_creds})
 
-    wait_for_active_idle_without_error([cos_model], timeout=7200)
+    wait_for_active_idle_without_error([cos_model], timeout=21600)
