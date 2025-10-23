@@ -51,9 +51,6 @@ jobs:
     with:
       product: cos_lite
       runner-labels: '["ubuntu-latest"]'
-  setup-microceph:
-    name: Install and setup Microceph
-    uses: canonical/observability-stack/.github/workflows/_setup_microceph.yml@feat/cos-upgrade # TODO: Fix branch
   test-integration-cos:
     name: COS Terraform integration
     needs: setup-microceph
