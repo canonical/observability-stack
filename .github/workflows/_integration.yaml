@@ -14,7 +14,7 @@ on:
 jobs:
   terraform-test:
     name: Test product module
-    runs-on: ${{ inputs.runner-labels }}
+    runs-on: ${{ inputs.runner }}
     strategy:
       fail-fast: false
       matrix:
