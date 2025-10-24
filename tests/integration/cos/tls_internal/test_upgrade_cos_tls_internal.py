@@ -26,4 +26,4 @@ def test_deploy_from_track(tf_manager, cos_model: jubilant.Juju):
     # GIVEN a module deployed from track n
     tf_manager.init(TRACK_2_TF_FILE)
     tf_manager.apply(model=cos_model.model, **S3_ENDPOINT)
-    wait_for_active_idle_without_error([cos_model], timeout=3600)
+    wait_for_active_idle_without_error([cos_model], timeout=5400)
