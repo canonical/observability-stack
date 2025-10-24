@@ -423,3 +423,33 @@ resource "juju_integration" "external_traefik_certificates" {
     endpoint = module.traefik.endpoints.certificates
   }
 }
+
+# -------------- # Telemetry correlations ---------------------
+
+resource "juju_integration" "traces_and_logs_correlation" {
+  model = var.model
+
+  application {
+    name     = module.tempo.app_names.tempo_coordinator
+    endpoint = module.tempo.endpoints.receive_datasource
+  }
+
+  application {
+    name     = module.loki.app_names.loki_coordinator
+    endpoint = module.loki.endpoints.send_datasource
+  }
+}
+
+resource "juju_integration" "traces_and_metrics_correlation" {
+  model = var.model
+
+  application {
+    name     = module.tempo.app_names.tempo_coordinator
+    endpoint = module.tempo.endpoints.receive_datasource
+  }
+
+  application {
+    name     = module.mimir.app_names.mimir_coordinator
+    endpoint = module.mimir.endpoints.send_datasource
+  }
+}

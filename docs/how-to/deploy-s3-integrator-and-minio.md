@@ -61,6 +61,10 @@ $ juju run s3/leader sync-s3-credentials \
 
 ### 3. Add a bucket
 
+#### Through s3-integrator
+
+As of `rev243+` of `s3-integrator`, the integrator will create the requested bucket as part of the startup procedure. You don't need to create the buckets manually anymore.
+
 #### Using the Minio UI
 
 The simplest way to create a bucket is to use the Minio console UI. Obtain the Minio IP from the `juju status` output and then open `http://MINIO_IP:9001` in a browser using the `access-key` and `secret-key` you configured earlier as user and password respectively.
