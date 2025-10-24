@@ -1,8 +1,12 @@
+import json
 import os
 import shlex
 import shutil
+import ssl
 import subprocess
+from pathlib import Path
 from typing import List, Optional
+from urllib.request import urlopen
 
 import jubilant
 
@@ -53,3 +57,33 @@ def wait_for_active_idle_without_error(
             timeout=60 * 5,
             error=jubilant.any_error,
         )
+
+
+def get_tls_context(temp_path: Path, juju: jubilant.Juju) -> Optional[ssl.SSLContext]:
+    if "ca" in juju.status().apps:
+        # Obtain certificate from external-ca
+        cert_path = temp_path / "ca.pem"
+
+        task = juju.run("ca/0", "get-ca-certificate", {"format": "json"})
+        cert = task.results.get("ca-certificate")
+        cert_path.write_text(cert)
+
+        ctx = ssl.create_default_context()
+        ctx.load_verify_locations(cert_path)
+        return ctx
+    else:
+        return None
+
+
+def catalogue_apps_are_reachabable(temp_path: Path, juju: jubilant.Juju):
+    stdout = juju.ssh("catalogue/0", "cat /web/config.json", container="catalogue")
+    cat_conf = json.loads(stdout)
+    apps = {app["name"]: app["url"] for app in cat_conf["apps"]}
+    tls_context = get_tls_context(temp_path, juju)
+    for app, url in apps.items():
+        # TODO: Is the Traefik default cert working? Should I supply the Traefik cert here instead of CA cert?
+        # TODO: Try this test with external TLS
+        if tls_context:
+            url = url.replace("http://", "https://")  # FIXME: https://github.com/canonical/traefik-k8s-operator/issues/569
+        response = urlopen(url, data=None, timeout=2.0, context=tls_context)
+        assert response.code == 200, f"{app} was not reachable"
