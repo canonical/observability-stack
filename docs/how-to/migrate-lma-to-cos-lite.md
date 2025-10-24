@@ -12,7 +12,7 @@ Refer to the [best practices guide](../reference/best-practices/index) before mi
 ```
 
 ```{warning}
-Refer to [Supported tracks](../reference/supported-tracks) to choose the right track for your needs.
+Refer to [Supported tracks](../reference/release-policy) to choose the right track for your needs.
 Note that different tracks may have different ubuntu bases or minimum Juju version requirement.
 ```
 
