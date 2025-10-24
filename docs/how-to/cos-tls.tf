@@ -12,6 +12,6 @@ module "cos" {
   source                          = "git::https://github.com/canonical/observability-stack//terraform/cos"
   model                           = "cos"
   channel                         = "1/stable"
-  internal_tls                    = true  # Set to 'false' to disable TLS between in-model applications
-  external_certificates_offer_url = module.ssc.offers.certificates.url  # Set to 'null' to communicate with Traefik via HTTP, i.e. 'external_tls'
+  internal_tls                    = true                               # Set to 'false' to disable TLS between in-model applications
+  external_certificates_offer_url = module.ssc.offers.certificates.url # Set to 'null' to communicate with Traefik via HTTP, i.e. 'external_tls'
 }
