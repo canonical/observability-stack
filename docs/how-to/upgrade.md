@@ -6,7 +6,7 @@
 
 The main differences between COS Lite and COS from data perspective 
 are that COS uses different charms for the logs and metrics backends.
-For metrics, Prometheus is replaced with Mimir. For logs, monolithic 
+For metrics, [Prometheus](https://charmhub.io/prometheus-k8s) is replaced with [distributed Mimir](https://charmhub.io/mimir-coordinator-k8s). For logs, monolithic 
 Loki is replaced with Loki HA.
 
 Migrating data from Prometheus to Mimir or from one charm revision of 
