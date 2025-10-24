@@ -27,15 +27,6 @@ and configure RadosGW to listen on port 8080 ([doc](https://canonical-microceph.
     :dedent: 4
 ```
 
-### Create buckets for Loki, Mimir and Tempo
-
-```{literalinclude} /tutorial/installation/cos-canonical-k8s-sandbox.conf
-    :language: bash
-    :start-after: [docs:create-buckets]
-    :end-before: [docs:create-buckets-end]
-    :dedent: 4
-```
-
 ## Deploy COS using Terraform
 
 Assuming you are using the username `ubuntu`, create a `cos-demo.tf` file as follows:

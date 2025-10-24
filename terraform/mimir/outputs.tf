@@ -28,6 +28,7 @@ output "endpoints" {
     mimir_cluster               = "mimir-cluster",
     receive_remote_write        = "receive-remote-write",
     self_metrics_endpoint       = "self-metrics-endpoint",
+    send_datasource             = "send-datasource",
   }
   description = "All Juju integration endpoints which make up this product module"
 }
