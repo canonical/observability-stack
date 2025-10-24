@@ -53,4 +53,4 @@ validate-terraform:
 # Run solution tests
 [working-directory("./tests/integration")]
 integration *args='':
-  uv run pytest -vvs "${args}"
+  uv run pytest -vv --capture=no --exitfirst "${args}"
