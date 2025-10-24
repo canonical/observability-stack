@@ -4,7 +4,7 @@
 
 ### Migrate from COS Lite 1 to COS 2
 
-The main differences between COS Lite and COS HA from data perspective 
+The main differences between COS Lite and COS from data perspective 
 are that COS HA uses different charms for the logs and metrics backends.
 For metrics, Prometheus is replaced with Mimir. For logs, monolithic 
 Loki is replaced with Loki HA.
