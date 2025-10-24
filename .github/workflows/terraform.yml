@@ -47,4 +47,4 @@ jobs:
         run: just validate-terraform
   test-integration:
     name: Terraform integration
-    uses: canonical/observability-stack/.github/workflows/_integration.yaml@feat/cos-lite-upgrade
+    uses: canonical/observability-stack/.github/workflows/_integration.yaml
