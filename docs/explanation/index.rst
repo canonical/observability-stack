@@ -10,8 +10,8 @@ our architecture, telemetry model, and operational choices.
 Overview
 ========
 
-A high-level introduction to observability and the model-driven approach used
-by the COS projects.
+A high-level introduction to observability and the model-driven approach COS makes
+use of.
 
 .. toctree::
    :maxdepth: 1
