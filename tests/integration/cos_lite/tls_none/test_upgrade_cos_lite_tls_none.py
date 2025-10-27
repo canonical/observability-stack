@@ -25,4 +25,4 @@ def test_deploy_to_track(tf_manager, cos_model: jubilant.Juju):
     tf_manager.init(TRACK_2_TF_FILE)
     tf_manager.apply(model=cos_model.model)
     # THEN the model is upgraded and is active/idle
-    wait_for_active_idle_without_error([cos_model], )
+    wait_for_active_idle_without_error([cos_model])
