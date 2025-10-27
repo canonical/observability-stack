@@ -79,7 +79,7 @@ Common problems
 
 ## Practical notes for COS users
 
-- COS's Terraform changes in [#119](https://github.com/canonical/observability-stack/pull/119) configure the backend services to accept and surface correlations, but you still need to enable or ensure instrumentation and agent configurations emit the context.
+- Terraform changes for COS in [#119](https://github.com/canonical/observability-stack/pull/119) configure the backend services to accept and surface correlations, but you still need to enable or ensure instrumentation and agent configurations emit the context.
 - For Kubernetes deployments, prefer in-pod instrumentation (or sidecar agents) to preserve full trace context.
 
 ## References
@@ -88,5 +88,5 @@ Common problems
 - [Tempo HA docs — How to enable correlation from traces to logs](https://discourse.charmhub.io/t/tempo-ha-docs-how-to-enable-correlation-from-traces-to-logs/19029)
 - [Tempo HA docs — How to enable correlation from traces to metrics](https://discourse.charmhub.io/t/tempo-ha-docs-how-to-enable-correlation-from-traces-to-metrics/19094)
 
-For details and the original charm-level instructions, see the [Tempo HA charm documentation pages on CharmHub](https://discourse.charmhub.io/t/charmed-tempo-ha/15531).
+For details and the original charm-level instructions, see the [Tempo HA charm documentation pages on Charmhub](https://discourse.charmhub.io/t/charmed-tempo-ha/15531).
 
