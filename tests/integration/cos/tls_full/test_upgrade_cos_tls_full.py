@@ -40,4 +40,4 @@ def test_deploy_from_track(
         cos_model=cos_model.model,
         **S3_ENDPOINT,
     )
-    wait_for_active_idle_without_error([cos_model], timeout=7200)
+    wait_for_active_idle_without_error([cos_model], timeout=5400)
