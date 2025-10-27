@@ -13,7 +13,7 @@ Catalogue
 catalogue's
 Ceph
 Charmcraft
-Charmcraft
+Charmhub
 cjk
 CMR
 CMRs
@@ -38,6 +38,7 @@ Filebeat
 filesystem
 filterprocessor
 fonts
+formatter
 FQDN
 freefont
 frontend
@@ -137,6 +138,8 @@ TOC
 Traefik
 Traefik's
 ubuntu
+UI
+UIs
 uncharmed
 unencrypted
 Unencrypted
