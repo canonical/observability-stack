@@ -1,7 +1,7 @@
 # Lifecycle Best Practices
 
 ## Support window
-Refer to [Supported tracks](../supported-tracks) to choose the right track for your needs.
+Refer to [Supported tracks](../release-policy) to choose the right track for your needs.
 Note that different tracks may have different ubuntu bases or minimum Juju version requirement.
 
 ## Certificate rotation
