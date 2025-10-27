@@ -37,6 +37,7 @@ Filebeat
 filesystem
 filterprocessor
 fonts
+formatter
 FQDN
 freefont
 frontend
@@ -138,6 +139,8 @@ TOC
 Traefik
 Traefik's
 ubuntu
+UI
+UIs
 uncharmed
 unencrypted
 Unencrypted
