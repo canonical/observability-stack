@@ -8,7 +8,7 @@ variable "ca_model" {
 }
 
 module "cos" {
-  source       = "git::https://github.com/canonical/observability-stack//terraform/cos"
+  source       = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=fix/provider-pin"
   model        = var.cos_model
   channel      = "2/edge"
   internal_tls = "false"
