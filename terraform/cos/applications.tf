@@ -129,7 +129,7 @@ module "ssc" {
 }
 
 module "tempo" {
-  source                           = "git::https://github.com/canonical/tempo-operators//terraform"
+  source                           = "git::https://github.com/canonical/tempo-operators//terraform?ref=fix/tf-pin"
   anti_affinity                    = var.anti_affinity
   channel                          = var.channel
   model                            = var.model
@@ -166,7 +166,7 @@ module "tempo" {
 }
 
 module "traefik" {
-  source             = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
+  source             = "git::https://github.com/canonical/traefik-k8s-operator//terraform?ref=a8a0da68b9aa8e30e6ad00eac7aa552bcd88a8ef"
   app_name           = var.traefik.app_name
   channel            = var.traefik.channel
   config             = var.cloud == "aws" ? { "loadbalancer_annotations" = "service.beta.kubernetes.io/aws-load-balancer-scheme=internet-facing" } : var.traefik.config

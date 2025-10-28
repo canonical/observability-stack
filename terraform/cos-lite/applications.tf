@@ -71,7 +71,7 @@ module "ssc" {
 }
 
 module "traefik" {
-  source             = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
+  source             = "git::https://github.com/canonical/traefik-k8s-operator//terraform?ref=a8a0da68b9aa8e30e6ad00eac7aa552bcd88a8ef"
   app_name           = var.traefik.app_name
   channel            = var.traefik.channel
   config             = var.traefik.config
