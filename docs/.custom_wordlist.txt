@@ -8,8 +8,7 @@ BCrypt
 bhat
 blackbox
 boolean
-boolean
-Catalogue
+catalogue
 catalogue's
 Ceph
 Charmcraft
@@ -71,6 +70,7 @@ latexmk
 lifecycle
 linkcheck
 LMA
+LogProxyConsumer
 LogQL
 loki
 matchers
@@ -124,6 +124,7 @@ routable
 scalable
 SDK
 SHA
+SLAs
 Snapcraft
 SNMP
 StatefulSets
@@ -149,6 +150,7 @@ visualizes
 VPN
 WAL
 WCAG
+www
 xetex
 xindy
 ZooKeeper
