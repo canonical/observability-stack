@@ -18,3 +18,4 @@ module "cos-lite" {
 variable "cos_model" {
   type = string
 }
+
