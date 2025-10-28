@@ -11,22 +11,22 @@ This is a Terraform module facilitating the deployment of Mimir solution, using 
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5 |
-| <a name="requirement_juju"></a> [juju](#requirement\_juju) | >= 0.14.0 |
+| <a name="requirement_juju"></a> [juju](#requirement\_juju) | < 1.0.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_juju"></a> [juju](#provider\_juju) | >= 0.14.0 |
+| <a name="provider_juju"></a> [juju](#provider\_juju) | < 1.0.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_mimir_backend"></a> [mimir\_backend](#module\_mimir\_backend) | git::https://github.com/canonical/mimir-worker-k8s-operator//terraform | n/a |
-| <a name="module_mimir_coordinator"></a> [mimir\_coordinator](#module\_mimir\_coordinator) | git::https://github.com/canonical/mimir-coordinator-k8s-operator//terraform | n/a |
-| <a name="module_mimir_read"></a> [mimir\_read](#module\_mimir\_read) | git::https://github.com/canonical/mimir-worker-k8s-operator//terraform | n/a |
-| <a name="module_mimir_write"></a> [mimir\_write](#module\_mimir\_write) | git::https://github.com/canonical/mimir-worker-k8s-operator//terraform | n/a |
+| <a name="module_mimir_backend"></a> [mimir\_backend](#module\_mimir\_backend) | git::https://github.com/canonical/mimir-worker-k8s-operator//terraform | tf-provider-v0 |
+| <a name="module_mimir_coordinator"></a> [mimir\_coordinator](#module\_mimir\_coordinator) | git::https://github.com/canonical/mimir-coordinator-k8s-operator//terraform | tf-provider-v0 |
+| <a name="module_mimir_read"></a> [mimir\_read](#module\_mimir\_read) | git::https://github.com/canonical/mimir-worker-k8s-operator//terraform | tf-provider-v0 |
+| <a name="module_mimir_write"></a> [mimir\_write](#module\_mimir\_write) | git::https://github.com/canonical/mimir-worker-k8s-operator//terraform | tf-provider-v0 |
 
 ## Inputs
 

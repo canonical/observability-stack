@@ -11,22 +11,22 @@ This is a Terraform module facilitating the deployment of Loki solution, using t
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5 |
-| <a name="requirement_juju"></a> [juju](#requirement\_juju) | >= 0.14.0 |
+| <a name="requirement_juju"></a> [juju](#requirement\_juju) | < 1.0.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_juju"></a> [juju](#provider\_juju) | >= 0.14.0 |
+| <a name="provider_juju"></a> [juju](#provider\_juju) | < 1.0.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_loki_backend"></a> [loki\_backend](#module\_loki\_backend) | git::https://github.com/canonical/loki-worker-k8s-operator//terraform | n/a |
-| <a name="module_loki_coordinator"></a> [loki\_coordinator](#module\_loki\_coordinator) | git::https://github.com/canonical/loki-coordinator-k8s-operator//terraform | n/a |
-| <a name="module_loki_read"></a> [loki\_read](#module\_loki\_read) | git::https://github.com/canonical/loki-worker-k8s-operator//terraform | n/a |
-| <a name="module_loki_write"></a> [loki\_write](#module\_loki\_write) | git::https://github.com/canonical/loki-worker-k8s-operator//terraform | n/a |
+| <a name="module_loki_backend"></a> [loki\_backend](#module\_loki\_backend) | git::https://github.com/canonical/loki-worker-k8s-operator//terraform | tf-provider-v0 |
+| <a name="module_loki_coordinator"></a> [loki\_coordinator](#module\_loki\_coordinator) | git::https://github.com/canonical/loki-coordinator-k8s-operator//terraform | tf-provider-v0 |
+| <a name="module_loki_read"></a> [loki\_read](#module\_loki\_read) | git::https://github.com/canonical/loki-worker-k8s-operator//terraform | tf-provider-v0 |
+| <a name="module_loki_write"></a> [loki\_write](#module\_loki\_write) | git::https://github.com/canonical/loki-worker-k8s-operator//terraform | tf-provider-v0 |
 
 ## Inputs
 
