@@ -60,7 +60,7 @@ module "prometheus" {
 
 module "ssc" {
   count       = var.internal_tls ? 1 : 0
-  source      = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
+  source      = "git::https://github.com/canonical/self-signed-certificates-operator//terraform?ref=tf-provider-v0"
   app_name    = var.ssc.app_name
   channel     = var.ssc.channel
   config      = var.ssc.config
