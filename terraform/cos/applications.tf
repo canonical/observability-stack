@@ -129,7 +129,7 @@ module "ssc" {
 }
 
 module "tempo" {
-  source                           = "git::https://github.com/canonical/tempo-operators//terraform?ref=tf-provider-v0"
+  source                           = "git::https://github.com/canonical/tempo-operators//terraform?ref=tf-provider-v0-fixed"
   anti_affinity                    = var.anti_affinity
   channel                          = var.channel
   model                            = var.model
