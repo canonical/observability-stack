@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - '**/*.tf'
+      - "**/*.tf"
 
 jobs:
   lint-terraform:
@@ -45,3 +45,9 @@ jobs:
           sudo snap install just --classic
       - name: Validate the Terraform modules
         run: just validate-terraform
+  test-integration-cos-lite:
+    name: COS Lite Terraform integration
+    uses: canonical/observability-stack/.github/workflows/_integration.yml@main
+    with:
+      product: cos_lite
+      runner: ubuntu-latest

@@ -25,7 +25,7 @@ lint-workflows:
 [working-directory("./terraform")]
 lint-terraform:
   if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
-  set -e; for repo in */; do (cd "$repo" && echo "Processing ${repo%/}..." && $terraform init -upgrade -reconfigure && $terraform fmt -check -recursive -diff) || exit 1; done
+  set -e; for repo in */; do (cd "$repo" && echo "Processing ${repo%/}..." && $terraform init -upgrade && $terraform fmt -check -recursive -diff) || exit 1; done
 
 # Lint the Terraform documentation
 [group("Lint")]
@@ -37,7 +37,7 @@ lint-terraform-docs:
 [working-directory("./terraform")]
 format-terraform:
   if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
-  set -e; for repo in */; do (cd "$repo" && echo "Processing ${repo%/}..." && $terraform init -upgrade -reconfigure && $terraform fmt -recursive -diff) || exit 1; done
+  set -e; for repo in */; do (cd "$repo" && echo "Processing ${repo%/}..." && $terraform init -upgrade && $terraform fmt -recursive -diff) || exit 1; done
 
 # Format the Terraform documentation
 [group("Format")]
@@ -48,4 +48,9 @@ format-terraform-docs:
 [working-directory("./terraform")]
 validate-terraform:
   if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
-  set -e; for repo in */; do (cd "$repo" && echo "Processing ${repo%/}..." && $terraform init -upgrade -reconfigure && $terraform validate) || exit 1; done
+  set -e; for repo in */; do (cd "$repo" && echo "Processing ${repo%/}..." && $terraform init -upgrade && $terraform validate) || exit 1; done
+
+# Run solution tests
+[working-directory("./tests/integration")]
+integration *args='':
+  uv run pytest -vv --capture=no --exitfirst "${args}"

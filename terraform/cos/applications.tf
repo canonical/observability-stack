@@ -1,5 +1,5 @@
 module "alertmanager" {
-  source             = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform"
+  source             = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform?ref=tf-provider-v0"
   app_name           = var.alertmanager.app_name
   channel            = var.channel
   config             = var.alertmanager.config
@@ -11,7 +11,7 @@ module "alertmanager" {
 }
 
 module "catalogue" {
-  source             = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
+  source             = "git::https://github.com/canonical/catalogue-k8s-operator//terraform?ref=tf-provider-v0"
   app_name           = var.catalogue.app_name
   channel            = var.channel
   config             = var.catalogue.config
@@ -23,7 +23,7 @@ module "catalogue" {
 }
 
 module "grafana" {
-  source             = "git::https://github.com/canonical/grafana-k8s-operator//terraform"
+  source             = "git::https://github.com/canonical/grafana-k8s-operator//terraform?ref=tf-provider-v0"
   app_name           = var.grafana.app_name
   channel            = var.channel
   config             = var.grafana.config
@@ -35,7 +35,7 @@ module "grafana" {
 }
 
 module "loki" {
-  source                           = "git::https://github.com/canonical/observability-stack//terraform/loki"
+  source                           = "git::https://github.com/canonical/observability-stack//terraform/loki?ref=tf-provider-v0"
   anti_affinity                    = var.anti_affinity
   channel                          = var.channel
   model                            = var.model
@@ -66,7 +66,7 @@ module "loki" {
 }
 
 module "mimir" {
-  source                           = "git::https://github.com/canonical/observability-stack//terraform/mimir"
+  source                           = "git::https://github.com/canonical/observability-stack//terraform/mimir?ref=tf-provider-v0"
   anti_affinity                    = var.anti_affinity
   channel                          = var.channel
   model                            = var.model
@@ -80,24 +80,32 @@ module "mimir" {
   s3_integrator_revision           = var.s3_integrator.revision
   s3_integrator_storage_directives = var.s3_integrator.storage_directives
   s3_integrator_units              = var.s3_integrator.units
-  coordinator_config               = var.mimir_coordinator.config
-  coordinator_constraints          = var.mimir_coordinator.constraints
-  coordinator_revision             = var.mimir_coordinator.revision
-  coordinator_storage_directives   = var.mimir_coordinator.storage_directives
-  coordinator_units                = var.mimir_coordinator.units
-  backend_config                   = var.mimir_worker.backend_config
-  read_config                      = var.mimir_worker.read_config
-  write_config                     = var.mimir_worker.write_config
-  worker_constraints               = var.mimir_worker.constraints
-  worker_revision                  = var.mimir_worker.revision
-  worker_storage_directives        = var.mimir_worker.storage_directives
-  backend_units                    = var.mimir_worker.backend_units
-  read_units                       = var.mimir_worker.read_units
-  write_units                      = var.mimir_worker.write_units
+  coordinator_config = merge(
+    var.mimir_coordinator.config,
+    # enable exemplar storage (required for metrics-to-traces).
+    # This config option is not supported in track `1`, so we'll set it only
+    # for newer tracks to maintain backward compatibility.
+    can(regex("^1/", var.channel)) ? {} : {
+      "max_global_exemplars_per_user" = "100000"
+    }
+  )
+  coordinator_constraints        = var.mimir_coordinator.constraints
+  coordinator_revision           = var.mimir_coordinator.revision
+  coordinator_storage_directives = var.mimir_coordinator.storage_directives
+  coordinator_units              = var.mimir_coordinator.units
+  backend_config                 = var.mimir_worker.backend_config
+  read_config                    = var.mimir_worker.read_config
+  write_config                   = var.mimir_worker.write_config
+  worker_constraints             = var.mimir_worker.constraints
+  worker_revision                = var.mimir_worker.revision
+  worker_storage_directives      = var.mimir_worker.storage_directives
+  backend_units                  = var.mimir_worker.backend_units
+  read_units                     = var.mimir_worker.read_units
+  write_units                    = var.mimir_worker.write_units
 }
 
 module "opentelemetry_collector" {
-  source             = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform"
+  source             = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform?ref=tf-provider-v0"
   app_name           = var.opentelemetry_collector.app_name
   channel            = var.channel
   config             = var.opentelemetry_collector.config
@@ -121,7 +129,7 @@ module "ssc" {
 }
 
 module "tempo" {
-  source                           = "git::https://github.com/canonical/observability-stack//terraform/tempo"
+  source                           = "git::https://github.com/canonical/tempo-operators//terraform?ref=tf-provider-v0"
   anti_affinity                    = var.anti_affinity
   channel                          = var.channel
   model                            = var.model
@@ -158,7 +166,7 @@ module "tempo" {
 }
 
 module "traefik" {
-  source             = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
+  source             = "git::https://github.com/canonical/traefik-k8s-operator//terraform?ref=a8a0da68b9aa8e30e6ad00eac7aa552bcd88a8ef"
   app_name           = var.traefik.app_name
   channel            = var.traefik.channel
   config             = var.cloud == "aws" ? { "loadbalancer_annotations" = "service.beta.kubernetes.io/aws-load-balancer-scheme=internet-facing" } : var.traefik.config

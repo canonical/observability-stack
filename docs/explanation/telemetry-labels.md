@@ -11,7 +11,7 @@ Telemetry labels are used throughout the [Grafana ecosystem](https://grafana.com
 
 ## Metric labels
 
-By convention, applications expose labeled metrics under a [`/metrics` endpoint](https://github.com/OpenObservability/OpenMetrics/blob/main/specification/OpenMetrics.md).
+By convention, applications expose labeled metrics under a [`/metrics` endpoint](https://github.com/prometheus/OpenMetrics/blob/main/specification/OpenMetrics.md).
 For example, you can run the prometheus application and curl its `:9090/metrics` endpoint to obtain the metrics exposed by the process.
 
 ```bash
@@ -85,7 +85,7 @@ $ curl -s --data-urlencode 'match[]={__name__="prometheus_http_requests_total"}'
 ]
 ```
 
-Similarly, "service labels" can be specified using prometheus [remote-write endpoint](https://prometheus.io/docs/prometheus/latest/querying/api/#remote-write-receiver) and [push-gateway](https://github.com/prometheus/pushgateway/blob/master/README.md#use-it), and grafana agent's [config file](https://grafana.com/docs/agent/latest/configuration/metrics-config/).
+Similarly, "service labels" can be specified using prometheus [remote-write endpoint](https://prometheus.io/docs/prometheus/latest/querying/api/#remote-write-receiver) and [push-gateway](https://github.com/prometheus/pushgateway/blob/master/README.md#use-it), and grafana agent's [config file](https://grafana.com/docs/agent/latest/static/configuration/metrics-config/).
 
 
 ## Log labels
@@ -114,7 +114,7 @@ all of the labels specified in the `stream` section above will be applied to all
 ## Scrape job labels for logs
 Log files can be scraped by Promtail or grafana agent, which then stream the log lines to Loki using Loki's `push-api` endpoint.
 Promtail, similar to grafana agent, has a [`scarpe_configs` section in its config file](https://grafana.com/docs/loki/latest/send-data/promtail/configuration/#scrape_configs) for specifying targets (log filename) and associate labels to them.
-See also grafana agent's [config file](https://grafana.com/docs/agent/latest/configuration/logs-config/) docs.
+See also grafana agent's [config file](https://grafana.com/docs/agent/latest/static/configuration/logs-config/) docs.
 
 
 ## Alert labels

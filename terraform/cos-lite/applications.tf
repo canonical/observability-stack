@@ -1,5 +1,5 @@
 module "alertmanager" {
-  source             = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform"
+  source             = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform?ref=tf-provider-v0"
   app_name           = var.alertmanager.app_name
   channel            = var.channel
   config             = var.alertmanager.config
@@ -11,7 +11,7 @@ module "alertmanager" {
 }
 
 module "catalogue" {
-  source             = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
+  source             = "git::https://github.com/canonical/catalogue-k8s-operator//terraform?ref=tf-provider-v0"
   app_name           = var.catalogue.app_name
   channel            = var.channel
   config             = var.catalogue.config
@@ -23,7 +23,7 @@ module "catalogue" {
 }
 
 module "grafana" {
-  source             = "git::https://github.com/canonical/grafana-k8s-operator//terraform"
+  source             = "git::https://github.com/canonical/grafana-k8s-operator//terraform?ref=tf-provider-v0"
   app_name           = var.grafana.app_name
   channel            = var.channel
   config             = var.grafana.config
@@ -35,7 +35,7 @@ module "grafana" {
 }
 
 module "loki" {
-  source             = "git::https://github.com/canonical/loki-k8s-operator//terraform"
+  source             = "git::https://github.com/canonical/loki-k8s-operator//terraform?ref=tf-provider-v0"
   app_name           = var.loki.app_name
   channel            = var.channel
   config             = var.loki.config
@@ -47,7 +47,7 @@ module "loki" {
 }
 
 module "prometheus" {
-  source             = "git::https://github.com/canonical/prometheus-k8s-operator//terraform"
+  source             = "git::https://github.com/canonical/prometheus-k8s-operator//terraform?ref=tf-provider-v0"
   app_name           = var.prometheus.app_name
   channel            = var.channel
   config             = var.prometheus.config
@@ -71,7 +71,7 @@ module "ssc" {
 }
 
 module "traefik" {
-  source             = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
+  source             = "git::https://github.com/canonical/traefik-k8s-operator//terraform?ref=a8a0da68b9aa8e30e6ad00eac7aa552bcd88a8ef"
   app_name           = var.traefik.app_name
   channel            = var.traefik.channel
   config             = var.traefik.config

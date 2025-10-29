@@ -5,7 +5,7 @@ The Minio charm is not suitable for production usage. Instead, use [Charmed Ceph
 ```
 
 Minio is a lightweight S3-compatible object storage system. In its 
-single-node configuration, it is suitable for providing an S3 storage backend for certain charmed applications such as Tempo, Loki and Mimir. For more, see: https://min.io.
+single-node configuration, it is suitable for providing an S3 storage backend for certain charmed applications such as Tempo, Loki and Mimir. For more, see: [`min.io`](https://www.min.io/).
 
 ## Using a script
 
@@ -60,6 +60,10 @@ $ juju run s3/leader sync-s3-credentials \
 ```
 
 ### 3. Add a bucket
+
+#### Through s3-integrator
+
+As of `rev243+` of `s3-integrator`, the integrator will create the requested bucket as part of the startup procedure. You don't need to create the buckets manually anymore.
 
 #### Using the Minio UI
 
