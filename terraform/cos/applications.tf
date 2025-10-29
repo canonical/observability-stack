@@ -1,44 +1,44 @@
 module "alertmanager" {
-  source             = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform?ref=tf-provider-v0"
+  source             = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform"
   app_name           = var.alertmanager.app_name
   channel            = var.channel
   config             = var.alertmanager.config
   constraints        = var.alertmanager.constraints
-  model              = var.model
+  model_uuid         = var.model_uuid
   revision           = var.alertmanager.revision
   storage_directives = var.alertmanager.storage_directives
   units              = var.alertmanager.units
 }
 
 module "catalogue" {
-  source             = "git::https://github.com/canonical/catalogue-k8s-operator//terraform?ref=tf-provider-v0"
+  source             = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
   app_name           = var.catalogue.app_name
   channel            = var.channel
   config             = var.catalogue.config
   constraints        = var.catalogue.constraints
-  model              = var.model
+  model_uuid         = var.model_uuid
   revision           = var.catalogue.revision
   storage_directives = var.catalogue.storage_directives
   units              = var.catalogue.units
 }
 
 module "grafana" {
-  source             = "git::https://github.com/canonical/grafana-k8s-operator//terraform?ref=tf-provider-v0"
+  source             = "git::https://github.com/canonical/grafana-k8s-operator//terraform"
   app_name           = var.grafana.app_name
   channel            = var.channel
   config             = var.grafana.config
   constraints        = var.grafana.constraints
-  model              = var.model
+  model_uuid         = var.model_uuid
   revision           = var.grafana.revision
   storage_directives = var.grafana.storage_directives
   units              = var.grafana.units
 }
 
 module "loki" {
-  source                           = "git::https://github.com/canonical/observability-stack//terraform/loki?ref=tf-provider-v0"
+  source                           = "git::https://github.com/canonical/observability-stack//terraform/loki"
   anti_affinity                    = var.anti_affinity
   channel                          = var.channel
-  model                            = var.model
+  model_uuid                       = var.model_uuid
   s3_endpoint                      = var.s3_endpoint
   s3_secret_key                    = var.s3_secret_key
   s3_access_key                    = var.s3_access_key
@@ -66,10 +66,10 @@ module "loki" {
 }
 
 module "mimir" {
-  source                           = "git::https://github.com/canonical/observability-stack//terraform/mimir?ref=tf-provider-v0"
+  source                           = "git::https://github.com/canonical/observability-stack//terraform/mimir"
   anti_affinity                    = var.anti_affinity
   channel                          = var.channel
-  model                            = var.model
+  model_uuid                       = var.model_uuid
   s3_endpoint                      = var.s3_endpoint
   s3_secret_key                    = var.s3_secret_key
   s3_access_key                    = var.s3_access_key
@@ -105,12 +105,12 @@ module "mimir" {
 }
 
 module "opentelemetry_collector" {
-  source             = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform?ref=tf-provider-v0"
+  source             = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform"
   app_name           = var.opentelemetry_collector.app_name
   channel            = var.channel
   config             = var.opentelemetry_collector.config
   constraints        = var.opentelemetry_collector.constraints
-  model              = var.model
+  model_uuid         = var.model_uuid
   revision           = var.opentelemetry_collector.revision
   storage_directives = var.opentelemetry_collector.storage_directives
   units              = var.opentelemetry_collector.units
@@ -123,16 +123,16 @@ module "ssc" {
   channel     = var.ssc.channel
   config      = var.ssc.config
   constraints = var.ssc.constraints
-  model       = var.model
+  model       = var.model_uuid
   revision    = var.ssc.revision
   units       = var.ssc.units
 }
 
 module "tempo" {
-  source                           = "git::https://github.com/canonical/tempo-operators//terraform?ref=tf-provider-v0"
+  source                           = "git::https://github.com/canonical/tempo-operators//terraform"
   anti_affinity                    = var.anti_affinity
   channel                          = var.channel
-  model                            = var.model
+  model_uuid                       = var.model_uuid
   s3_endpoint                      = var.s3_endpoint
   s3_access_key                    = var.s3_access_key
   s3_secret_key                    = var.s3_secret_key
@@ -166,12 +166,12 @@ module "tempo" {
 }
 
 module "traefik" {
-  source             = "git::https://github.com/canonical/traefik-k8s-operator//terraform?ref=a8a0da68b9aa8e30e6ad00eac7aa552bcd88a8ef"
+  source             = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
   app_name           = var.traefik.app_name
   channel            = var.traefik.channel
   config             = var.cloud == "aws" ? { "loadbalancer_annotations" = "service.beta.kubernetes.io/aws-load-balancer-scheme=internet-facing" } : var.traefik.config
   constraints        = var.traefik.constraints
-  model              = var.model
+  model              = var.model_uuid
   revision           = var.traefik.revision
   storage_directives = var.traefik.storage_directives
   units              = var.traefik.units

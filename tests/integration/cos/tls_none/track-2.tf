@@ -1,6 +1,6 @@
 module "cos" {
-  source       = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=tf-provider-v0"
-  model        = var.model
+  source       = "git::https://github.com/canonical/observability-stack//terraform/cos"
+  model_uuid = var.model_uuid
   channel      = "2/edge"
   internal_tls = "false"
 

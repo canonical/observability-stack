@@ -8,7 +8,7 @@ variable "ca_model" {
 }
 
 module "cos-lite" {
-  source       = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=tf-provider-v0"
+  source       = "git::https://github.com/canonical/observability-stack//terraform/cos-lite"
   model        = var.cos_model
   channel      = "2/edge"
   internal_tls = "false"
