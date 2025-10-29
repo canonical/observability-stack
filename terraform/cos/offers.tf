@@ -5,6 +5,7 @@ resource "juju_offer" "alertmanager_karma_dashboard" {
   endpoints        = ["karma-dashboard"]
 }
 
+
 resource "juju_offer" "grafana_dashboards" {
   name             = "grafana-dashboards"
   model            = var.model
