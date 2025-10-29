@@ -8,11 +8,12 @@ variable "ca_model" {
 }
 
 module "cos-lite" {
-  source       = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=tf-provider-v0"
-  model        = var.cos_model
-  channel      = "2/edge"
-  internal_tls = "false"
+  source                          = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=tf-provider-v0"
+  model                           = var.cos_model
+  channel                         = "2/edge"
+  internal_tls                    = "false"
   external_certificates_offer_url = module.ssc.offers.certificates.url
+  traefik                         = { channel = "latest/edge" }  # TODO: Switch to latest/stable when rev257 hits stable
 }
 
 variable "cos_model" {

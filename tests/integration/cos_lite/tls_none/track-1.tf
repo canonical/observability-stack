@@ -3,6 +3,7 @@ module "cos-lite" {
   model        = var.model
   channel      = "1/stable"
   internal_tls = "false"
+  traefik      = { channel = "latest/edge" }  # TODO: Switch to latest/stable when rev257 hits stable
 }
 
 variable "model" {

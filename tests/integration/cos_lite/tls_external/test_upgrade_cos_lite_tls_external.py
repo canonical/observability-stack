@@ -40,5 +40,4 @@ def test_deploy_to_track(
     tf_manager.apply(ca_model=ca_model.model, cos_model=cos_model.model)
     # THEN the model is upgraded and is active/idle
     wait_for_active_idle_without_error([ca_model, cos_model])
-    breakpoint()
     catalogue_apps_are_reachabable(tmp_path, cos_model)

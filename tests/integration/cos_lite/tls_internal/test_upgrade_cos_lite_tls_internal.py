@@ -26,5 +26,4 @@ def test_deploy_to_track(tmp_path, tf_manager, cos_model: jubilant.Juju):
     tf_manager.apply(model=cos_model.model)
     # THEN the model is upgraded and is active/idle
     wait_for_active_idle_without_error([cos_model])
-    breakpoint()
     catalogue_apps_are_reachabable(tmp_path, cos_model)

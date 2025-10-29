@@ -81,9 +81,5 @@ def catalogue_apps_are_reachabable(temp_path: Path, juju: jubilant.Juju):
     apps = {app["name"]: app["url"] for app in cat_conf["apps"]}
     tls_context = get_tls_context(temp_path, juju)
     for app, url in apps.items():
-        # TODO: Is the Traefik default cert working? Should I supply the Traefik cert here instead of CA cert?
-        # TODO: Try this test with external TLS
-        if tls_context:
-            url = url.replace("http://", "https://")  # FIXME: https://github.com/canonical/traefik-k8s-operator/issues/569
         response = urlopen(url, data=None, timeout=2.0, context=tls_context)
         assert response.code == 200, f"{app} was not reachable"
