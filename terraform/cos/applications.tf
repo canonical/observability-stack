@@ -35,7 +35,7 @@ module "grafana" {
 }
 
 module "loki" {
-  source                           = "git::https://github.com/canonical/observability-stack//terraform/loki"
+  source                           = "git::https://github.com/canonical/observability-stack//terraform/loki?ref=feat/tf-provider-v1"
   anti_affinity                    = var.anti_affinity
   channel                          = var.channel
   model_uuid                       = var.model_uuid
@@ -66,7 +66,7 @@ module "loki" {
 }
 
 module "mimir" {
-  source                           = "git::https://github.com/canonical/observability-stack//terraform/mimir"
+  source                           = "git::https://github.com/canonical/observability-stack//terraform/mimir?ref=feat/tf-provider-v1"
   anti_affinity                    = var.anti_affinity
   channel                          = var.channel
   model_uuid                       = var.model_uuid
@@ -167,12 +167,12 @@ module "tempo" {
 }
 
 module "traefik" {
-  source             = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
+  source             = "git::https://github.com/canonical/traefik-k8s-operator//terraform?ref=update_tf_module"
   app_name           = var.traefik.app_name
   channel            = var.traefik.channel
   config             = var.cloud == "aws" ? { "loadbalancer_annotations" = "service.beta.kubernetes.io/aws-load-balancer-scheme=internet-facing" } : var.traefik.config
   constraints        = var.traefik.constraints
-  model              = var.model_uuid
+  model_uuid         = var.model_uuid
   revision           = var.traefik.revision
   storage_directives = var.traefik.storage_directives
   units              = var.traefik.units
