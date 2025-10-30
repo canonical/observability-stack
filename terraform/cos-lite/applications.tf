@@ -72,12 +72,12 @@ module "ssc" {
 }
 
 module "traefik" {
-  source             = "git::https://github.com/canonical/traefik-k8s-operator//terraform?ref=update_tf_module"
+  source             = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
   app_name           = var.traefik.app_name
   channel            = var.traefik.channel
   config             = var.traefik.config
   constraints        = var.traefik.constraints
-  model              = var.model_uuid
+  model_uuid         = var.model_uuid
   revision           = var.traefik.revision
   storage_directives = var.traefik.storage_directives
   units              = var.traefik.units

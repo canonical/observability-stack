@@ -11,22 +11,22 @@ This is a Terraform module facilitating the deployment of Mimir solution, using 
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5 |
-| <a name="requirement_juju"></a> [juju](#requirement\_juju) | < 1.0.0 |
+| <a name="requirement_juju"></a> [juju](#requirement\_juju) | ~> 1.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_juju"></a> [juju](#provider\_juju) | < 1.0.0 |
+| <a name="provider_juju"></a> [juju](#provider\_juju) | ~> 1.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_mimir_backend"></a> [mimir\_backend](#module\_mimir\_backend) | git::https://github.com/canonical/mimir-worker-k8s-operator//terraform | tf-provider-v0 |
-| <a name="module_mimir_coordinator"></a> [mimir\_coordinator](#module\_mimir\_coordinator) | git::https://github.com/canonical/mimir-coordinator-k8s-operator//terraform | tf-provider-v0 |
-| <a name="module_mimir_read"></a> [mimir\_read](#module\_mimir\_read) | git::https://github.com/canonical/mimir-worker-k8s-operator//terraform | tf-provider-v0 |
-| <a name="module_mimir_write"></a> [mimir\_write](#module\_mimir\_write) | git::https://github.com/canonical/mimir-worker-k8s-operator//terraform | tf-provider-v0 |
+| <a name="module_mimir_backend"></a> [mimir\_backend](#module\_mimir\_backend) | git::https://github.com/canonical/mimir-worker-k8s-operator//terraform | n/a |
+| <a name="module_mimir_coordinator"></a> [mimir\_coordinator](#module\_mimir\_coordinator) | git::https://github.com/canonical/mimir-coordinator-k8s-operator//terraform | n/a |
+| <a name="module_mimir_read"></a> [mimir\_read](#module\_mimir\_read) | git::https://github.com/canonical/mimir-worker-k8s-operator//terraform | n/a |
+| <a name="module_mimir_write"></a> [mimir\_write](#module\_mimir\_write) | git::https://github.com/canonical/mimir-worker-k8s-operator//terraform | n/a |
 
 ## Inputs
 
@@ -42,7 +42,7 @@ This is a Terraform module facilitating the deployment of Mimir solution, using 
 | <a name="input_coordinator_revision"></a> [coordinator\_revision](#input\_coordinator\_revision) | Revision number of the coordinator application | `number` | `null` | no |
 | <a name="input_coordinator_storage_directives"></a> [coordinator\_storage\_directives](#input\_coordinator\_storage\_directives) | Map of storage used by the coordinator application, which defaults to 1 GB, allocated by Juju | `map(string)` | `{}` | no |
 | <a name="input_coordinator_units"></a> [coordinator\_units](#input\_coordinator\_units) | Number of Mimir coordinator units | `number` | `1` | no |
-| <a name="input_model"></a> [model](#input\_model) | Reference to an existing model resource or data source for the model to deploy to | `string` | n/a | yes |
+| <a name="input_model_uuid"></a> [model\_uuid](#input\_model\_uuid) | Reference to an existing model resource or data source for the model to deploy to | `string` | n/a | yes |
 | <a name="input_read_config"></a> [read\_config](#input\_read\_config) | Map of the read worker configuration options | `map(string)` | `{}` | no |
 | <a name="input_read_name"></a> [read\_name](#input\_read\_name) | Name of the Mimir read (meta role) app | `string` | `"mimir-read"` | no |
 | <a name="input_read_units"></a> [read\_units](#input\_read\_units) | Number of Mimir worker units with the read meta role | `number` | `1` | no |

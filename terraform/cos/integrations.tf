@@ -394,7 +394,7 @@ resource "juju_integration" "internal_certificates" {
 }
 
 resource "juju_integration" "traefik_receive_ca_certificate" {
-  count = var.internal_tls ? 1 : 0
+  count      = var.internal_tls ? 1 : 0
   model_uuid = var.model_uuid
 
   application {
@@ -411,7 +411,7 @@ resource "juju_integration" "traefik_receive_ca_certificate" {
 # -------------- # Provided by an external CA --------------
 
 resource "juju_integration" "external_traefik_certificates" {
-  count = local.tls_termination ? 1 : 0
+  count      = local.tls_termination ? 1 : 0
   model_uuid = var.model_uuid
 
   application {
