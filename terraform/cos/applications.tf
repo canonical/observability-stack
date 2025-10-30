@@ -117,7 +117,7 @@ module "opentelemetry_collector" {
 }
 
 module "ssc" {
-  count = var.internal_tls ? 1 : 0
+  count       = var.internal_tls ? 1 : 0
   source      = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
   app_name    = var.ssc.app_name
   channel     = var.ssc.channel

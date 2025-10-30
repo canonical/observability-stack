@@ -73,9 +73,20 @@ This is a Terraform module facilitating the deployment of the COS solution, usin
 
 ## Usage
 
-By default, this Terraform module will deploy each worker with `3` unit. If you want to scale each Loki, Mimir or Tempo worker unit please check the variables available for that purpose in `variables.tf`.
+### Using different Terraform Juju provider versions
+If you require the Terraform Juju provider `< 1.0.0`, then deploy the COS module with the `tf-provider-v0` tag:
+
+```hcl
+module "cos" {
+  source     = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=tf-provider-v0"
+}
+```
+
+Otherwise, you can deploy from main (without `?ref`) which uses the Terraform Juju provider `~> 1.0`. See the [v1 migration documentation](https://documentation.ubuntu.com/terraform-provider-juju/v1/howto/manage-provider/upgrade-provider-to-v1/) if you need to upgrade your modules.
 
 ### Basic usage
+
+By default, this Terraform module will deploy each worker with `3` unit. If you want to scale each Loki, Mimir or Tempo worker unit please check the variables available for that purpose in `variables.tf`.
 
 To deploy the COS HA solution in a model named `cos`, create this root module:
 ```hcl
