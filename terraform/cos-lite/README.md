@@ -1,6 +1,6 @@
-# Terraform module for COS solution
+# Terraform module for the COS Lite solution
 
-This is a Terraform module facilitating the deployment of COS solution, using the [Terraform juju provider](https://github.com/juju/terraform-provider-juju/). For more information, refer to the provider [documentation](https://registry.terraform.io/providers/juju/juju/latest/docs).
+This is a Terraform module facilitating the deployment of the COS Lite solution, using the [Terraform juju provider](https://github.com/juju/terraform-provider-juju/). For more information, refer to the provider [documentation](https://registry.terraform.io/providers/juju/juju/latest/docs).
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
@@ -25,8 +25,8 @@ This is a Terraform module facilitating the deployment of COS solution, using th
 | <a name="module_grafana"></a> [grafana](#module\_grafana) | git::https://github.com/canonical/grafana-k8s-operator//terraform | n/a |
 | <a name="module_loki"></a> [loki](#module\_loki) | git::https://github.com/canonical/loki-k8s-operator//terraform | n/a |
 | <a name="module_prometheus"></a> [prometheus](#module\_prometheus) | git::https://github.com/canonical/prometheus-k8s-operator//terraform | n/a |
-| <a name="module_ssc"></a> [ssc](#module\_ssc) | git::https://github.com/MichaelThamm/self-signed-certificates-operator//terraform | tf-version-v1 |
-| <a name="module_traefik"></a> [traefik](#module\_traefik) | git::https://github.com/canonical/traefik-k8s-operator//terraform | update_tf_module |
+| <a name="module_ssc"></a> [ssc](#module\_ssc) | git::https://github.com/canonical/self-signed-certificates-operator//terraform | n/a |
+| <a name="module_traefik"></a> [traefik](#module\_traefik) | git::https://github.com/canonical/traefik-k8s-operator//terraform | n/a |
 
 ## Inputs
 
@@ -56,6 +56,33 @@ This is a Terraform module facilitating the deployment of COS solution, using th
 
 ### Basic usage
 
-Users should ensure that Terraform is aware of the `juju_model` dependency of the charm module.
+To deploy the COS HA solution in a model named `cos`, create this root module:
+```hcl
+terraform {
+  required_version = ">= 1.5"
+  required_providers {
+    juju = {
+      source  = "juju/juju"
+      version = "~> 1.0"
+    }
+  }
+}
 
-To deploy this module with its needed dependency, you can run `terraform apply -var="model=<MODEL_NAME>" -auto-approve`. This would deploy all COS HA solution modules in the same model.
+data "juju_model" "my-model" {
+  name  = "cos"
+  owner = "admin"
+}
+
+module "cos-lite" {
+  source     = "git::https://github.com/canonical/observability-stack//terraform/cos-lite"
+  model_uuid = data.juju_model.my-model.uuid
+  channel    = "2/edge"
+}
+```
+
+Then, use terraform to deploy the module:
+
+```shell
+terraform init
+terraform apply
+```

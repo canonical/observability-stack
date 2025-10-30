@@ -39,7 +39,7 @@ variable "s3_access_key" {
 }
 
 module "ssc" {
-  source     = "git::https://github.com/MichaelThamm/self-signed-certificates-operator//terraform"
+  source     = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
   model_uuid = data.juju_model.ca-model.uuid
 }
 
