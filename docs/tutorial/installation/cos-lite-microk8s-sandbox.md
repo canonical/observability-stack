@@ -199,8 +199,8 @@ $ juju switch cos
 Next, deploy COS Lite on a new model, run:
 
 ```bash
-terraform init
-terraform apply ./cos-canonical-k8s-sandbox.md  # verify the changes you're applying before accepting!
+$ terraform init
+$ terraform apply  # verify the changes you're applying before accepting!
 ```
 
 Now you can sit back and watch the deployment take place:

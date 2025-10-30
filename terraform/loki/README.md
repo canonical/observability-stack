@@ -6,27 +6,20 @@ This is a Terraform module facilitating the deployment of Loki solution, using t
 > `s3-integrator` itself doesn't act as an S3 object storage system. For the HA solution to be functional, `s3-integrator` needs to point to an S3-like storage. See [this guide](https://discourse.charmhub.io/t/cos-lite-docs-set-up-minio/15211) to learn how to connect to an S3-like storage for traces.
 
 <!-- BEGIN_TF_DOCS -->
-## Requirements
-
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5 |
-| <a name="requirement_juju"></a> [juju](#requirement\_juju) | < 1.0.0 |
-
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_juju"></a> [juju](#provider\_juju) | < 1.0.0 |
+| <a name="provider_juju"></a> [juju](#provider\_juju) | ~> 1.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_loki_backend"></a> [loki\_backend](#module\_loki\_backend) | git::https://github.com/canonical/loki-worker-k8s-operator//terraform | tf-provider-v0 |
-| <a name="module_loki_coordinator"></a> [loki\_coordinator](#module\_loki\_coordinator) | git::https://github.com/canonical/loki-coordinator-k8s-operator//terraform | tf-provider-v0 |
-| <a name="module_loki_read"></a> [loki\_read](#module\_loki\_read) | git::https://github.com/canonical/loki-worker-k8s-operator//terraform | tf-provider-v0 |
-| <a name="module_loki_write"></a> [loki\_write](#module\_loki\_write) | git::https://github.com/canonical/loki-worker-k8s-operator//terraform | tf-provider-v0 |
+| <a name="module_loki_backend"></a> [loki\_backend](#module\_loki\_backend) | git::https://github.com/canonical/loki-worker-k8s-operator//terraform | n/a |
+| <a name="module_loki_coordinator"></a> [loki\_coordinator](#module\_loki\_coordinator) | git::https://github.com/canonical/loki-coordinator-k8s-operator//terraform | n/a |
+| <a name="module_loki_read"></a> [loki\_read](#module\_loki\_read) | git::https://github.com/canonical/loki-worker-k8s-operator//terraform | n/a |
+| <a name="module_loki_write"></a> [loki\_write](#module\_loki\_write) | git::https://github.com/canonical/loki-worker-k8s-operator//terraform | n/a |
 
 ## Inputs
 
@@ -42,7 +35,7 @@ This is a Terraform module facilitating the deployment of Loki solution, using t
 | <a name="input_coordinator_revision"></a> [coordinator\_revision](#input\_coordinator\_revision) | Revision number of the coordinator application | `number` | `null` | no |
 | <a name="input_coordinator_storage_directives"></a> [coordinator\_storage\_directives](#input\_coordinator\_storage\_directives) | Map of storage used by the coordinator application, which defaults to 1 GB, allocated by Juju | `map(string)` | `{}` | no |
 | <a name="input_coordinator_units"></a> [coordinator\_units](#input\_coordinator\_units) | Number of Loki coordinator units | `number` | `1` | no |
-| <a name="input_model"></a> [model](#input\_model) | Reference to an existing model resource or data source for the model to deploy to | `string` | n/a | yes |
+| <a name="input_model_uuid"></a> [model\_uuid](#input\_model\_uuid) | Reference to an existing model resource or data source for the model to deploy to | `string` | n/a | yes |
 | <a name="input_read_config"></a> [read\_config](#input\_read\_config) | Map of the read worker configuration options | `map(string)` | `{}` | no |
 | <a name="input_read_name"></a> [read\_name](#input\_read\_name) | Name of the Loki app with the read role | `string` | `"loki-read"` | no |
 | <a name="input_read_units"></a> [read\_units](#input\_read\_units) | Number of Loki worker units with the read role | `number` | `1` | no |
@@ -74,13 +67,7 @@ This is a Terraform module facilitating the deployment of Loki solution, using t
 
 ## Usage
 
-### Basic usage
-
-Users should ensure that Terraform is aware of the `juju_model` dependency of the charm module.
-
-To deploy this module with its needed dependency, you can run `terraform apply -var="model=<MODEL_NAME>" -auto-approve`. This would deploy all Loki HA solution modules in the same model.
-
 ### Microservice deployment
 
-By default, this Terraform module will deploy each Loki worker with `1` unit. To configure the module to run `x` units of any worker role, you can run `terraform apply -var="model=<MODEL_NAME>" -var="<ROLE>_units=<x>" -auto-approve`.
+By default, this Terraform module will deploy each Loki worker with `1` unit. To configure the module to run `x` units of any worker role, you can run `terraform apply -var="<ROLE>_units=<x>"`.
 See [Loki worker roles](https://discourse.charmhub.io/t/loki-worker-roles/15484) for the recommended scale for each role.
