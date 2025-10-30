@@ -32,7 +32,7 @@ module "ssc" {
 }
 
 module "cos-lite" {
-  source                          = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=feat/tf-provider-v1"
+  source                          = "git::https://github.com/canonical/observability-stack//terraform/cos-lite"
   model_uuid                      = data.juju_model.cos-model.uuid
   channel                         = "2/edge"
   internal_tls                    = "true"
