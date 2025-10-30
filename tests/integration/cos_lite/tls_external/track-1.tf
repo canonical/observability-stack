@@ -27,7 +27,7 @@ data "juju_model" "cos-model" {
 }
 
 module "ssc" {
-  source     = "git::https://github.com/MichaelThamm/self-signed-certificates-operator//terraform?ref=tf-version-v1"
+  source     = "git::https://github.com/MichaelThamm/self-signed-certificates-operator//terraform"
   model_uuid = data.juju_model.ca-model.uuid
 }
 
