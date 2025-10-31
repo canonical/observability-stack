@@ -132,7 +132,8 @@ resource "juju_integration" "coordinator_to_s3_integrator" {
 }
 
 resource "juju_integration" "coordinator_to_backend" {
-  model_uuid = var.model_uuid
+  count = var.monolithic ? 0 : 1
+  model_uuid = var.model_uuidbackend_units
 
   application {
     name     = module.loki_coordinator.app_name
@@ -146,6 +147,7 @@ resource "juju_integration" "coordinator_to_backend" {
 }
 
 resource "juju_integration" "coordinator_to_read" {
+  count = var.monolithic ? 0 : 1
   model_uuid = var.model_uuid
 
   application {
@@ -160,6 +162,7 @@ resource "juju_integration" "coordinator_to_read" {
 }
 
 resource "juju_integration" "coordinator_to_write" {
+  count = var.monolithic ? 0 : 1
   model_uuid = var.model_uuid
 
   application {
@@ -169,6 +172,22 @@ resource "juju_integration" "coordinator_to_write" {
 
   application {
     name     = module.loki_write.app_name
+    endpoint = "loki-cluster"
+  }
+}
+
+
+resource "juju_integration" "coordinator_to_all" {
+  count = var.monolithic ? 1 : 0
+  model_uuid = var.model_uuid
+
+  application {
+    name     = module.loki_coordinator.app_name
+    endpoint = "loki-cluster"
+  }
+
+  application {
+    name     = module.loki_all.app_name
     endpoint = "loki-cluster"
   }
 }
