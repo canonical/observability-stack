@@ -14,6 +14,12 @@ variable "anti_affinity" {
   default     = true
 }
 
+variable "monolithic" {
+  description = "Enable the monolithic deployment mode"
+  type        = bool
+  default     = false      
+}
+
 # -------------- # S3 object storage --------------
 
 variable "s3_integrator_channel" {
@@ -45,6 +51,12 @@ variable "s3_endpoint" {
 }
 
 # -------------- # App Names --------------
+
+variable "all_name" {
+  description = "Name of the Loki app with the all role"
+  type        = string
+  default     = "loki-worker"
+}
 
 variable "backend_name" {
   description = "Name of the Loki app with the backend role"
