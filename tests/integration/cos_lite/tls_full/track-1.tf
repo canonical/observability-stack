@@ -11,7 +11,7 @@ module "cos-lite" {
   source                          = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=tf-provider-v0"
   model                           = var.cos_model
   channel                         = "1/stable"
-  internal_tls                    = "true"
+  internal_tls                    = true
   external_certificates_offer_url = module.ssc.offers.certificates.url
   traefik                         = { channel = "latest/edge" }  # TODO: Switch to latest/stable when rev257 hits stable
 }
