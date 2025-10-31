@@ -45,9 +45,9 @@ Assuming you are using the username `ubuntu`, create a `cos-demo.tf` file as fol
 To deploy COS in a new model named `cos`, run:
 
 ```bash
-juju add-model cos
-terraform init
-terraform apply
+$ juju add-model cos
+$ terraform init
+$ terraform apply
 ```
 
 You can watch the model as it settles with:

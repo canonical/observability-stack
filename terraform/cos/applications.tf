@@ -4,7 +4,7 @@ module "alertmanager" {
   channel            = var.channel
   config             = var.alertmanager.config
   constraints        = var.alertmanager.constraints
-  model              = var.model
+  model_uuid         = var.model_uuid
   revision           = var.alertmanager.revision
   storage_directives = var.alertmanager.storage_directives
   units              = var.alertmanager.units
@@ -16,7 +16,7 @@ module "catalogue" {
   channel            = var.channel
   config             = var.catalogue.config
   constraints        = var.catalogue.constraints
-  model              = var.model
+  model_uuid         = var.model_uuid
   revision           = var.catalogue.revision
   storage_directives = var.catalogue.storage_directives
   units              = var.catalogue.units
@@ -28,7 +28,7 @@ module "grafana" {
   channel            = var.channel
   config             = var.grafana.config
   constraints        = var.grafana.constraints
-  model              = var.model
+  model_uuid         = var.model_uuid
   revision           = var.grafana.revision
   storage_directives = var.grafana.storage_directives
   units              = var.grafana.units
@@ -38,7 +38,7 @@ module "loki" {
   source                           = "git::https://github.com/canonical/observability-stack//terraform/loki?ref=tf-provider-v0"
   anti_affinity                    = var.anti_affinity
   channel                          = var.channel
-  model                            = var.model
+  model_uuid                       = var.model_uuid
   s3_endpoint                      = var.s3_endpoint
   s3_secret_key                    = var.s3_secret_key
   s3_access_key                    = var.s3_access_key
@@ -69,7 +69,7 @@ module "mimir" {
   source                           = "git::https://github.com/canonical/observability-stack//terraform/mimir?ref=tf-provider-v0"
   anti_affinity                    = var.anti_affinity
   channel                          = var.channel
-  model                            = var.model
+  model_uuid                       = var.model_uuid
   s3_endpoint                      = var.s3_endpoint
   s3_secret_key                    = var.s3_secret_key
   s3_access_key                    = var.s3_access_key
@@ -110,7 +110,7 @@ module "opentelemetry_collector" {
   channel            = var.channel
   config             = var.opentelemetry_collector.config
   constraints        = var.opentelemetry_collector.constraints
-  model              = var.model
+  model_uuid         = var.model_uuid
   revision           = var.opentelemetry_collector.revision
   storage_directives = var.opentelemetry_collector.storage_directives
   units              = var.opentelemetry_collector.units
@@ -123,7 +123,7 @@ module "ssc" {
   channel     = var.ssc.channel
   config      = var.ssc.config
   constraints = var.ssc.constraints
-  model       = var.model
+  model_uuid  = var.model_uuid
   revision    = var.ssc.revision
   units       = var.ssc.units
 }
@@ -132,7 +132,7 @@ module "tempo" {
   source                           = "git::https://github.com/canonical/tempo-operators//terraform?ref=tf-provider-v0"
   anti_affinity                    = var.anti_affinity
   channel                          = var.channel
-  model                            = var.model
+  model_uuid                       = var.model_uuid
   s3_endpoint                      = var.s3_endpoint
   s3_access_key                    = var.s3_access_key
   s3_secret_key                    = var.s3_secret_key
@@ -171,7 +171,7 @@ module "traefik" {
   channel            = var.traefik.channel
   config             = var.cloud == "aws" ? { "loadbalancer_annotations" = "service.beta.kubernetes.io/aws-load-balancer-scheme=internet-facing" } : var.traefik.config
   constraints        = var.traefik.constraints
-  model              = var.model
+  model_uuid         = var.model_uuid
   revision           = var.traefik.revision
   storage_directives = var.traefik.storage_directives
   units              = var.traefik.units
