@@ -48,9 +48,27 @@ module "loki_coordinator" {
   units              = var.coordinator_units
 }
 
+module "loki_all" {
+  source     = "git::https://github.com/canonical/loki-worker-k8s-operator//terraform"
+  depends_on = [module.loki_coordinator]
+  count = var.monolithic ? 1 : 0
+
+  app_name    = var.all_name
+  channel     = var.channel
+  constraints = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=${var.all_name},anti-pod.topology-key=kubernetes.io/hostname" : var.worker_constraints
+  config = merge({
+    role-all = true
+  }, var.all_config)
+  model_uuid         = var.model_uuid
+  revision           = var.worker_revision
+  storage_directives = var.worker_storage_directives
+  units              = var.all_units
+}
+
 module "loki_backend" {
   source     = "git::https://github.com/canonical/loki-worker-k8s-operator//terraform"
   depends_on = [module.loki_coordinator]
+  count = var.monolithic ? 0 : 1
 
   app_name    = var.backend_name
   channel     = var.channel
@@ -67,6 +85,7 @@ module "loki_backend" {
 module "loki_read" {
   source     = "git::https://github.com/canonical/loki-worker-k8s-operator//terraform"
   depends_on = [module.loki_coordinator]
+  count = var.monolithic ? 0 : 1
 
   app_name    = var.read_name
   channel     = var.channel
@@ -83,6 +102,7 @@ module "loki_read" {
 module "loki_write" {
   source     = "git::https://github.com/canonical/loki-worker-k8s-operator//terraform"
   depends_on = [module.loki_coordinator]
+  count = var.monolithic ? 0 : 1
 
   app_name    = var.write_name
   channel     = var.channel
