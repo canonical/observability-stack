@@ -7,8 +7,12 @@ https://documentation.ubuntu.com/observability/latest/how-to/configure-tls-encry
 import os
 from pathlib import Path
 
+from helpers import (
+    catalogue_apps_are_reachable,
+    wait_for_active_idle_without_error,
+)
+
 import jubilant
-from helpers import wait_for_active_idle_without_error
 
 TRACK_2_TF_FILE = Path(__file__).parent.resolve() / "track-2.tf"
 S3_ENDPOINT = {
@@ -27,3 +31,4 @@ def test_deploy_from_track(tf_manager, cos_model: jubilant.Juju):
     tf_manager.init(TRACK_2_TF_FILE)
     tf_manager.apply(model=cos_model.model, **S3_ENDPOINT)
     wait_for_active_idle_without_error([cos_model], timeout=5400)
+    catalogue_apps_are_reachable(cos_model)

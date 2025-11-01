@@ -1,10 +1,25 @@
+import json
 import os
 import shlex
 import shutil
+import ssl
 import subprocess
+from pathlib import Path
 from typing import List, Optional
+from urllib.request import urlopen
 
 import jubilant
+
+
+def refresh_o11y_apps(juju: jubilant.Juju, channel: str, base: Optional[str] = None):
+    """Temporary workaround for the issue:
+
+    FIXME: https://github.com/juju/terraform-provider-juju/issues/967
+    """
+    for app in juju.status().apps:
+        if app in {"traefik", "ca"}:
+            continue
+        juju.refresh(app, channel=channel, base=base)
 
 
 class TfDirManager:
@@ -53,3 +68,35 @@ def wait_for_active_idle_without_error(
             timeout=60 * 5,
             error=jubilant.any_error,
         )
+
+
+def get_tls_context(
+    temp_path: Path, juju: jubilant.Juju, ca_name: str
+) -> Optional[ssl.SSLContext]:
+    if ca_name not in juju.status().apps:
+        return None
+
+    # Obtain certificate from external-ca
+    cert_path = temp_path / "ca.pem"
+
+    task = juju.run(f"{ca_name}/0", "get-ca-certificate", {"format": "json"})
+    cert = task.results.get("ca-certificate")
+    cert_path.write_text(cert)
+
+    ctx = ssl.create_default_context()
+    ctx.load_verify_locations(cert_path)
+    return ctx
+
+
+def catalogue_apps_are_reachable(
+    juju: jubilant.Juju, tls_context: Optional[ssl.SSLContext] = None
+):
+    stdout = juju.ssh("catalogue/0", "cat /web/config.json", container="catalogue")
+    breakpoint()
+    cat_conf = json.loads(stdout)
+    apps = {app["name"]: app["url"] for app in cat_conf["apps"]}
+    for app, url in apps.items():
+        if not url:
+            continue
+        response = urlopen(url, data=None, timeout=2.0, context=tls_context)
+        assert response.code == 200, f"{app} was not reachable"
