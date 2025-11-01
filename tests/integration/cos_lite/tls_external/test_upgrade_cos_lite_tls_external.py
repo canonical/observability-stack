@@ -6,11 +6,14 @@ https://documentation.ubuntu.com/observability/latest/how-to/configure-tls-encry
 
 from pathlib import Path
 
-import jubilant
 from helpers import (
-    catalogue_apps_are_reachabable,
+    catalogue_apps_are_reachable,
+    get_tls_context,
+    refresh_o11y_apps,
     wait_for_active_idle_without_error,
 )
+
+import jubilant
 
 TRACK_1_TF_FILE = Path(__file__).parent.resolve() / "track-1.tf"
 TRACK_2_TF_FILE = Path(__file__).parent.resolve() / "track-2.tf"
@@ -21,13 +24,7 @@ def test_deploy_from_track(
 ):
     # GIVEN a module deployed from track n-1
     tf_manager.init(TRACK_1_TF_FILE)
-    tf_manager.apply(
-        # NOTE: "Terraform cannot predict how many instances will be created. To work around this,
-        # use the -target argument to first apply only the resources that the count depends on."
-        target="ssc",
-        ca_model=ca_model.model,
-        cos_model=cos_model.model,
-    )
+    tf_manager.apply(target="ssc", ca_model=ca_model.model, cos_model=cos_model.model)
     tf_manager.apply(ca_model=ca_model.model, cos_model=cos_model.model)
     wait_for_active_idle_without_error([ca_model, cos_model])
 
@@ -36,8 +33,12 @@ def test_deploy_to_track(
     tmp_path, tf_manager, ca_model: jubilant.Juju, cos_model: jubilant.Juju
 ):
     # WHEN upgraded to track n
-    tf_manager.init(TRACK_2_TF_FILE)
-    tf_manager.apply(ca_model=ca_model.model, cos_model=cos_model.model)
+    # FIXME: https://github.com/juju/terraform-provider-juju/issues/967
+    # tf_manager.init(TRACK_2_TF_FILE)
+    # tf_manager.apply(ca_model=ca_model.model, cos_model=cos_model.model)
+    refresh_o11y_apps(cos_model, channel="2/edge", base="ubuntu@24.04")
+
     # THEN the model is upgraded and is active/idle
     wait_for_active_idle_without_error([ca_model, cos_model])
-    catalogue_apps_are_reachabable(tmp_path, cos_model)
+    tls_ctx = get_tls_context(tmp_path, ca_model, "self-signed-certificates")
+    catalogue_apps_are_reachable(cos_model, tls_ctx)
