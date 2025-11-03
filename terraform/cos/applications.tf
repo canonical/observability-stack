@@ -1,5 +1,5 @@
 module "alertmanager" {
-  source             = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform?ref=tf-provider-v0"
+  source             = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform"
   app_name           = var.alertmanager.app_name
   channel            = var.channel
   config             = var.alertmanager.config
@@ -11,7 +11,7 @@ module "alertmanager" {
 }
 
 module "catalogue" {
-  source             = "git::https://github.com/canonical/catalogue-k8s-operator//terraform?ref=tf-provider-v0"
+  source             = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
   app_name           = var.catalogue.app_name
   channel            = var.channel
   config             = var.catalogue.config
@@ -23,7 +23,7 @@ module "catalogue" {
 }
 
 module "grafana" {
-  source             = "git::https://github.com/canonical/grafana-k8s-operator//terraform?ref=tf-provider-v0"
+  source             = "git::https://github.com/canonical/grafana-k8s-operator//terraform"
   app_name           = var.grafana.app_name
   channel            = var.channel
   config             = var.grafana.config
@@ -35,7 +35,7 @@ module "grafana" {
 }
 
 module "loki" {
-  source                           = "git::https://github.com/canonical/observability-stack//terraform/loki?ref=tf-provider-v0"
+  source                           = "git::https://github.com/canonical/observability-stack//terraform/loki"
   anti_affinity                    = var.anti_affinity
   channel                          = var.channel
   model_uuid                       = var.model_uuid
@@ -66,7 +66,7 @@ module "loki" {
 }
 
 module "mimir" {
-  source                           = "git::https://github.com/canonical/observability-stack//terraform/mimir?ref=tf-provider-v0"
+  source                           = "git::https://github.com/canonical/observability-stack//terraform/mimir"
   anti_affinity                    = var.anti_affinity
   channel                          = var.channel
   model_uuid                       = var.model_uuid
@@ -105,7 +105,7 @@ module "mimir" {
 }
 
 module "opentelemetry_collector" {
-  source             = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform?ref=tf-provider-v0"
+  source             = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform"
   app_name           = var.opentelemetry_collector.app_name
   channel            = var.channel
   config             = var.opentelemetry_collector.config
@@ -129,7 +129,7 @@ module "ssc" {
 }
 
 module "tempo" {
-  source                           = "git::https://github.com/canonical/tempo-operators//terraform?ref=tf-provider-v0"
+  source                           = "git::https://github.com/canonical/tempo-operators//terraform"
   anti_affinity                    = var.anti_affinity
   channel                          = var.channel
   model_uuid                       = var.model_uuid
