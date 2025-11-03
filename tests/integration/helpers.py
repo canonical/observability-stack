@@ -92,7 +92,6 @@ def catalogue_apps_are_reachable(
     juju: jubilant.Juju, tls_context: Optional[ssl.SSLContext] = None
 ):
     stdout = juju.ssh("catalogue/0", "cat /web/config.json", container="catalogue")
-    breakpoint()
     cat_conf = json.loads(stdout)
     apps = {app["name"]: app["url"] for app in cat_conf["apps"]}
     for app, url in apps.items():
