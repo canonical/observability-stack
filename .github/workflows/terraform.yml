@@ -53,7 +53,7 @@ jobs:
       runner: ubuntu-latest
   test-integration-cos:
     name: COS Terraform integration
-    uses: canonical/observability-stack/.github/workflows/_integration.yaml@feat/self-hosted-runner-ci # TODO: Fix branch
+    uses: canonical/observability-stack/.github/workflows/_integration.yml@feat/self-hosted-runner-ci # TODO: Fix branch
     with:
       product: cos
       runner: self-hosted-linux-amd64-noble-large
