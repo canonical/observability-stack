@@ -9,7 +9,6 @@ recursive:
 
 sections:
   show:
-    - requirements
     - modules
     - providers
     - inputs

@@ -1,20 +1,13 @@
-# Terraform module for COS solution
+# Terraform module for the COS Lite solution
 
-This is a Terraform module facilitating the deployment of COS solution, using the [Terraform juju provider](https://github.com/juju/terraform-provider-juju/). For more information, refer to the provider [documentation](https://registry.terraform.io/providers/juju/juju/latest/docs).
+This is a Terraform module facilitating the deployment of the COS Lite solution, using the [Terraform juju provider](https://github.com/juju/terraform-provider-juju/). For more information, refer to the provider [documentation](https://registry.terraform.io/providers/juju/juju/latest/docs).
 
 <!-- BEGIN_TF_DOCS -->
-## Requirements
-
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5 |
-| <a name="requirement_juju"></a> [juju](#requirement\_juju) | >= 0.20.0 |
-
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_juju"></a> [juju](#provider\_juju) | >= 0.20.0 |
+| <a name="provider_juju"></a> [juju](#provider\_juju) | ~> 1.0 |
 
 ## Modules
 
@@ -39,7 +32,7 @@ This is a Terraform module facilitating the deployment of COS solution, using th
 | <a name="input_grafana"></a> [grafana](#input\_grafana) | Application configuration for Grafana. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    app_name           = optional(string, "grafana")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
 | <a name="input_internal_tls"></a> [internal\_tls](#input\_internal\_tls) | Specify whether to use TLS or not for internal COS communication. By default, TLS is enabled using self-signed-certificates | `bool` | `true` | no |
 | <a name="input_loki"></a> [loki](#input\_loki) | Application configuration for Loki. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    app_name           = optional(string, "loki")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
-| <a name="input_model"></a> [model](#input\_model) | Reference to an existing model resource or data source for the model to deploy to | `string` | n/a | yes |
+| <a name="input_model_uuid"></a> [model\_uuid](#input\_model\_uuid) | Reference to an existing model resource or data source for the model to deploy to | `string` | n/a | yes |
 | <a name="input_prometheus"></a> [prometheus](#input\_prometheus) | Application configuration for Prometheus. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    app_name           = optional(string, "prometheus")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
 | <a name="input_ssc"></a> [ssc](#input\_ssc) | Application configuration for self-signed-certificates. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    app_name           = optional(string, "ca")<br/>    channel            = optional(string, "1/stable")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
 | <a name="input_traefik"></a> [traefik](#input\_traefik) | Application configuration for Traefik. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    app_name           = optional(string, "traefik")<br/>    channel            = optional(string, "latest/stable")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
@@ -54,8 +47,46 @@ This is a Terraform module facilitating the deployment of COS solution, using th
 
 ## Usage
 
+### Using different Terraform Juju provider versions
+If you require the Terraform Juju provider `< 1.0.0`, then deploy the COS Lite module with the `tf-provider-v0` tag:
+
+```hcl
+module "cos-lite" {
+  source     = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=tf-provider-v0"
+}
+```
+
+Otherwise, you can deploy from main (without `?ref`) which uses the Terraform Juju provider `~> 1.0`. See the [v1 migration documentation](https://documentation.ubuntu.com/terraform-provider-juju/v1/howto/manage-provider/upgrade-provider-to-v1/) if you need to upgrade your modules.
+
 ### Basic usage
 
-Users should ensure that Terraform is aware of the `juju_model` dependency of the charm module.
+To deploy the COS HA solution in a model named `cos`, create this root module:
+```hcl
+terraform {
+  required_version = ">= 1.5"
+  required_providers {
+    juju = {
+      source  = "juju/juju"
+      version = "~> 1.0"
+    }
+  }
+}
 
-To deploy this module with its needed dependency, you can run `terraform apply -var="model=<MODEL_NAME>" -auto-approve`. This would deploy all COS HA solution modules in the same model.
+data "juju_model" "my-model" {
+  name  = "cos"
+  owner = "admin"
+}
+
+module "cos-lite" {
+  source     = "git::https://github.com/canonical/observability-stack//terraform/cos-lite"
+  model_uuid = data.juju_model.my-model.uuid
+  channel    = "2/edge"
+}
+```
+
+Then, use terraform to deploy the module:
+
+```shell
+terraform init
+terraform apply
+```

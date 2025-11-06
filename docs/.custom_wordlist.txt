@@ -8,12 +8,11 @@ BCrypt
 bhat
 blackbox
 boolean
-boolean
-Catalogue
+catalogue
 catalogue's
 Ceph
 Charmcraft
-Charmcraft
+Charmhub
 cjk
 CMR
 CMRs
@@ -38,6 +37,7 @@ Filebeat
 filesystem
 filterprocessor
 fonts
+formatter
 FQDN
 freefont
 frontend
@@ -70,6 +70,7 @@ latexmk
 lifecycle
 linkcheck
 LMA
+LogProxyConsumer
 LogQL
 loki
 matchers
@@ -123,6 +124,7 @@ routable
 scalable
 SDK
 SHA
+SLAs
 Snapcraft
 SNMP
 StatefulSets
@@ -137,6 +139,8 @@ TOC
 Traefik
 Traefik's
 ubuntu
+UI
+UIs
 uncharmed
 unencrypted
 Unencrypted
@@ -146,6 +150,7 @@ visualizes
 VPN
 WAL
 WCAG
+www
 xetex
 xindy
 ZooKeeper
