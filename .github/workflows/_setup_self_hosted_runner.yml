@@ -1,0 +1,66 @@
+name: Setup the self-hosted runner
+
+on:
+  workflow_call:
+    inputs:
+      runner:
+        type: string
+        default: ubuntu-latest
+
+jobs:
+  setup-runner:
+    name: Setup self-hosted runner
+    runs-on: ${{ inputs.runner }}
+    steps:
+      - name: Install snaps
+        if: ${{ inputs.runner != 'ubuntu-latest' }}
+        run: |
+          sudo snap install juju --classic --channel=3.6/stable
+          sudo snap install just --classic
+          sudo snap install astral-uv --classic
+          sudo snap install terraform --classic
+      - name: Install microk8s
+        timeout-minutes: 5
+        if: ${{ inputs.runner != 'ubuntu-latest' }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install retry -y
+          sudo snap install microk8s --channel='1.30-strict/stable'
+          sudo adduser "$USER" snap_microk8s
+      - name: (IS hosted) Configure microk8s Docker Hub mirror
+        timeout-minutes: 5
+        if: ${{ inputs.runner != 'ubuntu-latest' }}
+        run: |
+          # Wait for microk8s to populate iptables
+          # https://chat.canonical.com/canonical/pl/jo5cg6wqjjrudqd5ybj6hhttee
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
+
+          sudo tee /var/snap/microk8s/current/args/certs.d/docker.io/hosts.toml << EOF
+          server = "$DOCKERHUB_MIRROR"
+          [host."${DOCKERHUB_MIRROR#'https://'}"]
+          capabilities = ["pull", "resolve"]
+          EOF
+          sudo microk8s stop
+          sudo microk8s start
+      - name: Set up microk8s
+        id: microk8s-setup
+        timeout-minutes: 15
+        run: |
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable dns
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s.kubectl rollout status --namespace kube-system --watch --timeout=5m deployments/coredns
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable hostpath-storage
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s.kubectl rollout status --namespace kube-system --watch --timeout=5m deployments/hostpath-provisioner
+
+          IPADDR=$(ip -4 -j route get 2.2.2.2 | sed -n -e 's/^.*prefsrc\":"\([^ "]*\).*/\1/p')
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable "metallb:$IPADDR-$IPADDR"
+
+          mkdir ~/.kube/
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s config > ~/.kube/config
+      - name: Set up environment
+        timeout-minutes: 15
+        run: |
+          mkdir -p ~/.local/share/juju  # Workaround for juju 3 strict snap
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- juju bootstrap microk8s --config model-logs-size=10G microk8s
+          juju model-defaults logging-config='<root>=INFO; unit=DEBUG'
