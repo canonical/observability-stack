@@ -67,9 +67,7 @@ jobs:
         timeout-minutes: 15
         if: ${{ inputs.runner != 'ubuntu-latest' }}
         run: |
-          mkdir ~/.kube/
           sudo usermod -aG snap_microk8s $USER
-          exec sg snap_microk8s "microk8s config | tee ~/.kube/config > /dev/null && sudo chown -f -R $USER ~/.kube"
           
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s config > ~/.kube/config
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable dns
@@ -88,13 +86,16 @@ jobs:
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
 
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s.kubectl rollout status deployment.apps/registry -n container-registry --watch --timeout=5m
+          
+          mkdir ~/.kube/
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s config > ~/.kube/config
       - name: Collect microk8s logs for debugging
         timeout-minutes: 5
-        if: ${{ failure() && steps.microk8s-setup.outcome == 'failure' }}
+        if: ${{ steps.microk8s-setup.outcome == 'failure' }}
         run: sudo microk8s inspect
       - name: Upload microk8s logs for debugging
         timeout-minutes: 5
-        if: ${{ failure() && steps.microk8s-setup.outcome == 'failure' }}
+        if: ${{ steps.microk8s-setup.outcome == 'failure' }}
         uses: actions/upload-artifact@v4
         with:
           name: debug-logs-microk8s-integration-test-charm-microk8s-juju-3-6-11-amd
