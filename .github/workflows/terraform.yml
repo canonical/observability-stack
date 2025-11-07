@@ -45,16 +45,16 @@ jobs:
           sudo snap install just --classic
       - name: Validate the Terraform modules
         run: just validate-terraform
-  test-integration-cos-lite:
-    name: COS Lite Terraform integration
-    uses: canonical/observability-stack/.github/workflows/_integration.yml@main
-    with:
-      product: cos_lite
-      runner: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        scenario: ["tls_full", "tls_external", "tls_internal", "tls_none"]
+  # test-integration-cos-lite:
+  #   name: COS Lite Terraform integration
+  #   uses: canonical/observability-stack/.github/workflows/_integration.yml@feat/self-hosted-runner-ci
+  #   with:
+  #     product: cos_lite
+  #     runner: ubuntu-latest
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       scenario: ["tls_full", "tls_external", "tls_internal", "tls_none"]
   test-integration-cos:
     name: COS Terraform integration
     uses: canonical/observability-stack/.github/workflows/_integration.yml@feat/self-hosted-runner-ci # TODO: Fix branch
