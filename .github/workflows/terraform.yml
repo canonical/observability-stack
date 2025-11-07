@@ -51,9 +51,17 @@ jobs:
     with:
       product: cos_lite
       runner: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        scenario: ["tls_full", "tls_external", "tls_internal", "tls_none"]
   test-integration-cos:
     name: COS Terraform integration
     uses: canonical/observability-stack/.github/workflows/_integration.yml@feat/self-hosted-runner-ci # TODO: Fix branch
     with:
       product: cos
       runner: self-hosted-linux-amd64-noble-large
+    strategy:
+      fail-fast: false
+      matrix:
+        scenario: ["tls_full", "tls_external", "tls_internal", "tls_none"]
