@@ -63,6 +63,7 @@ jobs:
           sudo microk8s stop
           sudo microk8s start
       - name: Set up microk8s
+        id: microk8s-setup
         timeout-minutes: 15
         if: ${{ inputs.runner != 'ubuntu-latest' }}
         run: |
@@ -87,7 +88,18 @@ jobs:
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
 
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s.kubectl rollout status deployment.apps/registry -n container-registry --watch --timeout=5m
-
+      - name: Collect microk8s logs for debugging
+        timeout-minutes: 5
+        if: ${{ failure() && steps.microk8s-setup.outcome == 'failure' }}
+        run: sudo microk8s inspect
+      - name: Upload microk8s logs for debugging
+        timeout-minutes: 5
+        if: ${{ failure() && steps.microk8s-setup.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-logs-microk8s-integration-test-charm-microk8s-juju-3-6-11-amd
+          path: /var/snap/microk8s/current/inspection-report-*.tar.gz
+          if-no-files-found: error
       - name: Set up environment
         timeout-minutes: 15
         if: ${{ inputs.runner != 'ubuntu-latest' }}
