@@ -67,9 +67,10 @@ jobs:
         timeout-minutes: 15
         if: ${{ inputs.runner != 'ubuntu-latest' }}
         run: |
-          sudo usermod -aG snap_microk8s $USER
-          
+          mkdir -p "$HOME"/.kube          
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- usermod -aG snap_microk8s $USER
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s config > ~/.kube/config
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- chown -f -R $USER ~/.kube
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable dns
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable hostpath-storage
@@ -84,11 +85,7 @@ jobs:
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable registry
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
-
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s.kubectl rollout status deployment.apps/registry -n container-registry --watch --timeout=5m
-          
-          mkdir ~/.kube/
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s config > ~/.kube/config
       - name: Collect microk8s logs for debugging
         timeout-minutes: 5
         if: ${{ steps.microk8s-setup.outcome == 'failure' }}
