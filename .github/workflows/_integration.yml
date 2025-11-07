@@ -34,6 +34,7 @@ jobs:
       - name: Install snaps
         if: ${{ inputs.runner != 'ubuntu-latest' }}
         run: |
+          sudo snap install juju --classic --channel=3.6/stable
           sudo snap install just --classic
           sudo snap install astral-uv --classic
           sudo snap install terraform --classic
@@ -95,6 +96,7 @@ jobs:
 
       - name: Test deployment
         run: |
+          # TODO: Add these as env-vars
           export S3_ENDPOINT=http://$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc'):8080
           export S3_ACCESS_KEY=access-key
           export S3_SECRET_KEY=secret-key
