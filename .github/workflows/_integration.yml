@@ -67,6 +67,9 @@ jobs:
         if: ${{ inputs.runner != 'ubuntu-latest' }}
         run: |
           mkdir ~/.kube/
+          sudo usermod -aG snap_microk8s $USER
+          exec sg snap_microk8s "microk8s config | tee ~/.kube/config > /dev/null && sudo chown -f -R $USER ~/.kube"
+          
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s config > ~/.kube/config
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable dns && microk8s status --wait-ready
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable hostpath-storage && microk8s status --wait-ready
