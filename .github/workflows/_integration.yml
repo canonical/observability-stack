@@ -93,10 +93,9 @@ jobs:
           sudo microceph.radosgw-admin user create --uid=user --display-name=User
           sudo microceph.radosgw-admin key create --uid=user --key-type=s3 --access-key=access-key --secret-key=secret-key
 
-          # TODO make these env vars in workflow ${{ secrets.S3_SECRET_KEY }}
+      - name: Test deployment
+        run: |
           export S3_ENDPOINT=http://$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc'):8080
           export S3_ACCESS_KEY=access-key
           export S3_SECRET_KEY=secret-key
-      - name: Test deployment
-        run: |
           just integration ${{ inputs.product }}/${{ matrix.scenario }}
