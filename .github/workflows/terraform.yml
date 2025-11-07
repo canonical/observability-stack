@@ -47,7 +47,7 @@ jobs:
         run: just validate-terraform
   test-integration-cos-lite:
     name: COS Lite Terraform integration
-    uses: canonical/observability-stack/.github/workflows/_integration.yml@main
+    uses: canonical/observability-stack/.github/workflows/_integration.yml@feat/self-hosted-runner-ci # TODO: Fix branch
     with:
       product: cos_lite
       runner: ubuntu-latest

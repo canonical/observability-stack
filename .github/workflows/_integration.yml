@@ -22,6 +22,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       # Setup for GitHub runners
       - name: Install dependencies
         if: ${{ inputs.runner == 'ubuntu-latest' }}
@@ -29,7 +30,7 @@ jobs:
           sudo snap install concierge --classic
           # TODO: Find out what the snaps deploy from?
           sudo concierge prepare --juju-channel 3.6/stable -p k8s --extra-snaps just,astral-uv,terraform
-      
+
       # Setup for Self-hosted (PS7) runners
       - name: Install snaps
         if: ${{ inputs.runner != 'ubuntu-latest' }}
@@ -61,7 +62,30 @@ jobs:
           EOF
           sudo microk8s stop
           sudo microk8s start
-      
+      - name: Set up microk8s
+        timeout-minutes: 15
+        if: ${{ inputs.runner != 'ubuntu-latest' }}
+        run: |
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable dns
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s.kubectl rollout status --namespace kube-system --watch --timeout=5m deployments/coredns
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable hostpath-storage
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s.kubectl rollout status --namespace kube-system --watch --timeout=5m deployments/hostpath-provisioner
+
+          IPADDR=$(ip -4 -j route get 2.2.2.2 | sed -n -e 's/^.*prefsrc\":"\([^ "]*\).*/\1/p')
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable "metallb:$IPADDR-$IPADDR"
+
+          mkdir ~/.kube/
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s config > ~/.kube/config
+      - name: Set up environment
+        timeout-minutes: 15
+        if: ${{ inputs.runner != 'ubuntu-latest' }}
+        run: |
+          mkdir -p ~/.local/share/juju  # Workaround for juju 3 strict snap
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- juju bootstrap microk8s --config model-logs-size=10G microk8s
+          juju model-defaults logging-config='<root>=INFO; unit=DEBUG'
+
       # Runner-independent setup
       - name: Install and configure microceph
         if: ${{ inputs.product == 'cos' }}
