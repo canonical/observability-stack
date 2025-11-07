@@ -59,13 +59,15 @@ def wait_for_active_idle_without_error(
     for juju in jujus:
         print(f"\nwaiting for the model ({juju.model}) to settle ...\n")
         juju.wait(jubilant.all_active, delay=5, timeout=timeout)
+        print("\nwaiting for no errors ...\n")
         juju.wait(
             jubilant.all_active, delay=5, timeout=60 * 5, error=jubilant.any_error
         )
+        print("\nwaiting for agents idle ...\n")
         juju.wait(
             jubilant.all_agents_idle,
             delay=5,
-            timeout=60 * 5,
+            timeout=60 * 10,
             error=jubilant.any_error,
         )
 

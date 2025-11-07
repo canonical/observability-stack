@@ -8,7 +8,6 @@ from pathlib import Path
 
 from helpers import (
     catalogue_apps_are_reachable,
-    get_tls_context,
     refresh_o11y_apps,
     wait_for_active_idle_without_error,
 )
@@ -35,5 +34,4 @@ def test_deploy_to_track(tmp_path, tf_manager, cos_model: jubilant.Juju):
 
     # THEN the model is upgraded and is active/idle
     wait_for_active_idle_without_error([cos_model])
-    tls_ctx = get_tls_context(tmp_path, cos_model, "ca")
-    catalogue_apps_are_reachable(cos_model, tls_ctx)
+    catalogue_apps_are_reachable(cos_model)

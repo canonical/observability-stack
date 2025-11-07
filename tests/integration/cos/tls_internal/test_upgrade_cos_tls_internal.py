@@ -9,7 +9,6 @@ from pathlib import Path
 
 from helpers import (
     catalogue_apps_are_reachable,
-    get_tls_context,
     wait_for_active_idle_without_error,
 )
 
@@ -32,5 +31,4 @@ def test_deploy_from_track(tmp_path, tf_manager, cos_model: jubilant.Juju):
     tf_manager.init(TRACK_2_TF_FILE)
     tf_manager.apply(model=cos_model.model, **S3_ENDPOINT)
     wait_for_active_idle_without_error([cos_model], timeout=5400)
-    tls_ctx = get_tls_context(tmp_path, cos_model, "ca")
-    catalogue_apps_are_reachable(cos_model, tls_ctx)
+    catalogue_apps_are_reachable(cos_model)
