@@ -22,8 +22,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      # Setup for GitHub runners
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
       - name: Concierge prepare
         if: ${{ inputs.runner == 'ubuntu-latest' }}
         run: |
