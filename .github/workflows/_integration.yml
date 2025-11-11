@@ -62,6 +62,10 @@ jobs:
           EOF
           sudo microk8s stop
           sudo microk8s start
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
       - name: Set up microk8s
         id: microk8s-setup
         timeout-minutes: 15
@@ -79,11 +83,11 @@ jobs:
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable rbac
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable registry
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
 
           IPADDR=$(ip -4 -j route get 2.2.2.2 | sed -n -e 's/^.*prefsrc\":"\([^ "]*\).*/\1/p')
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable "metallb:$IPADDR-$IPADDR"
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable registry
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s.kubectl rollout status deployment.apps/registry -n container-registry --watch --timeout=5m
       - name: Collect microk8s logs for debugging
