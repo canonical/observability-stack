@@ -64,8 +64,6 @@ jobs:
           sudo microk8s start
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
-        with:
-          limit-access-to-actor: true
       - name: Set up microk8s
         id: microk8s-setup
         timeout-minutes: 15
