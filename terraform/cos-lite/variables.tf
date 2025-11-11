@@ -6,6 +6,7 @@
 # Therefore, we set a default value of "arch=amd64" for all applications.
 
 locals {
+  # https://github.com/juju/terraform-provider-juju/issues/972
   tls_termination = var.external_certificates_offer_url != null ? true : false
 }
 
@@ -27,6 +28,21 @@ variable "internal_tls" {
 
 variable "external_certificates_offer_url" {
   description = "A Juju offer URL (e.g. admin/external-ca.certificates) of a CA providing the 'tls_certificates' integration for Traefik to supply it with server certificates."
+  type        = string
+  default     = null
+  # TODO: Try to use string literals in the root and see if validation works, then we know if this is due to -target or not
+  validation {
+    condition = (
+      (var.external_certificates_offer_url == null && var.external_ca_cert_offer_url == null) ||
+      (var.external_certificates_offer_url != null && var.external_ca_cert_offer_url != null)
+    )
+    error_message = "external_certificates_offer_url and external_ca_cert_offer_url must be supplied together (either both set or both null)."
+  }
+}
+
+variable "external_ca_cert_offer_url" {
+  # TODO: We need to have both supplied, should this be a validation step in TF?
+  description = "A Juju offer URL (e.g. admin/external-ca.send-ca-cert) of a CA providing the 'certificate_transfer' integration for applications to trust Traefik."
   type        = string
   default     = null
 }
