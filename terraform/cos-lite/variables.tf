@@ -30,7 +30,7 @@ variable "external_certificates_offer_url" {
   description = "A Juju offer URL (e.g. admin/external-ca.certificates) of a CA providing the 'tls_certificates' integration for Traefik to supply it with server certificates."
   type        = string
   default     = null
-  # TODO: Try to use string literals in the root and see if validation works, then we know if this is due to -target or not
+
   validation {
     condition = (
       (var.external_certificates_offer_url == null && var.external_ca_cert_offer_url == null) ||
@@ -41,8 +41,7 @@ variable "external_certificates_offer_url" {
 }
 
 variable "external_ca_cert_offer_url" {
-  # TODO: We need to have both supplied, should this be a validation step in TF?
-  description = "A Juju offer URL (e.g. admin/external-ca.send-ca-cert) of a CA providing the 'certificate_transfer' integration for applications to trust Traefik."
+  description = "A Juju offer URL (e.g. admin/external-ca.send-ca-cert) of a CA providing the 'certificate_transfer' integration for applications to trust ingress via Traefik."
   type        = string
   default     = null
 }

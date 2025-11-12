@@ -384,27 +384,6 @@ resource "juju_integration" "traefik_receive_ca_certificate" {
 
 # -------------- # Provided by an external CA --------------
 
-resource "juju_integration" "external_grafana_ca_cert" {
-  count      = local.tls_termination ? 1 : 0
-  model_uuid = var.model_uuid
-
-  application {
-    offer_url = var.external_ca_cert_offer_url
-  }
-
-  application {
-    name     = module.grafana.app_name
-    endpoint = module.grafana.endpoints.receive_ca_cert
-  }
-
-  # lifecycle {
-  #   precondition {
-  #     condition     = var.external_certificates_offer_url != null
-  #     error_message = "Traefik must be signed by an external CA, otherwise Grafana trusting that CA is useless."
-  #   }
-  # }
-}
-
 resource "juju_integration" "external_traefik_certificates" {
   count      = local.tls_termination ? 1 : 0
   model_uuid = var.model_uuid
@@ -416,5 +395,19 @@ resource "juju_integration" "external_traefik_certificates" {
   application {
     name     = module.traefik.app_name
     endpoint = module.traefik.endpoints.certificates
+  }
+}
+
+resource "juju_integration" "external_grafana_ca_cert" {
+  count      = local.tls_termination ? 1 : 0
+  model_uuid = var.model_uuid
+
+  application {
+    offer_url = var.external_ca_cert_offer_url
+  }
+
+  application {
+    name     = module.grafana.app_name
+    endpoint = module.grafana.endpoints.receive_ca_cert
   }
 }
