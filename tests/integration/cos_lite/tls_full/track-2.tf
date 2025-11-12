@@ -37,5 +37,7 @@ module "cos-lite" {
   channel                         = "2/edge"
   internal_tls                    = "true"
   external_certificates_offer_url = module.ssc.offers.certificates.url
+
+  traefik           = { channel = "latest/edge" }  # TODO: Switch to latest/stable when rev257 hits stable
 }
 
