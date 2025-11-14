@@ -397,3 +397,17 @@ resource "juju_integration" "external_traefik_certificates" {
     endpoint = module.traefik.endpoints.certificates
   }
 }
+
+resource "juju_integration" "external_grafana_ca_cert" {
+  count      = local.tls_termination ? 1 : 0
+  model_uuid = var.model_uuid
+
+  application {
+    offer_url = var.external_ca_cert_offer_url
+  }
+
+  application {
+    name     = module.grafana.app_name
+    endpoint = module.grafana.endpoints.receive_ca_cert
+  }
+}

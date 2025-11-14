@@ -30,6 +30,20 @@ variable "external_certificates_offer_url" {
   description = "A Juju offer URL of a CA providing the 'tls_certificates' integration for Traefik to supply it with server certificates"
   type        = string
   default     = null
+
+  validation {
+    condition = (
+      (var.external_certificates_offer_url == null && var.external_ca_cert_offer_url == null) ||
+      (var.external_certificates_offer_url != null && var.external_ca_cert_offer_url != null)
+    )
+    error_message = "external_certificates_offer_url and external_ca_cert_offer_url must be supplied together (either both set or both null)."
+  }
+}
+
+variable "external_ca_cert_offer_url" {
+  description = "A Juju offer URL (e.g. admin/external-ca.send-ca-cert) of a CA providing the 'certificate_transfer' integration for applications to trust ingress via Traefik."
+  type        = string
+  default     = null
 }
 
 variable "cloud" {
