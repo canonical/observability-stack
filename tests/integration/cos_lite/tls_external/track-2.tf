@@ -36,7 +36,8 @@ module "cos-lite" {
   model_uuid                      = data.juju_model.cos-model.uuid
   channel                         = "2/edge"
   internal_tls                    = "false"
-  external_certificates_offer_url = module.ssc.offers.certificates.url
+  external_certificates_offer_url = "admin/${var.ca_model}.certificates"
+  external_ca_cert_offer_url      = "admin/${var.ca_model}.send-ca-cert"
 
   traefik           = { channel = "latest/edge" }  # TODO: Switch to latest/stable when rev257 hits stable
 }
