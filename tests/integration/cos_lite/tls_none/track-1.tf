@@ -22,4 +22,6 @@ module "cos-lite" {
   model_uuid   = data.juju_model.model.uuid
   channel      = "1/stable"
   internal_tls = "false"
+
+  traefik           = { channel = "latest/edge" }  # TODO: Switch to latest/stable when rev257 hits stable
 }

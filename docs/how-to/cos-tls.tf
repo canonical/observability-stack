@@ -1,17 +1,15 @@
-# Note: The deployment order matters since the 'traefik:certificates' integration depends on 'module.ssc'
-#   'terraform apply -target module.ssc'
-#   'terraform apply'
-
-module "ssc" {
-  source = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
-  model  = "external-ca"
+resource "juju_model" "cos" {
+  name = "cos"
 }
 
 module "cos" {
   # Use the right source value depending on whether you are using cos or cos-lite
   source                          = "git::https://github.com/canonical/observability-stack//terraform/cos"
-  model                           = "cos"
+  model_uuid                      = juju_model.cos.uuid
   channel                         = "1/stable"
-  internal_tls                    = true                               # Set to 'false' to disable TLS between in-model applications
-  external_certificates_offer_url = module.ssc.offers.certificates.url # Set to 'null' to communicate with Traefik via HTTP, i.e. 'external_tls'
+  internal_tls                    = true # TLS between in-model applications
+  
+  # Update the _offer_url inputs with the offered endpoints of the external CA's model
+  external_certificates_offer_url = "admin/external-ca-model.certificates" # Set to 'null' to communicate with Traefik via HTTP, i.e. no 'external_tls'
+  external_ca_cert_offer_url      = "admin/external-ca-model.send-ca-cert" # Required if 'external_certificates_offer_url' is set
 }

@@ -40,12 +40,9 @@ Assuming you are using the username `ubuntu`, create a `cos-demo.tf` file as fol
 
 **Note**: You can customize further the number of units of each distributed charm and other aspects of COS: have a look at the [`variables.tf`](../../../terraform/cos/variables.tf) file of the COS Terraform module for the complete documentation.
 
-<!-- TODO: Add TLS relations with both internal and external CAs. -->
-
 To deploy COS in a new model named `cos`, run:
 
 ```bash
-$ juju add-model cos
 $ terraform init
 $ terraform apply
 ```
