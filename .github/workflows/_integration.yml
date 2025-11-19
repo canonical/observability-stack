@@ -52,7 +52,7 @@ jobs:
           # https://chat.canonical.com/canonical/pl/jo5cg6wqjjrudqd5ybj6hhttee
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
 
-          sudo tee /var/snap/microk8s/current/args/certs.d/docker.io/hosts.toml > /dev/null << EOF
+          cat << EOF | sudo tee /var/snap/microk8s/current/args/certs.d/docker.io/hosts.toml
           server = "$DOCKERHUB_MIRROR"
           [host."${DOCKERHUB_MIRROR#'https://'}"]
           capabilities = ["pull", "resolve"]
@@ -72,9 +72,7 @@ jobs:
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable hostpath-storage
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s.kubectl rollout status --namespace kube-system --watch --timeout=5m deployments/hostpath-provisioner
 
-          IPADDR=""
-          IPADDR_TMP=$(ip -4 -j route get 2.2.2.2 | sed -n -e 's/^.*prefsrc\":"\([^ "]*\).*/\1/p')
-          IPADDR="$IPADDR_TMP"
+          IPADDR=$(ip -4 -j route get 2.2.2.2 | sed -n -e 's/^.*prefsrc\":"\([^ "]*\).*/\1/p')
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable "metallb:$IPADDR-$IPADDR"
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable ingress
@@ -85,7 +83,7 @@ jobs:
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
 
           mkdir ~/.kube/
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s config > ~/.kube/config
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s config | sudo tee ~/.kube/config > /dev/null
       - name: Set up environment
         timeout-minutes: 15
         if: ${{ runner.environment == 'self-hosted' }}
@@ -128,7 +126,8 @@ jobs:
 
       - name: Test deployment
         run: |
-          export S3_ENDPOINT=http://$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc'):8080
+          S3_ENDPOINT=http://$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc'):8080
+          export S3_ENDPOINT
           export S3_ACCESS_KEY=access-key
           export S3_SECRET_KEY=secret-key
           just integration ${{ inputs.product }}/${{ matrix.scenario }}
