@@ -52,7 +52,7 @@ jobs:
           # https://chat.canonical.com/canonical/pl/jo5cg6wqjjrudqd5ybj6hhttee
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
 
-          cat << EOF | sudo tee /var/snap/microk8s/current/args/certs.d/docker.io/hosts.toml
+          sudo tee /var/snap/microk8s/current/args/certs.d/docker.io/hosts.toml << EOF
           server = "$DOCKERHUB_MIRROR"
           [host."${DOCKERHUB_MIRROR#'https://'}"]
           capabilities = ["pull", "resolve"]
