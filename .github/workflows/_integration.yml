@@ -22,8 +22,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      # - name: Setup tmate session
-      #   uses: mxschmitt/action-tmate@v3
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
       - name: Concierge prepare
         if: ${{ inputs.runner == 'ubuntu-latest' }}
         run: |
@@ -61,8 +61,6 @@ jobs:
           EOF
           sudo microk8s stop
           sudo microk8s start
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
       - name: Set up microk8s
         id: microk8s-setup
         timeout-minutes: 15
@@ -88,7 +86,6 @@ jobs:
           
           mkdir ~/.kube/
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s config > ~/.kube/config
-          # TODO: Move this to O11y GH workflows
       - name: Set up environment
         timeout-minutes: 15
         if: ${{ inputs.runner != 'ubuntu-latest' }}
@@ -131,7 +128,6 @@ jobs:
 
       - name: Test deployment
         run: |
-          # TODO: Add these as env-vars
           export S3_ENDPOINT=http://$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc'):8080
           export S3_ACCESS_KEY=access-key
           export S3_SECRET_KEY=secret-key
