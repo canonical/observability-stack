@@ -52,7 +52,7 @@ jobs:
           # https://chat.canonical.com/canonical/pl/jo5cg6wqjjrudqd5ybj6hhttee
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
 
-          cat << EOF | sudo tee /var/snap/microk8s/current/args/certs.d/docker.io/hosts.toml
+          sudo tee /var/snap/microk8s/current/args/certs.d/docker.io/hosts.toml > /dev/null << EOF
           server = "$DOCKERHUB_MIRROR"
           [host."${DOCKERHUB_MIRROR#'https://'}"]
           capabilities = ["pull", "resolve"]
@@ -73,7 +73,8 @@ jobs:
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s.kubectl rollout status --namespace kube-system --watch --timeout=5m deployments/hostpath-provisioner
 
           IPADDR=""
-          IPADDR=$(ip -4 -j route get 2.2.2.2 | sed -n -e 's/^.*prefsrc\":"\([^ "]*\).*/\1/p')
+          IPADDR_TMP=$(ip -4 -j route get 2.2.2.2 | sed -n -e 's/^.*prefsrc\":"\([^ "]*\).*/\1/p')
+          IPADDR="$IPADDR_TMP"
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable "metallb:$IPADDR-$IPADDR"
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable ingress
