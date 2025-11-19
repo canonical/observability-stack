@@ -45,7 +45,7 @@ jobs:
           sudo snap install microk8s --channel='1.34-strict/stable'
           sudo adduser "$USER" snap_microk8s
       - name: (IS hosted) Configure microk8s Docker Hub mirror
-        timeout-minutes: 5
+        timeout-minutes: 10
         if: ${{ runner.environment == 'self-hosted' }}
         run: |
           # Wait for microk8s to populate iptables
