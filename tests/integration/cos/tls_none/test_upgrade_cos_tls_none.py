@@ -32,4 +32,3 @@ def test_deploy_from_track(tf_manager, cos_model: jubilant.Juju):
     tf_manager.apply(model=cos_model.model, **S3_ENDPOINT)
     wait_for_active_idle_without_error([cos_model], timeout=5400)
     catalogue_apps_are_reachable(cos_model)
-    breakpoint()
