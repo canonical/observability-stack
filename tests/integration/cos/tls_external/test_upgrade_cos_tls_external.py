@@ -39,3 +39,4 @@ def test_deploy_from_track(
     wait_for_active_idle_without_error([cos_model], timeout=5400)
     tls_ctx = get_tls_context(tmp_path, ca_model, "self-signed-certificates")
     catalogue_apps_are_reachable(cos_model, tls_ctx)
+    breakpoint()
