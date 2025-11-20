@@ -56,4 +56,4 @@ jobs:
     uses: canonical/observability-stack/.github/workflows/_integration.yml@cos-itests # TODO: Fix branch
     with:
       product: cos
-      runner: self-hosted-linux-amd64-noble-large
+      runner: self-hosted-linux-amd64-noble-xlarge
