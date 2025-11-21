@@ -41,6 +41,7 @@ jobs:
         if: ${{ runner.environment == 'self-hosted' }}
         run: |
           sudo snap install microk8s --channel "1.34-strict/stable" --classic
+          sudo adduser "$USER" snap_microk8s
 
           # Wait for microk8s to populate iptables
           # https://chat.canonical.com/canonical/pl/jo5cg6wqjjrudqd5ybj6hhttee
