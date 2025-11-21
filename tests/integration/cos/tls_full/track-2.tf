@@ -44,9 +44,9 @@ module "ssc" {
 }
 
 module "cos" {
-  source                          = "git::https://github.com/canonical/observability-stack//terraform/cos"
+  source                          = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=track/2"
   model_uuid                      = data.juju_model.cos-model.uuid
-  channel                         = "2/edge"
+  channel                         = "2/stable"
   internal_tls                    = "true"
   external_certificates_offer_url = module.ssc.offers.certificates.url
 
