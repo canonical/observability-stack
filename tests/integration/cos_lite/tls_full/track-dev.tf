@@ -34,10 +34,11 @@ module "ssc" {
 module "cos-lite" {
   source                          = "git::https://github.com/canonical/observability-stack//terraform/cos-lite"
   model_uuid                      = data.juju_model.cos-model.uuid
-  channel                         = "1/stable"
+  channel                         = "dev/edge"
   internal_tls                    = "true"
   external_certificates_offer_url = "admin/${var.ca_model}.certificates"
   external_ca_cert_offer_url      = "admin/${var.ca_model}.send-ca-cert"
 
   traefik           = { channel = "latest/edge" }  # TODO: Switch to latest/stable when rev257 hits stable
 }
+
