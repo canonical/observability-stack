@@ -23,7 +23,9 @@ S3_ENDPOINT = {
 
 
 def test_envvars():
-    assert all(S3_ENDPOINT.values())
+    assert all(S3_ENDPOINT.values()), (
+        f"export the following env vars (upper case) before running this test: {S3_ENDPOINT.keys()}"
+    )
 
 
 def test_deploy_from_track(tf_manager, cos_model: jubilant.Juju):
