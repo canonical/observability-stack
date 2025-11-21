@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - main
+      - track/2
     paths:
       - "**/*.tf"
 
