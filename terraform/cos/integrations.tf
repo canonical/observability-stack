@@ -438,6 +438,20 @@ resource "juju_integration" "external_grafana_ca_cert" {
   }
 }
 
+resource "juju_integration" "external_otelcol_ca_cert" {
+  count      = local.tls_termination ? 1 : 0
+  model_uuid = var.model_uuid
+
+  application {
+    offer_url = var.external_ca_cert_offer_url
+  }
+
+  application {
+    name     = module.opentelemetry_collector.app_name
+    endpoint = module.opentelemetry_collector.endpoints.receive_ca_cert
+  }
+}
+
 # -------------- # Telemetry correlations ---------------------
 
 resource "juju_integration" "traces_and_logs_correlation" {

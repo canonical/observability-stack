@@ -411,3 +411,17 @@ resource "juju_integration" "external_grafana_ca_cert" {
     endpoint = module.grafana.endpoints.receive_ca_cert
   }
 }
+
+resource "juju_integration" "external_prom_ca_cert" {
+  count      = local.tls_termination ? 1 : 0
+  model_uuid = var.model_uuid
+
+  application {
+    offer_url = var.external_ca_cert_offer_url
+  }
+
+  application {
+    name     = module.prometheus.app_name
+    endpoint = module.prometheus.endpoints.receive_ca_cert
+  }
+}
