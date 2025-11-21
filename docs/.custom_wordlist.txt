@@ -127,6 +127,7 @@ SHA
 SLAs
 Snapcraft
 SNMP
+SSL
 StatefulSets
 storages
 tanmay
@@ -134,6 +135,7 @@ Terraform
 tex
 texlive
 Tiering
+tls
 TLS
 TOC
 Traefik
