@@ -73,13 +73,13 @@ As with any TLS configuration, keep in mind best practices such as frequent cert
 
 ### Charmed S3 storage backend
 
-If the S3 backend is charmed, then manually adding a [receive-ca-cert relation](https://charmhub.io/integrations/certificate_transfer#charms) between the CA (which signed the S3 endpoint) to all `s3-integrator` charms, is recommended.
+If the S3 backend is charmed, then manually adding a [receive-ca-cert relation](https://charmhub.io/integrations/certificate_transfer#charms) between the CA (which signed the S3 endpoint) to all `s3-integrator` charms, is recommended. This is currently not supported by the Terraform module.
 
-### Un-charmed S3 storage backend
+### Non-charmed S3 storage backend
 
-Some COS charms use an S3-integrator to communicate with an S3 storage backend. In some deployment architecutes, the S3 endpoint is serving via TLS and will not have a public trusted SSL CA, e.g. on-premise storage.
+Some COS charms use an S3-integrator to communicate with an S3 storage backend. In some deployment architectures, the S3 endpoint is serving via TLS and will not have a public trusted SSL CA, e.g. on-premise storage.
 
-The S3-integrator charm exposes a [tls-ca-chain option](charmhub.io/s3-integrator/configurations#tls-ca-chain) which you can use to 
+The S3-integrator charm exposes a [tls-ca-chain option](https://charmhub.io/s3-integrator/configurations#tls-ca-chain) which provides the complete CA chain, which can be used for TLS validation.
 
 ## Deployment
 
