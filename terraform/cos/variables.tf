@@ -13,6 +13,7 @@ locals {
 variable "channel" {
   description = "Channel that the applications are (unless overwritten by external_channels) deployed from"
   type        = string
+  default     = "2/stable"
 }
 
 variable "model_uuid" {
