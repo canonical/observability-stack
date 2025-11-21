@@ -20,8 +20,8 @@ data "juju_model" "model" {
 module "cos-lite" {
   source       = "git::https://github.com/canonical/observability-stack//terraform/cos-lite"
   model_uuid   = data.juju_model.model.uuid
-  channel      = "1/stable"
-  internal_tls = "false"
+  channel      = "dev/edge"
+  internal_tls = "true"
 
   traefik           = { channel = "latest/edge" }  # TODO: Switch to latest/stable when rev257 hits stable
 }
