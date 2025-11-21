@@ -36,21 +36,19 @@ jobs:
           sudo snap install just --classic
           sudo snap install astral-uv --classic
           sudo snap install terraform --classic
-      - name: Install microk8s
-        timeout-minutes: 5
-        if: ${{ runner.environment == 'self-hosted' }}
-        run: |
-          sudo apt-get update
-          sudo apt-get install retry -y
-          sudo snap install microk8s --channel='1.34-strict/stable'
-          sudo adduser "$USER" snap_microk8s
       - name: (IS hosted) Configure microk8s Docker Hub mirror
         timeout-minutes: 10
         if: ${{ runner.environment == 'self-hosted' }}
         run: |
+          snap install microk8s --channel "1.34-strict/stable" --classic
+
           # Wait for microk8s to populate iptables
           # https://chat.canonical.com/canonical/pl/jo5cg6wqjjrudqd5ybj6hhttee
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
+          until [[ -n $(iptables --list | grep -i "microk8s") ]]
+          do
+            echo "MicroK8s has not yet configured iptables."
+            sleep 10
+          done
 
           sudo tee /var/snap/microk8s/current/args/certs.d/docker.io/hosts.toml << EOF
           server = "$DOCKERHUB_MIRROR"
