@@ -24,7 +24,9 @@ S3_ENDPOINT = {
 
 
 def test_envvars():
-    assert all(S3_ENDPOINT.values())
+    assert all(S3_ENDPOINT.values()), (
+        f"export the following env vars (upper case) before running this test: {S3_ENDPOINT.keys()}"
+    )
 
 
 def test_deploy_from_track(
@@ -32,9 +34,6 @@ def test_deploy_from_track(
 ):
     # GIVEN a module deployed from track n
     tf_manager.init(TRACK_2_TF_FILE)
-    tf_manager.apply(
-        target="ssc", ca_model=ca_model.model, cos_model=cos_model.model, **S3_ENDPOINT
-    )
     tf_manager.apply(ca_model=ca_model.model, cos_model=cos_model.model, **S3_ENDPOINT)
     wait_for_active_idle_without_error([cos_model], timeout=5400)
     tls_ctx = get_tls_context(tmp_path, ca_model, "self-signed-certificates")

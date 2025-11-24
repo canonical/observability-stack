@@ -291,6 +291,10 @@ resource "juju_integration" "ingress" {
       app_name = module.loki.app_names.loki_coordinator
       endpoint = module.loki.endpoints.ingress
     }
+    grafana = {
+      app_name = module.grafana.app_name
+      endpoint = module.grafana.endpoints.ingress
+    }
   }
   model_uuid = var.model_uuid
 
@@ -308,10 +312,6 @@ resource "juju_integration" "ingress" {
 
 resource "juju_integration" "traefik_route" {
   for_each = {
-    grafana = {
-      app_name = module.grafana.app_name
-      endpoint = module.grafana.endpoints.ingress
-    }
     tempo = {
       app_name = module.tempo.app_names.tempo_coordinator
       endpoint = module.tempo.endpoints.ingress

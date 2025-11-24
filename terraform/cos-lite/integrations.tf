@@ -239,7 +239,7 @@ resource "juju_integration" "grafana_ingress" {
 
   application {
     name     = module.traefik.app_name
-    endpoint = module.traefik.endpoints.traefik_route
+    endpoint = module.traefik.endpoints.ingress
   }
 
   application {
