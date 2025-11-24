@@ -54,7 +54,7 @@ class TfDirManager:
 
 
 def wait_for_active_idle_without_error(
-    jujus: List[jubilant.Juju], timeout: int = 60 * 20
+    jujus: List[jubilant.Juju], timeout: int = 60 * 30
 ):
     for juju in jujus:
         print(f"\nwaiting for the model ({juju.model}) to settle ...\n")
