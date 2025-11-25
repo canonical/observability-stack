@@ -33,7 +33,7 @@ def test_deploy_to_track(
 ):
     # WHEN upgraded to track n
     cos_model.remove_relation("traefik:traefik-route", "grafana:ingress")
-    wait_for_active_idle_without_error([ca_model, cos_model])
+    wait_for_active_idle_without_error([cos_model])
     # FIXME: https://github.com/juju/terraform-provider-juju/issues/967
     refresh_o11y_apps(cos_model, channel="dev/edge", base="ubuntu@24.04")
     tf_manager.init(TRACK_DEV_TF_FILE)
