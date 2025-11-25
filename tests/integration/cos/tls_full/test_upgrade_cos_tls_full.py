@@ -51,7 +51,7 @@ def test_deploy_to_track(
     # FIXME: https://github.com/juju/terraform-provider-juju/issues/967
     refresh_o11y_apps(cos_model, channel="dev/edge", base="ubuntu@24.04")
     tf_manager.init(TRACK_DEV_TF_FILE)
-    tf_manager.apply(ca_model=ca_model.model, cos_model=cos_model.model)
+    tf_manager.apply(ca_model=ca_model.model, cos_model=cos_model.model, **S3_ENDPOINT)
 
     # THEN the model is upgraded and is healthy
     wait_for_active_idle_without_error([ca_model, cos_model])
