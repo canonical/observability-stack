@@ -8,6 +8,8 @@ from pathlib import Path
 from typing import List, Optional
 from urllib.request import urlopen
 
+import psutil
+
 import jubilant
 
 
@@ -18,6 +20,8 @@ def refresh_o11y_apps(juju: jubilant.Juju, channel: str, base: Optional[str] = N
     """
     for app in juju.status().apps:
         if app in {"traefik", "ca"}:
+            continue
+        if "s3-integrator" in app:
             continue
         juju.refresh(app, channel=channel, base=base)
 
@@ -101,3 +105,17 @@ def catalogue_apps_are_reachable(
             continue
         response = urlopen(url, data=None, timeout=2.0, context=tls_context)
         assert response.code == 200, f"{app} was not reachable"
+
+
+def print_resource_usage():
+    one, five, fifteen = os.getloadavg()
+    print(f"loadavg: 1m={one:.2f}, 5m={five:.2f}, 15m={fifteen:.2f}")
+
+    vm = psutil.virtual_memory()
+    available = vm.available
+    total = vm.total
+    percent_used = vm.percent
+
+    print(
+        f"system memory: total={total:,} bytes, available={available:,} bytes, used_percent={percent_used}%"
+    )
