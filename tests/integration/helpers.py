@@ -4,11 +4,13 @@ import shlex
 import shutil
 import ssl
 import subprocess
+import sys
 from pathlib import Path
 from typing import List, Optional
 from urllib.request import urlopen
 
 import psutil
+import sh
 
 import jubilant
 
@@ -20,14 +22,18 @@ class TfDirManager:
 
     @property
     def tf_cmd(self):
-        return f"terraform -chdir={self.dir}"
+        return f"-chdir={self.dir}"
 
     def init(self, tf_file: str):
         """Initialize a Terraform module in a subdirectory."""
         self.dir = os.path.join(self.base, "terraform")
         os.makedirs(self.dir, exist_ok=True)
         shutil.copy(tf_file, os.path.join(self.dir, "main.tf"))
-        subprocess.run(shlex.split(f"{self.tf_cmd} init -upgrade"), check=True)
+        sh.terraform(
+            shlex.split(f"{self.tf_cmd} init -upgrade"),
+            _out=sys.stdout,
+            _err=sys.stderr,
+        )
 
     @staticmethod
     def _args_str(target: Optional[str] = None, **kwargs) -> str:
@@ -37,11 +43,12 @@ class TfDirManager:
 
     def apply(self, target: Optional[str] = None, **kwargs):
         cmd_str = f"{self.tf_cmd} apply " + self._args_str(target, **kwargs)
-        subprocess.run(shlex.split(cmd_str), check=True)
+        breakpoint()
+        sh.terraform(shlex.split(cmd_str), _out=sys.stdout, _err=sys.stderr)
 
     def destroy(self, **kwargs):
         cmd_str = f"{self.tf_cmd} destroy " + self._args_str(None, **kwargs)
-        subprocess.run(shlex.split(cmd_str), check=True)
+        sh.terraform(shlex.split(cmd_str), _out=sys.stdout, _err=sys.stderr)
 
 
 def print_resource_usage():
