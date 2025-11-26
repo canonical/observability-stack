@@ -4,6 +4,7 @@ communication. This python test file deploys COS with external and internal TLS.
 For more further TLS configuration details, refer to our documentation:
 https://documentation.ubuntu.com/observability/latest/how-to/configure-tls-encryption/"""
 
+import os
 from pathlib import Path
 
 from helpers import (
@@ -25,7 +26,14 @@ def test_deploy_from_track(
     # GIVEN a module deployed from track n-1
     tf_manager.init(TRACK_2_TF_FILE)
     tf_manager.apply(ca_model=ca_model.model, cos_model=cos_model.model)
+
+    one, five, fifteen = os.getloadavg()
+    print(f"loadavg: 1m={one:.2f}, 5m={five:.2f}, 15m={fifteen:.2f}")
+
     wait_for_active_idle_without_error([ca_model, cos_model])
+
+    one, five, fifteen = os.getloadavg()
+    print(f"loadavg: 1m={one:.2f}, 5m={five:.2f}, 15m={fifteen:.2f}")
 
 
 def test_deploy_to_track(
@@ -33,11 +41,22 @@ def test_deploy_to_track(
 ):
     # WHEN upgraded to track n
     cos_model.remove_relation("traefik:traefik-route", "grafana:ingress")
+
+    one, five, fifteen = os.getloadavg()
+    print(f"loadavg: 1m={one:.2f}, 5m={five:.2f}, 15m={fifteen:.2f}")
+
     wait_for_active_idle_without_error([cos_model])
     # FIXME: https://github.com/juju/terraform-provider-juju/issues/967
     refresh_o11y_apps(cos_model, channel="dev/edge", base="ubuntu@24.04")
+    
+    one, five, fifteen = os.getloadavg()
+    print(f"loadavg: 1m={one:.2f}, 5m={five:.2f}, 15m={fifteen:.2f}")
+
     tf_manager.init(TRACK_DEV_TF_FILE)
     tf_manager.apply(ca_model=ca_model.model, cos_model=cos_model.model)
+
+    one, five, fifteen = os.getloadavg()
+    print(f"loadavg: 1m={one:.2f}, 5m={five:.2f}, 15m={fifteen:.2f}")
 
     # THEN the model is upgraded and is healthy
     wait_for_active_idle_without_error([ca_model, cos_model])
