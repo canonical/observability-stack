@@ -43,7 +43,6 @@ class TfDirManager:
 
     def apply(self, target: Optional[str] = None, **kwargs):
         cmd_str = f"{self.tf_cmd} apply " + self._args_str(target, **kwargs)
-        breakpoint()
         sh.terraform(shlex.split(cmd_str), _out=sys.stdout, _err=sys.stderr)
 
     def destroy(self, **kwargs):
