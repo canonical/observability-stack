@@ -9,6 +9,7 @@ from pathlib import Path
 
 from helpers import (
     catalogue_apps_are_reachable,
+    print_resource_usage,
     refresh_o11y_apps,
     wait_for_active_idle_without_error,
 )
@@ -34,6 +35,7 @@ def test_deploy_from_track(tf_manager, cos_model: jubilant.Juju):
     # GIVEN a module deployed from track n
     tf_manager.init(TRACK_2_TF_FILE)
     tf_manager.apply(model=cos_model.model, **S3_ENDPOINT)
+    print_resource_usage()
     wait_for_active_idle_without_error([cos_model], timeout=5400)
     catalogue_apps_are_reachable(cos_model)
 
@@ -46,6 +48,7 @@ def test_deploy_to_track(tmp_path, tf_manager, cos_model: jubilant.Juju):
     refresh_o11y_apps(cos_model, channel="dev/edge", base="ubuntu@24.04")
     tf_manager.init(TRACK_DEV_TF_FILE)
     tf_manager.apply(model=cos_model.model, **S3_ENDPOINT)
+    print_resource_usage()
 
     # THEN the model is upgraded and is healthy
     wait_for_active_idle_without_error([cos_model])

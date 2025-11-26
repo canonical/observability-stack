@@ -13,19 +13,6 @@ import psutil
 import jubilant
 
 
-def refresh_o11y_apps(juju: jubilant.Juju, channel: str, base: Optional[str] = None):
-    """Temporary workaround for the issue:
-
-    FIXME: https://github.com/juju/terraform-provider-juju/issues/967
-    """
-    for app in juju.status().apps:
-        if app in {"traefik", "ca"}:
-            continue
-        if "s3-integrator" in app:
-            continue
-        juju.refresh(app, channel=channel, base=base)
-
-
 class TfDirManager:
     def __init__(self, base_tmpdir):
         self.base: str = str(base_tmpdir)
@@ -57,21 +44,47 @@ class TfDirManager:
         subprocess.run(shlex.split(cmd_str), check=True)
 
 
+def print_resource_usage():
+    print("\n---RESOURCE USAGE---")
+
+    one, five, fifteen = os.getloadavg()
+    print(f"loadavg: 1m={one:.2f}, 5m={five:.2f}, 15m={fifteen:.2f}")
+
+    vm = psutil.virtual_memory()
+    available = vm.available
+    total = vm.total
+    percent_used = vm.percent
+    print(
+        f"system memory: total={total:,} bytes, available={available:,} bytes, used_percent={percent_used}%"
+    )
+
+    print("---RESOURCE USAGE---\n")
+
+
+def refresh_o11y_apps(juju: jubilant.Juju, channel: str, base: Optional[str] = None):
+    """Temporary workaround for the issue:
+
+    FIXME: https://github.com/juju/terraform-provider-juju/issues/967
+    """
+    for app in juju.status().apps:
+        if app in {"traefik", "ca"}:
+            continue
+        if "s3-integrator" in app:
+            continue
+        juju.refresh(app, channel=channel, base=base)
+
+
 def wait_for_active_idle_without_error(
-    jujus: List[jubilant.Juju], timeout: int = 60 * 30
+    jujus: List[jubilant.Juju], timeout: int = 60 * 45
 ):
     for juju in jujus:
         print(f"\nwaiting for the model ({juju.model}) to settle ...\n")
-        juju.wait(jubilant.all_active, delay=5, timeout=timeout)
-        print("\nwaiting for no errors ...\n")
-        juju.wait(
-            jubilant.all_active, delay=5, timeout=60 * 5, error=jubilant.any_error
-        )
+        juju.wait(jubilant.all_active, delay=10, timeout=timeout)
         print("\nwaiting for agents idle ...\n")
         juju.wait(
             jubilant.all_agents_idle,
-            delay=5,
-            timeout=60 * 10,
+            delay=10,
+            timeout=60 * 30,
             error=jubilant.any_error,
         )
 
@@ -105,17 +118,3 @@ def catalogue_apps_are_reachable(
             continue
         response = urlopen(url, data=None, timeout=2.0, context=tls_context)
         assert response.code == 200, f"{app} was not reachable"
-
-
-def print_resource_usage():
-    one, five, fifteen = os.getloadavg()
-    print(f"loadavg: 1m={one:.2f}, 5m={five:.2f}, 15m={fifteen:.2f}")
-
-    vm = psutil.virtual_memory()
-    available = vm.available
-    total = vm.total
-    percent_used = vm.percent
-
-    print(
-        f"system memory: total={total:,} bytes, available={available:,} bytes, used_percent={percent_used}%"
-    )
