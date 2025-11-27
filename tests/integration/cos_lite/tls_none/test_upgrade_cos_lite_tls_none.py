@@ -23,6 +23,7 @@ def test_deploy_from_track(tf_manager, cos_model: jubilant.Juju):
     tf_manager.init(TRACK_2_TF_FILE)
     tf_manager.apply(model=cos_model.model)
     wait_for_active_idle_without_error([cos_model])
+    catalogue_apps_are_reachable(cos_model)
 
 
 def test_deploy_to_track(tmp_path, tf_manager, cos_model: jubilant.Juju):
