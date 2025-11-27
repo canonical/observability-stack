@@ -8,6 +8,4 @@ version = "0.0.0"
 dependencies = [
   "jubilant",
   "pytest",
-  "psutil",
-  "sh",
 ]
