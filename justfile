@@ -2,10 +2,15 @@ set quiet  # Recipes are silent by default
 set export  # Just variables are exported to the environment
 
 terraform := `which terraform || which tofu || echo ""` # require 'terraform' or 'opentofu'
+uv_flags := "--frozen --isolated"
 
 [private]
 default:
   just --list
+
+# Update uv.lock with the latest deps
+lock:
+  uv lock --upgrade --no-cache
 
 # Lint everything
 [group("Lint")]
@@ -53,4 +58,4 @@ validate-terraform:
 # Run integration tests
 [working-directory("./tests/integration")]
 integration *args='':
-  uv run pytest -vv --capture=no --exitfirst "${args}"
+  uv run ${uv_flags} pytest -vv --capture=no --exitfirst "${args}"
