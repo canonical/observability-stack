@@ -38,7 +38,7 @@ resource "juju_application" "s3_integrator" {
 }
 
 module "loki_coordinator" {
-  source             = "git::https://github.com/canonical/loki-coordinator-k8s-operator//terraform"
+  source             = "git::https://github.com/canonical/loki-coordinator-k8s-operator//terraform?ref=track/2"
   app_name           = "loki"
   channel            = var.channel
   constraints        = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=loki,anti-pod.topology-key=kubernetes.io/hostname" : var.coordinator_constraints
@@ -49,7 +49,7 @@ module "loki_coordinator" {
 }
 
 module "loki_backend" {
-  source     = "git::https://github.com/canonical/loki-worker-k8s-operator//terraform"
+  source     = "git::https://github.com/canonical/loki-worker-k8s-operator//terraform?ref=track/2"
   depends_on = [module.loki_coordinator]
 
   app_name    = var.backend_name
@@ -65,7 +65,7 @@ module "loki_backend" {
 }
 
 module "loki_read" {
-  source     = "git::https://github.com/canonical/loki-worker-k8s-operator//terraform"
+  source     = "git::https://github.com/canonical/loki-worker-k8s-operator//terraform?ref=track/2"
   depends_on = [module.loki_coordinator]
 
   app_name    = var.read_name
@@ -81,7 +81,7 @@ module "loki_read" {
 }
 
 module "loki_write" {
-  source     = "git::https://github.com/canonical/loki-worker-k8s-operator//terraform"
+  source     = "git::https://github.com/canonical/loki-worker-k8s-operator//terraform?ref=track/2"
   depends_on = [module.loki_coordinator]
 
   app_name    = var.write_name
