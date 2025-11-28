@@ -45,7 +45,7 @@ jobs:
 
           # Wait for microk8s to populate iptables
           # https://chat.canonical.com/canonical/pl/jo5cg6wqjjrudqd5ybj6hhttee
-          until [[ -n $(sudo iptables --list | grep -i "microk8s") ]]
+          until sudo iptables --list | grep -q -i "microk8s"
           do
             echo "MicroK8s has not yet configured iptables."
             sleep 10
