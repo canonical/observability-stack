@@ -12,3 +12,4 @@ Troubleshooting
    Troubleshoot integrations <troubleshoot-integrations>
    Troubleshoot "no data" in Grafana panels <troubleshoot-no-data-in-grafana-panels>
    Troubleshoot "HostHealth" alert rules <troubleshoot-host-health-alerts>
+   Troubleshoot "AggregatorHostHealth" alert rules <troubleshoot-aggregator-host-health-alerts>
