@@ -2,6 +2,24 @@ name: Test the Terraform product module
 
 on:
   workflow_dispatch:
+    inputs:
+      product:
+        description: 'The name of the Terraform product module to test.'
+        required: true
+        type: choice
+        default: cos
+        options:
+        - cos
+        - cos_lite
+      runner:
+        description: 'The runner label to use for the job.'
+        type: choice
+        default: ubuntu-latest
+        options:
+        - ubuntu-latest
+        - self-hosted-linux-amd64-noble-large
+        - self-hosted-linux-amd64-noble-xlarge
+        - self-hosted-linux-amd64-noble-2xlarge
   workflow_call:
     inputs:
       product:
