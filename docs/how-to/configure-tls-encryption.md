@@ -69,6 +69,18 @@ As with any TLS configuration, keep in mind best practices such as frequent cert
 ```{warning} currently there is a [known issue](https://github.com/canonical/operator/issues/970) due to which some COS relations are limited to in-cluster relations only.
 ```
 
+## S3 endpoint TLS encryption
+
+### Charmed S3 storage backend
+
+If the S3 backend is charmed, then manually adding a [receive-ca-cert relation](https://charmhub.io/integrations/certificate_transfer) between the CA (which signed the S3 endpoint) to all `s3-integrator` charms, is recommended. This is currently not supported by the Terraform module.
+
+### Non-charmed S3 storage backend
+
+Some COS charms use an S3-integrator to communicate with an S3 storage backend. In some deployment architectures, the S3 endpoint is serving via TLS and will not have a public trusted SSL CA, e.g. on-premise storage.
+
+The S3-integrator charm exposes a [tls-ca-chain option](https://charmhub.io/s3-integrator/configurations#tls-ca-chain) which provides the complete CA chain, which can be used for TLS validation.
+
 ## Deployment
 
 Using the following Terraform root module, you can control `external` and `internal` TLS. 
@@ -83,3 +95,4 @@ The [COS Lite bundle](https://charmhub.io/cos-lite) is now deprecated in favor o
 
 ```{literalinclude} /how-to/cos-tls.tf
 ```
+
