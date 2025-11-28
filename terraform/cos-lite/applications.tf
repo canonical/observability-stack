@@ -21,7 +21,6 @@ module "catalogue" {
   storage_directives = var.catalogue.storage_directives
   units              = var.catalogue.units
 }
-# TODO: Remove this after testing
 
 module "grafana" {
   source             = "git::https://github.com/canonical/grafana-k8s-operator//terraform"
