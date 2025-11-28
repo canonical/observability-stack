@@ -35,7 +35,7 @@ By default, the severity of this alert is `warning`. However, when this alert co
 ```
 
 ## `AggregatorMetricsMissing` alert
-Similar to `HostMetricsMissing`, this alert is a generic rule that is applied to aggregators to ensure their `up` status. The difference, however, is that `AggregatorMetricsMissing` will fire when _ALL_ units of an aggregator are down.
+Similar to `HostMetricsMissing`, this alert is a generic rule that is applied to aggregators to ensure their `up` status. The difference, however, is that `AggregatorMetricsMissing` will fire when _ALL_ units of an aggregator are down. If you have 4 units of an aggregator and the `up` metric is missng for all four of them, this alert will be triggered.
 
 ```{note}
 By default, the severity of this alert is **always** `critical`.
