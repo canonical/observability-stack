@@ -61,7 +61,7 @@ Otherwise, you can deploy from main (without `?ref`) which uses the Terraform Ju
 
 ### Basic usage
 
-To deploy the COS HA solution in a model named `cos`, create this root module:
+To deploy the COS-Lite solution in a model named `cos`, create this root module:
 ```hcl
 terraform {
   required_version = ">= 1.5"
