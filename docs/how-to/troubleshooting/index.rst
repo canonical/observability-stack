@@ -11,5 +11,4 @@ Troubleshooting
    Troubleshoot "socket: too many open files" <troubleshoot-socket-too-many-open-files>
    Troubleshoot integrations <troubleshoot-integrations>
    Troubleshoot "no data" in Grafana panels <troubleshoot-no-data-in-grafana-panels>
-   Troubleshoot "HostHealth" alert rules <troubleshoot-host-health-alerts>
-   Troubleshoot "AggregatorHostHealth" alert rules <troubleshoot-aggregator-host-health-alerts>
+   Troubleshoot generic alert rules <troubleshoot-generic-alert-rules>
