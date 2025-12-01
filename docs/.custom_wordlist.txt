@@ -62,6 +62,7 @@ http
 https
 HTTPS
 HostHealth
+HostMetricsMissing
 ingester
 instantiation
 integrations
@@ -120,6 +121,7 @@ PVC
 PVCs
 querier
 RadosGW
+reachability
 relabeler
 Relabeler
 rf
