@@ -1,9 +1,7 @@
 # Troubleshoot `AggregatorHostHealth` alert rules
 
-The `AggregatorHostHealth` alert rule group contains both the `HostMetricsMissing` and the `AggregatorMetricsMissing` alert rules, identifying unreachable target scenarios. It is somewhat similar to the `HostHealth` alert group, but it focuses explicitly on the health of aggregators (AKA remote writers).
-Similar to the `HostHealth` alert rule group, this rule group relies on generic (synthetically generated) alert rules, alleviating charm authors from having to implement their own `AggregatorHostHealth` rules, per charm, reducing implementation error.
-
-The purpose of this alert group is to monitor the health of aggregators remote writers() such as `opentelemetry-collector` or `grafana-agent`. 
+The `AggregatorHostHealth` alert rule group contains both the `HostMetricsMissing` and the `AggregatorMetricsMissing` alert rules, identifying unreachable target scenarios. It is similar to the `HostHealth` alert group, but it focuses explicitly on the health of aggregators (AKA remote writers), such as `opentelemetry-collector` and `grafana-agent`..
+This rule group relies on generic (synthetically generated) alert rules, alleviating charm authors from having to implement their own `AggregatorHostHealth` rules, per charm, reducing implementation error. 
 
 The `AggregatorHostHealth` alert rule group is applicable to the following deployment scenarios:
 
@@ -28,22 +26,21 @@ cos-proxy ---|metrics_endpoint| prometheus
 ## `HostMetricsMissing` alert
 The purpose of this alert is to notify when metrics are not reaching the Prometheus (or Mimir) database, regardless of whether scrape succeeded. The alert expression executes `absent(up{...})` with labels including the aggregator's Juju topology: `juju_model`, `juju_application`, `juju_unit`, etc. 
 
-When you have an aggregator charm (e.g. Opentelemetry Collector or Grafana Agent), this alert is duplicated per each unit of that aggregator. This means that for an aggregator, this alert identifies the `up` status of each unit. For example, if you have 3 units of `opentelemetry-collector` and 2 of them are down, you should receive two firing `HostMetricsMissing` alerts.
+When you have an aggregator charm (e.g. `opentelemetry-collector` or `grafana-agent`), this alert is duplicated per unit of that aggregator, i.e. identifying if the unit is missing a time series. For example, if you have 2 units of `opentelemetry-collector`, and one is behind a restrictive firewall, you should receive only one firing `HostMetricsMissing` alert.
 
 ```{note}
-By default, the severity of this alert is `warning`. However, when this alert concerns a subordinate machine charm, its severity is increased to `critical`.
+By default, the severity of this alert is `warning`. However, when this alert is for a subordinate machine charm, its severity is increased to `critical`.
 ```
 
 ## `AggregatorMetricsMissing` alert
-Similar to `HostMetricsMissing`, this alert is a generic rule that is applied to aggregators to ensure their `up` status. The difference, however, is that `AggregatorMetricsMissing` will fire when _ALL_ units of an aggregator are down. If you have 4 units of an aggregator and the `up` metric is missing for all four of them, this alert will be triggered.
+Similar to `HostMetricsMissing`, this alert is a generic rule that is applied to aggregators to ensure the existence of their `up` metric. The difference, however, is that `AggregatorMetricsMissing` will **fire when all units of an aggregator are down**. If you have 2 units of an aggregator and the `up` metric is missing for both, this alert will fire.
 
 ```{note}
 By default, the severity of this alert is **always** `critical`.
 ```
 
 ## How to troubleshoot this alert group
-As mentioned before, the `HostMetricsMissing` and `AggregatorMetricsMissing` alerts are similar, with only differences in their severity and that the units they impact. As such, the methods to troubleshoot them are similar.
-
+As mentioned before, the `HostMetricsMissing` and `AggregatorMetricsMissing` alerts are similar, with only differences in their severity and the units they are responsible for. As such, the methods to troubleshoot them are similar.
 ### Confirm the aggregator is running
 Use `juju ssh` to check if the workload is running:
 - run `snap list` for machine charms. Ensure the snap is `active`.
