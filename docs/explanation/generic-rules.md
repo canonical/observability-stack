@@ -1,7 +1,7 @@
 # Generic alert rule groups
 The Canonical Observability Stack comes with Generic alerts rules that have been introduced to provide a minimal set of rules such that they inform admins when hosts in a deployment are unhealthy, unreachable, or otherwise unresponsive. This helps alleviate charm authors from having to implement their host-health-related alerts per charm. 
 There are two generic alert rule groups: `HostHealth` and `AggregatorHostHealth`, each containing multiple alert rules.
-This guide provides explanations on the purposes of each rule group and its alerts. For steps to troubleshoot firing alert rules, please refer to the `how-to` guides.
+This guide provides explanations on the purposes of each rule group and its alerts. For steps to troubleshoot firing alert rules, please refer to the [troubleshooting guide](../how-to/troubleshooting/troubleshoot-firing-alert-rules.md).
 
 The `HostHealth` and `AggregatorHostHealth` alert rule groups are applicable to the following deployment scenarios:
 
@@ -59,7 +59,7 @@ When you have an aggregator charm (e.g. `opentelemetry-collector` or `grafana-ag
 By default, the severity of this alert is `warning`. However, when this alert is for a subordinate remote-writing machine charm, its severity is increased to `critical`.
 ```
 
-## `AggregatorMetricsMissing` alert rule
+### `AggregatorMetricsMissing` alert rule
 Similar to `HostMetricsMissing`, this alert is a generic rule that is applied to aggregators to ensure the existence of their `up` metric. The difference, however, is that `AggregatorMetricsMissing` will **fire when all units of an aggregator are down**. For this reason, the alert expression executes `absent(up{...})` with labels including the aggregator's Juju topology: `juju_model`, `juju_application`, but leaves out `juju_unit`. If you have 2 units of an aggregator and the `up` metric is missing for both, this alert will fire.
 
 ```{note}
