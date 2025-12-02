@@ -34,7 +34,7 @@ When `up` is 0 for a charm, this is an indication that Prometheus is not able to
 
 This rule is especially important for Cos Lite, where Prometheus is capable of scraping charms for metrics. The firing of this rule
 
-### HostMetricsMissing
+### `HostMetricsMissing`
 ```{note}
 `HostMetricsMissing` is also used in the `AggregatorHostHealth` group. As part of the `HostHealth` group, however, it monitors the health of all charms whose metrics are collected by an aggregator and then remote written to a metrics backend and not just aggregators (see the `AggregatorHostHealth` group for details on the distinction).
 ```
@@ -51,7 +51,7 @@ To provide an example to distinguish between `HostDown` and `HostMetricsMissing`
 ## `AggregatorHostHealth` alert group
 The `AggregatorHostHealth` alert rule group focuses explicitly on the health of aggregators (AKA remote writers), such as `opentelemetry-collector` and `grafana-agent`. This group contains the `HostMetricsMissing` and the `AggregatorMetricsMissing` alert rules.
 
-### HostMetricsMissing alert rule
+### `HostMetricsMissing` alert rule
 As mentioned before, the purpose of this alert is to notify when metrics are not reaching the Prometheus (or Mimir) database, regardless of whether scrape succeeded. The alert expression executes `absent(up{...})` with labels including the aggregator's Juju topology: `juju_model`, `juju_application`, `juju_unit`, etc. However, when it comes to aggregators, this rule indicates whether alerts from a collector itself are reaching the metrics backend.
 
 When you have an aggregator charm (e.g. `opentelemetry-collector` or `grafana-agent`), this alert is duplicated per unit of that aggregator, i.e. identifying if the unit is missing a time series. For example, if you have 2 units of `opentelemetry-collector`, and one is behind a restrictive firewall, you should receive only one firing `HostMetricsMissing` alert.

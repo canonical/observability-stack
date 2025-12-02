@@ -1,7 +1,6 @@
 # Leave a blank line at the end of this file to support concatenation
 aggregator
 Aggregator
-AggregatorHostHealth
 alerter
 Alerter
 alertmanager
@@ -62,7 +61,6 @@ http
 https
 HTTPS
 HostHealth
-HostMetricsMissing
 ingester
 instantiation
 integrations
