@@ -1,5 +1,5 @@
 # Troubleshoot generic alert rules
-This guide contains steps towards troubleshooting firing generic alert rules. For detailed explanations on the design and goals of these rules, please refer to the explanation page. As mentioned in the explanation page, across the two 
+This guide contains steps towards troubleshooting firing generic alert rules. For detailed explanations on the design and goals of these rules, please refer to the explanation page.  
 
 ## How to troubleshoot the `HostDown` alert
 The `HostDown` alert is a sign that Prometheus is unable to scrape the metrics endpoint of the charm for whom this alert is firing. The methods below can help pinpoint the issue.
@@ -12,7 +12,7 @@ It is possible that Prometheus is not scraping the correct address, endpoint, or
 Another possibility is that the charm does not specify the correct port or endpoint for its metrics. When a charm instantiates the `MetricsEndpointProvider` object, it needs to set the correct port and metrics endpoint. For example, Alertmanager exposes its metrics at the `/metrics` endpoint on port 9093. Charm authors should ensure these values are correctly set, otherwise Prometheus may not have the correct information when attempting to scrape. Use the `ss` command to determine which ports are exposed by your workload.
 
 ### Ensure the correct firewall and SSL/TLS configurations are applied
-From inside the Prometheus container, navigate to its configuration file located at `/etc/promtheus/prometheus.yml`. Find the target of your workload. Attempt to `curl` it from inside that container. Ensure the `curl` is successful. A failed request can be because of firewall issue. Ensure your firewall rules allow Prometheus to reach the instance.
+From inside the Prometheus container, navigate to its configuration file located at `/etc/prometheus/prometheus.yml`. Find the target of your workload. Attempt to `curl` it from inside that container. Ensure the `curl` is successful. A failed request can be due to a firewall issue. Ensure your firewall rules allow Prometheus to reach the instance.
 
 Furthermore, if your workload uses TLS communication, Prometheus needs to trust that CA that signed that workload to be able to reach it. For example, if your charm is signed through an integration to Lego, Prometheus needs to have the CA cert in its root store (through a `receive-ca-cert` relation) so it can communicate in HTTPS with your charm.
 
@@ -29,7 +29,7 @@ The causes in these cases can often be revealed by looking at the workload logs 
 1. for machine aggregators, run `sudo snap logs <snap-name>`.
 2. for K8s aggregators, use `juju ssh` and `pebble logs` to view the workload logs. For example, for `opentelemetry-collector-k8s` unit 0, you will need to look at the Pebble logs in the `otelcol` container: `juju ssh -c otelcol opentelemetry-collector/0`.
 
-In some cases, the backend may be unreachable due to SSL/TLS related issues. This often happens when your aggregator is located outside the Juju model where your COS instance lives and your are using TLS communication when the aggregator tries to reach the backend (AKA external or full TLS). If you are using ingress, it is required for the aggregator to trust the CA that signed the backend or ingress provider (e.g. Traefik).  
+In some cases, the backend may be unreachable due to SSL/TLS related issues. This often happens when your aggregator is located outside the Juju model where your COS instance lives and you are using TLS communication when the aggregator tries to reach the backend (AKA external or full TLS). If you are using ingress, it is required for the aggregator to trust the CA that signed the backend or ingress provider (e.g. Traefik).  
 
 ### Inspect existing `up` time series
 Perhaps the metrics *do* reach Prometheus, but the `expr` labels we have rendered in the alert do not match the actual metric labels. You can confirm by going to the Prometheus (or Grafana) UI and querying for `up`. Compare the set of labels you get for the returned `up` time series.

@@ -36,7 +36,7 @@ This rule is especially important for Cos Lite, where Prometheus is capable of s
 
 ### HostMetricsMissing
 ```{note}
-`HostMetricsMissing` is also used in the `AggregatorHealthGroup`. As part of the `HostHealth` group, however, it monitors the health of all charms whose metrics are collected by an aggregator and then remote written to a metrics backend and not just aggregators (see the `AggregatorHostHealth` group for details on the distinction).
+`HostMetricsMissing` is also used in the `AggregatorHostHealth` group. As part of the `HostHealth` group, however, it monitors the health of all charms whose metrics are collected by an aggregator and then remote written to a metrics backend and not just aggregators (see the `AggregatorHostHealth` group for details on the distinction).
 ```
 
 The purpose of this alert is to notify when metrics are not reaching the Prometheus (or Mimir) database, regardless of whether scrape succeeded. The alert expression executes `absent(up{...})` with labels including the aggregator's Juju topology: `juju_model`, `juju_application`, `juju_unit`, etc. 
