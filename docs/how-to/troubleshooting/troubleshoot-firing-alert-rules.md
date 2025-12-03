@@ -1,6 +1,5 @@
 # Troubleshoot generic alert rules
-This guide contains steps towards troubleshooting firing generic alert rules. For detailed explanations on the design and goals of these rules, please refer to the explanation page:
-- [generic-rules](/explanation/generic-rules)
+This guide contains steps towards troubleshooting firing generic alert rules. For detailed explanations on the design and goals of these rules, please refer to the [explanation page](/explanation/generic-rules).
 
 ## How to troubleshoot the `HostDown` alert
 The `HostDown` alert is a sign that Prometheus is unable to scrape the metrics endpoint of the charm for whom this alert is firing. The methods below can help pinpoint the issue.
