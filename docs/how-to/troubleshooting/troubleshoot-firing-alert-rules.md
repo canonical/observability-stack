@@ -36,11 +36,11 @@ If your workload uses TLS communication, Prometheus needs to trust that CA that 
 The `HostMetricsMissing` and `AggregatorMetricsMissing` alerts under the `AggregatorHostHealth` group are similar, with only differences in their severity and the units they are responsible for. As such, the methods to troubleshoot them are identical.
 ### Confirm the aggregator is running
 For machine charms, ensure the snap is running by checking its status in the machine hosting it. In this example, we'll assume that our aggregator is `grafana-agent` on a machine with ID 0.
-1. Shell into the machine.
+1. Shell into the machine:
 ```shell
 juju ssh 0
 ```
-2. Check the status of the `grafana-agent` snap
+2. Check the status of the `grafana-agent` snap:
 ```shell 
 sudo snap services grafana-agent
 ```
@@ -50,11 +50,11 @@ For K8s charms, ensure the relevant pebble service is running by checking its st
 ```{note}
 You need to know the name of the workload container in order to shell into it. You can find this information by consulting the `containers` section of a charm's `charmcraft.yaml` file. Alternatively, you can use `kubectl describe pod` to view the containers inside the pod.    
 ```
-1. Shell into the workload container
+1. Shell into the workload container:
 ```shell 
 juju ssh --container otelcol otel/0
 ```
-2. Check the status of the `otelcol` pebble service
+2. Check the status of the `otelcol` pebble service:
 ```shell 
 pebble services otelcol
 ```
@@ -63,8 +63,14 @@ pebble services otelcol
 It is possible that the aggregator is running, but failing to remote write metrics into the metrics backend. This can occur if there are network or firewall issues, leaving the aggregator unable to successfully hit the metrics backend's remote write endpoint.
 
 The causes in these cases can often be revealed by looking at the workload logs and looking for logs that suggest issues in reaching a host. The logs will often mention timeouts, DNS name resolution failures, TLS certificate issues, or more broadly "export failures".
-1. For machine aggregators, run `sudo snap logs <snap-name>`.
-2. For K8s aggregators, use `juju ssh` and `pebble logs` to view the workload logs. For example, for `opentelemetry-collector-k8s` unit 0, you will need to look at the Pebble logs in the `otelcol` container: `juju ssh --container otelcol opentelemetry-collector/0 pebble logs`.
+1. For machine aggregators, view the snap logs:
+```shell
+sudo snap logs opentelemetry-collector
+```
+2. For K8s aggregators, use `juju ssh` and `pebble logs` to view the workload logs. For example, for `opentelemetry-collector-k8s` unit 0, you will need to look at the Pebble logs in the `otelcol` container:
+```shell
+juju ssh --container otelcol opentelemetry-collector/0 pebble logs
+```
 
 In some cases, the backend may be unreachable due to SSL/TLS related issues. This often happens when your aggregator is located outside the Juju model where your COS instance lives and you are using TLS communication when the aggregator tries to reach the backend (external or full TLS). If you are using ingress, it is required for the aggregator to trust the CA that signed the backend or ingress provider (e.g. Traefik).
 
