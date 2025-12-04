@@ -58,3 +58,4 @@ designed and managed across the stack.
    :maxdepth: 1
 
    Charmed alert rules <charmed-rules>
+   Generic alert rules <generic-rules>
