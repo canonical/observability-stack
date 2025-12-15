@@ -1,8 +1,11 @@
 # Leave a blank line at the end of this file to support concatenation
+aggregator
+Aggregator
 alerter
 Alerter
 alertmanager
 backend
+backend's
 backends
 BCrypt
 bhat
@@ -116,6 +119,7 @@ PVC
 PVCs
 querier
 RadosGW
+reachability
 relabeler
 Relabeler
 rf
