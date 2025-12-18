@@ -9,6 +9,7 @@ from pathlib import Path
 
 from helpers import (
     catalogue_apps_are_reachable,
+    no_errors_in_otelcol_logs,
     refresh_o11y_apps,
     wait_for_active_idle_without_error,
 )
@@ -50,3 +51,4 @@ def test_deploy_to_track(tmp_path, tf_manager, cos_model: jubilant.Juju):
     # THEN the model is upgraded and is healthy
     wait_for_active_idle_without_error([cos_model])
     catalogue_apps_are_reachable(cos_model)
+    no_errors_in_otelcol_logs(cos_model)
