@@ -1,4 +1,5 @@
 name: Test the Terraform product module
+run-name: Deploy ${{ inputs.product }} on ${{ inputs.runner }}
 
 on:
   workflow_dispatch:
