@@ -21,7 +21,8 @@ COS 2 is compatible with Juju v3.6+. When deployed using terraform, Juju v3.6.11
   - [Telemetry correlation](../explanation/telemetry-correlation.md) is now automatically enabled when you deploy COS using the
     Terraform module.
 - **Grafana v12**. We upgraded the workload version from Grafana 9 to Grafana 12. A thorough review of Grafana's breaking changes and how they affect us is available [on Discourse](https://discourse.charmhub.io/t/cos-will-start-using-grafana-12-what-changed/18868).
-- **Opentelemetry collector**. Opentelemetry-collector was released and is to replace the deprecated grafana-agent (upstream grafana-agent goes EOL in November 2025).
+- **Opentelemetry collector**. Charmed opentelemetry-collector was released. The charm was designed to be a drop-in replacement for 
+  the grafana-agent charm (upstream grafana-agent is EOL since November 2025, and we will support charmed grafana-agent until July 2026).
 - `extra_alert_labels` config option. A new config option in grafana-agent and opentelemetry-collector enabled adding custom labels to alert rules. Custom labels are useful for differentiating alerts coming from sites with different SLAs.
 - **API links in catalogue-k8s**. The cards in catalogue-k8s now support extra links for documentation and APIs. COS charms now provide links to the workload API, making it easier to locate ingress URLs
 for workloads without a web UI.
