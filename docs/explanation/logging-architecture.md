@@ -250,7 +250,7 @@ The default retention period is 30 days. At the moment the loki charmed operator
 
 ## References
 - [Collect logs with Promtail](https://grafana.com/docs/grafana-cloud/send-data/logs/collect-logs-with-promtail/)
-- [Collect logs with Grafana Agent](https://grafana.com/docs/grafana-cloud/send-data/logs/collect-logs-with-agent/)
+- [Collect logs with opentelemetry-collector](https://grafana.com/docs/grafana-cloud/send-data/logs/collect-logs-with-otel/)
 - [Loki HTTP API][Push API]
 
 [Push API]: https://grafana.com/docs/loki/latest/reference/loki-http-api/
