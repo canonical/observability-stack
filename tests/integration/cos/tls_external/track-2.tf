@@ -16,6 +16,7 @@ variable "ca_model" {
   type = string
 }
 
+
 data "juju_model" "ca-model" {
   name  = var.ca_model
   owner = "admin"

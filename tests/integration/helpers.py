@@ -9,6 +9,7 @@ from typing import List, Optional
 from urllib.request import urlopen
 
 import jubilant
+import pytest
 
 
 class TfDirManager:
@@ -99,3 +100,17 @@ def catalogue_apps_are_reachable(
             continue
         response = urlopen(url, data=None, timeout=2.0, context=tls_context)
         assert response.code == 200, f"{app} was not reachable"
+
+
+@pytest.mark.skip(
+    reason="""Waiting for the following issues to be resolved:
+- https://github.com/canonical/cos-coordinated-workers/issues/123
+- https://github.com/canonical/tempo-operators/issues/254
+- https://github.com/canonical/cos-coordinated-workers/issues/115
+"""
+)
+def no_errors_in_otelcol_logs(juju: jubilant.Juju):
+    # By default, no debug exporters have been configured and otelcol logs at the WARN level
+    # Thus, there should be no logs outputted if otelcol is operating correctly
+    stdout = juju.ssh("otelcol/0", "pebble logs", container="otelcol")
+    assert not stdout
