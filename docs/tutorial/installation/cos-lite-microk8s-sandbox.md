@@ -173,6 +173,8 @@ $ juju deploy cos-lite \
         --overlay ./storage-small-overlay.yaml
 ```
 
+(deploy-cos-ref)=
+
 ## Deploy COS Lite using Terraform
 
 Create a `cos-lite-microk8s-sandbox.tf` file with the following Terraform module, or include it in your Terraform plan:
