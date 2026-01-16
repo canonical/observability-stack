@@ -8,6 +8,8 @@ terraform {
   }
 }
 
+# before-cos
+
 resource "juju_model" "cos" {
   name   = "cos"
   config = { logging-config = "<root>=WARNING; unit=DEBUG" }
@@ -16,7 +18,8 @@ resource "juju_model" "cos" {
 module "cos-lite" {
   source     = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=track/2"
   model_uuid = juju_model.cos.uuid
-  channel    = "2/stable"
   ssc        = { channel = "1/stable" }
   traefik    = { channel = "latest/edge" }
+  # before-channel
+  channel = "2/stable"
 }
