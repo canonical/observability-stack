@@ -40,16 +40,11 @@ end-before: "# before-channel"
 ```
 
 ```diff
-+ channel      = local.channel
-+ alertmanager = { revision = module.charmhub["alertmanager"].charm_revision }
-+ catalogue    = { revision = module.charmhub["catalogue"].charm_revision }
-+ grafana      = { revision = module.charmhub["grafana"].charm_revision }
-+ loki         = { revision = module.charmhub["loki"].charm_revision }
-+ prometheus   = { revision = module.charmhub["prometheus"].charm_revision }
++ channel           = local.channel
 }
 ```
 
-Then remove the `+` symbols; they are only used to highlight the changes to the `cos-lite` module.
+Then remove the `+` symbol; it is only used to highlight the changes to the `cos-lite` module.
 Finally, add the feature components (required for upgrading the product) into the same `./main.tf` file:
 
 ```hcl
@@ -69,24 +64,6 @@ terraform {
 locals {
   channel = "2/edge"
   base    = "ubuntu@24.04"
-
-  charms = {
-    alertmanager = "alertmanager-k8s"
-    catalogue    = "catalogue-k8s"
-    grafana      = "grafana-k8s"
-    loki         = "loki-k8s"
-    prometheus   = "prometheus-k8s"
-  }
-}
-
-module "charmhub" {
-  source   = "../charmhub"
-  for_each = local.charms
-
-  charm        = each.value
-  channel      = local.channel
-  base         = local.base
-  architecture = "amd64"
 }
 ```
 
