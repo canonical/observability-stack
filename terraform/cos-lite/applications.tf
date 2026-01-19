@@ -1,6 +1,5 @@
 module "alertmanager" {
-  # source             = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform"
-  source             = "../../../alertmanager-k8s-operator/terraform"
+  source             = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform"
   app_name           = var.alertmanager.app_name
   channel            = var.channel
   config             = var.alertmanager.config
@@ -14,8 +13,7 @@ module "alertmanager" {
 }
 
 module "catalogue" {
-  # source             = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
-  source             = "../../../catalogue-k8s-operator/terraform"
+  source             = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
   app_name           = var.catalogue.app_name
   channel            = var.channel
   config             = var.catalogue.config
