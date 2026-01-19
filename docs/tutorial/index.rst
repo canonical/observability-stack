@@ -19,15 +19,15 @@ or COS Lite, Juju-based observability stacks running on Kubernetes.
 
    1. Deploy the observability stack <installation/index>
 
-Upgrade
+Refresh
 =============
 
-In this part of the tutorial you will learn how to upgrade COS( Lite) to a new channel using Terraform.
+In this part of the tutorial you will learn how to refresh COS (or COS Lite) to a new channel using Terraform.
 
 .. toctree::
    :maxdepth: 1
 
-   2. Upgrade COS to a new channel <upgrade-product-module>
+   2. Refresh COS to a new channel <refresh-product-module>
 
 Configuration
 =============

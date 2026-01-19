@@ -1,6 +1,6 @@
-# Upgrade COS to a new channel
+# Refresh COS to a new channel
 
-In this example, you will learn how to deploy COS Lite and upgrade from channel `2/stable` to `2/edge`. To do this, we can deploy COS Lite via Terraform in the same way as [in the tutorial](https://documentation.ubuntu.com/observability/track-2/tutorial/installation/cos-lite-microk8s-sandbox).
+In this example, you will learn how to deploy COS Lite and refresh from channel `2/stable` to `2/edge`. To do this, we can deploy COS Lite via Terraform in the same way as [in the tutorial](https://documentation.ubuntu.com/observability/track-2/tutorial/installation/cos-lite-microk8s-sandbox).
 
 ## Prerequisites
 
@@ -11,19 +11,19 @@ This tutorial assumes that you already have the following:
 ## Introduction
 
 Imagine you have COS Lite (or COS) deployed on a specific channel like `2/stable` and want to
-upgrade to a different channel (or track) e.g., `2/edge`. To do so, an admin would have to manually
+refresh to a different channel (or track) e.g., `2/edge`. To do so, an admin would have to manually
 `juju refresh` each COS charm. Or they can determine the correct charm revisions, update the Terraform module, and apply.
 
-This is simplified with the `charmhubs` module, which allows the juju admin to specify a list of
-COS charms to upgrade within the specified `track/channel`. The rest is handled by Terraform.
+This is simplified with the `charmhub` module, which allows the juju admin to specify a list of
+COS charms to refresh within the specified `track/channel`. The rest is handled by Terraform.
 
 ## Update the COS Lite Terraform module
 
 Once deployed, we can:
 
 1. update the `cos-lite` module
-2. determine which charms to upgrade
-3. add the `locals` and `charmhubs` modules
+2. determine which charms to refresh
+3. add the `locals` and `charmhub` modules
 
 ```{note}
 This tutorial assumed you have deployed COS Lite from a root module located at `./main.tf`.
@@ -41,11 +41,11 @@ end-before: "# before-channel"
 
 ```diff
 + channel      = local.channel
-+ alertmanager = { revision = module.charmhubs["alertmanager"].charm_revision }
-+ catalogue    = { revision = module.charmhubs["catalogue"].charm_revision }
-+ grafana      = { revision = module.charmhubs["grafana"].charm_revision }
-+ loki         = { revision = module.charmhubs["loki"].charm_revision }
-+ prometheus   = { revision = module.charmhubs["prometheus"].charm_revision }
++ alertmanager = { revision = module.charmhub["alertmanager"].charm_revision }
++ catalogue    = { revision = module.charmhub["catalogue"].charm_revision }
++ grafana      = { revision = module.charmhub["grafana"].charm_revision }
++ loki         = { revision = module.charmhub["loki"].charm_revision }
++ prometheus   = { revision = module.charmhub["prometheus"].charm_revision }
 }
 ```
 
@@ -79,7 +79,7 @@ locals {
   }
 }
 
-module "charmhubs" {
+module "charmhub" {
   source   = "../charmhub"
   for_each = local.charms
 
@@ -109,18 +109,8 @@ Terraform will perform the following actions:
 
   # module.cos.module.alertmanager.juju_application.alertmanager will be updated in-place
   ~ resource "juju_application" "alertmanager" {
-        id                 = "23dae45b-db71-405b-8035-1bc57a6e6285:alertmanager"
-      ~ machines           = [] -> (known after apply)
-        name               = "alertmanager"
-      ~ storage            = [
-          - {
-              - count = 1 -> null
-              - label = "data-5" -> null
-              - pool  = "kubernetes" -> null
-              - size  = "1G" -> null
-            },
-        ] -> (known after apply)
-        # (7 unchanged attributes hidden)
+
+# snip ...
 
       ~ charm {
           ~ channel  = "2/stable" -> "2/edge"
@@ -128,19 +118,27 @@ Terraform will perform the following actions:
           ~ revision = 191 -> 192
             # (1 unchanged attribute hidden)
         }
-    }
 
 # snip ...
 
 Plan: 0 to add, 5 to change, 0 to destroy.
 ```
 
-## Upgrade information
+and finally apply the changes with:
 
-This tutorial only considers upgrading COS Lite. However, the `charmhubs` module is product-agnostic
-and can be used to upgrade charms, and other products e.g., COS.
+```shell
+terraform apply
+```
 
-You can consult the follow release documentation for upgrade compatibility:
+At this point, you will have successfully upgraded COS Lite from `2/stable` to `2/edge`!
 
-- [release-policy](/reference/release-policy/)
-- [release-notes](/reference/release-notes/)
+## Refresh information
+
+This tutorial only considers upgrading COS Lite. However, the `charmhub` module is product-agnostic
+and can be used to refresh charms, and other products e.g., COS.
+
+You can consult the follow release documentation for refresh compatibility:
+
+- [how-to cross-track upgrade](/how-to/upgrade/)
+- [release policy](/reference/release-policy/)
+- [release notes](/reference/release-notes/)

@@ -1,23 +1,27 @@
 module "alertmanager" {
-  source             = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform"
+  # source             = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform"
+  source             = "../../../alertmanager-k8s-operator/terraform"
   app_name           = var.alertmanager.app_name
   channel            = var.channel
   config             = var.alertmanager.config
   constraints        = var.alertmanager.constraints
   model_uuid         = var.model_uuid
-  revision           = var.alertmanager.revision
+  revision           = local.alertmanager_revision
   storage_directives = var.alertmanager.storage_directives
   units              = var.alertmanager.units
+
+  # TODO: Add validation or wrap this in a local
 }
 
 module "catalogue" {
-  source             = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
+  # source             = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
+  source             = "../../../catalogue-k8s-operator/terraform"
   app_name           = var.catalogue.app_name
   channel            = var.channel
   config             = var.catalogue.config
   constraints        = var.catalogue.constraints
   model_uuid         = var.model_uuid
-  revision           = var.catalogue.revision
+  revision           = local.catalogue_revision
   storage_directives = var.catalogue.storage_directives
   units              = var.catalogue.units
 }
@@ -29,7 +33,7 @@ module "grafana" {
   config             = var.grafana.config
   constraints        = var.grafana.constraints
   model_uuid         = var.model_uuid
-  revision           = var.grafana.revision
+  revision           = local.grafana_revision
   storage_directives = var.grafana.storage_directives
   units              = var.grafana.units
 }
@@ -42,7 +46,7 @@ module "loki" {
   constraints        = var.loki.constraints
   model_uuid         = var.model_uuid
   storage_directives = var.loki.storage_directives
-  revision           = var.loki.revision
+  revision           = local.loki_revision
   units              = var.loki.units
 }
 
@@ -54,7 +58,7 @@ module "prometheus" {
   constraints        = var.prometheus.constraints
   model_uuid         = var.model_uuid
   storage_directives = var.prometheus.storage_directives
-  revision           = var.prometheus.revision
+  revision           = local.prometheus_revision
   units              = var.prometheus.units
 }
 
