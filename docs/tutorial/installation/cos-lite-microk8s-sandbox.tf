@@ -20,6 +20,5 @@ module "cos-lite" {
   model_uuid = juju_model.cos.uuid
   ssc        = { channel = "1/stable" }
   traefik    = { channel = "latest/edge" }
-  # before-channel
-  channel = "2/stable"
+  channel    = "2/stable"
 }

@@ -12,7 +12,7 @@ locals {
 
 # TODO: Discuss how this was missed bc we don't have any base terraform tests. TF plan would catch this error
 variable "base" {
-  description = "The operating system on which to deploy. E.g. ubuntu@22.04. Changing this value for machine charms will trigger a replace by terraform."
+  description = "The operating system on which to deploy. E.g. ubuntu@22.04. Changing this value for machine charms will trigger a replace by terraform. Check Charmhub for per-charm base support."
   default     = "ubuntu@24.04"
   type        = string
 }

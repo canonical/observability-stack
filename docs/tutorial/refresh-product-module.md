@@ -4,48 +4,43 @@ In this example, you will learn how to deploy COS Lite and refresh from channel 
 
 ## Prerequisites
 
-This tutorial assumes that you already have the following:
+This tutorial assumes that you already:
 
-- Deployed {ref}`COS Lite with Terraform <deploy-cos-ref>`
+- Know how to deploy {ref}`COS Lite with Terraform <deploy-cos-ref>`
 
 ## Introduction
 
 Imagine you have COS Lite (or COS) deployed on a specific channel like `2/stable` and want to
 refresh to a different channel (or track) e.g., `2/edge`. To do so, an admin would have to manually
-`juju refresh` each COS charm. Or they can determine the correct charm revisions, update the Terraform module, and apply.
+`juju refresh` each COS charm and address any refresh errors. Alternatively, they can determine the
+correct charm `channel` and `revision`(s), update the Terraform module, and apply.
 
-This is simplified with the `charmhub` module, which allows the juju admin to specify a list of
-COS charms to refresh within the specified `track/channel`. The rest is handled by Terraform.
+This is simplified within COS (and COS Lite) by mimicking the `juju refresh` behavior on a product
+level, allowing the juju admin to specify a list of charms to refresh within the specified
+`track/channel`. The rest is handled by Terraform.
 
 ## Update the COS Lite Terraform module
 
-Once deployed, we can:
-
-1. update the `cos-lite` module
-2. determine which charms to refresh
-3. add the `locals` and `charmhub` modules
+Once deployed, we can determine which charms to refresh with the `charms_to_refresh` input variable, detailed in the [README](https://github.com/canonical/observability-stack/tree/main/terraform/cos-lite). This defaults to: all charms owned by the `observability-team`.
 
 ```{note}
 This tutorial assumed you have deployed COS Lite from a root module located at `./main.tf`.
 ```
 
-First, update your `cos-lite` module, in the existing `./main.tf` file, with the updated content:
+Then, replace `2/stable` with `2/edge` in your `cos-lite` module within the existing `./main.tf` file:
 
 ```{literalinclude} /tutorial/installation/cos-lite-microk8s-sandbox.tf
 ---
 language: hcl
 start-after: "# before-cos"
-end-before: "# before-channel"
 ---
 ```
 
-```diff
-+ channel           = local.channel
-}
+```{note}
+The `base` input variable for the `cos-lite` module is important if the `track/channel` deploys charms to a different base than the default, detailed in the [README](https://github.com/canonical/observability-stack/tree/main/terraform/cos-lite).
 ```
 
-Then remove the `+` symbol; it is only used to highlight the changes to the `cos-lite` module.
-Finally, add the feature components (required for upgrading the product) into the same `./main.tf` file:
+Finally, add the provider definitions into the same `./main.tf` file:
 
 ```hcl
 terraform {
@@ -60,20 +55,15 @@ terraform {
     }
   }
 }
-
-locals {
-  channel = "2/edge"
-  base    = "ubuntu@24.04"
-}
 ```
 
-At this point, you will have one `main.tf` file. Now you can plan these changes with:
+At this point, you will have one `main.tf` file ready for deployment. Now you can plan these changes with:
 
 ```shell
 terraform plan
 ```
 
-you will notice that Terraform plans to update each charm to the latest revision in the `2/edge` channel:
+and Terraform plans to update each charm to the latest revision in the `2/edge` channel:
 
 ```shell
 Terraform used the selected providers to generate the following
