@@ -10,7 +10,7 @@ As a general rule, plan for a 4cpu8gb or better VM.
 If you have an [estimate for the expected telemetry rate](../how-to/evaluate-telemetry-volume.md), refer to the tables below.
 
 
-### Metrics
+### Metrics (Prometheus)
 
 | Metrics/min | vCPUs | Mem (GB) | Disk (GiB/day) |
 |-------------|-------|----------|----------------|
@@ -19,7 +19,7 @@ If you have an [estimate for the expected telemetry rate](../how-to/evaluate-tel
 |     6 M     |   3   |    14    |       27       |
 
 
-### Logs
+### Logs (Loki)
 
 | Logs/min | vCPUs | Mem (GB) | Disk (GiB/day) |
 |----------|-------|----------|----------------|
