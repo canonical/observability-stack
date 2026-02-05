@@ -1,5 +1,5 @@
 module "alertmanager" {
-  source             = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform?ref=track/2"
+  source             = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform?ref=test-alertmanager-0-31"
   app_name           = var.alertmanager.app_name
   channel            = var.channel
   config             = var.alertmanager.config
