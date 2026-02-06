@@ -59,7 +59,9 @@ module "loki" {
   write_config                     = var.loki_worker.write_config
   worker_constraints               = var.loki_worker.constraints
   worker_revision                  = var.loki_worker.revision
-  worker_storage_directives        = var.loki_worker.storage_directives
+  backend_worker_storage_directives = var.loki_worker.backend_storage_directives
+  read_worker_storage_directives    = var.loki_worker.read_storage_directives
+  write_worker_storage_directives   = var.loki_worker.write_storage_directives
   backend_units                    = var.loki_worker.backend_units
   read_units                       = var.loki_worker.read_units
   write_units                      = var.loki_worker.write_units
@@ -98,7 +100,9 @@ module "mimir" {
   write_config                   = var.mimir_worker.write_config
   worker_constraints             = var.mimir_worker.constraints
   worker_revision                = var.mimir_worker.revision
-  worker_storage_directives      = var.mimir_worker.storage_directives
+  backend_worker_storage_directives = var.loki_worker.backend_storage_directives
+  read_worker_storage_directives    = var.loki_worker.read_storage_directives
+  write_worker_storage_directives   = var.loki_worker.write_storage_directives
   backend_units                  = var.mimir_worker.backend_units
   read_units                     = var.mimir_worker.read_units
   write_units                    = var.mimir_worker.write_units

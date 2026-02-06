@@ -61,7 +61,7 @@ module "mimir_backend" {
   }, var.backend_config)
   model_uuid         = var.model_uuid
   revision           = var.worker_revision
-  storage_directives = var.worker_storage_directives
+  storage_directives = var.backend_worker_storage_directives
   units              = var.backend_units
 }
 
@@ -77,7 +77,7 @@ module "mimir_read" {
   constraints        = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=${var.read_name},anti-pod.topology-key=kubernetes.io/hostname" : var.worker_constraints
   model_uuid         = var.model_uuid
   revision           = var.worker_revision
-  storage_directives = var.worker_storage_directives
+  storage_directives = var.read_worker_storage_directives
   units              = var.read_units
 }
 
@@ -93,7 +93,7 @@ module "mimir_write" {
   constraints        = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=${var.write_name},anti-pod.topology-key=kubernetes.io/hostname" : var.worker_constraints
   model_uuid         = var.model_uuid
   revision           = var.worker_revision
-  storage_directives = var.worker_storage_directives
+  storage_directives = var.write_worker_storage_directives
   units              = var.write_units
 }
 
