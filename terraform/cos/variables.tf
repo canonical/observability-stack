@@ -157,15 +157,17 @@ variable "loki_coordinator" {
 
 variable "loki_worker" {
   type = object({
-    backend_config     = optional(map(string), {})
-    read_config        = optional(map(string), {})
-    write_config       = optional(map(string), {})
-    constraints        = optional(string, "arch=amd64")
-    revision           = optional(number, null)
-    storage_directives = optional(map(string), {})
-    backend_units      = optional(number, 3)
-    read_units         = optional(number, 3)
-    write_units        = optional(number, 3)
+    backend_config             = optional(map(string), {})
+    read_config                = optional(map(string), {})
+    write_config               = optional(map(string), {})
+    constraints                = optional(string, "arch=amd64")
+    revision                   = optional(number, null)
+    backend_storage_directives = optional(map(string), {})
+    read_storage_directives    = optional(map(string), {})
+    write_storage_directives   = optional(map(string), {})
+    backend_units              = optional(number, 3)
+    read_units                 = optional(number, 3)
+    write_units                = optional(number, 3)
   })
   default     = {}
   description = "Application configuration for all Loki Workers. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
@@ -185,15 +187,17 @@ variable "mimir_coordinator" {
 
 variable "mimir_worker" {
   type = object({
-    backend_config     = optional(map(string), {})
-    read_config        = optional(map(string), {})
-    write_config       = optional(map(string), {})
-    constraints        = optional(string, "arch=amd64")
-    revision           = optional(number, null)
-    storage_directives = optional(map(string), {})
-    backend_units      = optional(number, 3)
-    read_units         = optional(number, 3)
-    write_units        = optional(number, 3)
+    backend_config             = optional(map(string), {})
+    read_config                = optional(map(string), {})
+    write_config               = optional(map(string), {})
+    constraints                = optional(string, "arch=amd64")
+    revision                   = optional(number, null)
+    backend_storage_directives = optional(map(string), {})
+    read_storage_directives    = optional(map(string), {})
+    write_storage_directives   = optional(map(string), {})
+    backend_units              = optional(number, 3)
+    read_units                 = optional(number, 3)
+    write_units                = optional(number, 3)
   })
   default     = {}
   description = "Application configuration for all Mimir Workers. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"

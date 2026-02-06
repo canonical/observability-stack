@@ -60,7 +60,7 @@ module "loki_backend" {
   }, var.backend_config)
   model_uuid         = var.model_uuid
   revision           = var.worker_revision
-  storage_directives = var.worker_storage_directives
+  storage_directives = var.backend_worker_storage_directives
   units              = var.backend_units
 }
 
@@ -76,7 +76,7 @@ module "loki_read" {
   }, var.read_config)
   model_uuid         = var.model_uuid
   revision           = var.worker_revision
-  storage_directives = var.worker_storage_directives
+  storage_directives = var.read_worker_storage_directives
   units              = var.read_units
 }
 
@@ -92,7 +92,7 @@ module "loki_write" {
   }, var.write_config)
   model_uuid         = var.model_uuid
   revision           = var.worker_revision
-  storage_directives = var.worker_storage_directives
+  storage_directives = var.write_worker_storage_directives
   units              = var.write_units
 }
 
