@@ -1,5 +1,17 @@
 # Upgrade instructions
 
+## COS 3
+
+### Migrate from COS 2 to COS 3
+
+
+### Migrate from COS Lite 2 to COS 3
+
+
+### Migrate from COS Lite 2 to COS Lite 3
+
+
+
 ## COS 2
 
 ### Migrate from COS Lite 1 to COS 2
