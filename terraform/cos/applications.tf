@@ -35,40 +35,44 @@ module "grafana" {
 }
 
 module "loki" {
-  source                           = "git::https://github.com/canonical/observability-stack//terraform/loki"
-  anti_affinity                    = var.anti_affinity
-  channel                          = var.channel
-  model_uuid                       = var.model_uuid
-  s3_endpoint                      = var.s3_endpoint
-  s3_secret_key                    = var.s3_secret_key
-  s3_access_key                    = var.s3_access_key
-  s3_bucket                        = var.loki_bucket
-  s3_integrator_channel            = var.s3_integrator.channel
-  s3_integrator_config             = var.s3_integrator.config
-  s3_integrator_constraints        = var.s3_integrator.constraints
-  s3_integrator_revision           = var.s3_integrator.revision
-  s3_integrator_storage_directives = var.s3_integrator.storage_directives
-  s3_integrator_units              = var.s3_integrator.units
-  coordinator_config               = var.loki_coordinator.config
-  coordinator_constraints          = var.loki_coordinator.constraints
-  coordinator_revision             = var.loki_coordinator.revision
-  coordinator_storage_directives   = var.loki_coordinator.storage_directives
-  coordinator_units                = var.loki_coordinator.units
-  backend_config                   = var.loki_worker.backend_config
-  read_config                      = var.loki_worker.read_config
-  write_config                     = var.loki_worker.write_config
-  worker_constraints               = var.loki_worker.constraints
-  worker_revision                  = var.loki_worker.revision
+  # source                            = "git::https://github.com/canonical/observability-stack//terraform/loki"
+  # TODO: Undo local ref once tested
+  source                            = "../loki"
+  anti_affinity                     = var.anti_affinity
+  channel                           = var.channel
+  model_uuid                        = var.model_uuid
+  s3_endpoint                       = var.s3_endpoint
+  s3_secret_key                     = var.s3_secret_key
+  s3_access_key                     = var.s3_access_key
+  s3_bucket                         = var.loki_bucket
+  s3_integrator_channel             = var.s3_integrator.channel
+  s3_integrator_config              = var.s3_integrator.config
+  s3_integrator_constraints         = var.s3_integrator.constraints
+  s3_integrator_revision            = var.s3_integrator.revision
+  s3_integrator_storage_directives  = var.s3_integrator.storage_directives
+  s3_integrator_units               = var.s3_integrator.units
+  coordinator_config                = var.loki_coordinator.config
+  coordinator_constraints           = var.loki_coordinator.constraints
+  coordinator_revision              = var.loki_coordinator.revision
+  coordinator_storage_directives    = var.loki_coordinator.storage_directives
+  coordinator_units                 = var.loki_coordinator.units
+  backend_config                    = var.loki_worker.backend_config
+  read_config                       = var.loki_worker.read_config
+  write_config                      = var.loki_worker.write_config
+  worker_constraints                = var.loki_worker.constraints
+  worker_revision                   = var.loki_worker.revision
   backend_worker_storage_directives = var.loki_worker.backend_storage_directives
   read_worker_storage_directives    = var.loki_worker.read_storage_directives
   write_worker_storage_directives   = var.loki_worker.write_storage_directives
-  backend_units                    = var.loki_worker.backend_units
-  read_units                       = var.loki_worker.read_units
-  write_units                      = var.loki_worker.write_units
+  backend_units                     = var.loki_worker.backend_units
+  read_units                        = var.loki_worker.read_units
+  write_units                       = var.loki_worker.write_units
 }
 
 module "mimir" {
-  source                           = "git::https://github.com/canonical/observability-stack//terraform/mimir"
+  # source                           = "git::https://github.com/canonical/observability-stack//terraform/mimir"
+  # TODO: Undo local ref once tested
+  source                           = "../mimir"
   anti_affinity                    = var.anti_affinity
   channel                          = var.channel
   model_uuid                       = var.model_uuid
@@ -91,21 +95,21 @@ module "mimir" {
       "max_global_exemplars_per_user" = "100000"
     }
   )
-  coordinator_constraints        = var.mimir_coordinator.constraints
-  coordinator_revision           = var.mimir_coordinator.revision
-  coordinator_storage_directives = var.mimir_coordinator.storage_directives
-  coordinator_units              = var.mimir_coordinator.units
-  backend_config                 = var.mimir_worker.backend_config
-  read_config                    = var.mimir_worker.read_config
-  write_config                   = var.mimir_worker.write_config
-  worker_constraints             = var.mimir_worker.constraints
-  worker_revision                = var.mimir_worker.revision
+  coordinator_constraints           = var.mimir_coordinator.constraints
+  coordinator_revision              = var.mimir_coordinator.revision
+  coordinator_storage_directives    = var.mimir_coordinator.storage_directives
+  coordinator_units                 = var.mimir_coordinator.units
+  backend_config                    = var.mimir_worker.backend_config
+  read_config                       = var.mimir_worker.read_config
+  write_config                      = var.mimir_worker.write_config
+  worker_constraints                = var.mimir_worker.constraints
+  worker_revision                   = var.mimir_worker.revision
   backend_worker_storage_directives = var.loki_worker.backend_storage_directives
   read_worker_storage_directives    = var.loki_worker.read_storage_directives
   write_worker_storage_directives   = var.loki_worker.write_storage_directives
-  backend_units                  = var.mimir_worker.backend_units
-  read_units                     = var.mimir_worker.read_units
-  write_units                    = var.mimir_worker.write_units
+  backend_units                     = var.mimir_worker.backend_units
+  read_units                        = var.mimir_worker.read_units
+  write_units                       = var.mimir_worker.write_units
 }
 
 module "opentelemetry_collector" {
@@ -133,6 +137,7 @@ module "ssc" {
 }
 
 module "tempo" {
+  # TODO: Update to ref from tandem branch and test with just validate-terraform
   source                           = "git::https://github.com/canonical/tempo-operators//terraform"
   anti_affinity                    = var.anti_affinity
   channel                          = var.channel
