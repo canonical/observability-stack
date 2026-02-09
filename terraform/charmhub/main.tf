@@ -45,13 +45,21 @@ data "http" "charmhub_info" {
 
 locals {
   charmhub_response = jsondecode(data.http.charmhub_info.response_body)
-  base_version      = split("@", var.base)[1]
+  # base_version      = split("@", var.base)[1]
 
   matching_channels = [
     for entry in local.charmhub_response["channel-map"] :
     entry if(
       entry.channel.name == var.channel &&
-      entry.channel.base.channel == local.base_version &&
+      
+      # TODO: I think we can ignore this base input if we assume that 24.04 is always dev/and track/2
+      # TODO: Capture all matching JSON bodies for channel & architecture. Then validate that it's only one. If not, the user should be warned that the base needs to be specified.
+      # E.g. you specify channel as 1/stable, but then base defaults to 24.04. This would fail bc 22.04 is for 1/stable
+
+      # TODO: Test that this works with the product to charm channel mapping like the revisions override I have
+      # curl "https://api.charmhub.io/v2/charms/info/alertmanager-k8s?fields=channel-map.revision.revision" | jq -r '.["channel-map"]
+
+      # entry.channel.base.channel == local.base_version &&
       entry.channel.base.architecture == var.architecture
     )
   ]
@@ -62,7 +70,9 @@ locals {
 check "revision_found" {
   assert {
     condition     = local.revision != null
-    error_message = "No matching revision found for charm '${var.charm}' with channel '${var.channel}', base '${var.base}', and architecture '${var.architecture}'. Please verify the combination exists in Charmhub."
+    # TODO: Undo
+    # error_message = "No matching revision found for charm '${var.charm}' with channel '${var.channel}', base '${var.base}', and architecture '${var.architecture}'. Please verify the combination exists in Charmhub."
+    error_message = "No matching revision found for charm '${var.charm}' with channel '${var.channel}', and architecture '${var.architecture}'. Please verify the combination exists in Charmhub."
   }
 }
 

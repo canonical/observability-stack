@@ -28,3 +28,9 @@ module "charmhub" {
   base         = var.base
   architecture = "amd64"
 }
+
+# TODO: Remove
+output "charm_revisions" {
+  description = "The revision number for the specified charm channel and base"
+  value       = { for k, v in module.charmhub : k => v.charm_revision }
+}
