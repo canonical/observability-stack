@@ -104,9 +104,9 @@ module "mimir" {
   write_config                      = var.mimir_worker.write_config
   worker_constraints                = var.mimir_worker.constraints
   worker_revision                   = var.mimir_worker.revision
-  backend_worker_storage_directives = var.loki_worker.backend_storage_directives
-  read_worker_storage_directives    = var.loki_worker.read_storage_directives
-  write_worker_storage_directives   = var.loki_worker.write_storage_directives
+  backend_worker_storage_directives = var.mimir_worker.backend_storage_directives
+  read_worker_storage_directives    = var.mimir_worker.read_storage_directives
+  write_worker_storage_directives   = var.mimir_worker.write_storage_directives
   backend_units                     = var.mimir_worker.backend_units
   read_units                        = var.mimir_worker.read_units
   write_units                       = var.mimir_worker.write_units
@@ -137,8 +137,7 @@ module "ssc" {
 }
 
 module "tempo" {
-  # TODO: Update to ref from tandem branch and test with just validate-terraform
-  source                           = "git::https://github.com/canonical/tempo-operators//terraform"
+  source                           = "git::https://github.com/canonical/tempo-operators//terraform?ref=separate-worker-storage-directives"
   anti_affinity                    = var.anti_affinity
   channel                          = var.channel
   model_uuid                       = var.model_uuid
