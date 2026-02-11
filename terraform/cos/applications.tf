@@ -35,9 +35,7 @@ module "grafana" {
 }
 
 module "loki" {
-  # source                            = "git::https://github.com/canonical/observability-stack//terraform/loki"
-  # TODO: Undo local ref once tested
-  source                            = "../loki"
+  source                            = "git::https://github.com/canonical/observability-stack//terraform/loki"
   anti_affinity                     = var.anti_affinity
   channel                           = var.channel
   model_uuid                        = var.model_uuid
@@ -70,9 +68,7 @@ module "loki" {
 }
 
 module "mimir" {
-  # source                           = "git::https://github.com/canonical/observability-stack//terraform/mimir"
-  # TODO: Undo local ref once tested
-  source                           = "../mimir"
+  source                           = "git::https://github.com/canonical/observability-stack//terraform/mimir"
   anti_affinity                    = var.anti_affinity
   channel                          = var.channel
   model_uuid                       = var.model_uuid
@@ -137,7 +133,7 @@ module "ssc" {
 }
 
 module "tempo" {
-  source                                      = "git::https://github.com/canonical/tempo-operators//terraform?ref=separate-worker-storage-directives"
+  source                                      = "git::https://github.com/canonical/tempo-operators//terraform"
   anti_affinity                               = var.anti_affinity
   channel                                     = var.channel
   model_uuid                                  = var.model_uuid
