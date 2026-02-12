@@ -8,6 +8,8 @@ terraform {
   }
 }
 
+# before-cos
+
 resource "juju_model" "cos" {
   name   = "cos"
   config = { logging-config = "<root>=WARNING; unit=DEBUG" }
