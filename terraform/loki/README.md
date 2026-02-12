@@ -29,6 +29,7 @@ This is a Terraform module facilitating the deployment of Loki solution, using t
 | <a name="input_backend_config"></a> [backend\_config](#input\_backend\_config) | Map of the backend worker configuration options | `map(string)` | `{}` | no |
 | <a name="input_backend_name"></a> [backend\_name](#input\_backend\_name) | Name of the Loki app with the backend role | `string` | `"loki-backend"` | no |
 | <a name="input_backend_units"></a> [backend\_units](#input\_backend\_units) | Number of Loki worker units with the backend role | `number` | `1` | no |
+| <a name="input_backend_worker_storage_directives"></a> [backend\_worker\_storage\_directives](#input\_backend\_worker\_storage\_directives) | Map of storage used by the backend worker application, which defaults to 1 GB, allocated by Juju | `map(string)` | `{}` | no |
 | <a name="input_channel"></a> [channel](#input\_channel) | Channel that the applications are deployed from | `string` | n/a | yes |
 | <a name="input_coordinator_config"></a> [coordinator\_config](#input\_coordinator\_config) | Map of the coordinator configuration options | `map(string)` | `{}` | no |
 | <a name="input_coordinator_constraints"></a> [coordinator\_constraints](#input\_coordinator\_constraints) | String listing constraints for the coordinator application | `string` | `"arch=amd64"` | no |
@@ -39,6 +40,7 @@ This is a Terraform module facilitating the deployment of Loki solution, using t
 | <a name="input_read_config"></a> [read\_config](#input\_read\_config) | Map of the read worker configuration options | `map(string)` | `{}` | no |
 | <a name="input_read_name"></a> [read\_name](#input\_read\_name) | Name of the Loki app with the read role | `string` | `"loki-read"` | no |
 | <a name="input_read_units"></a> [read\_units](#input\_read\_units) | Number of Loki worker units with the read role | `number` | `1` | no |
+| <a name="input_read_worker_storage_directives"></a> [read\_worker\_storage\_directives](#input\_read\_worker\_storage\_directives) | Map of storage used by the read worker application, which defaults to 1 GB, allocated by Juju | `map(string)` | `{}` | no |
 | <a name="input_s3_access_key"></a> [s3\_access\_key](#input\_s3\_access\_key) | S3 access-key credential | `string` | n/a | yes |
 | <a name="input_s3_bucket"></a> [s3\_bucket](#input\_s3\_bucket) | Bucket name | `string` | `"loki"` | no |
 | <a name="input_s3_endpoint"></a> [s3\_endpoint](#input\_s3\_endpoint) | S3 endpoint | `string` | n/a | yes |
@@ -52,10 +54,10 @@ This is a Terraform module facilitating the deployment of Loki solution, using t
 | <a name="input_s3_secret_key"></a> [s3\_secret\_key](#input\_s3\_secret\_key) | S3 secret-key credential | `string` | n/a | yes |
 | <a name="input_worker_constraints"></a> [worker\_constraints](#input\_worker\_constraints) | String listing constraints for the worker application | `string` | `"arch=amd64"` | no |
 | <a name="input_worker_revision"></a> [worker\_revision](#input\_worker\_revision) | Revision number of the worker application | `number` | `null` | no |
-| <a name="input_worker_storage_directives"></a> [worker\_storage\_directives](#input\_worker\_storage\_directives) | Map of storage used by the worker application, which defaults to 1 GB, allocated by Juju | `map(string)` | `{}` | no |
 | <a name="input_write_config"></a> [write\_config](#input\_write\_config) | Map of the write worker configuration options | `map(string)` | `{}` | no |
 | <a name="input_write_name"></a> [write\_name](#input\_write\_name) | Name of the Loki app with the write role | `string` | `"loki-write"` | no |
 | <a name="input_write_units"></a> [write\_units](#input\_write\_units) | Number of Loki worker units with the write role | `number` | `1` | no |
+| <a name="input_write_worker_storage_directives"></a> [write\_worker\_storage\_directives](#input\_write\_worker\_storage\_directives) | Map of storage used by the write worker application, which defaults to 1 GB, allocated by Juju | `map(string)` | `{}` | no |
 
 ## Outputs
 
