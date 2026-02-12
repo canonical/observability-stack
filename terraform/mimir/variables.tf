@@ -172,8 +172,20 @@ variable "coordinator_storage_directives" {
   default     = {}
 }
 
-variable "worker_storage_directives" {
-  description = "Map of storage used by the worker application, which defaults to 1 GB, allocated by Juju"
+variable "backend_worker_storage_directives" {
+  description = "Map of storage used by the backend worker application, which defaults to 1 GB, allocated by Juju"
+  type        = map(string)
+  default     = {}
+}
+
+variable "read_worker_storage_directives" {
+  description = "Map of storage used by the read worker application, which defaults to 1 GB, allocated by Juju"
+  type        = map(string)
+  default     = {}
+}
+
+variable "write_worker_storage_directives" {
+  description = "Map of storage used by the write worker application, which defaults to 1 GB, allocated by Juju"
   type        = map(string)
   default     = {}
 }
