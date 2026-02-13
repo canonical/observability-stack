@@ -20,6 +20,10 @@ lint: lint-workflows lint-terraform lint-terraform-docs
 [group("Format")]
 fmt: format-terraform format-terraform-docs
 
+# Run unit tests
+[group("Unit")]
+unit: (unit-test "cos") (unit-test "cos-lite")
+
 # Lint the Github workflows
 [group("Lint")]
 lint-workflows:
@@ -50,12 +54,21 @@ format-terraform-docs:
   terraform-docs --config .tfdocs-config.yml .
 
 # Validate the Terraform modules
+[group("Static")]
 [working-directory("./terraform")]
 validate-terraform:
   if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
   set -e; for repo in */; do (cd "$repo" && echo "Processing ${repo%/}..." && $terraform init -upgrade && $terraform validate) || exit 1; done
 
+# Run a unit test
+[group("Unit")]
+[working-directory("./terraform")]
+unit-test module:
+  if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
+  $terraform -chdir={{module}} init -upgrade && $terraform -chdir={{module}} test
+
 # Run integration tests
+[group("Integration")]
 [working-directory("./tests/integration")]
 integration *args='':
   uv run ${uv_flags} pytest -vv --capture=no --exitfirst "${args}"
