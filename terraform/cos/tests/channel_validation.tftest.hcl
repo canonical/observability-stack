@@ -1,3 +1,5 @@
+mock_provider "juju" {}
+
 # ---Happy path---
 
 run "valid_channel_track" {
