@@ -16,8 +16,8 @@ variable "channel" {
   default     = "2/stable"
 
   validation {
-    condition     = split("/", var.channel)[0] == split("/", "2/stable")[0]
-    error_message = "The track (the part before the '/') of the channel must match the default."
+    condition     = startswith(var.channel, "2/")
+    error_message = "The track of the channel must be '2/'. e.g. '2/stable'."
   }
 }
 
