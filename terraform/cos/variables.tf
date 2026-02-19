@@ -14,6 +14,11 @@ variable "channel" {
   description = "Channel that the applications are (unless overwritten by external_channels) deployed from"
   type        = string
   default     = "2/stable"
+
+  validation {
+    condition     = split("/", var.channel)[0] == split("/", "2/stable")[0]
+    error_message = "The track (the part before the '/') of the channel must match the default."
+  }
 }
 
 variable "model_uuid" {
