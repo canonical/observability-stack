@@ -3,8 +3,7 @@
 ## Introduction
 
 For applications that deal with sensitive, private data, the ability to mask certain information in their telemetry is important, in some cases required.
-As OpentelemetryCollector charm serves as the entry point for telemetry data, it can mask logs, traces and metrics before they are sent to Loki, Tempo, Mimir or another destinations.
-
+As OpenTelemetry Collector charm serves as the entry point for telemetry data, it can mask logs, traces and metrics before they are sent to Loki, Tempo, Mimir or another destinations.
 
 ## Deployment scenario
 
@@ -114,4 +113,4 @@ Once this config is applied, we can verify in Grafana, that our concrete log:
 
 has been redacted:
 
-![image](assets/grafaana-redacted-log.png)
+![Grafana screenshot showing the log entry with the referer field redacted](assets/grafaana-redacted-log.png)
