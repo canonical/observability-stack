@@ -59,8 +59,10 @@ HostHealth
 hostname
 hostPath
 html
-https?
-HTTPS?
+http
+https
+HTTP
+HTTPS
 ingester
 instantiation
 integrations
@@ -169,6 +171,7 @@ tex
 texlive
 Tiering
 TLS
+tls
 TOC
 toctree
 Traefik
