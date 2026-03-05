@@ -52,8 +52,8 @@ with COS to actually observe them.
    Disable built-in charm alert rules <disable-charmed-rules>
    Testing with Minio <deploy-s3-integrator-and-minio>
    Configure TLS encryption <configure-tls-encryption>
-   <selectively-drop-telemetry-scrape-config>
-   <selectively-drop-telemetry-otelcol>
+   Selectively drop telemetry using scrape config <selectively-drop-telemetry-scrape-config>
+   Selectively drop telemetry using opentelemetry-collector <selectively-drop-telemetry-otelcol>
    Tier OpenTelemetry Collector with different pipelines per data stream <tiered-otelcols>
    
 Troubleshooting
