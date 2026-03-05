@@ -10,6 +10,7 @@ from pathlib import Path
 from helpers import (
     catalogue_apps_are_reachable,
     get_tls_context,
+    no_errors_in_otelcol_logs,
     refresh_o11y_apps,
     wait_for_active_idle_without_error,
 )
@@ -57,3 +58,4 @@ def test_deploy_to_track(
     wait_for_active_idle_without_error([ca_model, cos_model])
     tls_ctx = get_tls_context(tmp_path, ca_model, "self-signed-certificates")
     catalogue_apps_are_reachable(cos_model, tls_ctx)
+    no_errors_in_otelcol_logs(cos_model)
