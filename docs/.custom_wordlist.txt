@@ -1,6 +1,6 @@
 # Leave a blank line at the end of this file to support concatenation
-Aggregator
-Alerter
+aggregator
+alerter
 alertmanager
 backend
 backend's
@@ -179,7 +179,7 @@ UI
 UIs
 uncharmed
 uncomment(ing)?
-Unencrypted
+unencrypted
 URL
 utils
 uv
