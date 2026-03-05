@@ -22,12 +22,12 @@ config
 configs
 contextualize
 cpu
-Cryptographic
+cryptographic
 cryptographically
 CSI
 CSRs
 customizable
-Datasource
+datasource
 datasources
 Dev
 DNS
@@ -48,6 +48,7 @@ gb
 gh
 Gi
 GitHub
+github
 GitOps
 GPG
 grafana
@@ -58,8 +59,8 @@ HostHealth
 hostname
 hostPath
 html
-http
-HTTPS
+https?
+HTTPS?
 ingester
 instantiation
 integrations
@@ -100,6 +101,7 @@ Open Graph
 openapi
 OpenStack
 OpenTelemetry
+opentelemetry
 OpentelemetryCollector
 OSD
 OSDs
@@ -119,6 +121,7 @@ programmatically
 prometheus
 promlabs
 PromLens
+promlens
 PromQL
 Promtail
 provisioner
@@ -134,7 +137,7 @@ reachability
 Read the Docs
 readthedocs
 redeclare
-Relabeler
+relabeler
 reStructuredText
 retrigger(ing)?
 rf
