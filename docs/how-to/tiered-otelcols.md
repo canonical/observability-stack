@@ -9,7 +9,7 @@ One such use case is for processing data differently per receiver or exporter.
 
 One imaginable scenario is splitting a log stream into [hot and cold data](https://en.wikipedia.org/wiki/Cold_data) based on log levels. For compliance reasons we may also want to implement a [redaction processor](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/processor/redactionprocessor/README.md) for removing sensitive data. Additionally, the [batch processor](https://github.com/open-telemetry/opentelemetry-collector/blob/main/processor/batchprocessor/README.md) improves efficiency of both log streams via compression. Low-severity levels like `TRACE`, `DEBUG` and `INFO` often have a greater frequency in log streams and indicate normal workload operation. This can be filtered out in a log stream which is sent to long-term (cold) storage to minimize cost while maintaining compliance. Conversely, the hot storage could include `INFO` logs, since storage is short-term, while still filtering out `TRACE` and `DEBUG` logs.
 
-To understand how to filter telemetry with otelcol, refer to the [selectively drop telemetry](selectively-drop-telemetry) documentation or see the [examples for log-level filtering](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/processor/filterprocessor/testdata/config_logs_min_severity.yaml).
+To understand how to filter telemetry with otelcol, refer to the [selectively drop telemetry](selectively-drop-telemetry-otelcol) documentation or see the [examples for log-level filtering](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/processor/filterprocessor/testdata/config_logs_min_severity.yaml).
 
 ```{mermaid}
 flowchart TB
