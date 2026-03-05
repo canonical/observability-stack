@@ -1,4 +1,4 @@
-# Troubleshoot
+# Troubleshoot OpenTelemetry Collector
 
 ## High resource usage
 
