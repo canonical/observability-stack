@@ -99,9 +99,9 @@ resource "juju_model" "cos" {
 }
 
 module "cos" {
-  source     = "git::https://github.com/canonical/observability-stack//terraform/cos"
+  source     = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=track/2"
   model_uuid = juju_model.cos.uuid
-  channel    = "2/edge"
+  channel    = "2/stable"
 
   s3_endpoint   = "http://S3_HOST_IP:8080"
   s3_secret_key = "secret-key"
@@ -146,9 +146,9 @@ In order to deploy COS on AWS, update the `cloud` input of the `cos` module to `
 
 ```hcl
 module "cos" {
-  source     = "git::https://github.com/canonical/observability-stack//terraform/cos"
+  source     = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=track/2"
   model_uuid = juju_model.cos.uuid
-  channel    = "2/edge"
+  channel    = "2/stable"
   cloud      = "aws"
 
   s3_endpoint   = "http://S3_HOST_IP:8080"
