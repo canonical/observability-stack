@@ -14,6 +14,12 @@ variable "anti_affinity" {
   default     = true
 }
 
+variable "monolithic" {
+  description = "Enable the monolithic deployment mode."
+  type        = bool
+  default     = false
+}
+
 # -------------- # S3 object storage --------------
 
 variable "s3_integrator_channel" {
@@ -46,6 +52,13 @@ variable "s3_endpoint" {
 
 # -------------- # App Names --------------
 
+
+variable "all_name" {
+  description = "Name of the Mimir all (meta role) app"
+  type        = string
+  default     = "mimir-worker"
+}
+
 variable "read_name" {
   description = "Name of the Mimir read (meta role) app"
   type        = string
@@ -74,6 +87,13 @@ variable "s3_integrator_name" {
 
 variable "coordinator_config" {
   description = "Map of the coordinator configuration options"
+  type        = map(string)
+  default     = {}
+}
+
+
+variable "all_config" {
+  description = "Map of the all worker configuration options"
   type        = map(string)
   default     = {}
 }
@@ -198,12 +218,22 @@ variable "s3_integrator_storage_directives" {
 
 # -------------- # Units Per App --------------
 
+variable "all_units" {
+  description = "Number of Mimir worker units with the all meta role"
+  type        = number
+  default     = 1
+  validation {
+    condition     = var.all_units >= 1 || var.monolithic == 0 
+    error_message = "The number of units must be greater than or equal to 1."
+  }
+}
+
 variable "read_units" {
   description = "Number of Mimir worker units with the read meta role"
   type        = number
   default     = 1
   validation {
-    condition     = var.read_units >= 1
+    condition     = var.read_units >= 1 || var.monolithic == 1
     error_message = "The number of units must be greater than or equal to 1."
   }
 }
@@ -213,7 +243,7 @@ variable "write_units" {
   type        = number
   default     = 1
   validation {
-    condition     = var.write_units >= 1
+    condition     = var.write_units >= 1 || var.monolithic == 1
     error_message = "The number of units must be greater than or equal to 1."
   }
 }
@@ -223,7 +253,7 @@ variable "backend_units" {
   type        = number
   default     = 1
   validation {
-    condition     = var.backend_units >= 1
+    condition     = var.backend_units >= 1 || var.monolithic == 1
     error_message = "The number of units must be greater than or equal to 1."
   }
 }
@@ -233,7 +263,7 @@ variable "coordinator_units" {
   type        = number
   default     = 1
   validation {
-    condition     = var.coordinator_units >= 1
+    condition     = var.coordinator_units >= 1 || var.monolithic == 1
     error_message = "The number of units must be greater than or equal to 1."
   }
 }
