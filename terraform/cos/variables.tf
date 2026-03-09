@@ -11,11 +11,12 @@ locals {
 }
 
 variable "channel" {
-  description = "Channel that the applications are (unless overwritten by external_channels) deployed from"
+  description = "Channel that the applications are (unless overwritten by individual channels) deployed from"
   type        = string
   default     = "2/stable"
 
   validation {
+    # the TF Juju provider correctly identifies invalid risks; no need to validate it
     condition     = startswith(var.channel, "2/")
     error_message = "The track of the channel must be '2/'. e.g. '2/stable'."
   }
