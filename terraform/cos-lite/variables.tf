@@ -13,7 +13,7 @@ locals {
 variable "channel" {
   description = "Channel that the applications are (unless overwritten by individual channels) deployed from"
   type        = string
-  default     = "2/stable"
+  default     = "dev/edge"
 
   validation {
     # the TF Juju provider correctly identifies invalid risks; no need to validate it
