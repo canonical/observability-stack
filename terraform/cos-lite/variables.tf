@@ -11,8 +11,15 @@ locals {
 }
 
 variable "channel" {
-  description = "Channel that the applications are (unless overwritten by external_channels) deployed from"
+  description = "Channel that the applications are (unless overwritten by individual channels) deployed from"
   type        = string
+  default     = "dev/edge"
+
+  validation {
+    # the TF Juju provider correctly identifies invalid risks; no need to validate it
+    condition     = startswith(var.channel, "dev/")
+    error_message = "The track of the channel must be 'dev/'. e.g. 'dev/edge'."
+  }
 }
 
 variable "model_uuid" {
