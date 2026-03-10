@@ -11,8 +11,15 @@ locals {
 }
 
 variable "channel" {
-  description = "Channel that the applications are (unless overwritten by external_channels) deployed from"
+  description = "Channel that the applications are (unless overwritten by individual channels) deployed from"
   type        = string
+  default     = "dev/edge"
+
+  validation {
+    # the TF Juju provider correctly identifies invalid risks; no need to validate it
+    condition     = startswith(var.channel, "dev/")
+    error_message = "The track of the channel must be 'dev/'. e.g. 'dev/edge'."
+  }
 }
 
 variable "model_uuid" {
@@ -157,15 +164,17 @@ variable "loki_coordinator" {
 
 variable "loki_worker" {
   type = object({
-    backend_config     = optional(map(string), {})
-    read_config        = optional(map(string), {})
-    write_config       = optional(map(string), {})
-    constraints        = optional(string, "arch=amd64")
-    revision           = optional(number, null)
-    storage_directives = optional(map(string), {})
-    backend_units      = optional(number, 3)
-    read_units         = optional(number, 3)
-    write_units        = optional(number, 3)
+    backend_config             = optional(map(string), {})
+    read_config                = optional(map(string), {})
+    write_config               = optional(map(string), {})
+    constraints                = optional(string, "arch=amd64")
+    revision                   = optional(number, null)
+    backend_storage_directives = optional(map(string), {})
+    read_storage_directives    = optional(map(string), {})
+    write_storage_directives   = optional(map(string), {})
+    backend_units              = optional(number, 3)
+    read_units                 = optional(number, 3)
+    write_units                = optional(number, 3)
   })
   default     = {}
   description = "Application configuration for all Loki Workers. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
@@ -185,15 +194,17 @@ variable "mimir_coordinator" {
 
 variable "mimir_worker" {
   type = object({
-    backend_config     = optional(map(string), {})
-    read_config        = optional(map(string), {})
-    write_config       = optional(map(string), {})
-    constraints        = optional(string, "arch=amd64")
-    revision           = optional(number, null)
-    storage_directives = optional(map(string), {})
-    backend_units      = optional(number, 3)
-    read_units         = optional(number, 3)
-    write_units        = optional(number, 3)
+    backend_config             = optional(map(string), {})
+    read_config                = optional(map(string), {})
+    write_config               = optional(map(string), {})
+    constraints                = optional(string, "arch=amd64")
+    revision                   = optional(number, null)
+    backend_storage_directives = optional(map(string), {})
+    read_storage_directives    = optional(map(string), {})
+    write_storage_directives   = optional(map(string), {})
+    backend_units              = optional(number, 3)
+    read_units                 = optional(number, 3)
+    write_units                = optional(number, 3)
   })
   default     = {}
   description = "Application configuration for all Mimir Workers. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
@@ -254,21 +265,26 @@ variable "tempo_coordinator" {
 
 variable "tempo_worker" {
   type = object({
-    querier_config           = optional(map(string), {})
-    query_frontend_config    = optional(map(string), {})
-    ingester_config          = optional(map(string), {})
-    distributor_config       = optional(map(string), {})
-    compactor_config         = optional(map(string), {})
-    metrics_generator_config = optional(map(string), {})
-    constraints              = optional(string, "arch=amd64")
-    revision                 = optional(number, null)
-    storage_directives       = optional(map(string), {})
-    compactor_units          = optional(number, 3)
-    distributor_units        = optional(number, 3)
-    ingester_units           = optional(number, 3)
-    metrics_generator_units  = optional(number, 3)
-    querier_units            = optional(number, 3)
-    query_frontend_units     = optional(number, 3)
+    querier_config                              = optional(map(string), {})
+    query_frontend_config                       = optional(map(string), {})
+    ingester_config                             = optional(map(string), {})
+    distributor_config                          = optional(map(string), {})
+    compactor_config                            = optional(map(string), {})
+    metrics_generator_config                    = optional(map(string), {})
+    constraints                                 = optional(string, "arch=amd64")
+    revision                                    = optional(number, null)
+    compactor_worker_storage_directives         = optional(map(string), {})
+    distributor_worker_storage_directives       = optional(map(string), {})
+    ingester_worker_storage_directives          = optional(map(string), {})
+    metrics_generator_worker_storage_directives = optional(map(string), {})
+    querier_worker_storage_directives           = optional(map(string), {})
+    query_frontend_worker_storage_directives    = optional(map(string), {})
+    compactor_units                             = optional(number, 3)
+    distributor_units                           = optional(number, 3)
+    ingester_units                              = optional(number, 3)
+    metrics_generator_units                     = optional(number, 3)
+    querier_units                               = optional(number, 3)
+    query_frontend_units                        = optional(number, 3)
   })
   default     = {}
   description = "Application configuration for all Tempo workers. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
