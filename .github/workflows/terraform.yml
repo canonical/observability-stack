@@ -43,6 +43,18 @@ jobs:
           sudo snap install just --classic
       - name: Validate the Terraform modules
         run: just validate-terraform
+  test-unit:
+    name: Terraform unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo snap install terraform --classic
+          sudo snap install just --classic
+      - name: Unit test the Terraform modules
+        run: just unit
   test-integration-cos-lite:
     name: COS Lite Terraform integration
     uses: canonical/observability-stack/.github/workflows/_integration.yml@main
