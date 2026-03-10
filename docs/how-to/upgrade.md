@@ -31,6 +31,7 @@ Without Terraform:
     ```
 2. Refresh to track 3.
 
+
 ## COS 2
 
 ### Migrate from COS Lite 1 to COS 2
