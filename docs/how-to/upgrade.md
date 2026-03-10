@@ -1,5 +1,36 @@
 # Upgrade instructions
 
+## COS 3
+### Migrate from COS 2 to COS 3
+Using Terraform:
+1. Update all references to track 2/stable and then:
+    ```bash
+    terraform apply
+    ```
+2. Manually refresh all charms to 2/stable
+    ```bash
+    juju refresh <charm-name> --channel 2/stable`.
+    ```
+3. Update all references to track 3/stable and then:
+    ```bash
+    terraform apply
+    ```
+
+### Migrate from COS Lite 2 to COS Lite 3
+Using Terraform:
+1. Update all references to track 2/stable and then:
+    ```bash
+    terraform apply
+    ```
+2. Follow the instructions for `Without Terraform`.
+
+Without Terraform:
+1. Refresh all track 2 charms so they point to the latest revision on `2/stable`.
+    ```bash
+    juju refresh <charm-name> --channel 2/stable`.
+    ```
+2. Refresh to track 3.
+
 ## COS 2
 
 ### Migrate from COS Lite 1 to COS 2
