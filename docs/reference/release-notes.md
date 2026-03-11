@@ -3,7 +3,7 @@ May 2026
 
 These release notes cover new features and changes in COS 3.
 
-COS 3 is designated as a long-term support (LTS) release. This means it will continue to receive security updates and critical bug fixes for 10 years.
+COS 3 is designated as a long-term support (LTS) release. This means it will continue to receive security updates and critical bug fixes for 15 years.
 
 See our [release policy](release-policy.md) and [upgrade instructions](../how-to/upgrade.md).
 
@@ -42,6 +42,6 @@ COS 3 is compatible with Juju v3.6+.
 
 
 ## Backwards-incompatible changes
-
+- If you are using charmed Grafana Agent to push telemetry to COS, note that the vendor announced end-of-life, so we will not be supporting the charm beyond July 2026. Make plans to [upgrade to charmed OpenTelemetry Collector][../how-to/migrate-gagent-to-otelcol.md].
 
 ## Deprecated features
