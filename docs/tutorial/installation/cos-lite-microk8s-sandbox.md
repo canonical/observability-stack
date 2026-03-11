@@ -184,7 +184,7 @@ Create a `cos-lite-microk8s-sandbox.tf` file with the following Terraform module
 
 <!-- if Field wants, allow setting `anti_affinity` by something other than `kubernetes/hostname` -->
 
-**Note**: You can customize further the revisions of each charm and other aspects of COS Lite: have a look at the [`variables.tf`](../../../terraform/cos/variables.tf) file of the COS Lite Terraform module for the complete documentation.
+**Note**: You can customize further the revisions of each charm and other aspects of COS Lite: have a look at the [`variables.tf`](../../../terraform/cos-lite/variables.tf) file of the COS Lite Terraform module for the complete documentation.
 
 <!-- Once we allow enabling internal TLS and external TLS separately, add the explanation to this tutorial -->
 
