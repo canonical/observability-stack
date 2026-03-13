@@ -55,7 +55,8 @@ with COS to actually observe them.
    Selectively drop telemetry using scrape config <selectively-drop-telemetry-scrape-config>
    Selectively drop telemetry using opentelemetry-collector <selectively-drop-telemetry-otelcol>
    Tier OpenTelemetry Collector with different pipelines per data stream <tiered-otelcols>
-   
+   Correlate node-exporter metrics with multiple co-located VM charms <correlate-colocated>
+
 Troubleshooting
 ===============
 
