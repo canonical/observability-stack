@@ -16,8 +16,8 @@ flowchart TB
 
 flog[flog] --> fan-out
 fan-out["opentelemetry-collector<br>(redact & batch)"]
-fan-out --> warn
-fan-out --> info
+fan-out --send-otlp--> warn
+fan-out --send-otlp--> info
 warn["opentelemetry-collector<br>(cold filter)"] --> loki-cold
 info["opentelemetry-collector<br>(hot filter)"] --> loki-hot
 loki-hot["loki<br>(hot storage)"]
@@ -55,10 +55,10 @@ Another imaginable scenario is classifying log streams prior to ingestion into a
 flowchart TB
 
 flog-dev["flog<br>(dev)"] --> dev
-dev["opentelemetry-collector<br>(dev attributes)"] --> fan-in
+dev["opentelemetry-collector<br>(dev attributes)"] --send-otlp--> fan-in
 
 flog-prod["flog<br>(prod)"] --> prod
-prod["opentelemetry-collector<br>(prod attributes)"] --> fan-in
+prod["opentelemetry-collector<br>(prod attributes)"] --send-otlp--> fan-in
 
 fan-in["opentelemetry-collector<br>(redact & batch)"] --> loki[loki]
 
