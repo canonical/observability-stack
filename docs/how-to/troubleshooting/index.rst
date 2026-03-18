@@ -1,3 +1,6 @@
+.. meta::
+   :description: Diagnose and fix common Canonical Observability Stack issues, including integrations, Grafana access, OpenTelemetry Collector errors, and alert rules.
+
 .. _troubleshooting:
 
 Troubleshooting

@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+   description: "Enable TLS encryption in COS and COS Lite - secure communication between Observability Stack components with HTTPS/TLS configuration."
+---
+
 # TLS encryption in COS
 
 Both COS and COS Lite, have 2 sections of the deployment (internal and external) which can implement TLS communication.
