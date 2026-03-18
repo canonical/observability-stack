@@ -169,6 +169,7 @@ tanmay
 Terraform
 tex
 texlive
+tiering
 Tiering
 TLS
 tls

@@ -122,7 +122,7 @@ curl -s -X POST http://localhost:4318/v1/traces \
 
 ## Mapping rules to the rules provider with Juju topology
 
-Although, this is technically not a concern of the opentelemetry-collector pipeline, rules are core to the [OTLP charm library](https://github.com/canonical/charmlibs/tree/main/interfaces/otlp) which injects the requirer's Juju topology into the rules. This enables downstream systems to keep alerting/rule scope aligned with the same origin metadata as telemetry. For example, the labeled rules indicate that they are specific to the `send` (`opentelemetry-collector-k8s`) application:
+Although, this is technically not a concern of the opentelemetry-collector pipeline, rules are core to the [OTLP charm library](https://github.com/canonical/charmlibs/tree/main/interfaces/otlp) which injects the rule provider's Juju topology into the rules. This enables downstream systems to keep alerting/rule scope aligned with the same origin metadata as telemetry. For example, the labeled rules indicate that they are specific to the `send` (`opentelemetry-collector-k8s`) application:
 
 ```{mermaid}
 flowchart LR
