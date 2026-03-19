@@ -60,3 +60,4 @@ designed and managed across the stack.
 
    Charmed alert rules <charmed-rules>
    Generic alert rules <generic-rules>
+   Dashboard upgrades and deduplication <dashboard-upgrades>
