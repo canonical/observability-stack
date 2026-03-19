@@ -27,6 +27,8 @@ cryptographically
 CSI
 CSRs
 customizable
+databag
+databags
 datasource
 datasources
 Dev
@@ -169,6 +171,7 @@ tanmay
 Terraform
 tex
 texlive
+tiering
 Tiering
 TLS
 tls
