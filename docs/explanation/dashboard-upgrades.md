@@ -1,8 +1,8 @@
 # Dashboard upgrades and deduplication
 
-Issues #363 and #484 highlighted a common source of confusion for charm
-authors: a dashboard JSON file can change in your charm, but Grafana may
-still keep showing the previous version.
+A dashboard JSON file can change in your charm, but Grafana may still keep
+showing the previous version. This has been a common source of confusion for
+charm authors.
 
 This happens because dashboard delivery in COS is deduplicated. The
 deduplication logic is designed to avoid repeatedly re-importing the same
@@ -42,12 +42,10 @@ highest dashboard `version` it has seen for a given dashboard identity. In
 other words, once the newer revision is present, lower-version payloads from
 not-yet-upgraded units do not roll the dashboard back.
 
-## Mental model for charm authors
-
-Think of dashboard upgrades as revisioned artifacts:
-
-- dashboard UID/title identify *which* dashboard it is
-- dashboard `version` identifies *which revision* of that dashboard should be applied
-
-So when you ship dashboard changes in a charm release, always update the
+When you ship dashboard changes in a charm release, always update the
 dashboard JSON `version` field as part of the same change.
+
+## References
+
+- [`canonical/observability-stack#363`](https://github.com/canonical/observability-stack/issues/363)
+- [`canonical/observability-stack#484`](https://github.com/canonical/observability-stack/issues/484)
