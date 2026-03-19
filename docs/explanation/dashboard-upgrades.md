@@ -50,5 +50,5 @@ dashboard JSON `version` field as part of the same change.
 
 ## References
 
-- [`canonical/observability-stack#363`](https://github.com/canonical/observability-stack/issues/363)
-- [`canonical/observability-stack#484`](https://github.com/canonical/observability-stack/issues/484)
+- [`grafana-k8s-operator#363`](https://github.com/canonical/grafana-k8s-operator/pull/363)
+- [`grafana-k8s-operator#484`](https://github.com/canonical/grafana-k8s-operator/pull/484)
