@@ -8,6 +8,9 @@ This happens because dashboard delivery in COS is deduplicated. The
 deduplication logic is designed to avoid repeatedly re-importing the same
 dashboard content when relation data is refreshed.
 
+This feature is available in the [grafana_dashboard](https://charmhub.io/grafana-k8s/libraries/grafana_dashboard)
+library starting v0.47.
+
 ## Why this happens
 
 Built-in dashboards are forwarded over the `grafana_dashboard` integration.
