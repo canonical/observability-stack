@@ -44,8 +44,9 @@ into your observability strategy or when designing integrations.
    Design Goals <design-goals>
    Logging Architecture <logging-architecture>
    Telemetry Flow <telemetry-flow>
-   Telemetry correlation <telemetry-correlation>
+   Telemetry Correlation <telemetry-correlation>
    Telemetry Labels <telemetry-labels>
+   Opentelemetry Protocol (OTLP) Juju Topology Labels <telemetry-otlp-topology-labels>
    Data Integrity <data-integrity>
 
 Alerting & rules
