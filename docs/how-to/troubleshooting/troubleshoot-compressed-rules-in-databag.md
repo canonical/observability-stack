@@ -1,6 +1,6 @@
-# Troubleshoot compressed rules in relation data bags
+# Troubleshoot compressed rules in relation databags
 
-In some relations, rules are compressed in the data bag and are not human readable, making troubleshooting difficult. Assuming your unit and endpoint are named `otelcol/0` and `receive-otlp` respectively, then you can view the compressed rules with:
+In some relations, rules are compressed in the databag and are not human readable, making troubleshooting difficult. Assuming your unit and endpoint are named `otelcol/0` and `receive-otlp` respectively, then you can view the compressed rules with:
 
 ```bash
 juju show-unit otelcol/0 --format=json | \

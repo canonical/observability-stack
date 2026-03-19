@@ -14,4 +14,4 @@ Troubleshooting
    Troubleshoot firing alert rules <troubleshoot-firing-alert-rules>
    Troubleshoot grafana admin password <troubleshoot-grafana-admin-password>
    Troubleshoot OpenTelemetry Collector <troubleshoot-otelcol>
-   Troubleshoot compressed rules in data bag <troubleshoot-compressed-rules-in-data-bag>
+   Troubleshoot compressed rules in databag <troubleshoot-compressed-rules-in-databag>
