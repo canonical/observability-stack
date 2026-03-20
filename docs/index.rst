@@ -18,6 +18,7 @@ For Site Reliability Engineers, COS provides a turn-key, out-of-the-box solution
    how-to/index
    reference/index
    explanation/index
+   _tags/tagsindex
 
 
 .. grid:: 1 1 2 2

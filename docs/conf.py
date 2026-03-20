@@ -273,7 +273,21 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx_sitemap",
     "sphinxcontrib.mermaid",
+    "sphinx_tags",
 ]
+
+# for sphinx tags extension
+tags_create_tags = True
+tags_extension = ["md"]
+tags_output_dir = "_tags"
+tags_overview_title = "Browse by Diátaxis"
+tags_create_badges = True
+tags_badge_colors = {
+    "tutorial": "info",
+    "how-to": "success",
+    "reference": "warning",
+    "explanation": "secondary",
+}
 
 # Excludes files or directories from processing
 
