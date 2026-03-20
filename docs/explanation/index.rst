@@ -47,8 +47,9 @@ into your observability strategy or when designing integrations.
    Design Goals <design-goals>
    Logging Architecture <logging-architecture>
    Telemetry Flow <telemetry-flow>
-   Telemetry correlation <telemetry-correlation>
+   Telemetry Correlation <telemetry-correlation>
    Telemetry Labels <telemetry-labels>
+   Opentelemetry Protocol (OTLP) Juju Topology Labels <telemetry-otlp-topology-labels>
    Data Integrity <data-integrity>
 
 Alerting & rules
@@ -62,3 +63,4 @@ designed and managed across the stack.
 
    Charmed alert rules <charmed-rules>
    Generic alert rules <generic-rules>
+   Dashboard upgrades and deduplication <dashboard-upgrades>
