@@ -2,7 +2,7 @@
 
 ## Context
 
-The opentelemetry-collector charms (K8s and VM) use the [opentelemetry-collector-contrib](https://github.com/open-telemetry/opentelemetry-collector-contrib) as their workload, which is rapidly evolving. The contrib repo maintainers decided to drop support for the `lokiexporter` in [release v0.131.0](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.131.0), stating users can migrate to the OTLP exporters.
+The Opentelemetry Collector charms (K8s and VM) use the [opentelemetry-collector-contrib](https://github.com/open-telemetry/opentelemetry-collector-contrib) as their workload, which is rapidly evolving. The `contrib` repository maintainers dropped support for `lokiexporter` in [release v0.131.0](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.131.0), stating that users can migrate to the OTLP exporters instead.
 
 ## Why does this only apply to tracks 2 and 3?
 
