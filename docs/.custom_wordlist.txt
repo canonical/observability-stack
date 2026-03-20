@@ -31,6 +31,8 @@ databag
 databags
 datasource
 datasources
+deduplicate
+deduplication
 Dev
 DNS
 docstrings?
