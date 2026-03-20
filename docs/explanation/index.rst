@@ -48,6 +48,7 @@ into your observability strategy or when designing integrations.
    Telemetry Labels <telemetry-labels>
    Opentelemetry Protocol (OTLP) Juju Topology Labels <telemetry-otlp-topology-labels>
    Data Integrity <data-integrity>
+   Opentelemetry Collector Tracks 2 and 3 Pinned to upstream v0.130 <otelcol-track2-v0.130-pin>
 
 Alerting & rules
 =================
