@@ -1,4 +1,4 @@
-# Opentelemetry-collector pinned to v0.130 in tracks 2 and 3
+# Opentelemetry Collector pinned in COS tracks 2 and 3
 
 ## Context
 
