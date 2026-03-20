@@ -34,3 +34,64 @@ output "charm_revisions" {
   description = "The revision number for the specified charm channel and base"
   value       = { for k, v in module.charmhub : k => v.charm_revision }
 }
+
+
+# -------------- Upgrade logic --------------
+
+locals {
+  channel = "dev/edge"
+}
+
+data "juju_charm" "graphana_info" {
+  charm   = "grafana-k8s"
+  channel = local.channel
+  base    = "ubuntu@24.04"
+}
+
+resource "juju_application" "grafana" {
+  model_uuid = juju_model.test.uuid
+  trust      = true
+
+  charm {
+    name     = "grafana-k8s"
+    channel  = local.channel
+    revision = data.juju_charm.graphana_info.revision
+  }
+}
+
+resource "juju_model" "test" {
+  name = "test-2131231"
+}
+
+resource "juju_application" "traefik" {
+  model_uuid = juju_model.test.uuid
+  trust      = true
+
+  charm {
+    name    = "traefik-k8s"
+    channel = "latest/stable"
+  }
+}
+
+resource "terraform_data" "interface" {
+  input = data.juju_charm.graphana_info.requires["ingress"]
+}
+
+resource "juju_integration" "ingress" {
+  model_uuid = juju_model.test.uuid
+
+  application {
+    name = juju_application.traefik.name
+  }
+
+  application {
+    name     = juju_application.grafana.name
+    endpoint = "ingress"
+  }
+
+  lifecycle {
+    replace_triggered_by = [
+      terraform_data.interface
+    ]
+  }
+}
