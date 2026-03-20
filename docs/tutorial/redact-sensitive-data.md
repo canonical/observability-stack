@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+   description: "Redact sensitive telemetry data in COS using OpenTelemetry Collector to redact logs, traces, and metrics before transmission."
+---
+
 # Redact sensitive data
 
 ## Introduction

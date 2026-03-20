@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+   description: "Compare COS and COS Lite deployment variants. Choose between scalable enterprise or resource-constrained observability."
+---
+
 # Stack variants
 
 ## Quick comparison

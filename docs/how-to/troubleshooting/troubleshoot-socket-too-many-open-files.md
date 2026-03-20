@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+  description: "Troubleshoot socket too many open files errors when deploying the Grafana agent or Prometheus charms. Review logs and investigate scrape targets."
+---
+
 # Troubleshooting ``socket: too many open files``
 
 When deploying the Grafana Agent or Prometheus charms in large environments, 

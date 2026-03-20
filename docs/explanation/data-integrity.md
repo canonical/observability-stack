@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+  description: "Understand data integrity in COS Lite, which is addressed in Ceph. COS Lite charms don't need additional configuration."
+---
+
 # Data Integrity
 
 ## COS Lite

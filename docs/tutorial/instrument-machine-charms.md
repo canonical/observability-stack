@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+  description: "Learn to intrument machine charms with Canonical Observability Stack on Kubernetes using the Grafana Agent subordinate charm for metrics, logs, and dashboards."
+---
+
 # Instrumenting machine charms
 
 ## Prerequisites

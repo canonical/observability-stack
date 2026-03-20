@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+  description: "Use COS deployment topology best practices to isolate models and design scalable observability deployments for production systems."
+---
+
 # Deployment Topology Best Practices
 
 ## Deploy in isolation
