@@ -14,7 +14,7 @@ library starting v0.47.
 ## Why this happens
 
 Built-in dashboards are forwarded over the `grafana_dashboard` integration.
-When COS processes dashboard updates, it does not treat every relation-data
+When the grafana charm processes dashboard updates, it does not treat every relation-data
 change as a new dashboard revision. Instead, it compares dashboard identity
 and revision metadata to decide whether an update is meaningful.
 
@@ -28,8 +28,8 @@ For dashboard upgrades, the `version` field in the dashboard JSON is the
 explicit signal that tells Grafana and the COS dashboard pipeline: "this is a
 newer revision of the same dashboard".
 
-Without a `version` bump, COS may correctly deduplicate the payload as already
-seen, and Grafana keeps the previously imported revision.
+Without a `version` bump, the grafana charm may deduplicate the payload as already
+seen, and end up keeping the previously imported revision.
 
 With a `version` bump, the update is treated as a new dashboard revision and
 is imported.
@@ -37,7 +37,7 @@ is imported.
 ## Rolling charm upgrades and mixed revisions
 
 When a charmed application is upgraded, units are typically upgraded one at a
-time, not all at once. During that window, COS can receive dashboard payloads
+time, not all at once. During that window, the grafana charm can receive dashboard payloads
 from both old and new unit revisions.
 
 This is safe for dashboard upgrades: the reconciliation logic keeps the
