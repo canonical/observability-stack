@@ -58,6 +58,7 @@ Grafana's
 gRPCs
 gyre
 HostHealth
+haproxy
 hostname
 hostPath
 html
@@ -110,6 +111,7 @@ OpentelemetryCollector
 OSD
 OSDs
 OTEL
+otelco
 otelcol
 otf
 OTLP
