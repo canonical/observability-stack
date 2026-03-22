@@ -234,22 +234,25 @@ resource "juju_integration" "catalogue_ingress" {
   }
 }
 
-# TODO: Can we make this conditional based on the computed upgrade between Grafana
-
-# │ Unable to update application resource, got error: updating charm config: cannot upgrade application "grafana" to charm
-# │ "ch:amd64/grafana-k8s-172": would break relation "grafana:ingress traefik:ingress"
-
 resource "juju_integration" "grafana_ingress" {
   model_uuid = var.model_uuid
 
   application {
     name     = module.traefik.app_name
-    endpoint = tonumber(local.alertmanager_revision) >= 175 ? module.traefik.endpoints.ingress : module.traefik.endpoints.traefik_route
   }
 
   application {
     name     = module.grafana.app_name
     endpoint = module.grafana.endpoints.ingress
+  }
+
+  # NOTE: grafana.revision >= 175 the ingress endpoint changes from traefik_route to
+  #       ingress_per_app so we need a lifecycle to trigger integration replacement, otherwise
+  #       the upgrade will fail
+  lifecycle {
+    replace_triggered_by = [
+      terraform_data.interface
+    ]
   }
 }
 
@@ -418,7 +421,6 @@ resource "juju_integration" "external_grafana_ca_cert" {
 }
 
 resource "juju_integration" "external_prom_ca_cert" {
-  count      = local.tls_termination && tonumber(local.prometheus_revision) >= 276 ? 1 : 0
   model_uuid = var.model_uuid
 
   application {

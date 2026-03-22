@@ -58,6 +58,7 @@ variable "external_ca_cert_offer_url" {
 variable "alertmanager" {
   type = object({
     app_name           = optional(string, "alertmanager")
+    channel            = optional(string, "dev/edge")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
     revision           = optional(number, null)
@@ -71,6 +72,7 @@ variable "alertmanager" {
 variable "catalogue" {
   type = object({
     app_name           = optional(string, "catalogue")
+    channel            = optional(string, "dev/edge")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
     revision           = optional(number, null)
@@ -81,9 +83,12 @@ variable "catalogue" {
   description = "Application configuration for Catalogue. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
+# TODO: Update all charms to surface their channel input, since we will have fine-grained channels per charm
+# TODO: Update the channel defaults to be the track
 variable "grafana" {
   type = object({
     app_name           = optional(string, "grafana")
+    channel            = optional(string, "dev/edge")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
     revision           = optional(number, null)
@@ -97,6 +102,7 @@ variable "grafana" {
 variable "loki" {
   type = object({
     app_name           = optional(string, "loki")
+    channel            = optional(string, "dev/edge")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
     revision           = optional(number, null)
@@ -110,6 +116,7 @@ variable "loki" {
 variable "prometheus" {
   type = object({
     app_name           = optional(string, "prometheus")
+    channel            = optional(string, "dev/edge")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
     revision           = optional(number, null)

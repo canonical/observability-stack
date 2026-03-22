@@ -5,6 +5,5 @@ terraform {
       source  = "juju/juju"
       version = "~> 1.0"
     }
-    # TODO: Add the http provider here
   }
 }
