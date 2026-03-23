@@ -421,6 +421,7 @@ resource "juju_integration" "external_grafana_ca_cert" {
 }
 
 resource "juju_integration" "external_prom_ca_cert" {
+  count      = local.tls_termination ? 1 : 0
   model_uuid = var.model_uuid
 
   application {
