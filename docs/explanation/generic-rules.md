@@ -1,7 +1,7 @@
 ---
 myst:
  html_meta:
-  description: "Understand COS generic alert rule groups for host health, including HostHealth and AggregatorHostHealth behavior and scope."
+  description: "Understand COS generic alert rules for host health, including HostHealth and AggregatorHostHealth behavior and scope."
 ---
 
 # Generic alert rule groups

@@ -1,7 +1,7 @@
 ---
 myst:
  html_meta:
-  description: "Understand the design goals of COS Lite and COS HA: Kubernetes-native, Juju-first observability with integrated telemetry, consistent alerting, and smooth deployment experience."
+  description: "Understand the design goals of COS and COS Lite: Kubernetes-native, Juju-first observability with integrated telemetry, consistent alerting, and smooth deployment experience."
 ---
 
 # Design Goals
