@@ -246,13 +246,8 @@ resource "juju_integration" "grafana_ingress" {
     endpoint = module.grafana.endpoints.ingress
   }
 
-  # NOTE: grafana.revision >= 175 the ingress endpoint changes from traefik_route to
-  #       ingress_per_app so we need a lifecycle to trigger integration replacement, otherwise
-  #       the upgrade will fail
   lifecycle {
-    replace_triggered_by = [
-      terraform_data.interface
-    ]
+    replace_triggered_by = [terraform_data.grafana_ingress_interface]
   }
 }
 

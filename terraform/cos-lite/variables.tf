@@ -65,7 +65,6 @@ variable "external_ca_cert_offer_url" {
 variable "alertmanager" {
   type = object({
     app_name           = optional(string, "alertmanager")
-    channel            = optional(string, "dev/edge")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
     revision           = optional(number, null)
@@ -79,7 +78,6 @@ variable "alertmanager" {
 variable "catalogue" {
   type = object({
     app_name           = optional(string, "catalogue")
-    channel            = optional(string, "dev/edge")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
     revision           = optional(number, null)
@@ -95,7 +93,6 @@ variable "catalogue" {
 variable "grafana" {
   type = object({
     app_name           = optional(string, "grafana")
-    channel            = optional(string, "dev/edge")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
     revision           = optional(number, null)
@@ -109,7 +106,6 @@ variable "grafana" {
 variable "loki" {
   type = object({
     app_name           = optional(string, "loki")
-    channel            = optional(string, "dev/edge")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
     revision           = optional(number, null)
@@ -123,7 +119,6 @@ variable "loki" {
 variable "prometheus" {
   type = object({
     app_name           = optional(string, "prometheus")
-    channel            = optional(string, "dev/edge")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
     revision           = optional(number, null)

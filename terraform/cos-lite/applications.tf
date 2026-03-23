@@ -29,7 +29,7 @@ module "grafana" {
   config             = var.grafana.config
   constraints        = var.grafana.constraints
   model_uuid         = var.model_uuid
-  revision           = var.grafana.revision
+  revision           = data.juju_charm.grafana_info.revision
   storage_directives = var.grafana.storage_directives
   units              = var.grafana.units
 }
