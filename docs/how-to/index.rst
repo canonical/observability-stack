@@ -32,7 +32,7 @@ Canonical in migrating to COS Lite or the full COS.
 
    Cross-track upgrade instructions <upgrade>
    Migrate from LMA to COS Lite <migrate-lma-to-cos-lite>
-   Migrate from Grafana Agent to OpenTelemetry Collector <migrate-gagent-to-otelcol>
+   Migrate from Grafana Agent to OpenTelemetry Collector <migrate-grafana-agent-to-otelcol>
 
 Configuring
 =============

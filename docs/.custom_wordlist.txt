@@ -52,6 +52,7 @@ Furo
 gb
 gh
 Gi
+GiB
 GitHub
 github
 GitOps
@@ -89,6 +90,7 @@ LogQL
 loki
 Makefile
 matchers
+Mem
 MetalLB
 MetricsEndpointProvider
 Microceph
@@ -180,8 +182,8 @@ TLS
 tls
 TOC
 toctree
-Traefik
-Traefik's
+traefik
+traefik's
 txt
 ubuntu
 UI
@@ -192,6 +194,8 @@ unencrypted
 URL
 utils
 uv
+vCPU
+vCPUs
 venv
 visualizes
 VMs
