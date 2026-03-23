@@ -27,8 +27,13 @@ cryptographically
 CSI
 CSRs
 customizable
+databag
+databags
 datasource
 datasources
+deduplicate
+deduplicated
+deduplication
 Dev
 DNS
 docstrings?
@@ -169,6 +174,7 @@ tanmay
 Terraform
 tex
 texlive
+tiering
 Tiering
 TLS
 tls
