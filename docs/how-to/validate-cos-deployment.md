@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+  description: "Validate a COS deployment by checking Juju model configurations, charm options, data storage, and more."
+---
+
 # Validate COS deployment
 
 ## Juju model

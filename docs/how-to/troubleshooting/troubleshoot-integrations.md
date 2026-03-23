@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+  description: "Troubleshoot COS integrations on various topics, such as alert rules, metrics and scraping, logs, dashboards, and data duplication."
+---
+
 # Troubleshooting integrations
 
 Integrating a charm with [COS](https://charmhub.io/topics/canonical-observability-stack) means:

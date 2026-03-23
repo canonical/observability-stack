@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+   description: "Deploy Minio and S3 Integrator in COS. Use a script or the command line to configure S3-compatible storage for observability."
+---
+
 # Deploy Minio and S3 Integrator
 
 ```{warning}

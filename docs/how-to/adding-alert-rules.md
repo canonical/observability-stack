@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+    description: "Learn how to provide Prometheus and Loki alert rules from your charm via Juju relations, including required interfaces, rule files, and deployment flow."
+---
+
 # Adding alert rules
 
 Support for providing alert rules through the relation is available

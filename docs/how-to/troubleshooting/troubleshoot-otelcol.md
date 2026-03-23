@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+  description: "Troubleshoot OpenTelemetry Collector issues in COS with various strategies, such as reviewing high resource usage and attempting to scrape too many logs."
+---
+
 # Troubleshoot OpenTelemetry Collector
 
 ## High resource usage

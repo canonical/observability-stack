@@ -1,3 +1,6 @@
+.. meta::
+   :description: Use this COS reference material for release information, security details, Juju topology, compatibility matrices, and operational best practices.
+
 .. _reference:
 
 Reference

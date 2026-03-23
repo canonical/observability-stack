@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+  description: "Apply COS lifecycle best practices to plan support windows, coordinate upgrades, and maintain long-term operational consistency across environments."
+---
+
 # Lifecycle Best Practices
 
 ## Support window

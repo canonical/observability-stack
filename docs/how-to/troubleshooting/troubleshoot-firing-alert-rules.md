@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+  description: "Troubleshoot firing alert rules in COS through steps such as exploring workload health, and ensuring scraping, connectivity, and other configurations are correct."
+---
+
 # Troubleshoot firing alert rules
 This guide describes how to troubleshoot firing generic alert rules. For detailed explanations on the design and goals of these rules, refer to the [explanation page](/explanation/generic-rules).
 

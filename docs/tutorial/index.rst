@@ -1,3 +1,6 @@
+.. meta::
+   :description: Follow hands-on COS tutorials to deploy, configure, and operate Canonical Observability Stack with reproducible steps and practical examples.
+
 .. _tutorial:
 
 Tutorial
