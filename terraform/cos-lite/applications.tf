@@ -13,7 +13,7 @@ module "alertmanager" {
 module "catalogue" {
   source             = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
   app_name           = var.catalogue.app_name
-  channel            = var.catalogue.channel
+  channel            = var.channel
   config             = var.catalogue.config
   constraints        = var.catalogue.constraints
   model_uuid         = var.model_uuid
@@ -25,11 +25,11 @@ module "catalogue" {
 module "grafana" {
   source             = "git::https://github.com/canonical/grafana-k8s-operator//terraform"
   app_name           = var.grafana.app_name
-  channel            = var.grafana.channel
+  channel            = var.channel
   config             = var.grafana.config
   constraints        = var.grafana.constraints
   model_uuid         = var.model_uuid
-  revision           = data.juju_charm.grafana_info.revision
+  revision           = var.grafana.revision
   storage_directives = var.grafana.storage_directives
   units              = var.grafana.units
 }
@@ -37,7 +37,7 @@ module "grafana" {
 module "loki" {
   source             = "git::https://github.com/canonical/loki-k8s-operator//terraform"
   app_name           = var.loki.app_name
-  channel            = var.loki.channel
+  channel            = var.channel
   config             = var.loki.config
   constraints        = var.loki.constraints
   model_uuid         = var.model_uuid
@@ -49,7 +49,7 @@ module "loki" {
 module "prometheus" {
   source             = "git::https://github.com/canonical/prometheus-k8s-operator//terraform"
   app_name           = var.prometheus.app_name
-  channel            = var.prometheus.channel
+  channel            = var.channel
   config             = var.prometheus.config
   constraints        = var.prometheus.constraints
   model_uuid         = var.model_uuid
