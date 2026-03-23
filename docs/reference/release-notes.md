@@ -42,6 +42,6 @@ COS 3 is compatible with Juju v3.6+.
 
 
 ## Backwards-incompatible changes
-- If you are using charmed Grafana Agent to push telemetry to COS, note that the vendor announced end-of-life, so we will not be supporting the charm beyond July 2026. Make plans to [upgrade to charmed OpenTelemetry Collector][../how-to/migrate-grafana-agent-to-otelcol.md].
+- If you are using charmed Grafana Agent to push telemetry to COS, note that the vendor announced end-of-life, so we will not be supporting the charm beyond July 2026. Make plans to [upgrade to charmed OpenTelemetry Collector][../how-to/migrate-grafana-agent-to-otelcol].
 
 ## Deprecated features
