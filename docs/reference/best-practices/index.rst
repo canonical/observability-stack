@@ -1,3 +1,6 @@
+.. meta::
+   :description: Apply Canonical Observability Stack deployment best practices for topology, lifecycle, networking, and storage decisions in production environments.
+
 .. _best-practices:
 
 Deployment best practices

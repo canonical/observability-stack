@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+  description: "Learn to deploy a single-node COS Lite appliance on Canonical Kubernetes with hostPath storage in this practical tutorial for lightweight observability." 
+---
+
 # Getting started with COS Lite on Canonical K8s
 
 In this tutorial you deploy a single-node COS Lite appliance, backed by hostPath storage.

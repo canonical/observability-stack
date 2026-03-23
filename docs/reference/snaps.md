@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+  description: "Explore the COS snaps reference for package names, store locations, and source links for observability-related snaps."
+---
+
 # Snaps
 
 | Image                   | Snapcraft Store                                       | Source Code                                                         | Bug Report                                                                 |

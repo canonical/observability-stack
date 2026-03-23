@@ -1,3 +1,6 @@
+.. meta::
+   :description: Practical how-to guides for operating Canonical Observability Stack, including migration, integration, telemetry configuration, and troubleshooting tasks.
+
 .. _how-to:
 
 How-to guides

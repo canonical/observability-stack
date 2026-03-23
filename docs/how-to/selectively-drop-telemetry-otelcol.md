@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+   description: "Selectively drop telemetry using OpenTelemetry Collector in COS. Reduce data volume by filtering metrics before ingestion."
+---
+
 # Selectively drop telemetry using opentelemetry-collector
 
 Sometimes, from a resource perspective, applications are instrumented with more telemetry than we want to afford. In such cases, we can choose to selectively drop some before they are ingested.

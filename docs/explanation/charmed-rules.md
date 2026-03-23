@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+  description: "Understand Juju charmed alert rules in COS Lite: how PromQL and LogQL rules are transformed and forwarded to Prometheus, Loki, and Alertmanager."
+---
+
 # Charmed alert rules
 
 ## What are alert rules?

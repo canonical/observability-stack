@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+   description: "Learn to deploy COS Lite on MicroK8s with hostPath storage in this practical tutorial for lightweight observability."
+---
+
 # Getting started with COS Lite on MicroK8s
 
 In this tutorial you deploy a single-node COS Lite appliance, backed by hostPath storage.

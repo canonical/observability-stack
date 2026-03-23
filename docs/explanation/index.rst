@@ -1,3 +1,6 @@
+.. meta::
+   :description: Understand COS architecture and design decisions, telemetry models, Juju topology, stack variants, and alerting.
+
 .. _explanation:
 
 Explanation
