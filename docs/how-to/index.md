@@ -1,0 +1,76 @@
+```{meta}
+:description: Practical how-to guides for operating Canonical Observability Stack, including migration, integration, telemetry configuration, and troubleshooting tasks.
+```
+
+(how-to)=
+
+# How-to guides
+
+These guides accompany you through the complete COS stack operations life cycle.
+
+
+```{note}
+If you are looking for instructions on how to get started with COS Lite, see
+{ref}`the tutorial section <tutorial>`.
+```
+
+## Validating
+
+These guides will help validating new and existing deployments.
+
+```{toctree}
+:maxdepth: 1
+
+Validate COS deployment <validate-cos-deployment>
+```
+
+## Migrating
+
+These guides till assist existing users of other observability stacks offered by
+Canonical in migrating to COS Lite or the full COS.
+
+```{toctree}
+:maxdepth: 1
+
+Cross-track upgrade instructions <upgrade>
+Migrate from LMA to COS Lite <migrate-lma-to-cos-lite>
+Migrate from Grafana Agent to OpenTelemetry Collector <migrate-grafana-agent-to-otelcol>
+```
+
+## Configuring
+
+Once COS has been deployed, the next natural step would be to integrate your charms and workloads
+with COS to actually observe them.
+
+```{toctree}
+:maxdepth: 1
+
+Evaluate telemetry volume <evaluate-telemetry-volume>
+Add tracing to COS Lite <add-tracing-to-cos-lite>
+Add alert rules <adding-alert-rules>
+Configure scrape jobs <configure-scrape-jobs>
+Expose a metrics endpoint <exposing-a-metrics-endpoint>
+Integrate COS Lite with uncharmed applications <integrating-cos-lite-with-uncharmed-applications>
+Disable built-in charm alert rules <disable-charmed-rules>
+Testing with Minio <deploy-s3-integrator-and-minio>
+Configure TLS encryption <configure-tls-encryption>
+Selectively drop telemetry using scrape config <selectively-drop-telemetry-scrape-config>
+Selectively drop telemetry using opentelemetry-collector <selectively-drop-telemetry-otelcol>
+Tier OpenTelemetry Collector with different pipelines per data stream <tiered-otelcols>
+```
+
+## Troubleshooting
+
+During continuous operations, you might sometimes run into issues that you need to resolve. These
+how-to guides will assist you in troubleshooting COS in an effective manner.
+
+```{toctree}
+:maxdepth: 1
+:hidden:
+
+Troubleshooting <troubleshooting/index>
+```
+
+- [Troubleshoot "Gateway Address Unavailable" in Traefik](troubleshooting/troubleshoot-gateway-address-unavailable)
+- [Troubleshoot "socket: too many open files"](troubleshooting/troubleshoot-socket-too-many-open-files)
+- [Troubleshoot integrations](troubleshooting/troubleshoot-integrations)
