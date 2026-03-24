@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+  description: "Troubleshoot problems with the Grafana admin password in COS with repeatable reset steps, to regain access and restore administrator control quickly."
+---
+
 # Troubleshoot grafana admin password
 
 Compare the output of:

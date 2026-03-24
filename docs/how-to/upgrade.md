@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+   description: "Upgrade instructions for Canonical Observability Stack. Migrate from COS Lite 1 to COS 2 safely."
+---
+
 # Upgrade instructions
 
 ## COS 2

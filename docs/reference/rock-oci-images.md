@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+  description: "Reference COS Rock OCI images with registry locations, source repositories, and image details needed for reproducible deployments."
+---
+
 # Rock OCI Images
 
 | Image                              | Registry                                                                  | Source Code                                                           | Bug Report                                                                   |

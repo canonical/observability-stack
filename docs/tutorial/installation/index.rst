@@ -1,3 +1,6 @@
+.. meta::
+   :description: Follow step-by-step installation guides for deploying COS and COS Lite on Kubernetes and MicroK8s environments.
+
 .. _installation:
 
 Deploying the observability stack

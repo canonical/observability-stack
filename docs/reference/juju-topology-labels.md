@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+  description: "Juju topology labels identify models, charms, and units to contextualize metrics, logs, traces, and dashboards in COS Lite."
+---
+
 # Juju Topology Labels
 
 Juju topology labels are [telemetry labels](https://discourse.charmhub.io/t/telemetry-labels-in-the-grafana-ecosystem/8873) that are used for identifying the origin of metrics and logs in juju models. In other words, the Juju topology labels are a fingerprint of a unit in some juju model that is emitting telemetry. Especially when you have hundreds, thousands of nodes, it is essential to be able to locate that one unit that has been causing your alerts to go off.

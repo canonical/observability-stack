@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+  description: "Understand the COS release policy, including LTS and short-term tracks, cadence expectations, and support windows for planning upgrades."
+---
+
 # Release policy
 
 Our release policy includes two kinds of releases, short-term releases and long-term support (LTS) releases.
