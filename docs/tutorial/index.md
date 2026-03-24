@@ -1,6 +1,8 @@
-```{meta}
-:description: Follow hands-on COS tutorials to deploy, configure, and operate Canonical Observability Stack with reproducible steps and practical examples.
-```
+---
+myst:
+  html_meta:
+    description: "Follow hands-on COS tutorials to deploy, configure, and operate Canonical Observability Stack with reproducible steps and practical examples."
+---
 
 (tutorial)=
 

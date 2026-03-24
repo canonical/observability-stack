@@ -1,6 +1,8 @@
-```{meta}
-:description: Practical how-to guides for operating Canonical Observability Stack, including migration, integration, telemetry configuration, and troubleshooting tasks.
-```
+---
+myst:
+  html_meta:
+    description: "Practical how-to guides for operating Canonical Observability Stack, including migration, integration, telemetry configuration, and troubleshooting tasks."
+---
 
 (how-to)=
 
