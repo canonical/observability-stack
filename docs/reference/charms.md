@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+  description: "Browse the complete reference for Canonical Observability Stack charms and operators, including component roles and deployment-relevant details."
+---
+
 # Charms
 
 ## COS

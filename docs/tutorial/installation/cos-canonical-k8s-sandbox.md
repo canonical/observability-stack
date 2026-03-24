@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+  description: "Learn to deploy a single-node Canonical Observability Stack on Canonical Kubernetes with S3-backed storage using this reproducible, step-by-step tutorial."
+---
+
 # Getting started with COS on Canonical K8s
 
 In this tutorial you deploy a single-node, multi-unit COS, backed by S3 storage.

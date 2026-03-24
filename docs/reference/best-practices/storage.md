@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+  description: "Use COS storage best practices to estimate telemetry volume, set up distributed storage, and avoid retention or performance bottlenecks over time."
+---
+
 # Storage Best Practices
 
 ## Evaluate storage volume needs

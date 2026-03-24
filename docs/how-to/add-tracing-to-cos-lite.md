@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+   description: "Add distributed tracing to COS Lite - deploy Tempo Coordinator and Worker for complete trace collection and visualization."
+---
+
 # Add tracing to COS Lite
 
 If you have an existing COS Lite deployment and you wish to add tracing 

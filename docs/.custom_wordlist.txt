@@ -121,6 +121,7 @@ OTLP
 OTTL
 PagerDuty
 PDF
+persistency
 PII
 plantuml
 PNG
@@ -137,6 +138,7 @@ provisioner
 proxied
 PVC
 PVCs
+PVs
 Pygments
 pymarkdown
 QEMU

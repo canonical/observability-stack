@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+   description: "Automate alert rule synchronization in COS Lite from git repository using COS Configuration charm for Kubernetes deployments and Prometheus Alert rules."
+---
+
 # Sync alert rules from git
 
 In this tutorial you will learn how to make COS Lite automatically sync the alert rules of a git repository to Prometheus using the [COS Configuration charm](https://charmhub.io/cos-configuration-k8s).

@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+   description: "Integrate COS Lite with uncharmed applications using Grafana Agent. Send metrics and logs from non-charm workloads to the observability stack."
+---
+
 # Integrating COS Lite with uncharmed applications
 
 The [COS Lite bundle](https://github.com/canonical/cos-lite-bundle) is designed to 

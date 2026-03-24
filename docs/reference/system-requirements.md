@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+  description: "Check COS system requirements for CPU and more before deploying observability components in production environments."
+---
+
 # System requirements
 
 ## COS

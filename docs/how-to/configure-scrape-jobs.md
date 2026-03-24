@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+   description: "Configure Prometheus scrape jobs in COS - customize the application you want to scrape and metric collection endpoints and intervals for monitoring."
+---
+
 # Configure Prometheus scrape jobs
 
 By default, the Prometheus charm allows for minimal configuration of the 

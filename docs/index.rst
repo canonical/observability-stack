@@ -1,3 +1,6 @@
+.. meta::
+   :description: Canonical Observability Stack documentation with tutorials, how-to guides, reference material, and architecture explanations for low-ops observability operations.
+
 Observability documentation
 ===========================
 

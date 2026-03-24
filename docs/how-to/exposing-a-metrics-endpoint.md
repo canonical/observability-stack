@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+   description: "Expose metrics endpoints in COS deployments. Enable your charm to get scraped by Prometheus or Grafana."
+---
+
 # Exposing a Metrics Endpoint
 
 Integrating with the metrics endpoint interface allows you to, through a minimal 

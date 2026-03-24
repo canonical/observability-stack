@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+  description: "Follow COS networking best practices for load balancing, ingress design, and reliable service exposure in observability deployments."
+---
+
 # Networking Best Practices
 
 ## Ingress

@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+   description: "Disable built-in charm alert rules in COS, Customize alerting and selectively silence charmed rules for your environment."
+---
+
 # Disable built-in charm alert rules
 
 By default, Prometheus and Loki will be configured to evaluate and post alerts for all the

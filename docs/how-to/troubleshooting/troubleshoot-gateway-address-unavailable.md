@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+  description: "Troubleshoot Gateway address unavailable errors in COS by exploring possible causes such as charm configuration and network reachability."
+---
+
 # Troubleshooting `Gateway address unavailable`
 
 Whenever Traefik is used to ingress your Kubernetes workloads, you might in some specific
