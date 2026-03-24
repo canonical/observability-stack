@@ -25,7 +25,6 @@ explanation/index
 ```
 
 `````{grid} 1 1 2 2
-
 ````{grid-item-card} {ref}`Tutorial <tutorial>`
 
 **Get started** -  a hands-on introduction for new users deploying COS.
@@ -41,7 +40,6 @@ a metrics endpoint to integrating COS Lite with uncharmed applications.
 
 `````{grid} 1 1 2 2
 :reverse:
-
 ````{grid-item-card} {ref}`Reference <reference>`
 
 **Technical information** - specifications, APIs, architecture.
