@@ -9,9 +9,15 @@ May 2026
 
 These release notes cover new features and changes in COS 3.
 
+COS 3 newer versions of all underlying charms, as well as new features around charmed opentelemetry-collector.
+
 COS 3 is designated as a long-term support (LTS) release. This means it will continue to receive security updates and critical bug fixes for 15 years.
 
+If you have COS 2 installed, make plans to upgrade to COS 3 before July 2026.
+
 See our [release policy](release-policy.md) and [upgrade instructions](../how-to/upgrade.md).
+
+To report bugs or security issues, refer to the index of [COS components](../reference/cos-components).
 
 ## Requirements and compatibility
 See [system requirements](system-requirements.md).
@@ -24,18 +30,18 @@ COS 3 is compatible with Juju v3.6+.
 
 ### COS components
 
-| Component                | Version | Upstream context |
-|--------------------------|---------|------------------|
-| alertmanager             | 0.x     |                  |
-| catalogue                |         |                  |
-| grafana                  | 12.x    |                  |
-| loki                     | 3.x     |                  |
-| mimir                    | 3.x     |                  |
-| opentelemetry-collector  | 0.x     |                  |
-| s3-integrator            |         |                  |
-| self-signed-certificates |         |                  |
-| tempo                    | 2.x     |                  |
-| traefik                  | 2.x     |                  |
+| Component                | Version |
+|--------------------------|---------|
+| alertmanager             | 0.x     |
+| catalogue                |         |
+| grafana                  | 12.x    |
+| loki                     | 3.x     |
+| mimir                    | 3.x     |
+| opentelemetry-collector  | 0.x     |
+| s3-integrator            |         |
+| self-signed-certificates |         |
+| tempo                    | 2.x     |
+| traefik                  | 2.x     |
 
 
 ### COS Lite components

@@ -20,7 +20,7 @@ or COS Lite, Juju-based observability stacks running on Kubernetes.
 .. toctree::
    :maxdepth: 1
 
-   1. Deploy the observability stack <installation/index>
+   Deploy the observability stack <installation/index>
 
 Configuration
 =============
@@ -32,7 +32,7 @@ charm.
 .. toctree::
    :maxdepth: 1
 
-   2. Sync alert rules from Git <sync-alert-rules-from-git>
+   Sync alert rules from Git <sync-alert-rules-from-git>
 
 Instrumentation
 ===============
@@ -44,7 +44,7 @@ application using the Grafana Agent machine charm.
 .. toctree::
    :maxdepth: 1
 
-   3. Instrument machine charms <instrument-machine-charms>
+   Instrument machine charms <instrument-machine-charms>
 
 
 Redaction
@@ -55,4 +55,4 @@ By implementing a solid redaction strategy you can mitigate the risk of unwanted
 .. toctree::
    :maxdepth: 1
 
-   4. Redact sensitive data <redact-sensitive-data.md>
+   Redact sensitive data <redact-sensitive-data.md>

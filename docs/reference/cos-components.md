@@ -1,14 +1,14 @@
 ---
 myst:
  html_meta:
-  description: "Browse the complete reference for Canonical Observability Stack charms and operators, including component roles and deployment-relevant details."
+  description: "Browse the complete reference for Canonical Observability Stack charms, rocks and snaps, including component roles, deployment-relevant details and registry locations."
 ---
 
-# Charms
+# COS components
 
-## COS
+## COS charms
 
-| Project                  | Substrate | Charmhub                                                 | Source Code                                                              | Bug Report                                                                      |
+| Component                  | Substrate | Charmhub                                                 | Source Code                                                              | Bug Report                                                                      |
 |--------------------------|-----------|----------------------------------------------------------|--------------------------------------------------------------------------|---------------------------------------------------------------------------------|
 | Catalogue                | K8s       | [Charmhub](https://charmhub.io/catalogue-k8s)            | [Source](https://github.com/canonical/catalogue-k8s-operator)            | [Issues](https://github.com/canonical/catalogue-k8s-operator/issues)            |
 | Grafana                  | K8s       | [Charmhub](https://charmhub.io/grafana-k8s)              | [Source](https://github.com/canonical/grafana-k8s-operator)              | [Issues](https://github.com/canonical/grafana-k8s-operator/issues)              |
@@ -22,9 +22,9 @@ myst:
 | Tempo Worker             | K8s       | [Charmhub](https://charmhub.io/tempo-worker-k8s)         | [Source](https://github.com/canonical/tempo-worker-k8s-operator)         | [Issues](https://github.com/canonical/tempo-worker-k8s-operator/issues)         |
 | Traefik                  | K8s       | [Charmhub](https://charmhub.io/traefik-k8s)              | [Source](https://github.com/canonical/traefik-k8s-operator)              | [Issues](https://github.com/canonical/traefik-k8s-operator/issues)              |
 
-## COS Lite
+## COS Lite charms
 
-| Project                  | Substrate | Charmhub                                                 | Source Code                                                              | Bug Report                                                                      |
+| Component                  | Substrate | Charmhub                                                 | Source Code                                                              | Bug Report                                                                      |
 |--------------------------|-----------|----------------------------------------------------------|--------------------------------------------------------------------------|---------------------------------------------------------------------------------|
 | Alertmanager             | K8s       | [Charmhub](https://charmhub.io/alertmanager-k8s)         | [Source](https://github.com/canonical/alertmanager-k8s-operator)         | [Issues](https://github.com/canonical/alertmanager-k8s-operator/issues)         |
 | Catalogue                | K8s       | [Charmhub](https://charmhub.io/catalogue-k8s)            | [Source](https://github.com/canonical/catalogue-k8s-operator)            | [Issues](https://github.com/canonical/catalogue-k8s-operator/issues)            |
@@ -36,7 +36,7 @@ myst:
 
 ## Peripheral charms
 
-| Project                  | Substrate | Charmhub                                                     | Source Code                                                                  | Bug Report                                                                          |
+| Component                  | Substrate | Charmhub                                                     | Source Code                                                                  | Bug Report                                                                          |
 |--------------------------|-----------|--------------------------------------------------------------|------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
 | Blackbox Exporter        | K8s       | [Charmhub](https://charmhub.io/blackbox-exporter-k8s)        | [Source](https://github.com/canonical/blackbox-exporter-k8s-operator)        | [Issues](https://github.com/canonical/blackbox-exporter-k8s-operator/issues)        |
 | Blackbox Exporter        | Machine       | [Charmhub](https://charmhub.io/blackbox-exporter)        | [Source](https://github.com/canonical/blackbox-exporter-operator)        | [Issues](https://github.com/canonical/blackbox-exporter-operator/issues)        |
@@ -52,3 +52,34 @@ myst:
 | Prometheus Scrape Target | Any       | [Charmhub](https://charmhub.io/prometheus-scrape-target-k8s) | [Source](https://github.com/canonical/prometheus-scrape-target-k8s-operator)     | [Issues](https://github.com/canonical/prometheus-scrape-target-k8s-operator/issues)     |
 | Script Exporter          | K8s       | [Charmhub](https://charmhub.io/script-exporter)              | [Source](https://github.com/canonical/script-exporter-operator)              | [Issues](https://github.com/canonical/script-exporter-operator/issues)              |
 | SNMP Exporter            | Machines  | -                | [Source](https://github.com/canonical/snmp-exporter-operator)                | [Issues](https://github.com/canonical/snmp-exporter-operator/issues)                |
+
+
+## Rocks
+
+
+| Image                              | Registry                                                                  | Source Code                                                           | Bug Report                                                                   |
+|------------------------------------|---------------------------------------------------------------------------|-----------------------------------------------------------------------|------------------------------------------------------------------------------|
+| `ubuntu/alertmanager`              | [Image](https://hub.docker.com/r/ubuntu/alertmanager)                     | [Source](https://github.com/canonical/alertmanager-rock)              | [Issues](https://github.com/canonical/alertmanager-rock/issues)              |
+| `ubuntu/blackbox-exporter`         | [Image](https://hub.docker.com/r/ubuntu/blackbox-exporter)                | [Source](https://github.com/canonical/blackbox-exporter-rock)         | [Issues](https://github.com/canonical/blackbox-exporter-rock/issues)         |
+| `ghcr.io/canonical/git-sync`       | --                                                                        | [Source](https://github.com/canonical/git-sync-rock)                  | [Issues](https://github.com/canonical/git-sync-rock/issues)                  |
+| `ubuntu/grafana-agent`             | [Image](https://hub.docker.com/r/ubuntu/grafana-agent)                    | [Source](https://github.com/canonical/grafana-agent-rock)             | [Issues](https://github.com/canonical/grafana-agent-rock/issues)             |
+| `ubuntu/grafana`                   | [Image](https://hub.docker.com/r/ubuntu/grafana)                          | [Source](https://github.com/canonical/grafana-rock)                   | [Issues](https://github.com/canonical/grafana-rock/issues)                   |
+| `ubuntu/karma`                     | [Image](https://hub.docker.com/r/ubuntu/karma)                            | [Source](https://github.com/canonical/karma-rock)                     | [Issues](https://github.com/canonical/karma-rock/issues)                     |
+| `ubuntu/loki`                      | [Image](https://hub.docker.com/r/ubuntu/loki)                             | [Source](https://github.com/canonical/loki-rock)                      | [Issues](https://github.com/canonical/loki-rock/issues)                      |
+| `ubuntu/mimir`                     | [Image](https://hub.docker.com/r/ubuntu/mimir)                            | [Source](https://github.com/canonical/mimir-rock)                     | [Issues](https://github.com/canonical/mimir-rock/issues)                     |
+| `ubuntu/nginx-prometheus-exporter` | [Image](https://hub.docker.com/r/ubuntu/nginx-prometheus-exporter)        | [Source](https://github.com/canonical/nginx-prometheus-exporter-rock) | [Issues](https://github.com/canonical/nginx-prometheus-exporter-rock/issues) |
+| `ubuntu/node-exporter`             | [Image](https://hub.docker.com/r/ubuntu/node-exporter)                    | [Source](https://github.com/canonical/node-exporter-rock)             | [Issues](https://github.com/canonical/node-exporter-rock/issues)             |
+| `ubuntu/opentelemetry-collector`   | [Image](https://hub.docker.com/r/ubuntu/opentelemetry-collector)          | [Source](https://github.com/canonical/opentelemetry-collector-rock)   | [Issues](https://github.com/canonical/opentelemetry-collector-rock/issues)   |
+| `ubuntu/parca`                     | [Image](https://hub.docker.com/r/ubuntu/parca)                            | [Source](https://github.com/canonical/parca-rock)                     | [Issues](https://github.com/canonical/parca-rock/issues)                     |
+| `ubuntu/prometheus-pushgateway`    | [Image](https://hub.docker.com/r/ubuntu/prometheus-pushgateway)           | [Source](https://github.com/canonical/prometheus-pushgateway-rock)    | [Issues](https://github.com/canonical/prometheus-pushgateway-rock/issues)    |
+| `ghcr.io/canonical/s3proxy`        | [Image](https://github.com/canonical/s3proxy-rock/pkgs/container/s3proxy) | [Source](https://github.com/canonical/s3proxy-rock)                   | [Issues](https://github.com/canonical/s3proxy-rock/issues)                   |
+| `ubuntu/tempo`                     | [Image](https://hub.docker.com/r/ubuntu/tempo)                            | [Source](https://github.com/canonical/tempo-rock)                     | [Issues](https://github.com/canonical/tempo-rock/issues)                     |
+| `ubuntu/xk6`                       | [Image](https://hub.docker.com/r/ubuntu/xk6)                              | [Source](https://github.com/canonical/xk6-rock)                       | [Issues](https://github.com/canonical/xk6-rock/issues)                       |
+
+
+## Snaps
+
+| Image                   | Snapcraft Store                                       | Source Code                                                         | Bug Report                                                                 |
+|-------------------------|-------------------------------------------------------|---------------------------------------------------------------------|----------------------------------------------------------------------------|
+| Grafana Agent           | [Store](https://snapcraft.io/grafana-agent)           | [Source](https://github.com/canonical/grafana-agent-snap)           | [Issues](https://github.com/canonical/grafana-agent-snap/issues)           |
+| OpenTelemetry Collector | [Store](https://snapcraft.io/opentelemetry-collector) | [Source](https://github.com/canonical/opentelemetry-collector-snap) | [Issues](https://github.com/canonical/opentelemetry-collector-snap/issues) |

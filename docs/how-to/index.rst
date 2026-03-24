@@ -67,10 +67,5 @@ how-to guides will assist you in troubleshooting COS in an effective manner.
 
 .. toctree::
    :maxdepth: 1
-   :hidden:
 
-   Troubleshooting <troubleshooting/index.rst>
-
-- `Troubleshoot "Gateway Address Unavailable" in Traefik <troubleshooting/troubleshoot-gateway-address-unavailable>`_
-- `Troubleshoot "socket: too many open files" <troubleshooting/troubleshoot-socket-too-many-open-files>`_
-- `Troubleshoot integrations <troubleshooting/troubleshoot-integrations>`_
+   Troubleshooting <troubleshooting>
