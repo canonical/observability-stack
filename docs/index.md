@@ -24,34 +24,34 @@ reference/index
 explanation/index
 ```
 
-```{grid} 1 1 2 2
-````{grid-item-card} {ref}`Tutorial <tutorial>`
+````{grid} 1 1 2 2
+```{grid-item-card} {ref}`Tutorial <tutorial>`
 
 **Get started** -  a hands-on introduction for new users deploying COS.
-````
+```
 
-````{grid-item-card} {ref}`How-to guides <how-to>`
+```{grid-item-card} {ref}`How-to guides <how-to>`
 
 **Step-by-step guides** - learn key operations, ranging from exposing
 a metrics endpoint to integrating COS Lite with uncharmed applications.
 
-````
 ```
+````
 
-```{grid} 1 1 2 2
+````{grid} 1 1 2 2
 :reverse:
-````{grid-item-card} {ref}`Reference <reference>`
+```{grid-item-card} {ref}`Reference <reference>`
 
 **Technical information** - specifications, APIs, architecture.
-````
+```
 
-````{grid-item-card} {ref}`Explanation <explanation>`
+```{grid-item-card} {ref}`Explanation <explanation>`
 
 **Discussion and clarification** of key topics and concepts.
 
-````
-
 ```
+
+````
 
 ## Project and community
 
