@@ -8,7 +8,6 @@
 
 These guides accompany you through the complete COS stack operations life cycle.
 
-
 ```{note}
 If you are looking for instructions on how to get started with COS Lite, see
 {ref}`the tutorial section <tutorial>`.
@@ -66,11 +65,6 @@ how-to guides will assist you in troubleshooting COS in an effective manner.
 
 ```{toctree}
 :maxdepth: 1
-:hidden:
 
-Troubleshooting <troubleshooting/index>
+Troubleshooting <troubleshooting>
 ```
-
-- [Troubleshoot "Gateway Address Unavailable" in Traefik](troubleshooting/troubleshoot-gateway-address-unavailable)
-- [Troubleshoot "socket: too many open files"](troubleshooting/troubleshoot-socket-too-many-open-files)
-- [Troubleshoot integrations](troubleshooting/troubleshoot-integrations)
