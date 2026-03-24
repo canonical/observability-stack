@@ -9,7 +9,7 @@ Using Terraform:
     ```
 2. Manually refresh all charms to 2/stable
     ```bash
-    juju refresh <charm-name> --channel 2/stable`.
+    juju refresh <charm-name> --channel 2/stable
     ```
 3. Update all references to track 3/stable and then:
     ```bash
@@ -27,7 +27,7 @@ Using Terraform:
 Without Terraform:
 1. Refresh all track 2 charms so they point to the latest revision on `2/stable`.
     ```bash
-    juju refresh <charm-name> --channel 2/stable`.
+    juju refresh <charm-name> --channel 2/stable
     ```
 2. Refresh to track 3.
 
