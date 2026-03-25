@@ -10,22 +10,24 @@ These are the steps to follow:
 
 <br>
 
-### 1. Deploy the collector next to the agent charm
+### Deploy the collector next to the agent charm
 #### Machine model
 
 Replace the value for `--base` to be consistent with your existing model. 
 ```
-juju deploy opentelemetry-collector otelco --channel 2/stable --base ubuntu@22.04 --config ports="metrics=8889"
+juju deploy opentelemetry-collector otelco \
+  --channel 2/stable \
+  --base ubuntu@22.04 \
+  --config ports="metrics=8889"  # optional
 ```
-The reason we changed the default port for metric from 8888 --> 8889 is because a some of the known applications like haproxy have conflicts with it.
-
+Note that if port 8888 (or others) is already taken by another application (e.g. haproxy), use a config option to override the default with e.g. 8889.
 #### Kubernetes Model
 ```
-juju deploy opentelemetry-collector-k8s otelco --channel 2/stable
+juju deploy opentelemetry-collector-k8s otelcol --channel 2/stable
 ```
 <br>
 
-### 2. Look at the relations for grafana-agent, and replicate them for the collector
+### Inspect grafana-agent integrations, and replicate them for the otel collector
 
 ```{note}
 - Some relation endpoints have slightly different names, for clarity:
@@ -37,43 +39,42 @@ The best way is to copy the workload charm relation endpoint that was connected 
 ```
 juju status --relations grafana-agent | grep "grafana-agent:" | grep -v ":peers"
 ```
-This is a sample relation output,
+This is a sample relation output:
 ```
 grafana-agent:grafana-dashboards-provider             grafana:grafana-dashboard                           grafana_dashboard        regular      
 keystone:juju-info                                    grafana-agent:juju-info                             juju-info                subordinate  
 prometheus-recieve-remote-write:receive-remote-write  grafana-agent:send-remote-write                     prometheus_remote_write  regular
 ```
-Then integrate each of those relations with otelco, like so:
+Then integrate each of those relations with otelcol, like so:
 ```
-juju integrate otelco grafana:grafana-dashboard
-juju integrate otelco keystone:juju-info
-juju integrate otelco prometheus-recieve-remote-write:receive-remote-write
+juju integrate otelcol grafana:grafana-dashboard
+juju integrate otelcol keystone:juju-info
+juju integrate otelcol prometheus-receive-remote-write:receive-remote-write
 ```
-and so on..
+and so on.
 
-If you get a `quota limit exceeded` error then remove the relation from the payload first and then try again. For example:
+If you get a `quota limit exceeded` error,  for example
 ```
-ERROR cannot add relation "otelco:cos-agent openstack-exporter:cos-agent": establishing a new relation for openstack-exporter:cos-agent would exceed its maximum relation limit of 1 (quota limit exceeded)                               
+ERROR cannot add relation "otelcol:cos-agent openstack-exporter:cos-agent": establishing a new relation for openstack-exporter:cos-agent would exceed its maximum relation limit of 1 (quota limit exceeded)                               
 ```
 
+Then remove the relation from the payload first and then try again.
 ```
 juju remove-relation grafana-agent openstack-exporter:cos-agent
-juju integrate otelco openstack-exporter:cos-agent
+juju integrate otelcol openstack-exporter:cos-agent
 ```
 <br>
 
-### 3. Verify that data is appearing in the backends (Mimir, Prometheus, Loki, etc.)
+### Verify that data is appearing in the backends (Mimir, Prometheus, Loki, etc.)
 ```{tip}
 For metrics, the tags are visible in the Grafana dashboard section. For logs you can run a query from the Explore page and select one of the logs to see which `juju_application` ingested it. 
 ```
 <br>
 
-### 4. Remove grafana-agent from your deployment
+### Remove grafana-agent from your deployment
 ```
-juju remove-application grafana-agent
+juju remove-application grafana-agent --destroy-storage
 ```
 
 ## Known Issues
 
-- Unlike `grafana-agent`, OpenTelemetry Collector maintains state in-memory by default: this means that queued telemetry data will be lost on restart. This will be addressed in the future with the **File Storage extension**, tracked in [opentelemetry-collector-k8s#34](https://github.com/canonical/opentelemetry-collector-k8s-operator/issues/34).
-- The [bug with metric port conflict](https://github.com/canonical/opentelemetry-collector-operator/issues/178) only gets patched in Track 2.  

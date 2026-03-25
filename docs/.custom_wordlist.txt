@@ -111,7 +111,6 @@ OpentelemetryCollector
 OSD
 OSDs
 OTEL
-otelco
 otelcol
 otf
 OTLP
