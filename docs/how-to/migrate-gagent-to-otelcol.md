@@ -14,13 +14,18 @@ These are the steps to follow:
 #### Machine model
 
 Replace the value for `--base` to be consistent with your existing model. 
+
+```{note}
+If port 8888 (or others) is already taken by another application (e.g. haproxy), use a config option to override the default with e.g. 8889.
 ```
-juju deploy opentelemetry-collector otelco \
+
+```
+juju deploy opentelemetry-collector otelcol \
   --channel 2/stable \
   --base ubuntu@22.04 \
   --config ports="metrics=8889"  # optional
 ```
-Note that if port 8888 (or others) is already taken by another application (e.g. haproxy), use a config option to override the default with e.g. 8889.
+
 #### Kubernetes Model
 ```
 juju deploy opentelemetry-collector-k8s otelcol --channel 2/stable
