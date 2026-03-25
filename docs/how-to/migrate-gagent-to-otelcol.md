@@ -27,7 +27,7 @@ juju deploy opentelemetry-collector-k8s otelcol --channel 2/stable
 ```
 <br>
 
-### Inspect grafana-agent integrations, and replicate them for the otecol collector
+### Inspect grafana-agent integrations, and replicate them for the otelcol collector
 
 ```{note}
 - Some relation endpoints have slightly different names, for clarity:
