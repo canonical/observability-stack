@@ -27,7 +27,7 @@ juju deploy opentelemetry-collector-k8s otelcol --channel 2/stable
 ```
 <br>
 
-### Inspect grafana-agent integrations, and replicate them for the otel collector
+### Inspect grafana-agent integrations, and replicate them for the otecol collector
 
 ```{note}
 - Some relation endpoints have slightly different names, for clarity:
@@ -45,7 +45,7 @@ grafana-agent:grafana-dashboards-provider             grafana:grafana-dashboard 
 keystone:juju-info                                    grafana-agent:juju-info                             juju-info                subordinate  
 prometheus-recieve-remote-write:receive-remote-write  grafana-agent:send-remote-write                     prometheus_remote_write  regular
 ```
-Then integrate each of those relations with otelcol, like so:
+Then integrate each of those charms with otelcol, for example:
 ```
 juju integrate otelcol grafana:grafana-dashboard
 juju integrate otelcol keystone:juju-info
