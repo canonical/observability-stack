@@ -21,6 +21,7 @@ CMRs
 config
 configs
 contextualize
+contrib
 cpu
 cryptographic
 cryptographically
