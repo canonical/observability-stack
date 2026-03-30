@@ -14,6 +14,27 @@ By leveraging the topology model of Juju to contextualize the data, and charm re
 
 For Site Reliability Engineers, COS provides a turn-key, out-of-the-box solution for improved day-2 operational insight.
 
+
+## In this documentation
+
+|                        |                                    |
+|------------------------|------------------------------------|
+| **Getting started**    | What is COS? • Deploy in a sandbox |
+| **Install**            |                                    |
+| **Upgrade**            |                                    |
+| **Built-in artifacts** |                                    |
+| **Data migration**     |                                    |
+| **Components**         | COS components                     |
+
+
+## How this documentation is organized
+
+- [Tutorials](tutorial/index): For new users exploring COS for the first time
+- [How-to guides](how-to/index): For users needing step-by-step instructions to achieve a practical goal
+- [Reference](reference/index): For precise, technical information to be used while working with COS
+- [Explanation](explanation/index): For deeper understanding of key COS concepts
+
+
 ```{toctree}
 :maxdepth: 1
 :hidden:
@@ -24,34 +45,6 @@ reference/index
 explanation/index
 ```
 
-````{grid} 1 1 2 2
-```{grid-item-card} {ref}`Tutorial <tutorial>`
-
-**Get started** -  a hands-on introduction for new users deploying COS.
-```
-
-```{grid-item-card} {ref}`How-to guides <how-to>`
-
-**Step-by-step guides** - learn key operations, ranging from exposing
-a metrics endpoint to integrating COS Lite with uncharmed applications.
-
-```
-````
-
-````{grid} 1 1 2 2
-:reverse:
-```{grid-item-card} {ref}`Reference <reference>`
-
-**Technical information** - specifications, APIs, architecture.
-```
-
-```{grid-item-card} {ref}`Explanation <explanation>`
-
-**Discussion and clarification** of key topics and concepts.
-
-```
-
-````
 
 ## Project and community
 
@@ -59,9 +52,17 @@ The Canonical Observability Stack is a member of the Canonical family. It's an o
 that warmly welcomes community projects, contributions, suggestions, fixes
 and constructive feedback.
 
+### Get involved
 - [Join the Discourse community forum](https://discourse.charmhub.io/c/charm/observability/62)
 - [Join the Matrix community chat](https://matrix.to/#/#cos:ubuntu.com)
-- [Contribute on GitHub](https://github.com/canonical/observability)
+- [Contribute on GitHub](https://github.com/canonical/observability-stack)
 
+
+### Releases
+- [Release notes](reference/release-notes)
+- [Release policy](reference/release-policy)
+
+
+### Project governance
 - [Code of conduct](https://ubuntu.com/community/ethos/code-of-conduct)
 - [Canonical contributor license agreement](https://canonical.com/legal/contributors)
