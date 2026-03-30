@@ -21,7 +21,7 @@ apply, although you will need to tailor the exact steps and commands to your set
 ### Checklist
 
 - You have run `juju trust traefik --scope=cluster`
-- The [MetalLB MicroK8s add-on](https://microk8s.io/docs/addon-metallb) is enabled.
+- The [MetalLB MicroK8s add-on](https://canonical.com/microk8s/docs/addon-metallb) is enabled.
 - Traefik's service type is ``LoadBalancer``.
 - An external IP address is assigned to Traefik.
 
@@ -62,7 +62,7 @@ This can happen when:
 - MetalLB has only one IP in its range but you deployed two instances of Traefik, 
   or when Traefik is forcefully removed (`--force --no-wait`) and a new Traefik 
   app is deployed immediately after.
-- The [ingress](https://microk8s.io/docs/ingress) add-on is enabled. It's possible
+- The [ingress](https://canonical.com/microk8s/docs/ingress) add-on is enabled. It's possible
   that Nginx from the ingress add-on has claimed the `ExternalIP`. Disable Nginx and 
   re-enable MetalLB.
 

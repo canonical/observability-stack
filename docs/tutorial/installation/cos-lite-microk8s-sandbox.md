@@ -29,7 +29,7 @@ Let's go and deploy that bundle!
 
 ## Configure MicroK8s
 
-For the COS Lite bundle deployment to go smoothly, make sure the following MicroK8s [addons](https://microk8s.io/docs/addons) are enabled: `dns`, `hostpath-storage` and `metallb`.
+For the COS Lite bundle deployment to go smoothly, make sure the following MicroK8s [addons](https://canonical.com/microk8s/docs/addons) are enabled: `dns`, `hostpath-storage` and `metallb`.
 
 You can check this with `microk8s status`, and if any are missing, enable them with 
 
@@ -39,7 +39,7 @@ $ microk8s enable dns
 
 ```{note}
 While the following setup is sufficient for non-production environments, if you're looking for a more resilient storage option,
-consider deploying MicroCeph on MicroK8s using this [guide](https://microk8s.io/docs/how-to-ceph).
+consider deploying MicroCeph on MicroK8s using this [guide](https://canonical.com/microk8s/docs/how-to-ceph).
 ```
 
 ```bash
@@ -63,11 +63,11 @@ $ microk8s kubectl rollout status daemonset.apps/speaker -n metallb-system -w
 ```
 
 ```{note}
-If you have an HTTP proxy configured, you will need to give this information to MicroK8s. See [the proxy documentation](https://microk8s.io/docs/install-proxy) for details.
+If you have an HTTP proxy configured, you will need to give this information to MicroK8s. See [the proxy documentation](https://canonical.com/microk8s/docs/install-proxy) for details.
 ```
 
 ```{note} 
-By default, MicroK8s will use `8.8.8.8` and `8.8.4.4` as DNS servers, which can be adjusted. See [the DNS documentation](https://microk8s.io/docs/addon-dns) for details.
+By default, MicroK8s will use `8.8.8.8` and `8.8.4.4` as DNS servers, which can be adjusted. See [the DNS documentation](https://canonical.com/microk8s/docs/addon-dns) for details.
 ```
 
 ## Deploy the COS Lite bundle
