@@ -17,14 +17,28 @@ For Site Reliability Engineers, COS provides a turn-key, out-of-the-box solution
 
 ## In this documentation
 
-|                        |                                    |
-|------------------------|------------------------------------|
-| **Getting started**    | What is COS? • Deploy in a sandbox |
-| **Install**            |                                    |
-| **Upgrade**            |                                    |
-| **Built-in artifacts** |                                    |
-| **Data migration**     |                                    |
-| **Components**         | COS components                     |
+|                        |                                                                             |
+|------------------------|-----------------------------------------------------------------------------|
+| **Getting started**    | [What is COS?] • [What is Juju topology?] • [Deploy in a sandbox]           |
+| **Install**            | [Migrate from LMA] • [Evaluate telemetry volume] • [Validate] • [Hardening] |
+| **Upgrade**            | [Cross-track upgrade] • [Dashboard upgrades]                                |
+| **Built-in artifacts** | [Charmed alert rules] • [Add alert rules]                                   |
+| **Data migration**     | [Data integrity]                                                            |
+| **Components**         | [COS components]                                                            |
+
+[What is COS?]: explanation/what-is-cos
+[What is Juju topology?]: explanation/juju-topology
+[Deploy in a sandbox]: tutorial/installation/cos-canonical-k8s-sandbox
+[Migrate from LMA]: how-to/migrate-lma-to-cos-lite
+[Evaluate telemetry volume]: how-to/evaluate-telemetry-volume
+[Validate]: how-to/validate-cos-deployment
+[Hardening]: reference/security-hardening-guide
+[Cross-track upgrade]: how-to/upgrade
+[Dashboard upgrades]: explanation/dashboard-upgrades
+[Charmed alert rules]: explanation/charmed-rules
+[Add alert rules]: how-to/adding-alert-rules
+[Data integrity]: explanation/data-integrity
+[COS components]: reference/cos-components
 
 
 ## How this documentation is organized
