@@ -94,7 +94,7 @@ Using the following Terraform root module, you can control `external` and `inter
 To enable `internal` TLS, set the `internal_tls` value to `true`. To enable `external` TLS, supply the `external_certificates_offer_url` value with a `certificates` provider's Juju offer URL, from the `ssc` module in this example. The combination of these settings enables full encryption.
 
 ```{Note}
-If you are using COS Lite, create a cos-lite module with the cos-lite source: "git::https://github.com/canonical/observability-stack//terraform/cos-lite"
+If you are using COS Lite, create a cos-lite module with the cos-lite source: [`git::https://github.com/canonical/observability-stack//terraform/cos-lite`](https://github.com/canonical/observability-stack/tree/main/terraform/cos-lite).
 
 The [COS Lite bundle](https://charmhub.io/cos-lite) is now deprecated in favor of Terraform modules.
 ```
