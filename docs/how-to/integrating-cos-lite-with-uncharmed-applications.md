@@ -118,7 +118,7 @@ juju run ssc/0 get-ca-certificate --format=yaml \
   | yq '.ssc/0.results.ca-certificate'
 ```
 
-Next, you need to [add the certificate to the root store](https://documentation.ubuntu.com/server/how-to/security/install-a-root-ca-certificate-in-the-trust-store/index.html).
+Next, you need to [add the certificate to the root store](https://ubuntu.com/server/docs/how-to/security/install-a-root-ca-certificate-in-the-trust-store/).
 
 > Note: After running `update-ca-certificates` and restarting the `grafana-agent` snap service, check the Grafana Agent
 > logs to confirm there are no log lines such as:
