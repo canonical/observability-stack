@@ -31,6 +31,8 @@ COS 3 is compatible with Juju v3.6+.
 
 ## What's new in COS 3
 
+- **Opentelemetry collector**. Charmed opentelemetry-collector's workload is pinned to version 0.130 because the upstream `opentelemetry-collector-contrib` [project](https://github.com/open-telemetry/opentelemetry-collector-contrib) dropped support for Loki exporter in [release v0.131.0](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.131.0), stating that users can migrate to the OTLP exporters instead.
+  - The logging integrations for the `opentelemetry-collector` charms rely on `lokiexporter` to send logs to Loki push API endpoints. Loki only recently received upstream support for an OTLP endpoint, and migrating to an OTLP-first ecosystem in COS began in 26.04. The objective is to have support for OTLP ecosystem-wide by the end of 26.10 and to deprecate the Loki Push API feature (`logging` endpoint). Support will then be fully dropped in 27.04, and the `opentelemetry-collector` charms will no longer be pinned to `v0.130`.
 
 ### COS components
 
@@ -49,20 +51,6 @@ COS 3 is compatible with Juju v3.6+.
 
 
 ### COS Lite components
-
-- Terraform modules for [COS](https://github.com/canonical/observability-stack/tree/main/terraform/cos)
-  and [COS Lite](https://github.com/canonical/observability-stack/tree/main/terraform/cos-lite).
-  As Juju bundles are deprecated, the standard way of deploying COS is now using the
-  [Juju Terraform provider](https://registry.terraform.io/providers/juju/juju/latest/docs).
-  - [Telemetry correlation](../explanation/telemetry-correlation.md) is now automatically enabled when you deploy COS using the
-    Terraform module.
-- **Grafana v12**. We upgraded the workload version from Grafana 9 to Grafana 12. A thorough review of Grafana's breaking changes and how they affect us is available [on Discourse](https://discourse.charmhub.io/t/cos-will-start-using-grafana-12-what-changed/18868).
-- **Opentelemetry collector**. Charmed opentelemetry-collector was released. The charm was designed to be a drop-in replacement for the grafana-agent charm (upstream grafana-agent is EOL since November 2025, and we will support charmed grafana-agent until July 2026).
-  - The workload is pinned to version 0.130 because the upstream `opentelemetry-collector-contrib` [project](https://github.com/open-telemetry/opentelemetry-collector-contrib) dropped support for Loki exporter in [release v0.131.0](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.131.0), stating that users can migrate to the OTLP exporters instead.
-    - The logging integrations for the `opentelemetry-collector` charms rely on `lokiexporter` to send logs to Loki push API endpoints. Loki only recently received upstream support for an OTLP endpoint, and migrating to an OTLP-first ecosystem in COS began in 26.04. The objective is to have support for OTLP ecosystem-wide by the end of 26.10 and to deprecate the Loki Push API feature (`logging` endpoint). Support will then be fully dropped in 27.04, and the `opentelemetry-collector` charms will no longer be pinned to `v0.130`.
-- `extra_alert_labels` config option. A new config option in grafana-agent and opentelemetry-collector enabled adding custom labels to alert rules. Custom labels are useful for differentiating alerts coming from sites with different SLAs.
-- **API links in catalogue-k8s**. The cards in catalogue-k8s now support extra links for documentation and APIs. COS charms now provide links to the workload API, making it easier to locate ingress URLs
-for workloads without a web UI.
 
 
 ## Notable changes in peripheral charms
