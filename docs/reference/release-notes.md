@@ -4,21 +4,51 @@ myst:
   description: "Read COS 2 release notes to track new features, review requirements and compatibility, peripheral-charm changes, and breaking and deprecated changes."
 ---
 
-# COS 2 release notes
-October 2025
+# COS 3 release notes
+May 2026
 
-These release notes cover new features and changes in COS 2.
+These release notes cover new features and changes in COS 3.
 
-COS 2 is designated as a short-term support release. This means it will continue to receive security updates and critical bug fixes for 9 months.
+COS 3 newer versions of all underlying charms, as well as new features around charmed opentelemetry-collector.
+
+COS 3 is designated as a long-term support (LTS) release. This means it will continue to receive security updates and critical bug fixes for 15 years.
+
+```{note}
+COS track `3` is a release track for the COS bundle and does not correspond to any individual charm track on Charmhub. The individual charms retain their own versioning.
+```
+
+If you have COS 2 installed, make plans to upgrade to COS 3 before July 2026.
 
 See our [release policy](release-policy.md) and [upgrade instructions](../how-to/upgrade.md).
+
+To report bugs or security issues, refer to the index of [COS components](../reference/cos-components).
 
 ## Requirements and compatibility
 See [system requirements](system-requirements.md).
 
-COS 2 is compatible with Juju v3.6+. When deployed using terraform, Juju v3.6.11+ is recommended.
+COS 3 is compatible with Juju v3.6+.
 
-## What's new in COS 2
+
+## What's new in COS 3
+
+
+### COS components
+
+| Component                | Version |
+|--------------------------|---------|
+| alertmanager             | 0.x     |
+| catalogue                |         |
+| grafana                  | 12.x    |
+| loki                     | 3.x     |
+| mimir                    | 3.x     |
+| opentelemetry-collector  | 0.x     |
+| s3-integrator            |         |
+| self-signed-certificates |         |
+| tempo                    | 2.x     |
+| traefik                  | 2.x     |
+
+
+### COS Lite components
 
 - Terraform modules for [COS](https://github.com/canonical/observability-stack/tree/main/terraform/cos)
   and [COS Lite](https://github.com/canonical/observability-stack/tree/main/terraform/cos-lite).
@@ -34,15 +64,11 @@ COS 2 is compatible with Juju v3.6+. When deployed using terraform, Juju v3.6.11
 - **API links in catalogue-k8s**. The cards in catalogue-k8s now support extra links for documentation and APIs. COS charms now provide links to the workload API, making it easier to locate ingress URLs
 for workloads without a web UI.
 
+
 ## Notable changes in peripheral charms
-- Multiple scripts in script-exporter. The script exporter VM charm can now take an archive of scripts. It can now be deployed on 20.04, 22.04 and 24.04.
-- Prior to cos-proxy `rev166`, duplicate telemetry exists after `upgrade` and `config-changed` hooks. Follow [these remediation steps](https://github.com/canonical/cos-proxy-operator/issues/208#issuecomment-3367094739) to resolve, requiring you to upgrade cos-proxy to `>=rev166` via `track2`. This also includes the feature of scrape-configs and alert rules for `cos-agent` relations.
+
 
 ## Backwards-incompatible changes
-- Charms from track 2 can be deployed on juju models v3.6+.
-- Terraform module variable `model_name` renamed to `model` in all charms.
-- Grafana v12 changes how the panel view URL is generated for repeated panels. Links to **repeated panels** in a dashboard changed slightly; previously bookmarked links to a repeated panel (not its dashboard) will no longer work.
-
+- If you are using charmed Grafana Agent to push telemetry to COS, note that the vendor announced end-of-life, so we will not be supporting the charm beyond July 2026. Make plans to [upgrade to charmed OpenTelemetry Collector][../how-to/migrate-grafana-agent-to-otelcol].
 
 ## Deprecated features
-- The `LogProxyConsumer` charm library (owned by Loki) is deprecated. Use Pebble log forwarding instead.
