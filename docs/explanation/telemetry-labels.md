@@ -119,7 +119,7 @@ all of the labels specified in the `stream` section above will be applied to all
 
 ## Scrape job labels for logs
 Log files can be scraped by Promtail or grafana agent, which then stream the log lines to Loki using Loki's `push-api` endpoint.
-Promtail, similar to grafana agent, has a [`scarpe_configs` section in its config file](https://grafana.com/docs/loki/latest/send-data/promtail/configuration/#scrape_configs) for specifying targets (log filename) and associate labels to them.
+Promtail, similar to grafana agent, has a [`scarpe_configs` section in its config file](https://grafana.com/docs/enterprise-logs/latest/send-data/promtail/) for specifying targets (log filename) and associate labels to them.
 See also grafana agent's [config file](https://grafana.com/docs/agent/latest/static/configuration/logs-config/) docs.
 
 
