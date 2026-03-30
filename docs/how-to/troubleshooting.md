@@ -386,17 +386,17 @@ Perhaps you had "no data" all along or it started happening only recently.
 
 
 ### Inspect variable values
-Drop-down [variables](https://grafana.com/docs/grafana/latest/dashboards/variables/)
+Drop-down [variables](https://grafana.com/docs/grafana/latest/visualizations/dashboards/variables/)
 could be filtering out data incorrectly.
 Under dashboard settings, inspect the current values of the variables.
 - If you can find a combination of dropdown selections that results in data being shown, then
-  perhaps the offered variable options should be [narrowed down](https://grafana.com/docs/grafana/latest/dashboards/variables/add-template-variables/#add-a-query-variable) with a more accurate query.
+  perhaps the offered variable options should be [narrowed down](https://grafana.com/docs/grafana/latest/visualizations/dashboards/variables/add-template-variables/) with a more accurate query.
 - If the options listed in the dropdown are missing items you expect to be there, then the datasource might be
   missing some telemetry, or perhaps we refer to a metric that does not exist, or apply a combination of labels that does not produce a result.
 
 
 ### Confirm the query is valid
-[Edit the panel](https://grafana.com/docs/grafana/latest/panels-visualizations/panel-editor-overview/)
+[Edit the panel](https://grafana.com/docs/grafana/latest/visualizations/panels-visualizations/panel-editor-overview/)
 and incrementally simplify the faulty query, until data shows up.
 For example,
 - drop label matchers

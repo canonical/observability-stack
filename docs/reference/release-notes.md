@@ -13,6 +13,10 @@ COS 3 newer versions of all underlying charms, as well as new features around ch
 
 COS 3 is designated as a long-term support (LTS) release. This means it will continue to receive security updates and critical bug fixes for 15 years.
 
+```{note}
+COS track `3` is a release track for the COS bundle and does not correspond to any individual charm track on Charmhub. The individual charms retain their own versioning.
+```
+
 If you have COS 2 installed, make plans to upgrade to COS 3 before July 2026.
 
 See our [release policy](release-policy.md) and [upgrade instructions](../how-to/upgrade.md).

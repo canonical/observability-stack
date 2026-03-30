@@ -78,5 +78,5 @@ and constructive feedback.
 
 
 ### Project governance
-- [Code of conduct](https://ubuntu.com/community/ethos/code-of-conduct)
+- [Code of conduct](https://ubuntu.com/community/docs/ethos/code-of-conduct)
 - [Canonical contributor license agreement](https://canonical.com/legal/contributors)
