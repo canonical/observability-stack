@@ -35,7 +35,7 @@ module "grafana" {
 }
 
 module "loki" {
-  source                            = "git::https://github.com/canonical/observability-stack//terraform/loki"
+  source                            = "git::https://github.com/canonical/loki-operators//terraform"
   anti_affinity                     = var.anti_affinity
   channel                           = var.channel
   model_uuid                        = var.model_uuid
@@ -68,7 +68,7 @@ module "loki" {
 }
 
 module "mimir" {
-  source                           = "git::https://github.com/canonical/observability-stack//terraform/mimir"
+  source                           = "git::https://github.com/canonical/mimir-operators//terraform"
   anti_affinity                    = var.anti_affinity
   channel                          = var.channel
   model_uuid                       = var.model_uuid
