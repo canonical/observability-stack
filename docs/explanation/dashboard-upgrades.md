@@ -55,14 +55,10 @@ dashboard won't work for older charms (from before the metric was renamed).
 The best way to address this situation is to rename the dashboard file (and `title` field,
 while you're on it), so it does not collide with existing deployments that still use the old metric names.
 
-This applies not only when upgrading between charm versions, but also when metrics are renamed due to
-changes on the COS side. For example, Prometheus may introduce backward-incompatible metric renames
-(such as adding a `_total` suffix), which requires the same treatment even within the same charm version.
+This also applies when metrics are renamed in-track. Examples of renamed dashboard files:
 
-Examples of renamed dashboard files:
-
-- "`postgres-14-overview.json`" → "`postgres-16-overview.json`" (metric change between charm versions)
-- "`postgres-14-overview.json`" → "`postgres-14-overview-metrics-renamed.json`" (metric change within the same version)
+- "`postgres-14-overview.json`" → "`postgres-16-overview.json`" (metric change between charm tracks)
+- "`postgres-14-overview.json`" → "`postgres-14-overview-metrics-renamed.json`" (metric change within the same track)
 - "`overview.json`" → "`overview-rev345plus.json`" (using charm revision as a marker)
 
 ## References
