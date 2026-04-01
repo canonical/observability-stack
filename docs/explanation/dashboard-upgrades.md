@@ -48,6 +48,19 @@ not-yet-upgraded units do not roll the dashboard back.
 When you ship dashboard changes in a charm release, always update the
 dashboard JSON `version` field as part of the same change.
 
+## When metrics are renamed or removed
+Changes in metric names that are used in dashboard panels make a breaking change.
+In this case, bumping the dashboard's `version` field is not enough, because the deduplicated
+dashboard won't work for older charms (from before the metric was renamed).
+The best way to address this situation is to rename the dashboard file (and `title` field,
+while you're on it), so it does not collide with existing deployments that still use the old metric names.
+
+This also applies when metrics are renamed in-track. Examples of renamed dashboard files:
+
+- "`postgres-14-overview.json`" → "`postgres-16-overview.json`" (metric change between charm tracks)
+- "`postgres-14-overview.json`" → "`postgres-14-overview-metrics-renamed.json`" (metric change within the same track)
+- "`overview.json`" → "`overview-rev345plus.json`" (using charm revision as a marker)
+
 ## References
 
 - [`grafana-k8s-operator#363`](https://github.com/canonical/grafana-k8s-operator/pull/363)
