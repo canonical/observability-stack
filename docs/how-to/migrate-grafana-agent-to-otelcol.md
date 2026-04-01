@@ -8,7 +8,6 @@ myst:
 > Grafana Agent has reached End-of-Life (EOL) on November 1, 2025.
 Grafana Agent is no longer receiving support, security, or bug fixes from the vendor. Since it is part of COS, the charmed operators for Grafana Agent will continue to  receive bug fixes until July 2026. You should plan to migrate from charmed Grafana Agent to charmed Opentelemetry Collector before that date.
 
-
 These are the steps to follow:
 
 ## Prerequisites
