@@ -11,6 +11,7 @@ Sometimes, from a resource perspective, applications are instrumented with more 
 ## Scrape config
 
 Metrics can be dropped by using the `drop` action in several different places:
+
 - Under [`<scrape_config>`](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#scrape_config) section ([`<metric_relabel_configs>`](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs) subsection). For example: all the self-monitoring scrape jobs that e.g. COS Lite has in place.
 - Under [`<remote_write>`](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write) section (`<write_relabel_configs>` subsection). For example: prometheus can be told to drop metrics before pushing them to another prometheus over remote-write API. This use case is not addressed in this guide.
 

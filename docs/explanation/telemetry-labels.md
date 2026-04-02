@@ -10,6 +10,7 @@ An application produces telemetry (metrics, logs, traces, profiles) which the ob
 This is the goal of **telemetry labels**.
 
 A telemetry label is a key-value pair. Telemetry labels can be specified:
+
 - **at generation time**: the instrumentation can attach the labels to the produced telemetry
 - **at scrape time**: the scrape jobs can be configured to label the scraped telemetry by means of "scrape configs"
 
@@ -98,6 +99,7 @@ Similarly, "service labels" can be specified using prometheus [remote-write endp
 Logs ("streams") ingested by Loki will be searchable by the specified labels.
 If you [push logs directly to Loki](https://grafana.com/docs/loki/latest/reference/loki-http-api/#ingest-logs), you can attach labels to every "stream" pushed.
 In Loki's terminology, a stream is a set of log lines pushed in a single request:
+
 ```json
 {
   "streams": [
@@ -141,6 +143,7 @@ This gives high flexibility in defining an alert. You could define an alert that
 When an on-caller receives an alert (via [alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager/), [karma](https://github.com/prymitive/karma) or similar), they see a rendering of the alert, which includes the `expr` and label values, among a few additional fields.
 
 Additional alert labels can be specified in the alert definition:
+
 ```yaml
       labels:
         severity: critical

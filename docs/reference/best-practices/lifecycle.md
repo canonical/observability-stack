@@ -22,6 +22,7 @@ volume attachments that existed on the inaccessible node. The pods will then be 
 
 
 ### Known issues
+
 - High availability during maintenance is only possible on clusters utilizing distributed storage, such as MicroCeph.
 - All of the COS Lite applications use StatefulSets, so these pods will not self-heal and deploy to another node automatically.
 - The juju controller needs to be up for the pods to start, otherwise their charm container will fail, causing the pod to go into a crash loop.

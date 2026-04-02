@@ -562,6 +562,7 @@ The `HostDown` alert is a sign that Prometheus is unable to scrape the metrics e
 
 #### Ensure the workload is running
 It is possible that the charm being scraped by Prometheus is not running. Shell into the workload container and check the service status:
+
 ```shell
 juju ssh <the rest of the commands including `pebble services`>
 ```
@@ -573,15 +574,21 @@ Another possibility is that the charm does not specify the correct port or endpo
 
 #### Ensure the correct firewall and SSL/TLS configurations are applied
 From inside the Prometheus container:
+
 1. View the Prometheus configuration file located at `/etc/prometheus/prometheus.yml`
+
 ```shell
 cat /etc/prometheus/prometheus.yml
 ```
+
 2. Find the address of your target
+
 3. Attempt to `curl` it from inside that container.
+
 ```shell
 curl <address of your workload>
 ```
+
 4. Ensure the `curl` request is successful
 
 A failed request can be due to a firewall issue. Ensure your firewall rules allow Prometheus to reach the instance.
@@ -592,25 +599,35 @@ If your workload uses TLS communication, Prometheus needs to trust that CA that 
 The `HostMetricsMissing` and `AggregatorMetricsMissing` alerts under the `AggregatorHostHealth` group are similar, with only differences in their severity and the units they are responsible for. As such, the methods to troubleshoot them are identical.
 #### Confirm the aggregator is running
 For machine charms, ensure the snap is running by checking its status in the machine hosting it. In this example, we'll assume that our aggregator is `grafana-agent` on a machine with ID 0.
+
 1. Shell into the machine:
+
 ```shell
 juju ssh 0
 ```
+
 2. Check the status of the `grafana-agent` snap:
+
 ```shell 
 sudo snap services grafana-agent
 ```
+
 Ensure that the status of the snap is indicated as `active`.
 
 For K8s charms, ensure the relevant pebble service is running by checking its status in the workload container. In this example, we'll assume we have the `opentelemetry-collector` k8s charm deployed with the name `otel` and we want to check the status of the pebble service in the workload container in unit 0. The name of the workload container is `otelcol`.
+
 ```{note}
 You need to know the name of the workload container in order to shell into it. You can find this information by consulting the `containers` section of a charm's `charmcraft.yaml` file. Alternatively, you can use `kubectl describe pod` to view the containers inside the pod.    
 ```
+
 1. Shell into the workload container:
+
 ```shell 
 juju ssh --container otelcol otel/0
 ```
+
 2. Check the status of the `otelcol` pebble service:
+
 ```shell 
 pebble services otelcol
 ```
@@ -619,11 +636,15 @@ pebble services otelcol
 It is possible that the aggregator is running, but failing to remote write metrics into the metrics backend. This can occur if there are network or firewall issues, leaving the aggregator unable to successfully hit the metrics backend's remote write endpoint.
 
 The causes in these cases can often be revealed by looking at the workload logs and looking for logs that suggest issues in reaching a host. The logs will often mention timeouts, DNS name resolution failures, TLS certificate issues, or more broadly "export failures".
+
 1. For machine aggregators, view the snap logs:
+
 ```shell
 sudo snap logs opentelemetry-collector
 ```
+
 2. For K8s aggregators, use `juju ssh` and `pebble logs` to view the workload logs. For example, for `opentelemetry-collector-k8s` unit 0, you will need to look at the Pebble logs in the `otelcol` container:
+
 ```shell
 juju ssh --container otelcol opentelemetry-collector/0 pebble logs
 ```
@@ -646,6 +667,7 @@ juju show-unit otelcol/0 --format=json | \
 ```
 
 And decompress for troubleshooting with:
+
 ```bash
 juju show-unit otelcol/0 --format=json | \
   jq -r '."otelcol/0"."relation-info"[] | select(.endpoint == "receive-otlp") | ."application-data".rules' | \

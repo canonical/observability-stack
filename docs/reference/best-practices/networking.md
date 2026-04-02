@@ -16,6 +16,7 @@ Make sure the load balancer provides Traefik with **a static IP**, or some other
 Some charms require external connectivity to function correctly.
 
 As a common requirement, the environment should be able to reach:
+
 * Charmhub;
 * the Juju registry;
 * Snapcraft.

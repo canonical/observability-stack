@@ -50,12 +50,14 @@ click cos-proxy "https://charmhub.io/cos-proxy"
 
 ### Send logs from Kubernetes charms
 Depending on your workload, you could choose one of the following [charm libraries](https://charmhub.io/loki-k8s/libraries/loki_push_api):
+
 - `LokiPushApiConsumer`, for workloads that can speak Loki's Push API.
 - `LogProxyConsumer`, which would automatically inject a Promtail binary into the workload containers of interest.
 - `LogForwarder`: This object can be used by any Charmed Operator which needs to send the workload standard output (`stdout`) through Pebble's log forwarding mechanism.
 
 #### Example: postgresql
 [Charmed postgresql-k8s](https://charmhub.io/postgresql-k8s) is [using `LogProxyConsumer`](https://github.com/canonical/postgresql-k8s-operator/blob/978080424255e109c7a7c4f4d23a5b3d5aba12a6/src/charm.py#L188) to tell Promtail to [collect logs from](https://github.com/canonical/postgresql-k8s-operator/blob/978080424255e109c7a7c4f4d23a5b3d5aba12a6/src/constants.py#L23):
+
 ```text
 [
     "/var/log/pgbackrest/*",
@@ -65,6 +67,7 @@ Depending on your workload, you could choose one of the following [charm librari
 ```
 
 When related to loki,
+
 ```yaml
 bundle: kubernetes
 applications:
@@ -84,6 +87,7 @@ relations:
 ```
 
 this results in an auto-render Promtail config file with three scrape jobs, one for each "filename":
+
 ```bash
 $ juju ssh --container postgresql pgsql/0 cat /etc/promtail/promtail_config.yaml
 ```
@@ -134,8 +138,10 @@ server:
 ### Send logs from (physical/virtual) machine models
 
 Use charmed [grafana-agent](https://charmhub.io/grafana-agent), which is a subordinate charm.
+
 - When related over `juju-info`, it will pick up all logs from `/var/log/*` without any additional setup.
 - When related over `cos-agent`, it will collect the logs specified in charm code, as well as built-in alert rules and dashboards.
+
 #### Example: nova-compute
 [nova-compute](https://charmhub.io/nova-compute) does not make use of the charm libraries provided by charmed loki, so the method of integration is over the `juju-info` interface.
 
@@ -159,6 +165,7 @@ This results in an auto-generated `grafana-agent.yaml` config file with juju top
 ```bash
 $ juju ssh agent/0 cat /etc/grafana-agent.yaml
 ```
+
 ```yaml
 integrations:
   agent:
@@ -229,6 +236,7 @@ metrics:
 server:
   log_level: info
 ```
+
 ### Send logs from legacy charms
 Legacy charms are charms that do not have COS relations in place, and are using older, "legacy" relations instead, such as `http`, `prometheus`, etc. Legacy charms relate to COS via the [cos-proxy](https://charmhub.io/cos-proxy) charm.
 
@@ -252,9 +260,8 @@ Loki does not have a size-based retention policy. Instead, they rely on a retent
 
 The default retention period is 30 days. At the moment the loki charmed operator does not support modifying this.
 
-
-
 ## References
+
 - [Collect logs with opentelemetry-collector](https://grafana.com/docs/grafana-cloud/send-data/logs/collect-logs-with-otel/)
 - [Collect logs with Promtail](https://grafana.com/docs/enterprise-logs/latest/send-data/promtail/)
 - [Loki HTTP API][Push API]

@@ -15,6 +15,7 @@ separate juju relation.
 
 ## Ingress view
 The workloads that make up COS Lite are servers that need to be reachable from outside the model they are deployed in.
+
 - Grafana ("ingress-to-leader") is the main UI, amalgamating telemetry from all datasources into dashboards.
 - Prometheus and Loki (both "ingress-per-unit"), ingest telemetry pushed from grafana agent from another model.
 - Alertmanager ("ingress per app"), has a UI for acknowledging or silencing alerts.

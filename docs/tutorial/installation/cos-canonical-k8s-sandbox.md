@@ -12,6 +12,7 @@ You can reproduce the COS deployment in this tutorial with a [cloud-config](cos-
 
 
 ## Prerequisites
+
 - A 8cpu16gb node or better, with at least 100GB disk space
 - Juju v3.6 installed ([doc](https://documentation.ubuntu.com/juju/3.6/howto/manage-juju/#install-juju)).
 - Canonical K8s (snap) installed, with local-storage ([doc](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/tutorial/getting-started/))
@@ -54,6 +55,7 @@ $ terraform apply
 ```
 
 You can watch the model as it settles with:
+
 ```
 juju status --model cos --relations --watch=5s
 ```
