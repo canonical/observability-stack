@@ -183,8 +183,7 @@ slug = 'observability'
 
 html_baseurl = 'https://documentation.ubuntu.com/observability/'
 
-# URL scheme. Add language and version scheme elements.
-# When configured with RTD variables, check for RTD environment so manual runs succeed:
+# sphinx-sitemap uses html_baseurl to generate the full URL for each page:
 
 sitemap_url_scheme = '{link}'
 
@@ -215,18 +214,15 @@ sitemap_excludes = [
 # Redirects #
 #############
 
-# To set up redirects: https://documatt.gitlab.io/sphinx-reredirects/usage.html
-# For example: 'explanation/old-name.html': '../how-to/prettify.html',
-
+# Add redirects to the 'redirects.txt' file
+# https://sphinxext-rediraffe.readthedocs.io/en/latest/
 # To set up redirects in the Read the Docs project dashboard:
 # https://docs.readthedocs.io/en/stable/guides/redirects.html
 
-# NOTE: If undefined, set to None, or empty,
-#       the sphinx_reredirects extension will be disabled.
+rediraffe_redirects = "redirects.txt"
 
-redirects = {
-    "install": "../tutorial/installation"
-}
+# Strips '/index.html' from destination URLs when building with 'dirhtml'
+rediraffe_dir_only = True
 
 
 ###########################
