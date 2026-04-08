@@ -10,6 +10,7 @@ myst:
 
 | Charm                                                                    | Substrate | Workload version | Contributing                                                                                                                                              |
 | ------------------------------------------------------------------------ | --------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Alertmanager](https://charmhub.io/alertmanager-k8s)                     | K8s       |                  | [Source](https://github.com/canonical/alertmanager-k8s-operator), [issues](https://github.com/canonical/alertmanager-k8s-operator/issues)                 |
 | [Catalogue](https://charmhub.io/catalogue-k8s)                           | K8s       |                  | [Source](https://github.com/canonical/catalogue-k8s-operator), [issues](https://github.com/canonical/catalogue-k8s-operator/issues)                       |
 | [Grafana](https://charmhub.io/grafana-k8s)                               | K8s       |                  | [Source](https://github.com/canonical/grafana-k8s-operator), [issues](https://github.com/canonical/grafana-k8s-operator/issues)                           |
 | [Loki Coordinator](https://charmhub.io/loki-coordinator-k8s)             | K8s       |                  | [Source](https://github.com/canonical/loki-operators/tree/main/coordinator), [issues](https://github.com/canonical/loki-operators/issues)         |
@@ -50,7 +51,7 @@ myst:
 | [Karma Alertmanager Proxy](https://charmhub.io/karma-alertmanager-proxy-k8s) | K8s       |                  | [Source](https://github.com/canonical/karma-alertmanager-proxy-k8s-operator), [issues](https://github.com/canonical/karma-alertmanager-proxy-k8s-operator/issues) |
 | [Prometheus Scrape Config](https://charmhub.io/prometheus-scrape-config-k8s) | Any       |                  | [Source](https://github.com/canonical/prometheus-scrape-config-k8s-operator), [issues](https://github.com/canonical/prometheus-scrape-config-k8s-operator/issues) |
 | [Prometheus Scrape Target](https://charmhub.io/prometheus-scrape-target-k8s) | Any       |                  | [Source](https://github.com/canonical/prometheus-scrape-target-k8s-operator), [issues](https://github.com/canonical/prometheus-scrape-target-k8s-operator/issues) |
-| [Script Exporter](https://charmhub.io/script-exporter)                       | K8s       |                  | [Source](https://github.com/canonical/script-exporter-operator), [issues](https://github.com/canonical/script-exporter-operator/issues)                           |
+| [Script Exporter](https://charmhub.io/script-exporter)                       | Machines       |                  | [Source](https://github.com/canonical/script-exporter-operator), [issues](https://github.com/canonical/script-exporter-operator/issues)                           |
 | SNMP Exporter                                                                | Machines  |                  | [Source](https://github.com/canonical/snmp-exporter-operator), [issues](https://github.com/canonical/snmp-exporter-operator/issues)                               |
 
 ## Rocks
@@ -69,6 +70,7 @@ myst:
 | [`ubuntu/node-exporter`](https://hub.docker.com/r/ubuntu/node-exporter)                         | [Source](https://github.com/canonical/node-exporter-rock), [issues](https://github.com/canonical/node-exporter-rock/issues)                         |
 | [`ubuntu/opentelemetry-collector`](https://hub.docker.com/r/ubuntu/opentelemetry-collector)     | [Source](https://github.com/canonical/opentelemetry-collector-rock), [issues](https://github.com/canonical/opentelemetry-collector-rock/issues)     |
 | [`ubuntu/parca`](https://hub.docker.com/r/ubuntu/parca)                                         | [Source](https://github.com/canonical/parca-rock), [issues](https://github.com/canonical/parca-rock/issues)                                         |
+| [`ubuntu/prometheus`](https://hub.docker.com/r/ubuntu/prometheus)       | [Source](https://github.com/canonical/prometheus-rock), [issues](https://github.com/canonical/prometheus-rock/issues)       |
 | [`ubuntu/prometheus-pushgateway`](https://hub.docker.com/r/ubuntu/prometheus-pushgateway)       | [Source](https://github.com/canonical/prometheus-pushgateway-rock), [issues](https://github.com/canonical/prometheus-pushgateway-rock/issues)       |
 | [`ghcr.io/canonical/s3proxy`](https://github.com/canonical/s3proxy-rock/pkgs/container/s3proxy) | [Source](https://github.com/canonical/s3proxy-rock), [issues](https://github.com/canonical/s3proxy-rock/issues)                                     |
 | [`ubuntu/tempo`](https://hub.docker.com/r/ubuntu/tempo)                                         | [Source](https://github.com/canonical/tempo-rock), [issues](https://github.com/canonical/tempo-rock/issues)                                         |
@@ -78,5 +80,8 @@ myst:
 
 | Snap                                                                    | Contributing                                                                                                                                    |
 | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Blackbox Exporter](https://snapcraft.io/prometheus-blackbox-exporter) | [Source](https://github.com/canonical/prometheus-blackbox-exporter-snap), [issues](https://github.com/canonical/prometheus-blackbox-exporter-snap/issues) |
 | [Grafana Agent](https://snapcraft.io/grafana-agent)                     | [Source](https://github.com/canonical/grafana-agent-snap), [issues](https://github.com/canonical/grafana-agent-snap/issues)                     |
+| [Node Exporter](https://snapcraft.io/node-exporter) | [Source](https://github.com/canonical/node-exporter-snap), [issues](https://github.com/canonical/node-exporter-snap/issues) |
 | [OpenTelemetry Collector](https://snapcraft.io/opentelemetry-collector) | [Source](https://github.com/canonical/opentelemetry-collector-snap), [issues](https://github.com/canonical/opentelemetry-collector-snap/issues) |
+
