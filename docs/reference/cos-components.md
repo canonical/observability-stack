@@ -51,7 +51,7 @@ myst:
 | [Karma Alertmanager Proxy](https://charmhub.io/karma-alertmanager-proxy-k8s) | K8s       |                  | [Source](https://github.com/canonical/karma-alertmanager-proxy-k8s-operator), [issues](https://github.com/canonical/karma-alertmanager-proxy-k8s-operator/issues) |
 | [Prometheus Scrape Config](https://charmhub.io/prometheus-scrape-config-k8s) | Any       |                  | [Source](https://github.com/canonical/prometheus-scrape-config-k8s-operator), [issues](https://github.com/canonical/prometheus-scrape-config-k8s-operator/issues) |
 | [Prometheus Scrape Target](https://charmhub.io/prometheus-scrape-target-k8s) | Any       |                  | [Source](https://github.com/canonical/prometheus-scrape-target-k8s-operator), [issues](https://github.com/canonical/prometheus-scrape-target-k8s-operator/issues) |
-| [Script Exporter](https://charmhub.io/script-exporter)                       | K8s       |                  | [Source](https://github.com/canonical/script-exporter-operator), [issues](https://github.com/canonical/script-exporter-operator/issues)                           |
+| [Script Exporter](https://charmhub.io/script-exporter)                       | Machines       |                  | [Source](https://github.com/canonical/script-exporter-operator), [issues](https://github.com/canonical/script-exporter-operator/issues)                           |
 | SNMP Exporter                                                                | Machines  |                  | [Source](https://github.com/canonical/snmp-exporter-operator), [issues](https://github.com/canonical/snmp-exporter-operator/issues)                               |
 
 ## Rocks
