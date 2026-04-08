@@ -11,6 +11,7 @@ In this tutorial you will learn how to make COS Lite automatically sync the aler
 
 ## Prerequisites
 This tutorial assumes that you already have the following:
+
 - A Kubernetes deployment [bootstrapped with Juju](https://documentation.ubuntu.com/juju/3.6/tutorial/).
 - A git repository with your Prometheus Alert rules.
 

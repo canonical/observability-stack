@@ -9,6 +9,7 @@ myst:
 Both COS and COS Lite, have 2 sections of the deployment (internal and external) which can implement TLS communication.
 
 The combination of these 2 configurations provides our products with 4 modes of operation:
+
 1. Both `external` and `internal` TLS communication, i.e. `full TLS encryption`
 2. Only `external` TLS communication
 3. Only `internal` TLS communication (default)

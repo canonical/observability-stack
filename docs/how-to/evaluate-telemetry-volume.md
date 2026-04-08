@@ -97,6 +97,7 @@ curl -s --data-urlencode 'query=sum(rate(loki_distributor_lines_received_total[5
 
 ## How to model the load when telemetry volume is not constant
 Applications may have many knobs and load patterns.
+
 1. Pick a few of the most significant variables. One or two would be easiest to work with.
 2. Conduct several experiments and record the logging rate and metrics rate as you change the variables.
 3. Curve fit the results, e.g. `logs_rate = f1(x, y)`, `metrics_rate = f2(x, y)`, so your results could be used

@@ -29,7 +29,7 @@ Let's go and deploy that bundle!
 
 ## Configure MicroK8s
 
-For the COS Lite bundle deployment to go smoothly, make sure the following MicroK8s [addons](https://canonical.com/microk8s/docs/addons) are enabled: `dns`, `hostpath-storage` and `metallb`.
+For the COS Lite bundle deployment to go smoothly, make sure the following MicroK8s [add-ons](https://canonical.com/microk8s/docs/addons) are enabled: `dns`, `hostpath-storage` and `metallb`.
 
 You can check this with `microk8s status`, and if any are missing, enable them with 
 
@@ -54,7 +54,7 @@ $ IPADDR=$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc')
 $ microk8s enable metallb:$IPADDR-$IPADDR
 ```
 
-To wait for all the addons to be rolled out, then run:
+To wait for all the add-ons to be rolled out, then run:
 
 ```bash
 $ microk8s kubectl rollout status deployments/hostpath-provisioner -n kube-system -w

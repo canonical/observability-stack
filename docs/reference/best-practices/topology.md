@@ -9,6 +9,7 @@ myst:
 ## Deploy in isolation
 COS (or COS Lite) should be deployed in its own Juju model, and preferably on a separate substrate with a dedicated Juju controller.
 "Grafana Agent<br/>(or OpenTelemetry Collector)"
+
 ```{mermaid}
 flowchart LR
 
@@ -36,6 +37,7 @@ These precautions help to limit the blast radius in case of outages in the workl
 ## COS
 
 Start with three units for each of the following:
+
 - Loki backend
 - Loki read
 - Loki write

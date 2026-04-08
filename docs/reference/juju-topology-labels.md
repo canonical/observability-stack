@@ -10,6 +10,7 @@ Juju topology labels are [telemetry labels](https://discourse.charmhub.io/t/tele
 Therefore, Juju topology labels play a key role in the Canonical observability stack (COS).
 
 This is what the Juju topology labels look like:
+
 ```yaml
         labels:
           model: "some-juju-model"
@@ -18,6 +19,7 @@ This is what the Juju topology labels look like:
           unit: "fancy-juju-application/0"
           charm_name: "fancy-juju-application-k8s"
 ```
+
 The COS charm libraries wrapping any observability relation endpoint inject these labels into all outgoing metric, log, trace, and dashboard, so that the charm using them doesn't have to be aware of this at all. Any charm can ship with dashboards and (alert) rules to monitor its lifecycle. These are the so-called "built-in" dashboards and rules, and are workload-specific. When the charm is deployed and related to COS, the charm libraries mediating the COS integrations will automatically inject the juju topology labels in all built-in dashboards and rules.
 
 The following sections outline what this means in practice, and which juju-topology-related modifications are applied to the built-in rules and dashboards.
@@ -52,6 +54,7 @@ For `grafana-agent-k8s`:  all metrics going through the charm are left unchanged
 Alert rules are workload-specific and vary from charm to charm. For example, two different workloads can have an alert for "memory running out", but with different thresholds. We need to qualify each alert rule with a different set of labels, so that when an `expr` evaluates as true, it only fires for the intended metrics.
 
 For built-in alert rules,
+
 - Alert `expr`s are qualified with topology labels. This way, built-in alerts fire only for the particular charm they originated from.
 - Alert labels are enriched with topology labels. This is meant for convenient reading of a rendered alert when presented to an on-caller. The labels would also be visible in the alert's rendered `expr`, but alert labels are more convenient to read.
 - Alert rules are NOT enriched with the `unit` label. This is because we wouldn't want to replicated all rules per unit. Unit information is included in metric and log labels. Since alert rules are forwarded to prometheus/loki per related *app*, not unit, having multiple units does not result in prometheus having duplicated alerts per unit. If an alert was qualified with a unit (which one?), we wouldn't get alerts from any other units.

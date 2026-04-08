@@ -11,6 +11,7 @@ In this tutorial you deploy a single-node COS Lite appliance, backed by hostPath
 You can reproduce the entire tutorial with a [cloud-config](cos-lite-canonical-k8s-sandbox.conf) script.
 
 ## Prerequisites
+
 - A 4cpu8gb node or better, with at least 40Gi disk space.
 - Juju v3.6 installed ([doc](https://documentation.ubuntu.com/juju/3.6/howto/manage-juju/#install-juju)).
 - Canonical K8s (snap) installed, with local-storage ([doc](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/tutorial/getting-started/))
