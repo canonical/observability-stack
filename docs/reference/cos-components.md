@@ -80,7 +80,7 @@ myst:
 
 | Snap                                                                    | Contributing                                                                                                                                    |
 | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| [Blackbox Exporter](https://snapcraft.io/prometheus-blackbox-exporter) | [Source](https://github.com/canonical/prometheus-blackbox-exporter-snap), [issues](https://github.com/prometheus-canonical/blackbox-exporter-snap/issues) |
+| [Blackbox Exporter](https://snapcraft.io/prometheus-blackbox-exporter) | [Source](https://github.com/canonical/prometheus-blackbox-exporter-snap), [issues](https://github.com/canonical/prometheus-blackbox-exporter-snap/issues) |
 | [Grafana Agent](https://snapcraft.io/grafana-agent)                     | [Source](https://github.com/canonical/grafana-agent-snap), [issues](https://github.com/canonical/grafana-agent-snap/issues)                     |
 | [Node Exporter](https://snapcraft.io/node-exporter) | [Source](https://github.com/canonical/node-exporter-snap), [issues](https://github.com/canonical/node-exporter-snap/issues) |
 | [OpenTelemetry Collector](https://snapcraft.io/opentelemetry-collector) | [Source](https://github.com/canonical/opentelemetry-collector-snap), [issues](https://github.com/canonical/opentelemetry-collector-snap/issues) |
