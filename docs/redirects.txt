@@ -15,6 +15,6 @@
 # Deprecated Discourse site - old URL redirects
 
 "tutorials" "tutorial"
-"design-goals" "explanation/design-goals"
-"juju-topology" "explanation/juju-topology"
+"design-goals" "explanation/about-cos/design-goals"
+"juju-topology" "explanation/about-cos/juju-topology"
 "reference/security" "reference/security-hardening-guide"

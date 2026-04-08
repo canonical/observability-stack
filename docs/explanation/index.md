@@ -22,7 +22,7 @@ use of.
 
 What is Observability? <https://canonical.com/observability/what-is-observability>
 Model-Driven Observability <https://ubuntu.com/blog/tag/model-driven-observability>
-What is COS? <what-is-cos>
+What is COS? <about-cos/what-is-cos>
 ```
 
 ## Topology & stack variants
@@ -33,8 +33,8 @@ different stack variants available (COS, and COS Lite).
 ```{toctree}
 :maxdepth: 1
 
-Juju Topology <juju-topology>
-Stack variants <stack-variants>
+Juju Topology <about-cos/juju-topology>
+Stack variants <about-cos/stack-variants>
 ```
 
 ## Architecture & design
@@ -46,13 +46,13 @@ into your observability strategy or when designing integrations.
 ```{toctree}
 :maxdepth: 1
 
-Design Goals <design-goals>
-Logging Architecture <logging-architecture>
-Telemetry Flow <telemetry-flow>
-Telemetry Correlation <telemetry-correlation>
-Telemetry Labels <telemetry-labels>
-Opentelemetry Protocol (OTLP) Juju Topology Labels <telemetry-otlp-topology-labels>
-Data Integrity <data-integrity>
+Design Goals <about-cos/design-goals>
+Logging Architecture <integrations/logging-architecture>
+Telemetry Flow <about-cos/telemetry-flow>
+Telemetry Correlation <integrations/telemetry-correlation>
+Telemetry Labels <about-cos/telemetry-labels>
+Opentelemetry Protocol (OTLP) Juju Topology Labels <about-cos/telemetry-otlp-topology-labels>
+Data Integrity <operations/data-integrity>
 ```
 
 ## Alerting & rules
@@ -63,7 +63,7 @@ designed and managed across the stack.
 ```{toctree}
 :maxdepth: 1
 
-Charmed alert rules <charmed-rules>
-Generic alert rules <generic-rules>
-Dashboard upgrades and deduplication <dashboard-upgrades>
+Charmed alert rules <integrations/charmed-rules>
+Generic alert rules <integrations/generic-rules>
+Dashboard upgrades and deduplication <operations/dashboard-upgrades>
 ```
