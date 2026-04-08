@@ -69,6 +69,7 @@ myst:
 | [`ubuntu/node-exporter`](https://hub.docker.com/r/ubuntu/node-exporter)                         | [Source](https://github.com/canonical/node-exporter-rock), [issues](https://github.com/canonical/node-exporter-rock/issues)                         |
 | [`ubuntu/opentelemetry-collector`](https://hub.docker.com/r/ubuntu/opentelemetry-collector)     | [Source](https://github.com/canonical/opentelemetry-collector-rock), [issues](https://github.com/canonical/opentelemetry-collector-rock/issues)     |
 | [`ubuntu/parca`](https://hub.docker.com/r/ubuntu/parca)                                         | [Source](https://github.com/canonical/parca-rock), [issues](https://github.com/canonical/parca-rock/issues)                                         |
+| [`ubuntu/prometheus`](https://hub.docker.com/r/ubuntu/prometheus)       | [Source](https://github.com/canonical/prometheus-rock), [issues](https://github.com/canonical/prometheus-rock/issues)       |
 | [`ubuntu/prometheus-pushgateway`](https://hub.docker.com/r/ubuntu/prometheus-pushgateway)       | [Source](https://github.com/canonical/prometheus-pushgateway-rock), [issues](https://github.com/canonical/prometheus-pushgateway-rock/issues)       |
 | [`ghcr.io/canonical/s3proxy`](https://github.com/canonical/s3proxy-rock/pkgs/container/s3proxy) | [Source](https://github.com/canonical/s3proxy-rock), [issues](https://github.com/canonical/s3proxy-rock/issues)                                     |
 | [`ubuntu/tempo`](https://hub.docker.com/r/ubuntu/tempo)                                         | [Source](https://github.com/canonical/tempo-rock), [issues](https://github.com/canonical/tempo-rock/issues)                                         |
@@ -80,3 +81,7 @@ myst:
 | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | [Grafana Agent](https://snapcraft.io/grafana-agent)                     | [Source](https://github.com/canonical/grafana-agent-snap), [issues](https://github.com/canonical/grafana-agent-snap/issues)                     |
 | [OpenTelemetry Collector](https://snapcraft.io/opentelemetry-collector) | [Source](https://github.com/canonical/opentelemetry-collector-snap), [issues](https://github.com/canonical/opentelemetry-collector-snap/issues) |
+| [Script Exporter](https://snapcraft.io/script-exporter) | [Source](https://github.com/canonical/script-exporter-snap), [issues](https://github.com/canonical/script-exporter-snap/issues) |
+| [Node Exporter](https://snapcraft.io/node-exporter) | [Source](https://github.com/canonical/node-exporter-snap), [issues](https://github.com/canonical/node-exporter-snap/issues) |
+| [Blackbox Exporter](https://snapcraft.io/blackbox-exporter) | [Source](https://github.com/canonical/blackbox-exporter-snap), [issues](https://github.com/canonical/blackbox-exporter-snap/issues) |
+
