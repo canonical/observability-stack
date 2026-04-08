@@ -15,36 +15,6 @@
 # Deprecated Discourse site - old URL redirects
 
 "tutorials" "tutorial"
-"tutorials/install-microk8s" "tutorial/installation/cos-lite-microk8s-sandbox"
-"tutorials/sync-alert-rules-from-git" "tutorial/sync-alert-rules-from-git"
-"tutorials/instrumenting-machine-charms" "tutorial/instrument-machine-charms"
-"tutorials/distributed-storage" "tutorial"
-"how-to/metrics-endpoint" "how-to/exposing-a-metrics-endpoint"
-"how-to/add-alert-rules" "how-to/adding-alert-rules"
-"how-to/migrate-from-lma" "how-to/migrate-lma-to-cos-lite"
-"how-to/add-distributed-tracing" "how-to"
-"how-to/integrate-cos-lite-with-uncharmed-applications" "how-to/integrating-cos-lite-with-uncharmed-applications"
-"how-to/fix-socket-too-many-open-files" "how-to/troubleshooting"
-"how-to/deploy-minio-for-s3-testing" "how-to/deploy-s3-integrator-and-minio"
-"how-to/migrate" "how-to/migrate-lma-to-cos-lite"
-"editions/lite" "explanation"
 "design-goals" "explanation/design-goals"
 "juju-topology" "explanation/juju-topology"
-"explanation/tls" "explanation"
-"explanation/ingress" "explanation"
-"reference/juju-topology" "explanation/juju-topology"
-"explanation/logging" "explanation/logging-architecture"
-"explanation/flow" "explanation/telemetry-flow"
-"reference/solution-matrix" "reference"
-"reference/bundle-topology" "reference/cos-lite-model-topology"
 "reference/security" "reference/security-hardening-guide"
-"reference/performance/on-4cpu-8gb-ssd" "reference"
-"reference/performance/on-8cpu-16gb-ssd" "reference"
-
-
-
-
-
-
-
-
