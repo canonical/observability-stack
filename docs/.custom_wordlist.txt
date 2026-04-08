@@ -63,6 +63,7 @@ Grafana's
 gRPCs
 gyre
 HostHealth
+haproxy
 hostname
 hostPath
 html
