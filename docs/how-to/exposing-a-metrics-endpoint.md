@@ -57,7 +57,7 @@ time, Prometheus expands it to one scrape job per unit, each labeled with the
 corresponding `juju_unit` topology label.
 
 If your workload requires explicit hostname or IPs instead of wildcards (for
-example, for TLS with strict SNI validation), you can use fully-qualified
+example, for TLS with strict `SNI` validation), you can use fully-qualified
 addresses as targets:
 
 ```python
