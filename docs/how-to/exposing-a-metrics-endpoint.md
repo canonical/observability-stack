@@ -56,7 +56,7 @@ The `*` wildcard in the target address is the most common pattern.  At scrape
 time, Prometheus expands it to one scrape job per unit, each labeled with the
 corresponding `juju_unit` topology label.
 
-If your workload requires explicit hostnames or IPs instead of wildcards (for
+If your workload requires explicit hostname or IPs instead of wildcards (for
 example, for TLS with strict SNI validation), you can use fully-qualified
 addresses as targets:
 
