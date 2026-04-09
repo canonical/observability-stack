@@ -27,6 +27,8 @@ variable "model_uuid" {
   type        = string
 }
 
+# -------------- # TLS configurations --------------
+
 variable "internal_tls" {
   description = "Specify whether to use TLS or not for internal COS communication. By default, TLS is enabled using self-signed-certificates"
   type        = bool
@@ -51,6 +53,20 @@ variable "external_ca_cert_offer_url" {
   description = "A Juju offer URL (e.g. admin/external-ca.send-ca-cert) of a CA providing the 'certificate_transfer' integration for applications to trust ingress via Traefik."
   type        = string
   default     = null
+}
+
+# -------------- # Ingress configurations --------------
+
+variable "ingress" {
+  description = "Per-application toggle for Traefik ingress integration"
+  type = object({
+    alertmanager = optional(bool, true)
+    catalogue    = optional(bool, true)
+    grafana      = optional(bool, true)
+    loki         = optional(bool, true)
+    prometheus   = optional(bool, true)
+  })
+  default = {}
 }
 
 # -------------- # Application configurations --------------
