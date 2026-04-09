@@ -58,6 +58,31 @@ class ScrapableCharm:
                 }])
 ```
 
+The `*` wildcard in the target address is the most common pattern.  At scrape
+time, Prometheus expands it to one scrape job per unit, each labeled with the
+corresponding `juju_unit` topology label.
+
+If your workload requires explicit hostnames or IPs instead of wildcards (for
+example, for TLS with strict SNI validation), you can use fully-qualified
+addresses as targets:
+
+```python
+class ScrapableCharm:
+    # ...
+    def __init__(self, *args):
+        # ...
+        self.metrics_endpoint_provider = MetricsEndpointProvider(
+                self,
+                jobs=[{
+                    "static_configs": [{
+                        "targets": ["myapp-0.myapp-endpoints.mymodel.svc.cluster.local:8080"]
+                    }],
+                }])
+```
+
+Non-wildcard targets whose host matches a known unit address or FQDN are
+also enriched with the `juju_unit` label, just like wildcard targets.
+
 ## Declaring the relation
 
 As a last step, you need to declare the relation in your charms `metadata.yaml` file.

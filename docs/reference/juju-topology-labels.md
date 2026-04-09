@@ -37,10 +37,21 @@ Incidental dashboards coming in from a git repository via the `cos-configuration
 When dashboards are forwarded through a `grafana-agent` intermediary, the juju topology labels of the charm of origin are injected (and not `grafana-agent`'s). Any subsequent chaining to additional grafana agent charms would leave the labels intact.
 
 ### Charms relating through `cos-proxy`
-`cos-proxy` will apply its own topology to the labels, as old LMA-provider units don't implement the more modern interfaces that we would need to add topology to the telemetry. 
+`cos-proxy` will apply its own topology to the labels, as old LMA-provider units don't implement the more modern interfaces that we would need to add topology to the telemetry.
 
-## Metrics 
-Metrics are workload-specific and vary from charm to charm. 
+## Metrics
+Metrics are workload-specific and vary from charm to charm.
+
+### Charms relating through `metrics-endpoint`
+
+When a charm relates to `prometheus-k8s`, `opentelemetry-collector-k8s` or `opentelemetry-collector` via the `metrics-endpoint` interface, the `prometheus_scrape` library generates per-unit scrape jobs enriched with all Juju topology labels, including `juju_unit`.
+
+Scrape targets can be specified in two ways:
+
+- **Wildcard targets** (e.g. `*:8080`): The wildcard is expanded into one scrape job per unit, each targeting the unit's address and labeled with the corresponding `juju_unit`.
+- **Non-wildcard targets** (e.g. `alertmanager-0.alertmanager-endpoints.svc.cluster.local:9093` or `10.1.14.39:8080`): The library matches each target's host (IP address or FQDN) against known unit addresses. Matched targets produce a per-unit scrape job with `juju_unit`, just like wildcard targets. Targets that cannot be matched to any known unit are grouped in a single job with all other topology labels but without `juju_unit`.
+
+This ensures that metrics from any charmed workload — regardless of how its targets are defined — can be filtered by unit in Grafana dashboards and alert expressions.
 
 ### Charms relating through `grafana-agent` (`-k8s` or not)
 For `grafana-agent`: any metrics coming from the principal charm will be tagged with the topology of the principal unit. The generic Linux metrics coming from the node exporter will be tagged with the grafana-agent unit topology.
@@ -80,7 +91,7 @@ In `grafana-agent`, logs scraped from files, such as `/var/log`, will be tagged 
 In `grafana-agent-k8s`, the charm will not modify the topology.
 
 ### Charms relating through `cos-proxy`
-`cos-proxy` will apply its own topology to the logs. 
+`cos-proxy` will apply its own topology to the logs.
 
 ## Traces
 Any charm can stream traces to Tempo using the `tracing` charm lib. Usually this is done by sending the traces to a `grafana-agent` (soon to be replaced by the OTEL collector), which forwards them to the COS stack. The agent will be responsible to attach to any trace going through it the juju topology of the unit generating them, if known, or else its own (for uncharmed workloads).
