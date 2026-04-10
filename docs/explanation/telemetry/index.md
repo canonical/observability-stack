@@ -16,6 +16,7 @@ collected, labelled, and correlated across the stack.
 
 Logging Architecture <logging-architecture>
 Telemetry Labels <telemetry-labels>
+Telemetry Collection <telemetry-collection>
 OpenTelemetry Protocol (OTLP) Juju Topology Labels <telemetry-otlp-topology-labels>
 Telemetry Correlation <telemetry-correlation>
 ```
