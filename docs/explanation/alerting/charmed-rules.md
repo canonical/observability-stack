@@ -38,5 +38,5 @@ charmed rules must pay special attention to wide applicability. Charmed rules ca
 
 ## Automatic modifications made to charmed alert rules
 
-- All alert expressions are automatically injected with [juju topology](/explanation/about-cos/juju-topology) matchers.
+- All alert expressions are automatically injected with [juju topology](/explanation/architecture/juju-topology) matchers.
 - Juju topology alert labels are automatically added to all alerts.

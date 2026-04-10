@@ -26,16 +26,16 @@ For Site Reliability Engineers, COS provides a turn-key, out-of-the-box solution
 | **Data migration**     | [Data integrity]                                                            |
 | **Components**         | [COS components]                                                            |
 
-[What is COS?]: explanation/about-cos/what-is-cos
-[What is Juju topology?]: explanation/about-cos/juju-topology
+[What is COS?]: explanation/overview/what-is-cos
+[What is Juju topology?]: explanation/architecture/juju-topology
 [Deploy in a sandbox]: tutorial/cos-canonical-k8s-sandbox
 [Migrate from LMA]: how-to/migrate/migrate-lma-to-cos-lite
 [Evaluate telemetry volume]: how-to/configure-and-tune/evaluate-telemetry-volume
 [Validate]: how-to/validate-and-troubleshoot/validate-cos-deployment
 [Hardening]: reference/security-hardening-guide
 [Cross-track upgrade]: how-to/install-and-upgrade/upgrade
-[Dashboard upgrades]: explanation/operations/dashboard-upgrades
-[Charmed alert rules]: explanation/integrations/charmed-rules
+[Dashboard upgrades]: explanation/alerting/dashboard-upgrades
+[Charmed alert rules]: explanation/alerting/charmed-rules
 [Add alert rules]: how-to/integrate/adding-alert-rules
 [Data integrity]: explanation/operations/data-integrity
 [COS components]: reference/cos-components

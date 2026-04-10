@@ -158,6 +158,6 @@ This is useful for:
 [`relabel_configs`](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config) and [`metric_relabel_configs`](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs) are for modifying label and metric names, respectively.
 
 See also:
-- [reference/juju-topology-labels](Juju topology labels)
+- [Juju topology labels](/explanation/architecture/juju-topology-labels)
 - [How relabeling in Prometheus works](https://grafana.com/blog/how-relabeling-in-prometheus-works/)
 - [PromLens Relabeler](https://relabeler.promlabs.com/).

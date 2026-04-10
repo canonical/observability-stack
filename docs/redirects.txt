@@ -15,8 +15,8 @@
 # Deprecated Discourse site - old URL redirects
 
 "tutorials" "tutorial"
-"design-goals" "explanation/about-cos/design-goals"
-"juju-topology" "explanation/about-cos/juju-topology"
+"design-goals" "explanation/architecture/design-goals"
+"juju-topology" "explanation/architecture/juju-topology"
 "reference/security" "reference/security-hardening-guide"
 
 # how-to directory reorganisation (install-and-maintain -> install-and-upgrade, migrate, integrate)
@@ -45,3 +45,20 @@
 "how-to/operations/redact-sensitive-data" "how-to/configure-and-tune/redact-sensitive-data"
 "how-to/operations/validate-cos-deployment" "how-to/validate-and-troubleshoot/validate-cos-deployment"
 "how-to/troubleshooting" "how-to/validate-and-troubleshoot/troubleshooting"
+
+# explanation directory reorganisation (about-cos, integrations, operations -> overview, architecture, telemetry, alerting, operations)
+"explanation/about-cos/index" "explanation/overview/index"
+"explanation/about-cos/what-is-cos" "explanation/overview/what-is-cos"
+"explanation/about-cos/design-goals" "explanation/architecture/design-goals"
+"explanation/about-cos/juju-topology" "explanation/architecture/juju-topology"
+"explanation/about-cos/juju-topology-labels" "explanation/architecture/juju-topology-labels"
+"explanation/about-cos/cos-lite-model-topology" "explanation/architecture/cos-lite-model-topology"
+"explanation/about-cos/stack-variants" "explanation/architecture/stack-variants"
+"explanation/about-cos/telemetry-flow" "explanation/architecture/telemetry-flow"
+"explanation/about-cos/telemetry-labels" "explanation/telemetry/telemetry-labels"
+"explanation/about-cos/telemetry-otlp-topology-labels" "explanation/telemetry/telemetry-otlp-topology-labels"
+"explanation/integrations/logging-architecture" "explanation/telemetry/logging-architecture"
+"explanation/integrations/telemetry-correlation" "explanation/telemetry/telemetry-correlation"
+"explanation/integrations/charmed-rules" "explanation/alerting/charmed-rules"
+"explanation/integrations/generic-rules" "explanation/alerting/generic-rules"
+"explanation/operations/dashboard-upgrades" "explanation/alerting/dashboard-upgrades"

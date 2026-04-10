@@ -43,8 +43,8 @@ Topology reference pages describing how COS makes us of Juju topology as telemet
 ```{toctree}
 :maxdepth: 1
 
-Model Topology for COS Lite <../explanation/about-cos/cos-lite-model-topology>
-Juju Topology Labels <../explanation/about-cos/juju-topology-labels>
+Model Topology for COS Lite <../explanation/architecture/cos-lite-model-topology>
+Juju Topology Labels <../explanation/architecture/juju-topology-labels>
 ```
 
 ## Integrations & artifacts

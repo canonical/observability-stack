@@ -555,7 +555,7 @@ ulimit -l 16384 || true
 ```
 
 ## Firing alert rules
-This guide describes how to troubleshoot firing generic alert rules. For detailed explanations on the design and goals of these rules, refer to the [explanation page](/explanation/integrations/generic-rules).
+This guide describes how to troubleshoot firing generic alert rules. For detailed explanations on the design and goals of these rules, refer to the [explanation page](/explanation/alerting/generic-rules).
 
 ### How to troubleshoot the `HostDown` alert
 The `HostDown` alert is a sign that Prometheus is unable to scrape the metrics endpoint of the charm for whom this alert is firing. The methods below can help pinpoint the issue.
