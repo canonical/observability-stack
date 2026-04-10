@@ -13,7 +13,7 @@ myst:
 ## COS Lite
 As a general rule, plan for a 4cpu8gb or better VM.
 
-If you have an [estimate for the expected telemetry rate](../how-to/evaluate-telemetry-volume.md), refer to the tables below.
+If you have an [estimate for the expected telemetry rate](../how-to/configure-and-tune/evaluate-telemetry-volume), refer to the tables below.
 
 
 ### Metrics (Prometheus)
