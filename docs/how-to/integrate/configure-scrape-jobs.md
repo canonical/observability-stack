@@ -14,7 +14,7 @@ when there is a need without adding complexity to the general use case.
 This has the added benefit of making it crystal clear while glancing the 
 model to identify whether something is deviating from the defaults.
 
-![Before adding the Prometheus Scrape Config charm|600](../assets/without-scrape-config.svg)
+![Before adding the Prometheus Scrape Config charm|600](/assets/without-scrape-config.svg)
 
 ## Deploy the Scrape Config charm
 
@@ -131,4 +131,4 @@ Notice how the last part of our scrape job changed? We are now sending a
 non-default `scrape_interval` to Prometheus! If we visualize our deployment 
 as a diagram, it will now instead look like this:
 
-![After adding the Prometheus Scrape Config charm|600](../assets/with-scrape-config.svg)
+![After adding the Prometheus Scrape Config charm|600](/assets/with-scrape-config.svg)

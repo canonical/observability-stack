@@ -16,11 +16,11 @@ In this case, Grafana Agent takes over the responsibility to push logs as well a
 
 The Grafana Agent needs to be able to reach the charms and workloads generating the telemetry, and the other way around. 
 
-![simplified telemetry flow diagram|690x168](assets/telemetry-flow-1.jpeg)
+![simplified telemetry flow diagram|690x168](/assets/telemetry-flow-1.jpeg)
 
 The image below describes a typical COS Lite deployment observing both a LXD- and a Kubernetes cloud. In the following sections, you’ll find a brief summary of the use case of each of the components that make up a data path between a telemetry emitter and COS itself.
 
-![detailed telemetry flow diagram|690x428](assets/telemetry-flow-2.jpeg)
+![detailed telemetry flow diagram|690x428](/assets/telemetry-flow-2.jpeg)
 
 ## COS
 

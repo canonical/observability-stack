@@ -24,7 +24,7 @@ Note that different tracks may have different ubuntu bases or minimum Juju versi
 
 Let's assume this is our, heavily simplified, existing environment:
 
-![image|600](../assets/migrate-from-lma-to-cos-lite-1.png)
+![image|600](/assets/migrate-from-lma-to-cos-lite-1.png)
 
 ## 1. Upgrade your existing Juju controller
 
@@ -39,7 +39,7 @@ This model needs to be running Juju `>=3.6`. For instructions, see the [installa
 
 It will now look somewhat like this:
 
-![image|600](../assets/migrate-from-lma-to-cos-lite-2.png)
+![image|600](/assets/migrate-from-lma-to-cos-lite-2.png)
 
 ## 3. Deploy `cos-proxy` and `grafana-agent` in your pre-existing model
 
@@ -67,7 +67,7 @@ juju consume ck8s:admin/cos.prometheus
 
 By now, you will have something that looks a little something like this:
 
-![image|600](../assets/migrate-from-lma-to-cos-lite-3.png)
+![image|600](/assets/migrate-from-lma-to-cos-lite-3.png)
 
 [COS Proxy](https://charmhub.io/cos-proxy) and [Grafana Agent](https://charmhub.io/grafana-agent) will continue to work on 
 Juju 2.9 for the time being. This is mainly to support migrations from LMA 

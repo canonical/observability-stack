@@ -119,4 +119,4 @@ Once this config is applied, we can verify in Grafana, that our concrete log:
 
 has been redacted:
 
-![Grafana screenshot showing the log entry with the referer field redacted](../../tutorial/assets/grafaana-redacted-log.png)
+![Grafana screenshot showing the log entry with the referer field redacted](/assets/grafaana-redacted-log.png)

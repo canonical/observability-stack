@@ -17,7 +17,7 @@ The combination of these 2 configurations provides our products with 4 modes of 
 
 
 <!-- Note: edit this diagram by dragging it into a drawio editor -->
-![high-level-tls.png](../assets/high-level-tls.png)
+![high-level-tls.png](/assets/high-level-tls.png)
 
 
 ## Full TLS encryption implementation details
