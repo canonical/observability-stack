@@ -8,57 +8,7 @@
 
 
 "install/" "tutorial/index"
-
-
-
-
-# Deprecated Discourse site - old URL redirects
-
 "tutorials" "tutorial"
 "design-goals" "explanation/architecture/design-goals"
 "juju-topology" "explanation/architecture/juju-topology"
-"reference/security" "reference/security-hardening-guide"
-
-# how-to directory reorganisation (install-and-maintain -> install-and-upgrade, migrate, integrate)
-"how-to/install-and-maintain/index" "how-to/install-and-upgrade/index"
-"how-to/install-and-maintain/upgrade" "how-to/install-and-upgrade/upgrade"
-"how-to/install-and-maintain/configure-tls-encryption" "how-to/install-and-upgrade/configure-tls-encryption"
-"how-to/install-and-maintain/migrate-lma-to-cos-lite" "how-to/migrate/migrate-lma-to-cos-lite"
-"how-to/install-and-maintain/migrate-grafana-agent-to-otelcol" "how-to/migrate/migrate-grafana-agent-to-otelcol"
-"how-to/install-and-maintain/integrating-cos-lite-with-uncharmed-applications" "how-to/integrate/integrating-cos-lite-with-uncharmed-applications"
-"how-to/install-and-maintain/add-tracing-to-cos-lite" "how-to/integrate/add-tracing-to-cos-lite"
-"how-to/install-and-maintain/deploy-s3-integrator-and-minio" "how-to/integrate/deploy-s3-integrator-and-minio"
-
-# how-to directory reorganisation (integrations -> integrate)
-"how-to/integrations/adding-alert-rules" "how-to/integrate/adding-alert-rules"
-"how-to/integrations/configure-scrape-jobs" "how-to/integrate/configure-scrape-jobs"
-"how-to/integrations/exposing-a-metrics-endpoint" "how-to/integrate/exposing-a-metrics-endpoint"
-"how-to/integrations/instrument-machine-charms" "how-to/integrate/instrument-machine-charms"
-"how-to/integrations/tiered-otelcols" "how-to/integrate/tiered-otelcols"
-
-# how-to directory reorganisation (operations -> configure-and-tune, validate-and-troubleshoot)
-"how-to/operations/sync-alert-rules-from-git" "how-to/configure-and-tune/sync-alert-rules-from-git"
-"how-to/operations/evaluate-telemetry-volume" "how-to/configure-and-tune/evaluate-telemetry-volume"
-"how-to/operations/selectively-drop-telemetry-scrape-config" "how-to/configure-and-tune/selectively-drop-telemetry-scrape-config"
-"how-to/operations/selectively-drop-telemetry-otelcol" "how-to/configure-and-tune/selectively-drop-telemetry-otelcol"
-"how-to/operations/disable-charmed-rules" "how-to/configure-and-tune/disable-charmed-rules"
-"how-to/operations/redact-sensitive-data" "how-to/configure-and-tune/redact-sensitive-data"
-"how-to/operations/validate-cos-deployment" "how-to/validate-and-troubleshoot/validate-cos-deployment"
-"how-to/troubleshooting" "how-to/validate-and-troubleshoot/troubleshooting"
-
-# explanation directory reorganisation (about-cos, integrations, operations -> overview, architecture, telemetry, alerting, operations)
-"explanation/about-cos/index" "explanation/overview/index"
-"explanation/about-cos/what-is-cos" "explanation/overview/what-is-cos"
-"explanation/about-cos/design-goals" "explanation/architecture/design-goals"
-"explanation/about-cos/juju-topology" "explanation/architecture/juju-topology"
-"explanation/about-cos/juju-topology-labels" "explanation/architecture/juju-topology-labels"
-"explanation/about-cos/cos-lite-model-topology" "explanation/architecture/cos-lite-model-topology"
-"explanation/about-cos/stack-variants" "explanation/architecture/stack-variants"
-"explanation/about-cos/telemetry-flow" "explanation/architecture/telemetry-flow"
-"explanation/about-cos/telemetry-labels" "explanation/telemetry/telemetry-labels"
-"explanation/about-cos/telemetry-otlp-topology-labels" "explanation/telemetry/telemetry-otlp-topology-labels"
-"explanation/integrations/logging-architecture" "explanation/telemetry/logging-architecture"
-"explanation/integrations/telemetry-correlation" "explanation/telemetry/telemetry-correlation"
-"explanation/integrations/charmed-rules" "explanation/alerting/charmed-rules"
-"explanation/integrations/generic-rules" "explanation/alerting/generic-rules"
-"explanation/operations/dashboard-upgrades" "explanation/alerting/dashboard-upgrades"
+"security" "reference/security-hardening-guide"
