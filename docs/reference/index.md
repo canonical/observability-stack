@@ -36,16 +36,6 @@ Security Hardening Guide <security-hardening-guide>
 Cryptographic Documentation <cryptographic-documentation>
 ```
 
-## Topology
-
-Topology reference pages describing how COS makes us of Juju topology as telemetry labels.
-
-```{toctree}
-:maxdepth: 1
-
-Model Topology for COS Lite <../explanation/architecture/cos-lite-model-topology>
-Juju Topology Labels <../explanation/architecture/juju-topology-labels>
-```
 
 ## Integrations & artifacts
 
