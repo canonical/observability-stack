@@ -20,5 +20,4 @@ Architecture & topology <architecture/index>
 Telemetry <telemetry/index>
 Alerting & dashboards <alerting/index>
 Operations & data <operations/index>
-Telemetry Collection <telemetry-collection>
 ```
