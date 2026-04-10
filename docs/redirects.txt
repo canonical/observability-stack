@@ -7,7 +7,7 @@
 # a file that does exist in the source.
 
 
-"install/" "tutorial/installation"
+"install/" "tutorial/index"
 
 
 

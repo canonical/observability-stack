@@ -59,6 +59,13 @@ reference/index
 explanation/index
 ```
 
+```{toctree}
+:maxdepth: 1
+:hidden:
+
+Release notes <release-notes>
+```
+
 
 ## Project and community
 

@@ -20,7 +20,6 @@ compatibility.
 ```{toctree}
 :maxdepth: 1
 
-Release Notes <../release-notes>
 Release Policy <release-policy>
 System Requirements <system-requirements>
 ```

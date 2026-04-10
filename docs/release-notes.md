@@ -1,10 +1,12 @@
 ---
 myst:
  html_meta:
-  description: "Read COS 2 release notes to track new features, review requirements and compatibility, peripheral-charm changes, and breaking and deprecated changes."
+  description: "Read COS 3 release notes to track new features, review requirements and compatibility, peripheral-charm changes, and breaking and deprecated changes."
 ---
 
-# COS 3 release notes
+# Release notes
+
+## COS 3
 May 2026
 
 These release notes cover new features and changes in COS 3.
