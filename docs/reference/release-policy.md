@@ -5,6 +5,7 @@ Our release policy includes two kinds of releases, short-term releases and long-
 We release every six months, same as Ubuntu, and our LTS releases coincide with [Ubuntu's LTS release cadence](https://ubuntu.com/about/release-cycle).
 
 ## Short-term releases
+
 Short-term releases are supported for nine months by providing security patches and critical bug fixes.
 
 | Track | Release date | End of standard security maintenance | Ubuntu base                          | Min. Juju version | Brief summary                                                                                             |
@@ -21,5 +22,10 @@ Short-term releases are supported for nine months by providing security patches 
 
 
 ## Charmhub tracks and git branches
+
 We create the Charmhub track at beginning of a cycle, and a git branch at end of cycle.
 For example, during June-September 2025, we had track `2` on Charmhub, but only `track/1` and `main` branches on github.
+
+## Support for Ubuntu Pro customers
+
+If you have an Ubuntu Pro Support subscription, both track 1 and track 2 will receive ticket break/bug fix support until 6 months after the release of track 3.
