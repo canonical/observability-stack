@@ -15,7 +15,7 @@ One such use case is for processing data differently per receiver or exporter.
 
 One imaginable scenario is splitting a log stream into [hot and cold data](https://en.wikipedia.org/wiki/Cold_data) based on log levels. For compliance reasons we may also want to implement a [redaction processor](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/processor/redactionprocessor/README.md) for removing sensitive data. Additionally, the [batch processor](https://github.com/open-telemetry/opentelemetry-collector/blob/main/processor/batchprocessor/README.md) improves efficiency of both log streams via compression. Low-severity levels like `TRACE`, `DEBUG` and `INFO` often have a greater frequency in log streams and indicate normal workload operation. This can be filtered out in a log stream which is sent to long-term (cold) storage to minimize cost while maintaining compliance. Conversely, the hot storage could include `INFO` logs, since storage is short-term, while still filtering out `TRACE` and `DEBUG` logs.
 
-To understand how to filter telemetry with otelcol, refer to the [selectively drop telemetry](selectively-drop-telemetry-otelcol) documentation or see the [examples for log-level filtering](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/processor/filterprocessor/testdata/config_logs_min_severity.yaml).
+To understand how to filter telemetry with otelcol, refer to the [selectively drop telemetry](../operations/selectively-drop-telemetry-otelcol) documentation or see the [examples for log-level filtering](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/processor/filterprocessor/testdata/config_logs_min_severity.yaml).
 
 ```{mermaid}
 flowchart TB
@@ -37,19 +37,19 @@ With Juju config we use the [otelcol processor config](https://charmhub.io/opent
 
 1. Set the minimum severity level to `WARNING`
 
-```{literalinclude} /how-to/tiered-outgoing-otelcol-bundle.yaml
+```{literalinclude} /how-to/integrations/tiered-outgoing-otelcol-bundle.yaml
 :lines: 3, 10-18
 ```
 
 2. Set the minimum severity level to `INFO`
 
-```{literalinclude} /how-to/tiered-outgoing-otelcol-bundle.yaml
+```{literalinclude} /how-to/integrations/tiered-outgoing-otelcol-bundle.yaml
 :lines: 32, 39-46
 ```
 
 3. Redact sensitive log messages and batch
 
-```{literalinclude} /how-to/tiered-outgoing-otelcol-bundle.yaml
+```{literalinclude} /how-to/integrations/tiered-outgoing-otelcol-bundle.yaml
 :lines: 79, 86-91
 ```
 
@@ -76,18 +76,18 @@ With Juju config we use the [otelcol processor config](https://charmhub.io/opent
 
 1. Label the log stream as `development` and originating from `region-a`
 
-```{literalinclude} /how-to/tiered-incoming-otelcol-bundle.yaml
+```{literalinclude} /how-to/integrations/tiered-incoming-otelcol-bundle.yaml
 :lines: 3, 10-16
 ```
 
 2. Label the log stream as `production` and originating from `region-a`
 
-```{literalinclude} /how-to/tiered-incoming-otelcol-bundle.yaml
+```{literalinclude} /how-to/integrations/tiered-incoming-otelcol-bundle.yaml
 :lines: 53, 60-66
 ```
 
 3. Redact sensitive log messages and batch
 
-```{literalinclude} /how-to/tiered-incoming-otelcol-bundle.yaml
+```{literalinclude} /how-to/integrations/tiered-incoming-otelcol-bundle.yaml
 :lines: 71, 78-84
 ```

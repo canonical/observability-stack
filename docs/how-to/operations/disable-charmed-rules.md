@@ -7,7 +7,7 @@ myst:
 # Disable built-in charm alert rules
 
 By default, Prometheus and Loki will be configured to evaluate and post alerts for all the
-[charmed rules](/explanation/charmed-rules) that they receive over relation data.
+[charmed rules](/explanation/integrations/charmed-rules) that they receive over relation data.
 
 In some cases, such as troubleshooting, it could be desirable to disable or silence some
 charmed rules.

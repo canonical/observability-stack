@@ -27,7 +27,7 @@ You can reproduce the COS deployment in this tutorial with a [cloud-config](cos-
 For S3, we will install the Microceph snap ([doc](https://canonical-microceph.readthedocs-hosted.com/latest/tutorial/get-started/))
 and configure RadosGW to listen on port 8080 ([doc](https://canonical-microceph.readthedocs-hosted.com/latest/reference/commands/enable/)).
 
-```{literalinclude} /tutorial/installation/cos-canonical-k8s-sandbox.conf
+```{literalinclude} /tutorial/cos-canonical-k8s-sandbox.conf
     :language: bash
     :start-after: [docs:setup-s3]
     :end-before: [docs:setup-s3-end]
@@ -38,14 +38,14 @@ and configure RadosGW to listen on port 8080 ([doc](https://canonical-microceph.
 
 Assuming you are using the username `ubuntu`, create a `cos-demo.tf` file as follows:
 
-```{literalinclude} /tutorial/installation/cos-canonical-k8s-sandbox.conf
+```{literalinclude} /tutorial/cos-canonical-k8s-sandbox.conf
     :language: bash
     :start-after: [docs:create-terraform-module]
     :end-before: [docs:create-terraform-module-end]
     :dedent: 4
 ```
 
-**Note**: You can customize further the number of units of each distributed charm and other aspects of COS: have a look at the [`variables.tf`](../../../terraform/cos/variables.tf) file of the COS Terraform module for the complete documentation.
+**Note**: You can customize further the number of units of each distributed charm and other aspects of COS: have a look at the [`variables.tf`](../../terraform/cos/variables.tf) file of the COS Terraform module for the complete documentation.
 
 To deploy COS in a new model named `cos`, run:
 

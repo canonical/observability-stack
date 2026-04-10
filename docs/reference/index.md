@@ -20,7 +20,7 @@ compatibility.
 ```{toctree}
 :maxdepth: 1
 
-Release Notes <release-notes>
+Release Notes <../release-notes>
 Release Policy <release-policy>
 System Requirements <system-requirements>
 ```
@@ -44,8 +44,8 @@ Topology reference pages describing how COS makes us of Juju topology as telemet
 ```{toctree}
 :maxdepth: 1
 
-Model Topology for COS Lite <cos-lite-model-topology>
-Juju Topology Labels <juju-topology-labels>
+Model Topology for COS Lite <../explanation/about-cos/cos-lite-model-topology>
+Juju Topology Labels <../explanation/about-cos/juju-topology-labels>
 ```
 
 ## Integrations & artifacts

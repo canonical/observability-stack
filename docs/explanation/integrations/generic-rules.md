@@ -8,7 +8,7 @@ myst:
 
 The Canonical Observability Stack (COS) includes Generic alert rules which provide a minimal set of rules to inform admins when hosts in a deployment are unhealthy, unreachable, or otherwise unresponsive. This helps relieve charm authors from having to implement their host-health-related alerts per charm.
 There are two generic alert rule groups: `HostHealth` and `AggregatorHostHealth`, each containing multiple alert rules.
-This guide explains the purpose of each rule group and its alerts. For steps to troubleshoot firing alert rules, refer to the [troubleshooting guide](../how-to/troubleshooting).
+This guide explains the purpose of each rule group and its alerts. For steps to troubleshoot firing alert rules, refer to the [troubleshooting guide](../../how-to/troubleshooting).
 
 The `HostHealth` and `AggregatorHostHealth` alert rule groups are applicable to the following deployment scenarios:
 

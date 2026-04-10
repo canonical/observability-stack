@@ -20,6 +20,7 @@ use of.
 ```{toctree}
 :maxdepth: 1
 
+About COS index <about-cos/index>
 What is Observability? <https://canonical.com/observability/what-is-observability>
 Model-Driven Observability <https://ubuntu.com/blog/tag/model-driven-observability>
 What is COS? <about-cos/what-is-cos>

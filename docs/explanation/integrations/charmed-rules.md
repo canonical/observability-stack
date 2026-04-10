@@ -30,13 +30,13 @@ relative to the charm's root folder.
 When the built-in alert rules are picked up by the charmed operator, they are transformed
 and forwarded to Prometheus or Loki charms over relation data.
 
-The main advantage of charmed rules is that operation knowledge is centralized, and is 
+The main advantage of charmed rules is that operation knowledge is centralized, and is
 readily available with the charmed operator. The main disadvantage of charmed rules is 
 that alert thresholds are opinionated and not configurable. This means that authors of 
 charmed rules must pay special attention to wide applicability. Charmed rules can be 
-[disabled](/how-to/disable-charmed-rules).
+[disabled](/how-to/operations/disable-charmed-rules).
 
 ## Automatic modifications made to charmed alert rules
 
-- All alert expressions are automatically injected with [juju topology](/explanation/juju-topology) matchers.
+- All alert expressions are automatically injected with [juju topology](/explanation/about-cos/juju-topology) matchers.
 - Juju topology alert labels are automatically added to all alerts.

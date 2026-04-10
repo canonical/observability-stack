@@ -199,7 +199,7 @@ or using Prometheus Web UI:
 
 
 
-![imagen|690x480](assets/synced-alert-rule-prom.png) 
+![imagen|690x480](../../tutorial/assets/synced-alert-rule-prom.png) 
 
 ## Sync interval
 

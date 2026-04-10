@@ -17,7 +17,7 @@ The combination of these 2 configurations provides our products with 4 modes of 
 
 
 <!-- Note: edit this diagram by dragging it into a drawio editor -->
-![high-level-tls.png](assets/high-level-tls.png)
+![high-level-tls.png](../assets/high-level-tls.png)
 
 
 ## Full TLS encryption implementation details
@@ -100,6 +100,6 @@ If you are using COS Lite, create a cos-lite module with the cos-lite source: [`
 The [COS Lite bundle](https://charmhub.io/cos-lite) is now deprecated in favor of Terraform modules.
 ```
 
-```{literalinclude} /how-to/cos-tls.tf
+```{literalinclude} /how-to/install-and-maintain/cos-tls.tf
 ```
 

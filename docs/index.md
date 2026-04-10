@@ -28,7 +28,7 @@ For Site Reliability Engineers, COS provides a turn-key, out-of-the-box solution
 
 [What is COS?]: explanation/about-cos/what-is-cos
 [What is Juju topology?]: explanation/about-cos/juju-topology
-[Deploy in a sandbox]: tutorial/installation/cos-canonical-k8s-sandbox
+[Deploy in a sandbox]: tutorial/cos-canonical-k8s-sandbox
 [Migrate from LMA]: how-to/install-and-maintain/migrate-lma-to-cos-lite
 [Evaluate telemetry volume]: how-to/operations/evaluate-telemetry-volume
 [Validate]: how-to/operations/validate-cos-deployment
@@ -73,7 +73,7 @@ and constructive feedback.
 
 
 ### Releases
-- [Release notes](reference/release-notes)
+- [Release notes](release-notes)
 - [Release policy](reference/release-policy)
 
 

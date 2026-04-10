@@ -14,17 +14,17 @@ This post describes how to migrate from LMA to COS with potentially destructive 
 ```
 
 ```{warning}
-Refer to the [best practices guide](../reference/best-practices/index) before migrating.
+Refer to the [best practices guide](../../reference/best-practices/index) before migrating.
 ```
 
 ```{warning}
-Refer to [Supported tracks](../reference/release-policy) to choose the right track for your needs.
+Refer to [Supported tracks](../../reference/release-policy) to choose the right track for your needs.
 Note that different tracks may have different ubuntu bases or minimum Juju version requirement.
 ```
 
 Let's assume this is our, heavily simplified, existing environment:
 
-![image|600](assets/migrate-from-lma-to-cos-lite-1.png)
+![image|600](../assets/migrate-from-lma-to-cos-lite-1.png)
 
 ## 1. Upgrade your existing Juju controller
 
@@ -35,11 +35,11 @@ If necessary, [upgrade the Juju controller](https://documentation.ubuntu.com/juj
 
 ## 2. Deploy COS Lite to an isolated MicroK8s instance
 
-This model needs to be running Juju `>=3.6`. For instructions, see the [installation tutorials](/tutorial/installation/index) and [best practices](/reference/best-practices/index).
+This model needs to be running Juju `>=3.6`. For instructions, see the [installation tutorials](/tutorial/index) and [best practices](/reference/best-practices/index).
 
 It will now look somewhat like this:
 
-![image|600](assets/migrate-from-lma-to-cos-lite-2.png)
+![image|600](../assets/migrate-from-lma-to-cos-lite-2.png)
 
 ## 3. Deploy `cos-proxy` and `grafana-agent` in your pre-existing model
 
@@ -67,7 +67,7 @@ juju consume ck8s:admin/cos.prometheus
 
 By now, you will have something that looks a little something like this:
 
-![image|600](assets/migrate-from-lma-to-cos-lite-3.png)
+![image|600](../assets/migrate-from-lma-to-cos-lite-3.png)
 
 [COS Proxy](https://charmhub.io/cos-proxy) and [Grafana Agent](https://charmhub.io/grafana-agent) will continue to work on 
 Juju 2.9 for the time being. This is mainly to support migrations from LMA 

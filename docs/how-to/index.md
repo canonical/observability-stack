@@ -46,6 +46,7 @@ with COS to actually observe them.
 ```{toctree}
 :maxdepth: 1
 
+Install and maintain index <install-and-maintain/index>
 Evaluate telemetry volume <operations/evaluate-telemetry-volume>
 Add tracing to COS Lite <install-and-maintain/add-tracing-to-cos-lite>
 Add alert rules <integrations/adding-alert-rules>

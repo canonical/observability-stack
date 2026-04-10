@@ -16,7 +16,7 @@ This page explains where those labels are injected into the OTLP data model, and
 
 OTLP data is often mixed across many applications and models, and aggregated into an observability solution i.e., COS.
 Without topology attributes, logs, metrics, and traces are much harder to filter, route, alert on, and correlate.
-Some applications may already have [telemetry labels](telemetry-labels.md), and knowing the structure within the charm's pipelines is important for Juju admin operations like [filtering](../how-to/selectively-drop-telemetry-otelcol.md), [tiering](../how-to/tiered-otelcols.md), and debugging the pipeline with the `debug_exporter_for_TELEMETRY` [config options in the collector charm](https://charmhub.io/opentelemetry-collector-k8s/configurations?channel=dev/edge).
+Some applications may already have [telemetry labels](telemetry-labels.md), and knowing the structure within the charm's pipelines is important for Juju admin operations like [filtering](../../how-to/operations/selectively-drop-telemetry-otelcol.md), [tiering](../../how-to/integrations/tiered-otelcols.md), and debugging the pipeline with the `debug_exporter_for_TELEMETRY` [config options in the collector charm](https://charmhub.io/opentelemetry-collector-k8s/configurations?channel=dev/edge).
 
 ## Telemetry labels in the OTLP data model
 

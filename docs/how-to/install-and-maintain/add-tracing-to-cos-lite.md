@@ -61,7 +61,7 @@ $ juju integrate tempo tempo-worker
 
 At this point your `juju status` should look like this:
 
-![image|690x181](assets/add-tracing-support-to-cos-lite.png)
+![image|690x181](../assets/add-tracing-support-to-cos-lite.png)
 
 
 ```{note}
