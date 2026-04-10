@@ -100,6 +100,6 @@ If you are using COS Lite, create a cos-lite module with the cos-lite source: [`
 The [COS Lite bundle](https://charmhub.io/cos-lite) is now deprecated in favor of Terraform modules.
 ```
 
-```{literalinclude} /how-to/install-and-maintain/cos-tls.tf
+```{literalinclude} /how-to/install-and-upgrade/cos-tls.tf
 ```
 

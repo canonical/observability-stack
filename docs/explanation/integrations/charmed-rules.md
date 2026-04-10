@@ -34,7 +34,7 @@ The main advantage of charmed rules is that operation knowledge is centralized, 
 readily available with the charmed operator. The main disadvantage of charmed rules is 
 that alert thresholds are opinionated and not configurable. This means that authors of 
 charmed rules must pay special attention to wide applicability. Charmed rules can be 
-[disabled](/how-to/operations/disable-charmed-rules).
+[disabled](/how-to/configure-and-tune/disable-charmed-rules).
 
 ## Automatic modifications made to charmed alert rules
 

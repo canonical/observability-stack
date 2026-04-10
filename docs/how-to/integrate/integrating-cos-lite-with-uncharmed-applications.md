@@ -14,7 +14,7 @@ it's relatively straightforward to do so. Not bad at all.
 
 ## Prerequisites
 
-This how-to assumes that you already have a working deployment of COS Lite. If that is not the case, we recommend you first follow our [tutorial for getting started with COS Lite](/tutorial/installation/cos-lite-microk8s-sandbox).
+This how-to assumes that you already have a working deployment of COS Lite. If that is not the case, we recommend you first follow our [tutorial for getting started with COS Lite](/tutorial/cos-lite-microk8s-sandbox).
 
 The first step will be to get a hold of a machine, somewhere, and follow 
 [this guide on how to get started with COS lite on MicroK8s](https://charmhub.io/topics/canonical-observability-stack/tutorials/install-microk8s). 
@@ -105,7 +105,7 @@ See [this guide](https://github.com/canonical/cos-configuration-k8s-operator#dep
 
 ### Using TLS
 
-You can follow [this guide](./configure-tls-encryption.md) to enable TLS in COS and COS Lite.
+You can follow [this guide](../install-and-upgrade/configure-tls-encryption.md) to enable TLS in COS and COS Lite.
 
 ### Grafana Agent snap as a client 
 As a client (e.g. scraping `/metrics` endpoint), Grafana Agent must trust the CA that signed the COS charms (or the COS

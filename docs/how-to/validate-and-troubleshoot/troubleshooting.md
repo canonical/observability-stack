@@ -125,7 +125,7 @@ $ curl http://10.70.43.245/cos-catalogue/
 This command should return a long HTML code block if everything works as expected.
 
 
-# Grafana admin password
+## Grafana admin password
 
 Compare the output of:
 
@@ -655,7 +655,7 @@ In some cases, the backend may be unreachable due to SSL/TLS related issues. Thi
 Perhaps the metrics *do* reach Prometheus, but the `expr` labels we have rendered in the alert do not match the actual metric labels. You can confirm by going to the Prometheus (or Grafana) UI and querying for `up`. Compare the set of labels you get for the returned `up` time series.
 
 
-# Compressed rules in relation databags
+## Compressed rules in relation databags
 
 In some relations, rules are compressed in the databag and are not human readable, making troubleshooting difficult. Assuming your unit and endpoint are named `otelcol/0` and `receive-otlp` respectively, then you can view the compressed rules with:
 

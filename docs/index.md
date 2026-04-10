@@ -29,14 +29,14 @@ For Site Reliability Engineers, COS provides a turn-key, out-of-the-box solution
 [What is COS?]: explanation/about-cos/what-is-cos
 [What is Juju topology?]: explanation/about-cos/juju-topology
 [Deploy in a sandbox]: tutorial/cos-canonical-k8s-sandbox
-[Migrate from LMA]: how-to/install-and-maintain/migrate-lma-to-cos-lite
-[Evaluate telemetry volume]: how-to/operations/evaluate-telemetry-volume
-[Validate]: how-to/operations/validate-cos-deployment
+[Migrate from LMA]: how-to/migrate/migrate-lma-to-cos-lite
+[Evaluate telemetry volume]: how-to/configure-and-tune/evaluate-telemetry-volume
+[Validate]: how-to/validate-and-troubleshoot/validate-cos-deployment
 [Hardening]: reference/security-hardening-guide
-[Cross-track upgrade]: how-to/install-and-maintain/upgrade
+[Cross-track upgrade]: how-to/install-and-upgrade/upgrade
 [Dashboard upgrades]: explanation/operations/dashboard-upgrades
 [Charmed alert rules]: explanation/integrations/charmed-rules
-[Add alert rules]: how-to/integrations/adding-alert-rules
+[Add alert rules]: how-to/integrate/adding-alert-rules
 [Data integrity]: explanation/operations/data-integrity
 [COS components]: reference/cos-components
 
@@ -44,9 +44,9 @@ For Site Reliability Engineers, COS provides a turn-key, out-of-the-box solution
 ## How this documentation is organized
 
 - [Tutorials](tutorial/index): For new users exploring COS for the first time
+- [Explanation](explanation/index): For deeper understanding of key COS concepts
 - [How-to guides](how-to/index): For users needing step-by-step instructions to achieve a practical goal
 - [Reference](reference/index): For precise, technical information to be used while working with COS
-- [Explanation](explanation/index): For deeper understanding of key COS concepts
 
 
 ```{toctree}
@@ -54,9 +54,9 @@ For Site Reliability Engineers, COS provides a turn-key, out-of-the-box solution
 :hidden:
 
 tutorial/index
+explanation/index
 how-to/index
 reference/index
-explanation/index
 ```
 
 ```{toctree}

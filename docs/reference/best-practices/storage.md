@@ -7,7 +7,7 @@ myst:
 # Storage Best Practices
 
 ## Evaluate storage volume needs
-Evaluate the [telemetry volume needed](../../how-to/operations/evaluate-telemetry-volume) for your solution
+Evaluate the [telemetry volume needed](../../how-to/configure-and-tune/evaluate-telemetry-volume) for your solution
 and refer to the storage [sizing guideline](https://discourse.charmhub.io/t/cos-lite-ingestion-limits-for-8cpu-16gb-ssd/13005) for concrete numbers.
 
 For example, a deployment that handles roughly:

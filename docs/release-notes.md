@@ -21,7 +21,7 @@ COS track `3` is a release track for the COS bundle and does not correspond to a
 
 If you have COS 2 installed, make plans to upgrade to COS 3 before July 2026.
 
-See our [release policy](reference/release-policy) and [upgrade instructions](how-to/install-and-maintain/upgrade).
+See our [release policy](reference/release-policy) and [upgrade instructions](how-to/install-and-upgrade/upgrade).
 
 To report bugs or security issues, refer to the index of [COS components](../reference/cos-components).
 
@@ -59,6 +59,6 @@ COS 3 is compatible with Juju v3.6+.
 
 
 ## Backwards-incompatible changes
-- If you are using charmed Grafana Agent to push telemetry to COS, note that the vendor announced end-of-life, so we will not be supporting the charm beyond July 2026. Make plans to [upgrade to charmed OpenTelemetry Collector](how-to/install-and-maintain/migrate-grafana-agent-to-otelcol).
+- If you are using charmed Grafana Agent to push telemetry to COS, note that the vendor announced end-of-life, so we will not be supporting the charm beyond July 2026. Make plans to [upgrade to charmed OpenTelemetry Collector](how-to/migrate/migrate-grafana-agent-to-otelcol).
 
 ## Deprecated features
