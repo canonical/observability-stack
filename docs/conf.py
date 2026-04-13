@@ -165,7 +165,7 @@ html_extra_path = []
 # - https://git.launchpad.net/example
 #
 html_theme_options = {
-  'source_edit_link': 'https://github.com/canonical/observability-stack',
+    'source_edit_link': 'https://github.com/canonical/observability-stack',
 }
 
 # Project slug; see https://meta.discourse.org/t/what-is-category-slug/87897
