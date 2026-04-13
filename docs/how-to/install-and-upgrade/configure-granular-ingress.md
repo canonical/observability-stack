@@ -6,11 +6,11 @@ myst:
 
 # Traefik ingress in COS
 
-Both COS and COS Lite, have the ability to toggle Traefik ingress for some of their internal components.
-
 ```{Note}
 This feature is not available in track/2, only later versions have this ability
 ```
+
+Both COS and COS Lite, have the ability to toggle Traefik ingress for some of their internal components. Using the following Terraform root module, you can control `ingress`:
 
 ```{mermaid}
 %%{init: { "theme": "dark" } }%%
@@ -38,8 +38,6 @@ flowchart LR
   class traefik,grafana,user Charm
   class alertmanager,catalogue,loki,prometheus Disabled
 ```
-
-Using the following Terraform root module, you can control `ingress`:
 
 ```{Note}
 If you are using COS Lite, create a cos-lite module with the cos-lite source: [`git::https://github.com/canonical/observability-stack//terraform/cos-lite`](https://github.com/canonical/observability-stack/tree/main/terraform/cos-lite).
