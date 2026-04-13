@@ -20,7 +20,6 @@ compatibility.
 ```{toctree}
 :maxdepth: 1
 
-Release Notes <release-notes>
 Release Policy <release-policy>
 System Requirements <system-requirements>
 ```
@@ -37,16 +36,6 @@ Security Hardening Guide <security-hardening-guide>
 Cryptographic Documentation <cryptographic-documentation>
 ```
 
-## Topology
-
-Topology reference pages describing how COS makes us of Juju topology as telemetry labels.
-
-```{toctree}
-:maxdepth: 1
-
-Model Topology for COS Lite <cos-lite-model-topology>
-Juju Topology Labels <juju-topology-labels>
-```
 
 ## Integrations & artifacts
 

@@ -26,27 +26,27 @@ For Site Reliability Engineers, COS provides a turn-key, out-of-the-box solution
 | **Data migration**     | [Data integrity]                                                            |
 | **Components**         | [COS components]                                                            |
 
-[What is COS?]: explanation/what-is-cos
-[What is Juju topology?]: explanation/juju-topology
-[Deploy in a sandbox]: tutorial/installation/cos-canonical-k8s-sandbox
-[Migrate from LMA]: how-to/migrate-lma-to-cos-lite
-[Evaluate telemetry volume]: how-to/evaluate-telemetry-volume
-[Validate]: how-to/validate-cos-deployment
+[What is COS?]: explanation/overview/what-is-cos
+[What is Juju topology?]: explanation/architecture/juju-topology
+[Deploy in a sandbox]: tutorial/cos-canonical-k8s-sandbox
+[Migrate from LMA]: how-to/migrate/migrate-lma-to-cos-lite
+[Evaluate telemetry volume]: how-to/configure-and-tune/evaluate-telemetry-volume
+[Validate]: how-to/validate-and-troubleshoot/validate-cos-deployment
 [Hardening]: reference/security-hardening-guide
-[Cross-track upgrade]: how-to/upgrade
-[Dashboard upgrades]: explanation/dashboard-upgrades
-[Charmed alert rules]: explanation/charmed-rules
-[Add alert rules]: how-to/adding-alert-rules
-[Data integrity]: explanation/data-integrity
+[Cross-track upgrade]: how-to/install-and-upgrade/upgrade
+[Dashboard upgrades]: explanation/alerting/dashboard-upgrades
+[Charmed alert rules]: explanation/alerting/charmed-rules
+[Add alert rules]: how-to/integrate/adding-alert-rules
+[Data integrity]: explanation/operations/data-integrity
 [COS components]: reference/cos-components
 
 
 ## How this documentation is organized
 
 - [Tutorials](tutorial/index): For new users exploring COS for the first time
+- [Explanation](explanation/index): For deeper understanding of key COS concepts
 - [How-to guides](how-to/index): For users needing step-by-step instructions to achieve a practical goal
 - [Reference](reference/index): For precise, technical information to be used while working with COS
-- [Explanation](explanation/index): For deeper understanding of key COS concepts
 
 
 ```{toctree}
@@ -54,9 +54,16 @@ For Site Reliability Engineers, COS provides a turn-key, out-of-the-box solution
 :hidden:
 
 tutorial/index
+explanation/index
 how-to/index
 reference/index
-explanation/index
+```
+
+```{toctree}
+:maxdepth: 1
+:hidden:
+
+Release notes <release-notes>
 ```
 
 
@@ -73,7 +80,7 @@ and constructive feedback.
 
 
 ### Releases
-- [Release notes](reference/release-notes)
+- [Release notes](release-notes)
 - [Release policy](reference/release-policy)
 
 
