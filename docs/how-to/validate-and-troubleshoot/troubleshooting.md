@@ -6,6 +6,14 @@ myst:
 
 # Troubleshooting
 
+## Ceph unhealthy
+If using (micro)ceph for storage, is it healthy?
+
+| Check                | Output                                                                                       | Potential cause                                                                | Remmediation                                    |
+| -------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ----------------------------------------------- |
+| `ceph health detail` | `HEALTH_WARN There are daemons running an older version of ceph; Reduced data availability:` | Some OSDs restarted and were running a newer version than the rest of the OSDs | `systemctl restart ceph-osd` on the other OSDs. |
+
+
 ## `Gateway address unavailable`
 
 Whenever Traefik is used to ingress your Kubernetes workloads, you might in some specific
