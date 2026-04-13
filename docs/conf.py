@@ -164,9 +164,9 @@ html_extra_path = []
 # - https://launchpad.net/example
 # - https://git.launchpad.net/example
 #
-# html_theme_options = {
-# 'source_edit_link': 'https://github.com/canonical/sphinx-docs-starter-pack',
-# }
+html_theme_options = {
+    'source_edit_link': 'https://github.com/canonical/observability-stack',
+}
 
 # Project slug; see https://meta.discourse.org/t/what-is-category-slug/87897
 #
