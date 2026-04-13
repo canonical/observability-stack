@@ -57,6 +57,13 @@ COS 3 is compatible with Juju v3.6+.
 
 ## Notable changes in peripheral charms
 
+### Promtail is no longer maintained by Grafana Labs
+LogProxyConsumer is relying on promtail for scraping log lines from files, and sending them to Loki.
+Since March 2026, [promtail](https://grafana.com/docs/loki/latest/send-data/promtail/) is no longer under active development by Grafana Labs.
+Starting COS 3, it is recommended to use [pebble for forwarding logs](https://documentation.ubuntu.com/pebble/reference/log-forwarding/) from kubernetes workloads.
+You can use the `LogForwarder` object from the [`loki_push_api` charm library](https://charmhub.io/loki-k8s/libraries/loki_push_api)  to automatically set up pebble for log forwarding.
+
+Note that for this to work, the workload needs to emit logs to stdout (this is standard practice in kubernetes).
 
 ## Backwards-incompatible changes
 - If you are using charmed Grafana Agent to push telemetry to COS, note that the vendor announced end-of-life, so we will not be supporting the charm beyond July 2026. Make plans to [upgrade to charmed OpenTelemetry Collector](how-to/migrate/migrate-grafana-agent-to-otelcol).
