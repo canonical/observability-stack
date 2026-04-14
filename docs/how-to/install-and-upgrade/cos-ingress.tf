@@ -10,11 +10,11 @@ module "cos" {
   
   # ... other inputs ...
 
-  # Toggle ingress integrations to Traefik.
+  # Toggle a component's ingress integration to Traefik.
   ingress = {
     alertmanager = false
     catalogue    = false
-    grafana      = true
+    grafana      = true  # only enable ingress for Grafana
     loki         = false
     prometheus   = false
   }
