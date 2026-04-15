@@ -52,4 +52,4 @@ Using the following Terraform module, set your ingress options to enable or disa
 ```{literalinclude} /how-to/install-and-upgrade/cos-ingress.tf
 ```
 
-Ensure that you have provided any required variables (update the `... other inputs ...` placeholder) for the respective COS module before applying the configration, by running `terraform apply`.
+Ensure that you have provided any required variables (update the `... other inputs ...` placeholder) for the respective COS module before applying the configuration, by running `terraform apply`.
