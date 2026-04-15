@@ -179,7 +179,7 @@ processors:
 - The [OTLP data model](https://betterstack.com/community/guides/observability/otlp/#the-otlp-data-model)
 - Official docs: [`<relabel_config>`](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config)
 - [Dropping metrics at scrape time with Prometheus](https://www.robustperception.io/dropping-metrics-at-scrape-time-with-prometheus/) (robustperception, 2015)
-- [How relabeling in Prometheus works](https://grafana.com/blog/2022/03/21/how-relabeling-in-prometheus-works/) (grafana.com, 2022)
+- [How relabeling in Prometheus works](https://grafana.com/blog/how-relabeling-in-prometheus-works/) (grafana.com, 2022)
 - [How to drop and delete metrics in Prometheus](https://tanmay-bhat.github.io/posts/how-to-drop-and-delete-metrics-in-prometheus/) (gh:tanmay-bhat, 2022)
 - Playgrounds:
   - https://demo.promlens.com/
