@@ -87,5 +87,5 @@ provides:
         interface: prometheus_scrape
 ```
 
-Congratulations! You will now be able to add an integration between your charm 
+Congratulations! You will now be able to add an integration between your charm
 and a scraper!
