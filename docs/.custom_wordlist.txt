@@ -172,6 +172,8 @@ Spread
 spread_test_example
 SSL
 StatefulSets
+stderr
+stdout
 storages
 subproject
 subprojects
