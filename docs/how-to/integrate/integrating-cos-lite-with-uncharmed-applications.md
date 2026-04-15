@@ -22,7 +22,7 @@ Unless you're also planning to monitor some charmed applications with this COS L
 
 Opentelemetry Collector will act as an intermediary between the applications you want to monitor and the COS Lite stack. It will gather telemetry from your applications and send them to COS Lite, where you will be able to inspect them through the Grafana dashboards.
 
-We recommend to host Opentelemetry Collector as close as possible to the workloads you intend to mpnotpr, to minimize the risk of network faults and the resulting gaps in telemetry collection.
+We recommend to host Opentelemetry Collector as close as possible to the workloads you intend to monitor, to minimize the risk of network faults and the resulting gaps in telemetry collection.
 
 We recommend to install Opentelemetry Collector via a handy snap we maintain:
 
