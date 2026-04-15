@@ -58,7 +58,7 @@ variable "external_ca_cert_offer_url" {
 # -------------- # Ingress configurations --------------
 
 variable "ingress" {
-  description = "Per-application toggle for Traefik ingress integration"
+  description = "Per-component toggle for ingress integrations"
   type = object({
     alertmanager = optional(bool, true)
     catalogue    = optional(bool, true)
