@@ -52,9 +52,10 @@ class ScrapableCharm:
                 }])
 ```
 
-The `*` wildcard in the target address is the most common pattern.  At scrape
-time, Prometheus expands it to one scrape job per unit, each labeled with the
-corresponding `juju_unit` topology label.
+The `*` wildcard in the target address is the most common pattern. When the
+`prometheus_scrape` charm library generates the scrape configuration, it
+expands the wildcard into one scrape target per unit and enriches each one
+with the corresponding `juju_unit` topology label.
 
 If your workload requires explicit hostname or IPs instead of wildcards (for
 example, for TLS with strict `SNI` validation), you can use fully-qualified
