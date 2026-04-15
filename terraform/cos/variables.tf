@@ -27,6 +27,24 @@ variable "model_uuid" {
   type        = string
 }
 
+variable "cloud" {
+  description = "Kubernetes cloud or environment where this COS module will be deployed (e.g self-managed, aws)"
+  type        = string
+  default     = "self-managed"
+  validation {
+    condition     = contains(local.clouds, var.cloud)
+    error_message = "Allowed values are: ${join(", ", local.clouds)}."
+  }
+}
+
+variable "anti_affinity" {
+  description = "Enable anti-affinity constraints across all HA modules (Mimir, Loki, Tempo)"
+  type        = bool
+  default     = true
+}
+
+# -------------- # TLS configurations --------------
+
 variable "internal_tls" {
   description = "Specify whether to use TLS or not for internal COS communication. By default, TLS is enabled using self-signed-certificates"
   type        = bool
@@ -53,20 +71,19 @@ variable "external_ca_cert_offer_url" {
   default     = null
 }
 
-variable "cloud" {
-  description = "Kubernetes cloud or environment where this COS module will be deployed (e.g self-managed, aws)"
-  type        = string
-  default     = "self-managed"
-  validation {
-    condition     = contains(local.clouds, var.cloud)
-    error_message = "Allowed values are: ${join(", ", local.clouds)}."
-  }
-}
+# -------------- # Ingress configurations --------------
 
-variable "anti_affinity" {
-  description = "Enable anti-affinity constraints across all HA modules (Mimir, Loki, Tempo)"
-  type        = bool
-  default     = true
+variable "ingress" {
+  description = "Per-component toggle for ingress integrations"
+  type = object({
+    alertmanager = optional(bool, true)
+    catalogue    = optional(bool, true)
+    grafana      = optional(bool, true)
+    loki         = optional(bool, true)
+    mimir        = optional(bool, true)
+    tempo        = optional(bool, true)
+  })
+  default = {}
 }
 
 # -------------- # S3 storage configuration --------------

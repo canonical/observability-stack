@@ -13,4 +13,5 @@ myst:
 
 Cross-track upgrade instructions <upgrade>
 Configure TLS encryption <configure-tls-encryption>
+Configure ingress <configure-granular-ingress>
 ```
