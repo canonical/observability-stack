@@ -41,13 +41,13 @@ It will now look somewhat like this:
 
 ![image|600](/assets/migrate-from-lma-to-cos-lite-2.png)
 
-## 3. Deploy `cos-proxy` and `grafana-agent` in your pre-existing model
+## 3. Deploy `cos-proxy` and `opentelemetry-collector` in your pre-existing model
 
-Deploy [COS Proxy](https://charmhub.io/cos-proxy) in your existing model and 
-wire it up to all the same targets as you would with LMA. cos-proxy is designed 
-to bridge the gap between your current LMA-enabled charms that utilize Filebeat, NRPE, and COS, which utilizes Prometheus and Loki/Promtail. 
+Deploy [COS Proxy](https://charmhub.io/cos-proxy) in your existing model and
+wire it up to all the same targets as you would with LMA. cos-proxy is designed
+to bridge the gap between your current LMA-enabled charms that utilize Filebeat, NRPE, and COS, which utilizes Prometheus and Loki/Promtail.
 
-Then deploy [Grafana Agent](https://charmhub.io/grafana-agent), and relate it to all your principal charms.
+Then deploy [Opentelemetry Collector](https://charmhub.io/opentelemetry-collector), and relate it to all your principal charms.
 You will need to make offers from the COS Lite model (if they are not already in place), for example:
 
 ```bash
@@ -69,8 +69,8 @@ By now, you will have something that looks a little something like this:
 
 ![image|600](/assets/migrate-from-lma-to-cos-lite-3.png)
 
-[COS Proxy](https://charmhub.io/cos-proxy) and [Grafana Agent](https://charmhub.io/grafana-agent) will continue to work on 
-Juju 2.9 for the time being. This is mainly to support migrations from LMA 
+[COS Proxy](https://charmhub.io/cos-proxy) and [Opentelemetry Collector](https://charmhub.io/opentelemetry-collector) will continue to work on
+Juju 2.9 for the time being. This is mainly to support migrations from LMA
 to COS.
 
 ## 4. Evaluate solution parity
@@ -84,8 +84,8 @@ alarms you're used to when using LMA in COS before deciding to decommission LMA.
 
 ## 5. Decommission LMA
 
-With COS Lite up and running, you can now start decommissioning your LMA setup. 
+With COS Lite up and running, you can now start decommissioning your LMA setup.
 
-As it is a migration between solutions, none of your historical 
+As it is a migration between solutions, none of your historical
 data, in LMA, will be migrated to COS. If this data is important,
 retain pre-migration backups until they're no longer relevant.

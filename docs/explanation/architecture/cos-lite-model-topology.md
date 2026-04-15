@@ -8,16 +8,16 @@ myst:
 
 COS Lite consists of a number of charms connected by Juju relations.
 
-The graph is so dense and interconnected that displaying it in its entirety isn't very informative. 
-Instead, for clarity and readability, we depict the bundle topology using several separate diagrams, 
-each one presenting a view of a specific data flow or functionality group. Each line indicates a 
+The graph is so dense and interconnected that displaying it in its entirety isn't very informative.
+Instead, for clarity and readability, we depict the bundle topology using several separate diagrams,
+each one presenting a view of a specific data flow or functionality group. Each line indicates a
 separate juju relation.
 
 ## Ingress view
 The workloads that make up COS Lite are servers that need to be reachable from outside the model they are deployed in.
 
 - Grafana ("ingress-to-leader") is the main UI, amalgamating telemetry from all datasources into dashboards.
-- Prometheus and Loki (both "ingress-per-unit"), ingest telemetry pushed from grafana agent from another model.
+- Prometheus and Loki (both "ingress-per-unit"), ingest telemetry pushed from opentelemetry collector from another model.
 - Alertmanager ("ingress per app"), has a UI for acknowledging or silencing alerts.
 
 ```{mermaid}
@@ -27,7 +27,7 @@ subgraph cos_lite["COS Lite"]
 
   alrt[Alertmanager]
   click alrt "https://github.com/canonical/alertmanager-k8s-operator"
-  
+
   graf[Grafana]
   click graf "https://github.com/canonical/grafana-k8s-operator"
 
@@ -67,7 +67,7 @@ subgraph cos_lite["COS Lite"]
 
   alrt[Alertmanager]
   click alrt "https://github.com/canonical/alertmanager-k8s-operator"
-  
+
   graf[Grafana]
   click graf "https://github.com/canonical/grafana-k8s-operator"
 
@@ -95,7 +95,7 @@ subgraph cos_lite["COS Lite"]
 
   alrt[Alertmanager]
   click alrt "https://github.com/canonical/alertmanager-k8s-operator"
-  
+
   graf[Grafana]
   click graf "https://github.com/canonical/grafana-k8s-operator"
 
