@@ -4,8 +4,6 @@ myst:
     description: "A short overview of how COS handles telemetry — collection, labeling, and correlation of logs, metrics, and traces."
 ---
 
-(telemetry-overview)=
-
 # Telemetry overview
 
 Modern distributed systems generate three complementary telemetry types, **metrics**,
