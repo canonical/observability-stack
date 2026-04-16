@@ -217,6 +217,7 @@ linkcheck_ignore = [
     "https://github.com/canonical/ACME/*",
     "troubleshooting/",
     "https://github.com/canonical/observability-stack//terraform/cos-lite",
+    r"https://matrix\.to/.*",
     ]
 
 
