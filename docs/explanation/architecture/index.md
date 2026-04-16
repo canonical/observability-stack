@@ -18,6 +18,5 @@ Design Goals <design-goals>
 Juju Topology <juju-topology>
 Juju Topology Labels <juju-topology-labels>
 Model Topology for COS Lite <cos-lite-model-topology>
-Stack variants <stack-variants>
 Telemetry Flow <telemetry-flow>
 ```
