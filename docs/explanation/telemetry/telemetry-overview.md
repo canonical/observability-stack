@@ -9,13 +9,13 @@ myst:
 # Telemetry overview
 
 Modern distributed systems generate three complementary telemetry types, **metrics**,
-**logs**, and **traces**, each answering a different question:
+**logs**, and **traces**, each provide a different view of the system:
 
-| Signal  | Question it answers         | Example                                    |
-|---------|-----------------------------|--------------------------------------------|
-| Metrics | How is the system behaving? | CPU usage, request latency percentiles     |
-| Logs    | What happened?              | An error message with a stack trace        |
-| Traces  | Where did the time go?      | A request's journey across seven services  |
+| Telemetry type | Purpose                              | Example                                    |
+|----------------|--------------------------------------|--------------------------------------------|
+| Metrics        | Quantify system state                | CPU usage, request latency percentiles     |
+| Logs           | Record events                        | An error message with a stack trace        |
+| Traces         | Data flow and timing across services | A request's journey across seven services  |
 
 COS collects all three and ties them together so you can jump from a
 spike on a dashboard straight to the log line or trace that explains it.
@@ -24,7 +24,7 @@ spike on a dashboard straight to the log line or trace that explains it.
 
 Telemetry reaches COS through two paths:
 
-- **Pull**. Prometheus (or Mimir) receive metrics from endpoints that charms
+- **Pull**. Prometheus (or Mimir) receives metrics from endpoints that charms
   expose automatically via `juju relate`.
 - **Push**. Logs and traces are forwarded to Loki and Tempo, typically through
   an OpenTelemetry (OTel) Collector that charms configure for you.
