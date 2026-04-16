@@ -8,7 +8,7 @@ myst:
 
 # Telemetry
 
-These pages describe how each signal type — logs, metrics, traces — is
+These pages describe how each telemetry type (logs, metrics, traces) is
 collected, labeled, and correlated across the stack.
 
 ```{toctree}
