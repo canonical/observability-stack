@@ -264,7 +264,7 @@ Additionally, it is recommended to modify the size of your PVC, especially since
 If you don't specify a size, a PVC will be created with a default size of 1G backed by the storage class you configured. 
 ```
 
-Add a `storage_directive` for each storage container under the `cos-lite` module in the same base terraform file:
+Add `storage_directives` for each storage container under the `cos-lite` module in the same base terraform file:
 ```
 module "cos-lite" {                                                                                    
   source     = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=track/2" 
