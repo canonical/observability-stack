@@ -17,8 +17,7 @@ Modern distributed systems generate three complementary telemetry types, **metri
 | Logs           | Record events                        | An error message with a stack trace        |
 | Traces         | Data flow and timing across services | A request's journey across seven services  |
 
-COS collects all three and ties them together so you can jump from a
-spike on a dashboard straight to the log line or trace that explains it.
+COS collects all three types and stores them in separate backends. When signals share identifiers (such as labels or trace IDs), they can be correlated across systems. For example, linking a metric spike to the logs or traces associated with the same request.
 
 ## Collection
 
@@ -32,7 +31,7 @@ Telemetry reaches COS through two paths:
 In both cases the transport is set up by a Juju relation; no manual endpoint
 configuration is required.
 
-See [telemetry collection](telemetry-collection) for the full picture.
+See [telemetry collection](telemetry-collection) for more information.
 
 ## Labels
 
@@ -42,15 +41,13 @@ Every telemetry type carries **labels**, which are key-value pairs with keys suc
 giving you a consistent lens to filter and group telemetry across the
 entire estate.
 
-For OTLP-based workloads the same Juju topology is mapped to
-OTel resource attributes, so push-based and pull-based data share an
-identical naming scheme.
+For OTLP-based workloads, the same Juju topology is mapped to OTel resource attributes, so push-based and pull-based data share an identical naming scheme. This allows metrics, logs, and traces to be queried using the same identifiers, regardless of how they were collected.
 
 See [telemetry labels](telemetry-labels) and [OTLP labels](telemetry-otlp-topology-labels) for details.
 
 ## Correlation
 
-Labels alone let you filter; **correlation** lets you navigate.  COS links
+Correlation lets you navigate based on shared identifiers between signals. COS links
 signals together in two ways:
 
 - **Trace → Log**. Trace and span IDs embedded in log records let Grafana
@@ -59,7 +56,7 @@ signals together in two ways:
   samples, connecting a latency spike to the trace that caused it.
 
 The backend integrations (Tempo ↔ Loki, Tempo ↔ Mimir) are enabled by
-default in the COS Terraform modules; you only need to ensure your
+default in the COS Terraform module; you only need to ensure your
 applications emit the right context.
 
-See [telemetry correlation](telemetry-correlation) for a deeper dive.
+See [telemetry correlation](telemetry-correlation) for more information.
