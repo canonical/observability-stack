@@ -207,7 +207,7 @@ Machine  State    Address        Inst id        Base          AZ            Mess
 1        started  10.72.158.122  juju-50c528-1  ubuntu@22.04  charm-dev-36  Running
 ```
 
-At this point we have one `zookeeper` unit in `active` state, and a `grafana-agent` in unknown state, with no units. This is, as mentioned earlier, because `grafana-agent` is a [subordinate charm](https://discourse.charmhub.io/t/subordinate-applications/1053).
+At this point we have one `zookeeper` unit in `active` state, and a `opentelemetry-collector` in unknown state, with no units. This is, as mentioned earlier, because `opentelemetry-collector` is a [subordinate charm](https://discourse.charmhub.io/t/subordinate-applications/1053).
 
 ## Integrate the charms
 
