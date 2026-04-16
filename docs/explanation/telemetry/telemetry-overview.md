@@ -19,12 +19,11 @@ COS collects all three types and stores them in separate backends. When telemetr
 
 ## Collection
 
-Telemetry reaches COS through two paths:
+Telemetry reaches COS through two paths that charms expose automatically via `juju relate`:
 
-- **Pull**. Prometheus (or Mimir) receives metrics from endpoints that charms
-  expose automatically via `juju relate`.
-- **Push**. Logs and traces are forwarded to Loki and Tempo, typically through
+- **Push**. Telemetry is forwarded to COS backend -- Mimir (or Prometheus), Loki and Tempo -- typically through
   an OpenTelemetry (OTel) Collector that charms configure for you.
+- **Pull**. Prometheus itself scrapes metrics directly from `/metrics` endpoints.
 
 In both cases the transport is set up by a Juju relation; no manual endpoint
 configuration is required.
@@ -34,10 +33,12 @@ See [telemetry collection](telemetry-collection) for more information.
 ## Labels
 
 Every telemetry type carries labels, which are key-value pairs that identify where the signal came from. Examples of labels used by COS include: 
+
 - `juju_model`
 - `juju_application`
 - `juju_unit`
-These labels are added by charm libraries and provide a consistent way to filter and group data across your entire estate.
+
+These labels are added by charm libraries and provide a consistent way to filter and group data across your entire deployment.
 
 For OTLP-based workloads, the same Juju topology is mapped to OTel resource attributes, so push-based and pull-based data share an identical naming scheme. This allows metrics, logs, and traces to be queried using the same identifiers, regardless of how they were collected.
 
@@ -49,11 +50,11 @@ Correlation lets you navigate based on shared identifiers between signals. COS l
 signals together in two ways:
 
 - **Trace to Log**. Trace and span IDs embedded in log records let Grafana
-  jump from a slow trace to the exact log lines it produced.
+  jump from a slow trace to the log lines it produced at that time.
 - **Trace to Metric**. Prometheus exemplars attach trace IDs to metric
-  samples, connecting a latency spike to the trace that caused it.
+  samples, connecting a latency spike to the trace that demonstrates it.
 
-The backend integrations (Tempo ↔ Loki, Tempo ↔ Mimir) are enabled by
+The backend integrations (Tempo-Loki, Tempo-Mimir) are enabled by
 default in the COS Terraform module; you only need to ensure your
 applications emit the right context.
 
