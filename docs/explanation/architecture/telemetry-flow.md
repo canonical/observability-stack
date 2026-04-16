@@ -10,7 +10,7 @@ myst:
 
 COS Lite includes Loki, a logs backend, and Prometheus, a metrics backend. The API endpoints of Loki and Prometheus are communicated to other charms via Juju integrations. This way, telemetry producers (or aggregators) are able to push telemetry to Loki and Prometheus.
 
-Prometheus is also able to pull metrics directly from metric providers. However, this is not generally advisable over model or substrate boundaries. In the recommended deployment scenarios, a telemetry aggregator, such as Opentelemetry Collector, is used to funnel logs and metrics to COS.
+Prometheus is also able to pull metrics directly from metric providers. However, this is not generally advisable over model or substrate boundaries. In the recommended deployment scenarios, a telemetry aggregator, such as Opentelemetry Collector, is used to funnel telemetry to COS.
 
 In this case, Opentelemetry Collector takes over the responsibility to push logs as well as metrics into COS: so it’s not required for the COS stack to be able to reach the Opentelemetry Collector, but the agent must be able to reach the COS stack.
 
