@@ -83,7 +83,7 @@ In `opentelemetry-collector-k8s`, the charm will not modify the topology.
 `cos-proxy` will apply its own topology to the logs.
 
 ## Traces
-Any charm can stream traces to Tempo using the `tracing` charm lib. Usually this is done by sending the traces to a `opentelemetry-collector` (soon to be replaced by the OTEL collector), which forwards them to the COS stack. The agent will be responsible to attach to any trace going through it the juju topology of the unit generating them, if known, or else its own (for uncharmed workloads).
+Any charm can stream traces to Tempo using the `tracing` charm lib. Usually this is done by sending the traces to a `opentelemetry-collector`, which forwards them to the COS stack. The agent will be responsible to attach to any trace going through it the juju topology of the unit generating them, if known, or else its own (for uncharmed workloads).
 
 In the rather exceptional case in which a charm is related directly to Tempo, the charm itself is responsible for configuring its workload to inject the juju topology of the unit in the traces.
 This is the case, for example, for all COS components.
