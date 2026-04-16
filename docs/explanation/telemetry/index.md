@@ -9,7 +9,11 @@ myst:
 # Telemetry
 
 These pages describe how each signal type — logs, metrics, traces — is
-collected, labelled, and correlated across the stack.
+collected, labeled, and correlated across the stack.
+
+## Collection & labeling
+
+How each signal type is collected and consistently labeled across the stack.
 
 ```{toctree}
 :maxdepth: 1
@@ -17,6 +21,16 @@ collected, labelled, and correlated across the stack.
 Logging Architecture <logging-architecture>
 Telemetry Labels <telemetry-labels>
 Telemetry Collection <telemetry-collection>
+```
+
+## Correlation & interoperability
+
+How COS maps OpenTelemetry Protocol (OTLP) conventions to Juju topology and correlates
+signals for unified insight.
+
+```{toctree}
+:maxdepth: 1
+
 OpenTelemetry Protocol (OTLP) Juju Topology Labels <telemetry-otlp-topology-labels>
 Telemetry Correlation <telemetry-correlation>
 ```

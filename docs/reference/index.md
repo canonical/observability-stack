@@ -36,7 +36,6 @@ Security Hardening Guide <security-hardening-guide>
 Cryptographic Documentation <cryptographic-documentation>
 ```
 
-
 ## Integrations & artifacts
 
 Compatibility and packaging information for charms, snaps, and rocks (OCI images).
@@ -48,13 +47,26 @@ Integration Matrix <integration-matrix>
 COS components <cos-components>
 ```
 
-## Deployment best practices
+## Architecture decisions
 
-Operational guidance and recommended patterns for deploying and managing
-COS in production.
+Choose the right model topology and network layout for your deployment scale
+and security requirements.
 
 ```{toctree}
 :maxdepth: 1
 
-Deployment Best Practices <best-practices/index>
+Topology <topology>
+Networking <networking>
+```
+
+## Day-2 operations
+
+Plan for upgrades, data retention, and storage sizing to keep COS healthy
+over time.
+
+```{toctree}
+:maxdepth: 1
+
+Lifecycle <lifecycle>
+Storage <storage>
 ```
