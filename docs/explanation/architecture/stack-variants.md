@@ -16,8 +16,9 @@ myst:
 | Storage                     | S3 (managed independently)                                       | Via PVCs, e.g. `ceph-csi` (managed independently)                                                    |
 | Load balancing              | Dedicated Nginx for Loki, Mimir, Tempo; Traefik on top of that   | Traefik balances across units externally, but separate grafana datasources for loki/prometheus units |
 | Self-monitoring             | Logs, metrics, traces via in-model opentelemetry-collector charm | Metrics only, via direct relations                                                                   |
-| Minimum system requirements | 1x 8cpu16gb + storage nodes ([details](../../reference/system-requirements))  | 1x 4cpu8gb (+storage nodes, if any) ([details](../../reference/system-requirements))                  |
+| Minimum system requirements | 1x 8cpu16gb + storage nodes ([details][sysreqs])  | 1x 4cpu8gb (+storage nodes, if any) ([details][sysreqs])                  |
 
+[sysreqs]: ../../reference/system-requirements
 
 ## COS Lite
 
