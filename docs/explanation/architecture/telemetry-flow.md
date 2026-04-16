@@ -12,7 +12,7 @@ COS Lite includes Loki, a logs backend, and Prometheus, a metrics backend. The A
 
 Prometheus is also able to pull metrics directly from metric providers. However, this is not generally advisable over model or substrate boundaries. In the recommended deployment scenarios, a telemetry aggregator, such as Opentelemetry Collector, is used to funnel telemetry to COS.
 
-In this case, Opentelemetry Collector takes over the responsibility to push logs as well as metrics into COS: so it’s not required for the COS stack to be able to reach the Opentelemetry Collector, but the agent must be able to reach the COS stack.
+In this case, Opentelemetry Collector takes over the responsibility to push telemetry into COS: so it’s not required for the COS stack to be able to reach the Opentelemetry Collector, but the agent must be able to reach the COS stack.
 
 The Opentelemetry Collector needs to be able to reach the charms and workloads generating the telemetry, and the other way around.
 
