@@ -35,11 +35,11 @@ See [telemetry collection](telemetry-collection) for more information.
 
 ## Labels
 
-Every telemetry type carries **labels**, which are key-value pairs with keys such as
-`juju_model`, `juju_application`, and `juju_unit`. Labels identify
-*where* telemetry came from.  Charm libraries inject these labels automatically,
-giving you a consistent lens to filter and group telemetry across the
-entire estate.
+Every telemetry type carries labels, which are key-value pairs that identify where the signal came from. Examples of labels used by COS include: 
+- `juju_model`
+- `juju_application`
+- `juju_unit`
+These labels are added by charm libraries and provide a consistent way to filter and group data across your entire estate.
 
 For OTLP-based workloads, the same Juju topology is mapped to OTel resource attributes, so push-based and pull-based data share an identical naming scheme. This allows metrics, logs, and traces to be queried using the same identifiers, regardless of how they were collected.
 
@@ -50,9 +50,9 @@ See [telemetry labels](telemetry-labels) and [OTLP labels](telemetry-otlp-topolo
 Correlation lets you navigate based on shared identifiers between signals. COS links
 signals together in two ways:
 
-- **Trace → Log**. Trace and span IDs embedded in log records let Grafana
+- **Trace to Log**. Trace and span IDs embedded in log records let Grafana
   jump from a slow trace to the exact log lines it produced.
-- **Trace → Metric**. Prometheus exemplars attach trace IDs to metric
+- **Trace to Metric**. Prometheus exemplars attach trace IDs to metric
   samples, connecting a latency spike to the trace that caused it.
 
 The backend integrations (Tempo ↔ Loki, Tempo ↔ Mimir) are enabled by
