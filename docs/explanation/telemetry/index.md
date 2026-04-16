@@ -11,6 +11,12 @@ myst:
 These pages describe how each signal type — logs, metrics, traces — is
 collected, labeled, and correlated across the stack.
 
+```{toctree}
+:maxdepth: 1
+
+Overview <telemetry-overview>
+```
+
 ## Collection & labeling
 
 How each signal type is collected and consistently labeled across the stack.
