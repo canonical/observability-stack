@@ -17,7 +17,7 @@ Modern distributed systems generate three complementary telemetry types, **metri
 | Logs           | Record events                        | An error message with a stack trace            |
 | Traces         | Data flow and timing across services | A request's journey across different services  |
 
-COS collects all three types and stores them in separate backends. When signals share identifiers (such as labels or trace IDs), they can be correlated across systems. For example, linking a metric spike to the logs or traces associated with the same request.
+COS collects all three types and stores them in separate backends. When telemetries share identifiers (such as labels or trace IDs), they can be correlated across systems. For example, linking a metric spike to the logs or traces associated with the same request.
 
 ## Collection
 

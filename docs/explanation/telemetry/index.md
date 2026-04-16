@@ -32,7 +32,7 @@ Telemetry Collection <telemetry-collection>
 ## Correlation & interoperability
 
 How COS maps OpenTelemetry Protocol (OTLP) conventions to Juju topology and correlates
-signals for unified insight.
+telemetry for unified insight.
 
 ```{toctree}
 :maxdepth: 1
