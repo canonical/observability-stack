@@ -29,7 +29,7 @@ Migrate <migrate/index>
 
 ## Connect & extend
 
-Wire charmed and uncharmed workloads into COS to start collecting telemetry.
+Integrate charmed and uncharmed workloads into COS to start collecting telemetry.
 
 ```{toctree}
 :maxdepth: 1

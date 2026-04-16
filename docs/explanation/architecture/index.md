@@ -13,7 +13,7 @@ layout, and the different stack variants available.
 
 ## Design philosophy
 
-The guiding principles and trade-offs behind the COS architecture.
+The guiding principles and goals behind the COS architecture.
 
 ```{toctree}
 :maxdepth: 1
@@ -23,7 +23,7 @@ Design Goals <design-goals>
 
 ## Topology & models
 
-How COS organises charms, relations, and models within the Juju ecosystem.
+How COS organizes charms, relations, and models within the Juju ecosystem.
 
 ```{toctree}
 :maxdepth: 1
