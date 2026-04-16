@@ -6,10 +6,7 @@ myst:
 
 (explanation-operations)=
 
-# Operations & data
-
-These pages cover operational concerns such as data integrity, retention, and
-upgrade considerations.
+# Operational concerns
 
 ```{toctree}
 :maxdepth: 1

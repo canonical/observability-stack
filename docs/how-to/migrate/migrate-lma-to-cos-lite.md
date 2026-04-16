@@ -14,7 +14,7 @@ This post describes how to migrate from LMA to COS with potentially destructive 
 ```
 
 ```{warning}
-Refer to the [best practices guide](../../reference/best-practices/index) before migrating.
+Refer to the [best practices guide](../../reference/index) before migrating.
 ```
 
 ```{warning}
@@ -35,7 +35,7 @@ If necessary, [upgrade the Juju controller](https://documentation.ubuntu.com/juj
 
 ## 2. Deploy COS Lite to an isolated MicroK8s instance
 
-This model needs to be running Juju `>=3.6`. For instructions, see the [installation tutorials](/tutorial/index) and [best practices](/reference/best-practices/index).
+This model needs to be running Juju `>=3.6`. For instructions, see the [installation tutorials](/tutorial/index) and [best practices](/reference/index).
 
 It will now look somewhat like this:
 
