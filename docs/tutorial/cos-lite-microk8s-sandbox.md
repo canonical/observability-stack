@@ -242,10 +242,10 @@ Modify the `juju_model` resource in the same file with a `workload-storage` conf
 ```
 resource "juju_model" "cos" {                             
   name   = "cos"                                          
-  config = { logging-config = "<root>=WARNING; unit=DEBUG"
-  
-  # Add this line  
-  workload-storage = "ceph-xfs"      
+  config = {
+     logging-config = "<root>=WARNING; unit=DEBUG"
+     # Add this line  
+     workload-storage = "ceph-xfs"      
   }  
                                                      
   cloud {                                                 
