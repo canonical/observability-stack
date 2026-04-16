@@ -211,7 +211,7 @@ At this point we have one `zookeeper` unit in `active` state, and a `opentelemet
 
 ## Integrate the charms
 
-Now integrate `zookeeper` with `grafana-agent` over the `cos-agent` relation.
+Now integrate `zookeeper` with `opentelemetry-collector` over the `cos-agent` relation.
 
 ```
 $ juju integrate zookeeper otelcol:cos-agent
