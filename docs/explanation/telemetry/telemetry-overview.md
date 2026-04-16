@@ -11,11 +11,11 @@ myst:
 Modern distributed systems generate three complementary telemetry types, **metrics**,
 **logs**, and **traces**, each provide a different view of the system:
 
-| Telemetry type | Purpose                              | Example                                    |
-|----------------|--------------------------------------|--------------------------------------------|
-| Metrics        | Quantify system state                | CPU usage, request latency percentiles     |
-| Logs           | Record events                        | An error message with a stack trace        |
-| Traces         | Data flow and timing across services | A request's journey across seven services  |
+| Telemetry type | Purpose                              | Example                                        |
+|----------------|--------------------------------------|------------------------------------------------|
+| Metrics        | Quantify system state                | CPU usage, request latency percentiles         |
+| Logs           | Record events                        | An error message with a stack trace            |
+| Traces         | Data flow and timing across services | A request's journey across different services  |
 
 COS collects all three types and stores them in separate backends. When signals share identifiers (such as labels or trace IDs), they can be correlated across systems. For example, linking a metric spike to the logs or traces associated with the same request.
 
