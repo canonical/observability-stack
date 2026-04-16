@@ -114,7 +114,8 @@ applications:
 
 
 ## COS Lite - single node
-This is the most light-weight deployment, which requires a minimum of 4cpu8gb node to run.
+This is the most light-weight deployment, which requires a minimum of 4cpu8gb node to run
+(see the [sizing guide](system-requirements) for workload-specific requirements).
 
 ```{mermaid}
 graph LR
