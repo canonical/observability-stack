@@ -17,12 +17,12 @@ If using (micro)ceph for storage, is it healthy?
 ## `Gateway address unavailable`
 
 Whenever Traefik is used to ingress your Kubernetes workloads, you might in some specific
-cases encounter a "Gateway Address Unavailable" message. In this article, we'll go through 
+cases encounter a "Gateway Address Unavailable" message. In this article, we'll go through
 what you can do to remediate it.
 
 ```{caution}
-In this article, we will assume that you are running MicroK8s on either a bare-metal 
-or virtual machine. If your setup differs from this, parts of the how-to may still 
+In this article, we will assume that you are running MicroK8s on either a bare-metal
+or virtual machine. If your setup differs from this, parts of the how-to may still
 apply, although you will need to tailor the exact steps and commands to your setup.
 ```
 
@@ -39,20 +39,20 @@ apply, although you will need to tailor the exact steps and commands to your set
 
 Check with:
 
-```bash 
+```bash
 $ microk8s status -a metallb
 ```
 
 If it is disabled, you can enable it with:
 
-```bash 
+```bash
 $ IPADDR=$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc')
 $ microk8s enable metallb:$IPADDR-$IPADDR
 ```
 
-This command will fetch the IPv4 address assigned to your host, and hand it to MetalLB 
-as an assignable IP. If the address range you want to hand to MetalLB differs from your 
-host IP, alter the `$IPADDR` variable to instead specify the range you want to assign, 
+This command will fetch the IPv4 address assigned to your host, and hand it to MetalLB
+as an assignable IP. If the address range you want to hand to MetalLB differs from your
+host IP, alter the `$IPADDR` variable to instead specify the range you want to assign,
 for instance `IPADDR=10.0.0.1-10.0.0.100`.
 
 #### No external IP address is assigned to the Traefik service
@@ -66,12 +66,12 @@ $ kubectl get svc -A -o wide | grep -E "^NAMESPACE|$JUJU_APP_NAME"
 
 #### No available IP in address pool
 
-This can happen when: 
-- MetalLB has only one IP in its range but you deployed two instances of Traefik, 
-  or when Traefik is forcefully removed (`--force --no-wait`) and a new Traefik 
+This can happen when:
+- MetalLB has only one IP in its range but you deployed two instances of Traefik,
+  or when Traefik is forcefully removed (`--force --no-wait`) and a new Traefik
   app is deployed immediately after.
 - The [ingress](https://canonical.com/microk8s/docs/ingress) add-on is enabled. It's possible
-  that Nginx from the ingress add-on has claimed the `ExternalIP`. Disable Nginx and 
+  that Nginx from the ingress add-on has claimed the `ExternalIP`. Disable Nginx and
   re-enable MetalLB.
 
 Check with:
@@ -89,8 +89,8 @@ $ microk8s enable metallb:$FROM_IP-$TO_IP
 
 #### The Load Balancer service type reverted to `ClusterIP`
 
-Juju controller cycling may cause the type to revert from `LoadBalancer` back to 
-`ClusterIP`. 
+Juju controller cycling may cause the type to revert from `LoadBalancer` back to
+`ClusterIP`.
 
 Check with:
 
@@ -98,14 +98,14 @@ Check with:
 $ kubectl get svc -A -o wide | grep -E "^NAMESPACE|LoadBalancer"
 ```
 
-If Traefik isn't listed (it's not `LoadBalancer`), then recreate the pod to have it 
-re-trigger the assignment of the external IP with `kubectl delete` . It should be `LoadBalancer` 
+If Traefik isn't listed (it's not `LoadBalancer`), then recreate the pod to have it
+re-trigger the assignment of the external IP with `kubectl delete` . It should be `LoadBalancer`
 when Kubernetes brings it back.
 
 #### Integration tests pass locally but fail on GitHub runners
 
-This used to happen when the github runners were at peak usage, making the already small 2cpu7gb 
-runners run even slower. As much of a bad answer as this is, the best response may be to increase 
+This used to happen when the github runners were at peak usage, making the already small 2cpu7gb
+runners run even slower. As much of a bad answer as this is, the best response may be to increase
 timeouts or try to move CI jobs to internal runners.
 
 ### Verification
@@ -121,10 +121,10 @@ cos               traefik                  LoadBalancer   10.152.183.130   10.70
                                                                             👆 - This one!
 ```
 
-Verify that Traefik is functioning correctly by trying to trigger one of your ingress paths. 
+Verify that Traefik is functioning correctly by trying to trigger one of your ingress paths.
 If you have COS Lite deployed, you may check that if works as expected using the Catalogue charm:
 
-```bash 
+```bash
 # curl http://<TRAEFIKS_EXTERNAL_IP>/<YOUR_MODEL_NAME>-catalogue/
 # for example...
 $ curl http://10.70.43.245/cos-catalogue/
@@ -157,7 +157,7 @@ Integrating a charm with [COS](https://charmhub.io/topics/canonical-observabilit
 - having your app's logs and corresponding alert rules reach [Loki](https://charmhub.io/loki-k8s/).
 - having your app's dashboards reach [grafana](https://charmhub.io/grafana-k8s/).
 
-The COS team is responsible for some aspects of testing, and some aspects of testing belong to 
+The COS team is responsible for some aspects of testing, and some aspects of testing belong to
 the charms integrating with COS.
 
 ### Tests for the built-in alert rules
@@ -167,11 +167,11 @@ the charms integrating with COS.
 You can use:
 
 - `promtool test rules` (see details [here](https://prometheus.io/docs/prometheus/latest/configuration/unit_testing_rules/))
-  to make sure they fire when you expect them to fire. As part of the test you hard-code the time 
+  to make sure they fire when you expect them to fire. As part of the test you hard-code the time
   series values you are testing for.
 - `promtool check rules` (see details [here](https://prometheus.io/docs/prometheus/latest/command-line/promtool/#promtool-check))
-  to make sure the rules have valid syntax. 
-- `cos-tool validate` (see details [here](https://github.com/canonical/cos-tool)). The advantage of 
+  to make sure the rules have valid syntax.
+- `cos-tool validate` (see details [here](https://github.com/canonical/cos-tool)). The advantage of
   cos-tool is that the same executable can validate both Prometheus and Loki rules.
 
 Make sure your alerts manifest matches the output of:
@@ -195,13 +195,13 @@ that there is no prior data, thus interpreting it as `0`.
 
 - `promtool check metrics` (see details [here](https://prometheus.io/docs/prometheus/latest/command-line/promtool/#promtool-check)) to lint the the metrics endpoint,
   e.g.
-  ```  
+  ```
   curl -s http://localhost:8080/metrics | promtool check metrics`.
   ```
-- For scrape targets: when related to prometheus, and after a scrape interval elapses (default: `1m`), all 
+- For scrape targets: when related to prometheus, and after a scrape interval elapses (default: `1m`), all
   prometheus targets listed in `GET /api/v1/targets` should be `"health": "up"`. Repeat the test with/without
   ingress and TLS.
-- For remote-write (and scrape targets): when related to prometheus, make sure that `GET /api/v1/labels` 
+- For remote-write (and scrape targets): when related to prometheus, make sure that `GET /api/v1/labels`
   and `GET /api/v1/label/juju_unit` have your charm listed.
 - Make sure that the metric names in your alert rules have matching metrics in your own `/metrics` endpoint.
 
@@ -229,10 +229,10 @@ $ juju ssh grafana/0 curl http://admin:password@localhost:3000/api/search
 
 ### Data Duplication
 
-#### Multiple grafana-agent apps related to the same principle
+#### Multiple opentelemetry-collector apps related to the same principle
 
-Charms should use `limit: 1` for the cos-agent relation (see example [here](https://github.com/canonical/zookeeper-operator/blob/main/metadata.yaml#L31), 
-but this cannot be enforced by grafana-agent itself.  You can confirm this is the case with `jq`:
+Charms should use `limit: 1` for the cos-agent relation (see example [here](https://github.com/canonical/zookeeper-operator/blob/main/metadata.yaml#L31),
+but this cannot be enforced by opentelemetry-collector itself.  You can confirm this is the case with `jq`:
 
 ```bash
 $ juju export-bundle | yq -o json '.' | jq -r '
@@ -240,22 +240,22 @@ $ juju export-bundle | yq -o json '.' | jq -r '
     .relations as $relations |
     $apps
     | to_entries
-    | map(select(.value.charm == "grafana-agent")) | map(.key) as $grafana_agents |
-    $apps     
+    | map(select(.value.charm == "opentelemetry-collector")) | map(.key) as $grafana_agents |
+    $apps
     | to_entries
-    | map(.key) as $valid_apps |     
-    $relations                      
+    | map(.key) as $valid_apps |
+    $relations
     | map({
-        app1: (.[0] | split(":")[0]),                                                 
-        app2: (.[1] | split(":")[0])                                  
-      })          
-    | map(select(                     
+        app1: (.[0] | split(":")[0]),
+        app2: (.[1] | split(":")[0])
+      })
+    | map(select(
         ((.app1 | IN($grafana_agents[])) and (.app2 | IN($valid_apps[]))) or
         ((.app2 | IN($grafana_agents[])) and (.app1 | IN($valid_apps[])))
       ))
-    | map(if .app1 | IN($grafana_agents[]) then .app2 else .app1 end) 
-    | group_by(.) 
-    | map({app: .[0], count: length}) 
+    | map(if .app1 | IN($grafana_agents[]) then .app2 else .app1 end)
+    | group_by(.)
+    | map({app: .[0], count: length})
     | map(select(.count > 1))
   '
 ```
@@ -291,11 +291,11 @@ import yaml, sys
 
 status = yaml.safe_load(sys.stdin.read())
 
-# A mapping from grafana-agent app name to the list of apps it's subordiante to
+# A mapping from opentelemetry-collector app name to the list of apps it's subordiante to
 agents = {
     k: v["subordinate-to"]
     for k, v in status["applications"].items()
-    if v["charm"] == "grafana-agent"
+    if v["charm"] == "opentelemetry-collector"
 }
 # print(agents)
 
@@ -306,7 +306,7 @@ for agent, principals in agents.items():
             subord_agents = subord_apps & agents.keys()
             if len(subord_agents) > 1:
                 print(
-                    f"{name} is related to more than one grafana-agent subordinate: {subord_agents}"
+                    f"{name} is related to more than one opentelemetry-collector subordinate: {subord_agents}"
                 )
 ```
 
@@ -318,61 +318,13 @@ $ juju status --format=yaml | ./is_multi_agent.py
 
 If there is a problem, you would see output such as:
 
-```bash    
-openstack-exporter/19 is related to more than one grafana-agent subordinate: {'grafana-agent-container', 'grafana-agent-vm'}
-```
-
-### Grafana-agent related to multiple principles on the same machine
-
-The grafana-agent machine charm can only be related to one principal in the same machine.
-
-Save the following script to `is_multi.py`:
-
-```python
-
-#!/usr/bin/env python3
-
-import yaml, sys
-
-status = yaml.safe_load(sys.stdin.read())
-
-# A mapping from grafana-agent app name to the list of apps it's subordiante to
-agents = {
-    k: v["subordinate-to"]
-    for k, v in status["applications"].items()
-    if v["charm"] == "grafana-agent"
-}
-
-for agent, principals in agents.items():
-    # A mapping from app name to machines
-    machines = {
-        p: [u["machine"] for u in status["applications"][p].get("units", {}).values()]
-        for p in principals
-    }
-
-    from itertools import combinations
-
-    for p1, p2 in combinations(principals, 2):
-        if overlap := set(machines[p1]) & set(machines[p2]):
-            print(
-                f"{agent} is subordinate to both '{p1}', '{p2}' in the same machines {overlap}"
-            )
-```
-
-Then run it with:
-
 ```bash
-$ juju status --format=yaml | ./is_multi.py
+openstack-exporter/19 is related to more than one opentelemetry-collector subordinate: {'opentelemetry-collector-container', 'opentelemetry-collector-vm'}
 ```
 
-If there is a problem, you would see output such as:
-
-```bash 
-ga is subordinate to both 'co', 'nc' in the same machines {'24'}
-```
 
 ### Additional thoughts
-- A rock's CI could dump a record of the `/metrics` endpoint each time the rock is built. This 
+- A rock's CI could dump a record of the `/metrics` endpoint each time the rock is built. This
   way some integration tests could turn into unit tests.
 
 ### See also
@@ -387,7 +339,7 @@ Data in Grafana panels is obtained by querying datasources.
 
 
 ### Adjust the time range
-Check if there is any data when you change the 
+Check if there is any data when you change the
 [time range](https://grafana.com/docs/grafana-cloud/visualizations/dashboards/use-dashboards/#set-dashboard-time-range)
 to `1d`, `7d`, etc.
 Perhaps you had "no data" all along or it started happening only recently.
@@ -447,8 +399,8 @@ telemetry.
 
 ### Confirm you can curl the backend via its ingress URL
 - Can grafana reach the datasource URL?
-- Can grafana-agent or opentelemetry (or any other telemetry producer or aggregator) reach its backend?
-  For example, can grafana-agent reach prometheus? Pay attention to http vs. https.
+- Can opentelemetry-collector (or any other telemetry producer or aggregator) reach its backend?
+  For example, can opentelemetry-collector reach prometheus? Pay attention to http vs. https.
 
 
 ## OpenTelemetry Collector
@@ -484,19 +436,19 @@ Compare the total size of logs to the available memory.
 
 ## `socket: too many open files`
 
-When deploying the Grafana Agent or Prometheus charms in large environments, 
-you may sometimes bump into an issue where the large amount of scrape targets 
+When deploying the Opentelemetry Collector or Prometheus charms in large environments,
+you may sometimes bump into an issue where the large amount of scrape targets
 leads to the process hitting the max open files count, as set by ``ulimit``.
 
-This issue can be identified by looking in your Grafana Agent logs, or Prometheus 
+This issue can be identified by looking in your Opentelemetry Collector logs, or Prometheus
 Scrape Targets in the UI, for the following kind of message:
 
 ```
 Get "http://10.0.0.1:9275/metrics": dial tcp 10.0.0.1:9275: socket: too many open files
 ```
 
-To resolve this, we need to increase the max open file limit of the Kubernetes 
-deployment itself. For MicroK8s, this would be done by increasing the limits in 
+To resolve this, we need to increase the max open file limit of the Kubernetes
+deployment itself. For MicroK8s, this would be done by increasing the limits in
 `/var/snap/microk8s/current/args/containerd-env`.
 
 ### 1. Juju SSH into the machine
@@ -505,7 +457,7 @@ deployment itself. For MicroK8s, this would be done by increasing the limits in
 $ juju ssh uk8s/1
 ```
 
-Substitute `uk8s/1` with the name of your MicroK8s unit. If you have more than 
+Substitute `uk8s/1` with the name of your MicroK8s unit. If you have more than
 one unit, you will need to repeat this for each of them.
 
 ### 2. Open the ``containerd-env``
@@ -537,13 +489,13 @@ $ vim /var/snap/microk8s/current/args/containerd-env
 
 Restart the machine the MicroK8s unit is deployed on and then wait for it to come back up.
 
-```bash 
+```bash
 $ sudo reboot
 ```
 
 ### 5. Validate
 
-Validate that the change made it through and had the desired effect once the machine is 
+Validate that the change made it through and had the desired effect once the machine is
 back up and running.
 
 ```bash
@@ -606,7 +558,7 @@ If your workload uses TLS communication, Prometheus needs to trust that CA that 
 ### How to troubleshoot the `AggregatorHostHealth` alerts
 The `HostMetricsMissing` and `AggregatorMetricsMissing` alerts under the `AggregatorHostHealth` group are similar, with only differences in their severity and the units they are responsible for. As such, the methods to troubleshoot them are identical.
 #### Confirm the aggregator is running
-For machine charms, ensure the snap is running by checking its status in the machine hosting it. In this example, we'll assume that our aggregator is `grafana-agent` on a machine with ID 0.
+For machine charms, ensure the snap is running by checking its status in the machine hosting it. In this example, we'll assume that our aggregator is `opentelemetry-collector` on a machine with ID 0.
 
 1. Shell into the machine:
 
@@ -614,10 +566,10 @@ For machine charms, ensure the snap is running by checking its status in the mac
 juju ssh 0
 ```
 
-2. Check the status of the `grafana-agent` snap:
+2. Check the status of the `opentelemetry-collector` snap:
 
-```shell 
-sudo snap services grafana-agent
+```shell
+sudo snap services opentelemetry-collector
 ```
 
 Ensure that the status of the snap is indicated as `active`.
@@ -625,18 +577,18 @@ Ensure that the status of the snap is indicated as `active`.
 For K8s charms, ensure the relevant pebble service is running by checking its status in the workload container. In this example, we'll assume we have the `opentelemetry-collector` k8s charm deployed with the name `otel` and we want to check the status of the pebble service in the workload container in unit 0. The name of the workload container is `otelcol`.
 
 ```{note}
-You need to know the name of the workload container in order to shell into it. You can find this information by consulting the `containers` section of a charm's `charmcraft.yaml` file. Alternatively, you can use `kubectl describe pod` to view the containers inside the pod.    
+You need to know the name of the workload container in order to shell into it. You can find this information by consulting the `containers` section of a charm's `charmcraft.yaml` file. Alternatively, you can use `kubectl describe pod` to view the containers inside the pod.
 ```
 
 1. Shell into the workload container:
 
-```shell 
+```shell
 juju ssh --container otelcol otel/0
 ```
 
 2. Check the status of the `otelcol` pebble service:
 
-```shell 
+```shell
 pebble services otelcol
 ```
 

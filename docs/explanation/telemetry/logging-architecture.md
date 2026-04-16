@@ -14,7 +14,7 @@ Charmed operators are programmed to automatically add [juju topology labels](htt
 
 ## Send logs to Loki
 
-In a typical COS Lite deployment, Loki would be running in a separate model from the monitored applications. While charms can we related directly to Loki using multiple cross-model relations (CMRs), we recommend that you funnel all model telemetry through regular in-model relations to grafana agent, and then using only one cross-model relation from grafana agent to Loki.
+In a typical COS Lite deployment, Loki would be running in a separate model from the monitored applications. While charms can be related directly to Loki using multiple cross-model relations (CMRs), we recommend that you funnel all model telemetry through regular in-model relations to opentelemetry collector, and then using only one cross-model relation from opentelemetry collector to Loki.
 
 ```{mermaid}
 flowchart LR
@@ -24,27 +24,27 @@ loki[Charmed Loki]
 end
 
 subgraph K8s model
-loki-client["Loki client\n(LokiPushApiConsumer)"] ---|"logging\n(loki_push_api)"| grafana-agent-k8s
-non-loki-client["Any workload + promtail\n(LogProxyConsumer)"] ---|"logging\n(loki_push_api)"| grafana-agent-k8s
+loki-client["Loki client\n(LokiPushApiConsumer)"] ---|"logging\n(loki_push_api)"| opentelemetry-collector-k8s
+non-loki-client["Any workload + promtail\n(LogProxyConsumer)"] ---|"logging\n(loki_push_api)"| opentelemetry-collector-k8s
 end
 
 
-grafana-agent-k8s[Charmed\ngrafana-agent] ---|"<a href=https://charmhub.io/loki-k8s/integrations#logging>logging</a>\n(<a href=https://charmhub.io/integrations/loki_push_api>loki_push_api</a>)"| loki
+opentelemetry-collector-k8s["Charmed \n opentelemetry-collector"] ---|"<a href=https://charmhub.io/loki-k8s/integrations#logging>logging</a>\n(<a href=https://charmhub.io/integrations/loki_push_api>loki_push_api</a>)"| loki
 
-click grafana-agent-k8s "https://charmhub.io/grafana-agent-k8s"
+click opentelemetry-collector-k8s "https://charmhub.io/opentelemetry-collector-k8s"
 click loki "https://charmhub.io/loki-k8s"
 
 
 subgraph VM model
-vm-charm[VM charm] ---|"cos-agent\n(<a href=https://charmhub.io/integrations/cos_agent>cos_agent</a>)"| grafana-agent[Charmed\ngrafana agent]
-any-vm-charm[Any VM charm] ---|"juju-info\n(juju-info)"| grafana-agent
+vm-charm[VM charm] ---|"cos-agent\n(<a href=https://charmhub.io/integrations/cos_agent>cos_agent</a>)"| opentelemetry-collector[Charmed\nopentelemetry collector]
+any-vm-charm[Any VM charm] ---|"juju-info\n(juju-info)"| opentelemetry-collector
 legacy-vm-charm[Legacy VM charm] ---|"filebeat\n(<a href=https://charmhub.io/integrations/elastic-beats>elastic-beats</a>)"| cos-proxy
 end
 
-grafana-agent ---|"logging\n(loki_push_api)"| loki
+opentelemetry-collector ---|"logging\n(loki_push_api)"| loki
 cos-proxy ---|"logging\n(loki_push_api))"| loki
 
-click grafana-agent "https://charmhub.io/grafana-agent"
+click opentelemetry-collector "https://charmhub.io/opentelemetry-collector"
 click cos-proxy "https://charmhub.io/cos-proxy"
 ```
 
@@ -137,7 +137,7 @@ server:
 
 ### Send logs from (physical/virtual) machine models
 
-Use charmed [grafana-agent](https://charmhub.io/grafana-agent), which is a subordinate charm.
+Use charmed [opentelemetry-collector](https://charmhub.io/opentelemetry-collector), which is a subordinate charm.
 
 - When related over `juju-info`, it will pick up all logs from `/var/log/*` without any additional setup.
 - When related over `cos-agent`, it will collect the logs specified in charm code, as well as built-in alert rules and dashboards.
@@ -148,100 +148,58 @@ Use charmed [grafana-agent](https://charmhub.io/grafana-agent), which is a subor
 ```yaml
 series: jammy
 applications:
-  agent:
-    charm: grafana-agent
+  otelcol:
+    charm: opentelemetry-collector
     channel: edge
   nc:
     charm: nova-compute
     channel: yoga/stable
     num_units: 1
 relations:
-- - agent:juju-info
+- - otelcol:juju-info
   - nc:juju-info
 ```
 
-This results in an auto-generated `grafana-agent.yaml` config file with juju topology labels and the default scrape jobs for `/var/log/**/*log` and `journalctl`:
+This results in an auto-generated `/etc/otelcol/config.d/otelcol_0.yaml` config file with juju topology labels and the default scrape jobs for `/var/log/**/*log` and `journalctl`:
 
 ```bash
-$ juju ssh agent/0 cat /etc/grafana-agent.yaml
+$ juju ssh otelcol/0 cat /etc/otelcol/config.d/otelcol_0.yaml
 ```
 
 ```yaml
-integrations:
-  agent:
-    enabled: true
-    relabel_configs:
-    - regex: (.*)
-      replacement: juju_test_608018cd-d625-40c8-8e27-8ac7eef7d94f_agent_self-monitoring
-      target_label: job
-    - regex: (.*)
-      replacement: juju_f7d94f_0_lxd
-      target_label: instance
-    - replacement: grafana-agent
-      source_labels:
-      - __address__
-      target_label: juju_charm
-    - replacement: test
-      source_labels:
-      - __address__
-      target_label: juju_model
-    - replacement: 608018cd-d625-40c8-8e27-8ac7eef7d94f
-      source_labels:
-      - __address__
-      target_label: juju_model_uuid
-    - replacement: agent
-      source_labels:
-      - __address__
-      target_label: juju_application
-    - replacement: agent/0
-      source_labels:
-      - __address__
-      target_label: juju_unit
-  node_exporter:
-    # ...
-  prometheus_remote_write: []
-logs:
-  configs:
-  - clients: []
-    name: log_file_scraper
-    scrape_configs:
-    - job_name: varlog
-      pipeline_stages:
-      - drop:
-          expression: .*file is a directory.*
-      static_configs:
-      - labels:
-          __path__: /var/log/**/*log
-          instance: juju_f7d94f_0_lxd
-          juju_application: agent
-          juju_model: test
-          juju_model_uuid: 608018cd-d625-40c8-8e27-8ac7eef7d94f
-          juju_unit: agent/0
-        targets:
-        - localhost
-    - job_name: syslog
-      journal:
-        labels:
-          instance: juju_f7d94f_0_lxd
-          juju_application: agent
-          juju_model: test
-          juju_model_uuid: 608018cd-d625-40c8-8e27-8ac7eef7d94f
-          juju_unit: agent/0
-      pipeline_stages:
-      - drop:
-          expression: .*file is a directory.*
-  positions_directory: ${SNAP_DATA}/grafana-agent-positions
-metrics:
-  # ...
-server:
-  log_level: info
+connectors: {}
+exporters:
+  loki/send-loki-logs/0:
+    default_labels_enabled:
+      exporter: false
+      job: true
+    endpoint: http://192.168.1.200/cos-lite-loki-0/loki/api/v1/push
+    retry_on_failure:
+      max_elapsed_time: 5m
+    sending_queue:
+      enabled: true
+      queue_size: 1000
+      storage: file_storage
+    tls:
+      insecure_skip_verify: false
+  nop/otelcol/1: {}
+  prometheusremotewrite/send-remote-write/0:
+    endpoint: http://192.168.1.200/cos-lite-prometheus-0/api/v1/write
+    tls:
+      insecure_skip_verify: false
+extensions:
+  file_storage:
+    directory: /var/snap/opentelemetry-collector/common/
+  health_check:
+    endpoint: 0.0.0.0:13133
+...
 ```
 
 ### Send logs from legacy charms
 Legacy charms are charms that do not have COS relations in place, and are using older, "legacy" relations instead, such as `http`, `prometheus`, etc. Legacy charms relate to COS via the [cos-proxy](https://charmhub.io/cos-proxy) charm.
 
 ### Send logs manually (no-juju solution)
-You can set up [any client](https://grafana.com/docs/loki/latest/send-data/) that can speak Loki's [Push API], for example: [grafana-agent snap](https://snapcraft.io/grafana-agent).
+You can set up [any client](https://grafana.com/docs/loki/latest/send-data/) that can speak Loki's [Push API], for example: [opentelemetry-collector snap](https://snapcraft.io/opentelemetry-collector).
 
 ## Inspect log lines ingested by Loki
 
