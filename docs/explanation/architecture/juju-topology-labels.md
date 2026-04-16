@@ -25,7 +25,7 @@ The COS charm libraries wrapping any observability relation endpoint inject thes
 The following sections outline what this means in practice, and which juju-topology-related modifications are applied to the built-in rules and dashboards.
 
 ## Dashboards
-Depending on whether the charm where the dashboards reside is related directly to `grafana-k8s`, or whether the data flows through `opentelemetry-collector` or `cos-proxy`, there are subtle differences in how the topology is injected.
+Depending on whether the charm (where the dashboards reside) is related directly to `grafana-k8s`, or whether the data flows through `opentelemetry-collector` or `cos-proxy`, there are subtle differences in how the topology is injected.
 
 ### Charms relating directly to `grafana-k8s`
 Built-in dashboards are enriched with topology drop-downs. This allows filtering dashboard data by topology labels. You can opt out of this behavior by calling a `._reinitialize_dashboard_data(inject_dropdowns=False)` method on the `GrafanaDashboardProvider` relation wrapper object.
