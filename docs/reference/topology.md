@@ -8,13 +8,13 @@ myst:
 
 ## Deploy in isolation
 COS (or COS Lite) should be deployed in its own Juju model, and preferably on a separate substrate with a dedicated Juju controller.
-"Grafana Agent<br/>(or OpenTelemetry Collector)"
+
 
 ```{mermaid}
 flowchart LR
 
 subgraph Infra A
-A[Your workloads] -->|telemetry| collector["Otel Collector<br/>(or Grafana Agent)"]
+A[Your workloads] -->|telemetry| collector["Otel Collector"]
 end
 
 subgraph Infra B
@@ -56,7 +56,7 @@ Set pod anti-affinity to hostname.
 
 ## COS Lite - scaled
 Scale all COS Lite applications to three units, with pod anti-affinity set to hostname.
-A storage unit may be co-located on each node. 
+A storage unit may be co-located on each node.
 
 Note that in scaled COS Lite,
 - Telemetry may slightly differ across units.
@@ -129,4 +129,3 @@ end
 ## References
 - High availability: [Canonical K8s](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/explanation/high-availability/),
   [MicroK8s](https://canonical.com/microk8s/docs/high-availability).
-
