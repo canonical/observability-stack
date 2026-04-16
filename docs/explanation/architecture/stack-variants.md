@@ -23,7 +23,7 @@ myst:
 
 [Canonical Observability Stack Lite](https://charmhub.io/cos-lite)
 (referred to as COS Lite) is designed for the edge and is capable of
-running reliably alongside MicroK8s and Juju with limited computing
+running reliably alongside MicroK8s, Canonical K8s, and Juju with limited computing
 resources (around 8 GB of memory).
 
 The charms in COS Lite can be integrated with other Juju-managed applications
