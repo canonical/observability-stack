@@ -12,7 +12,7 @@ There are several design goals we want to accomplish with COS:
 
 * Provide a set of high-quality observability charmed operators that are designed to work well on their own, and better together.
 
-* Make COS run on Kubernetes, with specific focus on [MicroK8s](https://microk8s.io/), to achieve a very "appliance-like" user experience.
+* Make COS run on Kubernetes, with specific focus on [MicroK8s](https://canonical.com/microk8s), to achieve a very "appliance-like" user experience.
 
 * Ensure a consistent, cohesive experience: all alerts go through Alertmanager, Grafana can plot all telemetry, etc.
 
