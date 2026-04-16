@@ -14,7 +14,7 @@ Charmed operators are programmed to automatically add [juju topology labels](htt
 
 ## Send logs to Loki
 
-In a typical COS Lite deployment, Loki would be running in a separate model from the monitored applications. While charms can we related directly to Loki using multiple cross-model relations (CMRs), we recommend that you funnel all model telemetry through regular in-model relations to opentelemetry collector, and then using only one cross-model relation from opentelemetry collector to Loki.
+In a typical COS Lite deployment, Loki would be running in a separate model from the monitored applications. While charms can be related directly to Loki using multiple cross-model relations (CMRs), we recommend that you funnel all model telemetry through regular in-model relations to opentelemetry collector, and then using only one cross-model relation from opentelemetry collector to Loki.
 
 ```{mermaid}
 flowchart LR
