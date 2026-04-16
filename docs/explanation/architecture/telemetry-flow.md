@@ -39,7 +39,7 @@ The Opentelemetry Collector machine charm aims to collect both host and applicat
 
 ### Opentelemetry Collector K8s
 
-The Opentelemetry Collector K8s charm is analogous to the machine ditto but deployed in a K8s pod. In contrast to the machine charm, the K8s charm is not installed in the same container as the workload, which means scraping or log forwarding happens between pods rather than in-pod.
+The Opentelemetry Collector K8s charm is analogous to the machine charm, but deployed in a K8s pod. In contrast to the machine charm, the K8s charm is not installed in the same container as the workload, which means scraping or log forwarding happens between pods rather than in-pod.
 
 ### Prometheus Scrape Config
 
