@@ -29,7 +29,7 @@ non-loki-client["Any workload + promtail\n(LogProxyConsumer)"] ---|"logging\n(lo
 end
 
 
-opentelemetry-collector-k8s[Charmed\nopentelemetry-collector] ---|"<a href=https://charmhub.io/loki-k8s/integrations#logging>logging</a>\n(<a href=https://charmhub.io/integrations/loki_push_api>loki_push_api</a>)"| loki
+opentelemetry-collector-k8s["Charmed \n opentelemetry-collector"] ---|"<a href=https://charmhub.io/loki-k8s/integrations#logging>logging</a>\n(<a href=https://charmhub.io/integrations/loki_push_api>loki_push_api</a>)"| loki
 
 click opentelemetry-collector-k8s "https://charmhub.io/opentelemetry-collector-k8s"
 click loki "https://charmhub.io/loki-k8s"
