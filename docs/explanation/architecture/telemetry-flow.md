@@ -45,4 +45,4 @@ The Opentelemetry Collector K8s charm is analogous to the machine charm, but dep
 
 `prometheus-scrape-config` is a workload-less charm used to alter the configuration of individual scrape jobs. It is commonly used to modify the scrape interval of the cos-proxy NRPE checks, as triggering an involved bash script once every minute has the potential of degrading system performance.
 
-In a typical OpenStack + COS deployment, there are multiple of these with different scrape intervals, depending on the part of the system you are monitoring.
+In a typical OpenStack + COS deployment, there are multiple of these charms with different scrape intervals, depending on the part of the system you are monitoring.
