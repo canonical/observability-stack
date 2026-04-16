@@ -51,7 +51,7 @@ In the example above,
 ## Scrape job labels for metrics
 
 While metric labels are set by the app developer, each scrape job configured on the monitoring service can append an additional fixed set of labels to all the metrics it collects.
-Prometheus and opentelemetry collector are two examples of monitoring services capable of scraping metrics.
+Prometheus and opentelemetry collector are two examples of monitoring services, capable of scraping metrics.
 
 For prometheus (or opentelemetry collector) to scrape our apps (targets), we need to specify in its configuration file where to find them. This is also where we specify telemetry labels.
 
