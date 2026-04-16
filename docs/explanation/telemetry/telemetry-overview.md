@@ -32,7 +32,7 @@ Signals reach COS through two paths:
 In both cases the transport is set up by a Juju relation; no manual endpoint
 configuration is required.
 
-See {ref}`telemetry-collection` for the full picture.
+See [telemetry collection](telemetry-collection) for the full picture.
 
 ## Labels
 
@@ -46,7 +46,7 @@ For OTLP-based workloads the same Juju topology is mapped to
 OTel resource attributes, so push-based and pull-based data share an
 identical naming scheme.
 
-See {ref}`telemetry-labels` and {ref}`telemetry-otlp-topology-labels` for details.
+See [telemetry labels](telemetry-labels) and [OTLP labels](telemetry-otlp-topology-labels) for details.
 
 ## Correlation
 
@@ -62,4 +62,4 @@ The backend integrations (Tempo ↔ Loki, Tempo ↔ Mimir) are enabled by
 default in the COS Terraform modules; you only need to ensure your
 applications emit the right context.
 
-See {ref}`telemetry-correlation` for a deeper dive.
+See [telemetry correlation](telemetry-correlation) for a deeper dive.
