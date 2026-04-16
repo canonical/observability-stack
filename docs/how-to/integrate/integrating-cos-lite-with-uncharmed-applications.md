@@ -112,10 +112,9 @@ juju run ssc/0 get-ca-certificate --format=yaml \
 Next, you need to [add the certificate to the root store](https://ubuntu.com/server/docs/how-to/security/install-a-root-ca-certificate-in-the-trust-store/).
 
 > Note: After running `update-ca-certificates` and restarting the `opentelemetry-collector` snap service, check the Opentelemetry Collector
-> logs (`sudo snap logs opentelemetry-collector`) to confirm there are no log lines such as:
+> logs (`sudo snap logs opentelemetry-collector | grep -i "failed"`) to confirm there are no log lines such as:
 >
-> `msg="Failed to send batch, retrying" err="Post \"https://.../api/v1/write\": tls: failed to verify certificate:
-> x509: certificate signed by unknown authority"`
+> `2026-04-15T22:46:14.218Z [otelcol] 2026-04-15T22:46:14.218Z info internal/retry_sender.go:133 Exporting failed. Will retry the request after interval. {"resource": {"service.instance.id": "14b8806b-d9e6-48f9-8233-37440ae6237b", "service.name": "otelcol", "service.version": "0.130.1"}, "otelcol.component.id": "otlp/rel-9/otelcol-push/0", "otelcol.component.kind": "exporter", "otelcol.signal": "metrics", "error": "rpc error: code = Unavailable desc = connection error: desc = "transport: authentication handshake failed: tls: first record does not look like a TLS handshake"", "interval": "39.096270371s"}`
 
 
 ### Opentelemetry Collector as a server
