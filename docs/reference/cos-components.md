@@ -39,6 +39,21 @@ myst:
 
 | Charm                                                                        | Substrate | Workload version | Contributing                                                                                                                                                      |
 | ---------------------------------------------------------------------------- | --------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+<<<<<<< fix/replace_grafana_agent
+| [Blackbox Exporter](https://charmhub.io/blackbox-exporter-k8s)               | K8s       |                  | [Source](https://github.com/canonical/blackbox-exporter-k8s-operator), [issues](https://github.com/canonical/blackbox-exporter-k8s-operator/issues)               |
+| [Blackbox Exporter](https://charmhub.io/blackbox-exporter)                   | Machine   |                  | [Source](https://github.com/canonical/blackbox-exporter-operator), [issues](https://github.com/canonical/blackbox-exporter-operator/issues)                       |
+| [COS Configuration](https://charmhub.io/cos-configuration-k8s)               | K8s       |                  | [Source](https://github.com/canonical/cos-configuration-k8s-operator), [issues](https://github.com/canonical/cos-configuration-k8s-operator/issues)               |
+| [COS Proxy](https://charmhub.io/cos-proxy)                                   | Machines  |                  | [Source](https://github.com/canonical/cos-proxy-operator), [issues](https://github.com/canonical/cos-proxy-operator/issues)                                       |
+| [Opentelemetry Collector](https://charmhub.io/opentelemetry-collector-k8s)   | K8s       |                  | [Source](https://github.com/canonical/opentelemetry-collector-k8s-operator), [issues](https://github.com/canonical/opentelemetry-collector-k8s-operator/issues)   |
+| [Opentelemetry Collector](https://charmhub.io/opentelemetry-collector)       | Machines  |                  | [Source](https://github.com/canonical/opentelemetry-collector-operator), [issues](https://github.com/canonical/opentelemetry-collector-operator/issues)                     |
+| [Opentelemetry Collector Integrator](https://charmhub.io/opentelemetry-collector-integrator)       | Any  |                  | [Source](https://github.com/canonical/opentelemetry-collector-integrator-operator), [issues](https://github.com/canonical/opentelemetry-collector-integrator-operator/issues)                     |
+| [Karma](https://charmhub.io/karma-k8s)                                       | K8s       |                  | [Source](https://github.com/canonical/karma-k8s-operator), [issues](https://github.com/canonical/karma-k8s-operator/issues)                                       |
+| [Karma Alertmanager Proxy](https://charmhub.io/karma-alertmanager-proxy-k8s) | K8s       |                  | [Source](https://github.com/canonical/karma-alertmanager-proxy-k8s-operator), [issues](https://github.com/canonical/karma-alertmanager-proxy-k8s-operator/issues) |
+| [Prometheus Scrape Config](https://charmhub.io/prometheus-scrape-config-k8s) | Any       |                  | [Source](https://github.com/canonical/prometheus-scrape-config-k8s-operator), [issues](https://github.com/canonical/prometheus-scrape-config-k8s-operator/issues) |
+| [Prometheus Scrape Target](https://charmhub.io/prometheus-scrape-target-k8s) | Any       |                  | [Source](https://github.com/canonical/prometheus-scrape-target-k8s-operator), [issues](https://github.com/canonical/prometheus-scrape-target-k8s-operator/issues) |
+| [Script Exporter](https://charmhub.io/script-exporter)                       | Machines       |                  | [Source](https://github.com/canonical/script-exporter-operator), [issues](https://github.com/canonical/script-exporter-operator/issues)                           |
+| SNMP Exporter                                                                | Machines  |                  | [Source](https://github.com/canonical/snmp-exporter-operator), [issues](https://github.com/canonical/snmp-exporter-operator/issues)                               |
+=======
 | [Blackbox Exporter](https://charmhub.io/blackbox-exporter-k8s)               | K8s       | 0.28                  | [Source](https://github.com/canonical/blackbox-exporter-k8s-operator), [issues](https://github.com/canonical/blackbox-exporter-k8s-operator/issues)               |
 | [Blackbox Exporter](https://charmhub.io/blackbox-exporter)                   | Machines   | 0.28                  | [Source](https://github.com/canonical/blackbox-exporter-operator), [issues](https://github.com/canonical/blackbox-exporter-operator/issues)                       |
 | [COS Configuration](https://charmhub.io/cos-configuration-k8s)               | K8s       | 3.6                 | [Source](https://github.com/canonical/cos-configuration-k8s-operator), [issues](https://github.com/canonical/cos-configuration-k8s-operator/issues)               |
@@ -52,6 +67,7 @@ myst:
 | [Prometheus Scrape Target](https://charmhub.io/prometheus-scrape-target-k8s) | Any       | -                  | [Source](https://github.com/canonical/prometheus-scrape-target-k8s-operator), [issues](https://github.com/canonical/prometheus-scrape-target-k8s-operator/issues) |
 | [Script Exporter](https://charmhub.io/script-exporter)                       | Machines       | 3.2                  | [Source](https://github.com/canonical/script-exporter-operator), [issues](https://github.com/canonical/script-exporter-operator/issues)                           |
 | SNMP Exporter                                                                | Machines  | 0.30                  | [Source](https://github.com/canonical/snmp-exporter-operator), [issues](https://github.com/canonical/snmp-exporter-operator/issues)                               |
+>>>>>>> main
 
 ## Rocks
 
@@ -80,7 +96,6 @@ myst:
 | Snap                                                                    | Contributing                                                                                                                                    |
 | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | [Blackbox Exporter](https://snapcraft.io/prometheus-blackbox-exporter) | [Source](https://github.com/canonical/prometheus-blackbox-exporter-snap), [issues](https://github.com/canonical/prometheus-blackbox-exporter-snap/issues) |
-| [Grafana Agent](https://snapcraft.io/grafana-agent)                     | [Source](https://github.com/canonical/grafana-agent-snap), [issues](https://github.com/canonical/grafana-agent-snap/issues)                     |
 | [Node Exporter](https://snapcraft.io/node-exporter) | [Source](https://github.com/canonical/node-exporter-snap), [issues](https://github.com/canonical/node-exporter-snap/issues) |
 | [OpenTelemetry Collector](https://snapcraft.io/opentelemetry-collector) | [Source](https://github.com/canonical/opentelemetry-collector-snap), [issues](https://github.com/canonical/opentelemetry-collector-snap/issues) |
 

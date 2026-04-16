@@ -51,9 +51,9 @@ In the example above,
 ## Scrape job labels for metrics
 
 While metric labels are set by the app developer, each scrape job configured on the monitoring service can append an additional fixed set of labels to all the metrics it collects.
-Prometheus and grafana agent are two examples of monitoring services capable of scraping metrics.
+Prometheus and opentelemetry collector are two examples of monitoring services, capable of scraping metrics.
 
-For prometheus (or grafana agent) to scrape our apps (targets), we need to specify in its configuration file where to find them. This is also where we specify telemetry labels.
+For prometheus (or opentelemetry collector) to scrape our apps (targets), we need to specify in its configuration file where to find them. This is also where we specify telemetry labels.
 
 ```yaml
 scrape_configs:
@@ -92,7 +92,7 @@ $ curl -s --data-urlencode 'match[]={__name__="prometheus_http_requests_total"}'
 ]
 ```
 
-Similarly, "service labels" can be specified using prometheus [remote-write endpoint](https://prometheus.io/docs/prometheus/latest/querying/api/#remote-write-receiver) and [push-gateway](https://github.com/prometheus/pushgateway/blob/master/README.md#use-it), and grafana agent's [config file](https://grafana.com/docs/agent/latest/static/configuration/metrics-config/).
+Similarly, "service labels" can be specified using prometheus [remote-write endpoint](https://prometheus.io/docs/prometheus/latest/querying/api/#remote-write-receiver) and [push-gateway](https://github.com/prometheus/pushgateway/blob/master/README.md#use-it).
 
 
 ## Log labels
@@ -120,9 +120,8 @@ all of the labels specified in the `stream` section above will be applied to all
 
 
 ## Scrape job labels for logs
-Log files can be scraped by Promtail or grafana agent, which then stream the log lines to Loki using Loki's `push-api` endpoint.
-Promtail, similar to grafana agent, has a [`scarpe_configs` section in its config file](https://grafana.com/docs/enterprise-logs/latest/send-data/promtail/) for specifying targets (log filename) and associate labels to them.
-See also grafana agent's [config file](https://grafana.com/docs/agent/latest/static/configuration/logs-config/) docs.
+Log files can be scraped by Promtail or opentelemetry collector, which then stream the log lines to Loki using Loki's `push-api` endpoint.
+Promtail has a [`scarpe_configs` section in its config file](https://grafana.com/docs/enterprise-logs/latest/send-data/promtail/) for specifying targets (log filename) and associate labels to them.
 
 
 ## Alert labels
