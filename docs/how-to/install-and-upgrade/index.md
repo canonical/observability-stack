@@ -10,6 +10,10 @@ myst:
 
 These guides cover deploying, upgrading, and securing access to COS.
 
+## Deploy
+
+See our [tutorials](/tutorial/index) for guidance on deploying COS.
+
 ## Upgrades
 
 Move between COS revisions with confidence.
