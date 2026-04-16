@@ -258,7 +258,7 @@ resource "juju_model" "cos" {
 
 ### Configure custom storage sizes 
 
-Additionally, it is recommended to modify the size of your PVC, specially since components like loki and prometheus are storage intensive. 
+Additionally, it is recommended to modify the size of your PVC, especially since components like Loki and Prometheus are storage intensive. 
 
 ```{important}
 If you don't specify a size, a PVC will be created with a default size of 1G backed by the storage class you configured. 
