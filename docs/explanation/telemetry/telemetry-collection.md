@@ -28,4 +28,4 @@ In practice, when you `juju relate` something to Loki (or OpenTelemetry Collecto
 
 Traces are typically generated in the observed system(s). They are sent from the system over a **push** mechanism and stitched together in the tracing backend to show the full flow of a specific action among multiple systems. Applications are often _instrumented_ using an instrumentation library to generate traces. Many workloads and frameworks already contain the tracing instrumentation.
 
-There are several formats in which traces can be sent. Our collectors such as OpenTelemetry Collector receive traces in most major formats and send them further to [Charmed Tempo](https://discourse.charmhub.io/t/charmed-tempo-ha/15531). Charms are often responsible for passing the address of the tracing receiver to the workload configuration.
+There are several formats in which traces can be sent. Our collectors such as OpenTelemetry Collector receive traces in most major formats and forwards them to [Charmed Tempo](https://discourse.charmhub.io/t/charmed-tempo-ha/15531). Charms are often responsible for passing the address of the tracing receiver to the workload configuration.
