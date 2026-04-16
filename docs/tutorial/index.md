@@ -14,7 +14,10 @@ reproducible steps.
 
 Get COS up and running with ease. Each of these
 paths of the tutorial will walk you through the steps required to deploy COS
-or COS Lite, Juju-based observability stacks running on Kubernetes.
+or COS Lite, Juju-based observability stacks running on single-node Kubernetes.
+
+The tutorials here are meant as a showcase for COS.
+Production deployment configuration may differ from the setup showcased here.
 
 
 ## COS
