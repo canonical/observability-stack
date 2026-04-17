@@ -1,35 +1,41 @@
 ---
 myst:
  html_meta:
-  description: "Learn to intrument machine charms with Canonical Observability Stack on Kubernetes using the Opentelemetry Collector subordinate charm for metrics, logs, and dashboards."
+  description: "Instrument machine charms with Canonical Observability Stack on Kubernetes using the Opentelemetry Collector subordinate charm for metrics, logs, and dashboards."
 ---
 
-# Instrumenting machine charms
+# Instrument machine charms
 
-## Prerequisites
-
-- A charmed application that is running in a virtual, or physical, machine.
-- The Canonical Observability Stack, running on Kubernetes.
-
-## Introduction
-
-This tutorial will teach you how to integrate a charm deployed on a machine substrate with the Canonical Observability Stack running on Kubernetes.
+This guide shows you how to integrate a charm deployed on a machine substrate with the Canonical Observability Stack running on Kubernetes.
 
 The Opentelemetry Collector machine charm handles installation, configuration, and Day 2 operations specific to the [Opentelemetry Collector](https://opentelemetry.io/docs/collector/), using [Juju](https://canonical.com/juju). The charm is designed to run in virtual machines as a [subordinate](https://discourse.charmhub.io/t/subordinate-applications/1053).
 
+This how-to guide uses COS Lite as the example, but either COS Lite or COS (HA) deployments can be used.
+
+## Prerequisites
+
+- A charmed application that is running in a virtual (or physical) machine.
+- The Canonical Observability Stack, running on Kubernetes.
+
 ```{note}
 Application units are typically run in an isolated container on a machine with no knowledge or access to other applications deployed onto the same machine.
+
 When you relate a subordinate charm to a principal one, the subordinate will be deployed on the same machine on which the principal is running.
+
 Subordinate units scale together with their principal.
 ```
 
 ## Ensure COS Lite is up and running
 
-Before we get started, we will make sure that the Observability Stack is up and running in our `cos` model (follow the tutorial on [getting started with COS Lite](/tutorial/cos-lite-microk8s-sandbox)) in a Kubernetes controller, like this:
+Ensure the Observability Stack is up and running in your `cos` model (see [getting started with COS Lite](/tutorial/cos-lite-microk8s-sandbox)) in a Kubernetes controller:
 
-```text
-$ juju status --relations
+```bash
+juju status --relations
+```
 
+Your output should show all applications active:
+
+```
 Model     Controller  Cloud/Region  Version  SLA          Timestamp
 cos-lite  ck8s        k8s           3.6.19   unsupported  18:07:14-03:00
 
@@ -86,24 +92,21 @@ traefik:peers                       traefik:peers                traefik_peers  
 traefik:traefik-route               grafana:ingress              traefik_route          regular
 ```
 
-## Add the required integrations to our charm
+## Add the required integrations to the charm
 
-In this example we use COS Lite to observe [Zookeeper](https://github.com/canonical/zookeeper-operator).
-
-In order for it to be able to integrate with COS Lite, we will have to make some changes to the charm.
+This example uses [Zookeeper](https://github.com/canonical/zookeeper-operator) as the machine charm to integrate with COS Lite.
 
 ### Obtain the `cos_agent` library
 
 Execute the following command to have Charmcraft fetch the required library from Charmhub.
 
-```shell
+```bash
 charmcraft fetch-lib charms.grafana_agent.v0.cos_agent
 ```
 
 ### Add the needed `provider`
 
-In the `metadata.yaml` of the zookeeper charm, we will now add the
-`cos-agent` relation to the `provides` section.
+In the `metadata.yaml` of the Zookeeper charm, add the `cos-agent` relation to the `provides` section.
 
 ```diff
 [...]
@@ -116,7 +119,7 @@ provides:
 [...]
 ```
 
-### Integrate the library in our charm code
+### Integrate the library in the charm code
 
 In `src/charm.py`, import the library.
 
@@ -149,29 +152,32 @@ As part of this constructor call, you may change the paths where metrics alert r
 To learn how to craft alert rules and dashboards, check [these examples](https://github.com/canonical/cos-configuration-k8s-operator/tree/main/tests/samples).
 ```
 
-### Pack the charm:
+### Pack the charm
 
-We will now pack the charm using Charmcraft.
+Pack the charm using Charmcraft:
 
-```shell
-$ charmcraft pack
+```bash
+charmcraft pack
 ```
 
-## Refreshing the Zookeeper charm
+## Refresh the Zookeeper charm
 
-Switch to the machine model and refresh the
-Zookeeper charm with the charm file we just created.
+Switch to the machine model and refresh the Zookeeper charm with the newly built charm file:
+
+```bash
+juju switch lxd:admin/zoo # or wherever your zookeeper charm is deployed
+juju refresh zookeeper --path ./*.charm
+```
+
+Juju will do an in-place upgrade of the charm, adding the `cos-agent` relation. To check Zookeeper's status:
+
+```bash
+juju status zoo
+```
+
+The status for Zookeeper should be `active`:
 
 ```
-  juju switch lxd:admin/zoo # or wherever your zookeeper charm is deployed
-  juju refresh zookeeper --path ./*.charm
-```
-
-Juju will now do an in-place upgrade of the charm, adding the `cos-agent` relation we just created. Verify that it's `active/idle` before proceeding.
-
-```
-$ juju status zoo
-
 Model  Controller  Cloud/Region         Version  SLA          Timestamp
 zoo    lxd         localhost/localhost  3.6.19   unsupported  18:24:39-03:00
 
@@ -187,12 +193,21 @@ Machine  State    Address        Inst id        Base          AZ            Mess
 
 ## Deploy the Opentelemetry Collector machine charm
 
-Now deploy the Opentelemetry Collector machine charm.
+Deploy the Opentelemetry Collector machine charm:
+
+```bash
+juju deploy opentelemetry-collector otelcol --channel 2/stable --base=ubuntu@22.04
+```
+
+Check the status to verify the deployment:
+
+```bash
+juju status
+```
+
+The `otelcol` charm should now be listed:
 
 ```
-$ juju deploy opentelemetry-collector otelcol --channel 2/stable --base=ubuntu@22.04
-$ juju status
-
 Model  Controller  Cloud/Region         Version  SLA          Timestamp
 zoo    lxd         localhost/localhost  3.6.19   unsupported  18:25:34-03:00
 
@@ -207,21 +222,25 @@ Machine  State    Address        Inst id        Base          AZ            Mess
 1        started  10.72.158.122  juju-50c528-1  ubuntu@22.04  charm-dev-36  Running
 ```
 
-At this point we have one `zookeeper` unit in `active` state, and a `opentelemetry-collector` in unknown state, with no units. This is, as mentioned earlier, because `opentelemetry-collector` is a [subordinate charm](https://discourse.charmhub.io/t/subordinate-applications/1053).
+At this point, there's one `zookeeper` unit in `active` state, and an `opentelemetry-collector` in `unknown` state with no units. This is because `opentelemetry-collector` is a [subordinate charm](https://discourse.charmhub.io/t/subordinate-applications/1053).
 
 ## Integrate the charms
 
-Now integrate `zookeeper` with `opentelemetry-collector` over the `cos-agent` relation.
+Integrate `zookeeper` with `opentelemetry-collector` over the `cos-agent` relation:
+
+```bash
+juju integrate zookeeper otelcol:cos-agent
+```
+
+Once the relation has been established, `otelcol` will be deployed together with the `zookeeper` unit, in the same machine. To check the model status:
+
+```bash
+juju status
+```
+
+Your output should show the `otelcol` unit deployed alongside `zookeeper`, in a `blocked` state:
 
 ```
-$ juju integrate zookeeper otelcol:cos-agent
-```
-
-Once the relation has been established, `otelcol` will be deployed together with the `zookeeper` unit, in the same machine. The status of the model at that point will be:
-
-```
-$ juju status
-
 Model  Controller  Cloud/Region         Version  SLA          Timestamp
 zoo    lxd         localhost/localhost  3.6.19   unsupported  18:28:50-03:00
 
@@ -237,20 +256,25 @@ Machine  State    Address        Inst id        Base          AZ            Mess
 1        started  10.72.158.122  juju-50c528-1  ubuntu@22.04  charm-dev-36  Running
 ```
 
-Note that despite `otelcol` being deployed and collecting telemetry, it is yet to forward them anywhere due to the lack of relations to the corresponding components in the observability stack.
+Note that despite `otelcol` being deployed and collecting telemetry, it hasn't forwarded telemetry anywhere due to the lack of relations to the corresponding components in the Observability stack.
 
 ## Relate Opentelemetry Collector to COS Lite
 
-As the next step, we will relate Opentelemetry Collector to the COS Lite components. Specifically, to
+Relate Opentelemetry Collector to the following COS Lite components:
 
 * Prometheus for the metrics,
 * Loki for the logs, and
 * Grafana for the dashboards.
 
-From the model our application is running, we can verify the [`offers`](https://documentation.ubuntu.com/juju/3.6/howto/manage-relations/#manage-relations) COS Lite is exposing:
+From the application model, verify the [`offers`](https://documentation.ubuntu.com/juju/3.6/howto/manage-relations/#manage-relations) COS Lite is exposing:
 
-```shell
-$ juju find-offers -m ck8s:admin/cos-lite
+```bash
+juju find-offers -m ck8s:admin/cos-lite
+```
+
+The output lists the available offers:
+
+```
 Store  URL                                             Access  Interfaces
 ck8s   admin/cos-lite.prometheus-metrics-endpoint      admin   prometheus_scrape:metrics-endpoint
 ck8s   admin/cos-lite.prometheus-receive-remote-write  admin   prometheus_remote_write:receive-remote-write
@@ -259,19 +283,23 @@ ck8s   admin/cos-lite.grafana-dashboards               admin   grafana_dashboard
 ck8s   admin/cos-lite.loki-logging                     admin   loki_push_api:logging
 ```
 
-To be able to use them, we now need to consume them.
+Consume the offers:
 
-
-```shell
-$ juju consume ck8s:admin/cos-lite.prometheus-receive-remote-write
-$ juju consume ck8s:admin/cos-lite.loki-logging
-$ juju consume ck8s:admin/cos-lite.grafana-dashboards
+```bash
+juju consume ck8s:admin/cos-lite.prometheus-receive-remote-write
+juju consume ck8s:admin/cos-lite.loki-logging
+juju consume ck8s:admin/cos-lite.grafana-dashboards
 ```
 
-Once these commands have been executed, the status of our model will change slightly.
+Verify the model status:
+
+```bash
+juju status
+```
+
+The model status now shows a `SAAS` section:
 
 ```
-$ juju status
 Model  Controller  Cloud/Region         Version  SLA          Timestamp
 zoo    lxd         localhost/localhost  3.6.19   unsupported  18:31:41-03:00
 
@@ -292,21 +320,23 @@ Machine  State    Address        Inst id        Base          AZ            Mess
 1        started  10.72.158.122  juju-50c528-1  ubuntu@22.04  charm-dev-36  Running
 ```
 
-Notice how in the status we now have a new section named `SAAS`. In that section we can see all the interfaces offered by other applications running in other models that we can integrate to.
+The `SAAS` section lists all the interfaces offered by other applications running in other models. Relate Opentelemetry Collector to these 3 applications:
 
-We will now relate Opentelemetry Collector to these 3 applications:
-
-```shell
-$ juju integrate otelcol prometheus-receive-remote-write
-$ juju integrate otelcol loki-logging
-$ juju integrate otelcol grafana-dashboards
+```bash
+juju integrate otelcol prometheus-receive-remote-write
+juju integrate otelcol loki-logging
+juju integrate otelcol grafana-dashboards
 ```
 
-And the three new integrations are established, see the Integrations sections of the model status:
+Verify the three new integrations in the model status:
+
+```bash
+juju status --relations
+```
+
+All three should appear in the `Integration provider` section:
 
 ```
-$ juju status --relations
-
 Model  Controller  Cloud/Region         Version  SLA          Timestamp
 zoo    lxd         localhost/localhost  3.6.19   unsupported  18:33:53-03:00
 
@@ -339,10 +369,15 @@ zookeeper:upgrade                                     zookeeper:upgrade         
 
 ## Verify that metrics and logs reach Prometheus and Loki
 
-Now that the Cross Model Relations are established between our application model and our observability model, we can easily verify that the metrics `zookeeper` exposes are reaching Prometheus.
+With the Cross Model Relations established, verify that the metrics `zookeeper` exposes are reaching Prometheus:
+
+```bash
+curl -s http://192.168.1.200/cos-lite-prometheus-0/api/v1/query\?query\=zookeeper_DataDirSize | jq
+```
+
+The output should confirm that Zookeeper metrics are being received:
 
 ```
-$ curl -s http://192.168.1.200/cos-lite-prometheus-0/api/v1/query\?query\=zookeeper_DataDirSize | jq
 {
   "status": "success",
   "data": {
@@ -370,6 +405,4 @@ $ curl -s http://192.168.1.200/cos-lite-prometheus-0/api/v1/query\?query\=zookee
 }
 ```
 
-You can then log into Grafana, head over to the explore tab, and do the same verification for logs, or check the list of dashboards for the ZooKeeper dashboards.
-
-And with that, you're done! Good job!
+Log into Grafana and use the Explore tab to verify logs, or check the list of dashboards for the ZooKeeper dashboards.
