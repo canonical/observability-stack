@@ -120,5 +120,5 @@ Now the `s3` application is ready to provide the `s3` endpoint to any charm requ
 
 
 ```{warning}
-As of `rev 41` of `s3-integrator`, if multiple charms each require integration with different S3 buckets, you would need to deploy multiple `s3-integrator` applications — one per unique bucket, as each `s3-integrator` application can only have **one** set of unique bucket configurations: [see more](https://github.com/canonical/s3-integrator/issues/48).
+As of `rev 41` of `s3-integrator`, if multiple charms each require integration with different S3 buckets, you would need to deploy multiple `s3-integrator` applications, one per unique bucket, as each `s3-integrator` application can only have **one** set of unique bucket configurations: [see more](https://github.com/canonical/s3-integrator/issues/48).
 ```

@@ -10,7 +10,7 @@ This explanation describes what telemetry correlation is, why it matters, and ho
 
 ## What is telemetry correlation?
 
-Telemetry correlation is the practice of linking related telemetry items across signals — for example, connecting a trace (a distributed request) with log events and metric samples that occurred while handling that request. Correlation typically uses identifiers such as a trace id (and optionally span id) attached to logs and [exemplars](https://grafana.com/docs/grafana/latest/fundamentals/exemplars/) so UIs and backends can surface related events.
+Telemetry correlation is the practice of linking related telemetry items across signals. For example, connecting a trace (a distributed request) with log events and metric samples that occurred while handling that request. Correlation typically uses identifiers such as a trace id (and optionally span id) attached to logs and [exemplars](https://grafana.com/docs/grafana/latest/fundamentals/exemplars/) so UIs and backends can surface related events.
 
 Common correlation types:
 
