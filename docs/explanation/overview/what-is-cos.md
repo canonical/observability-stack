@@ -17,14 +17,14 @@ COS is developed from the lessons learned with its predecessor, [LMA](../../../h
 
 COS is deployed and operated through [Juju](https://documentation.ubuntu.com/juju/3.6/). Its components are charmed operators connected by Juju relations, which automate configuration and integration between them.
 
-Telemetry is collected by **aggregator charms**, such as Grafana Agent or the OpenTelemetry Collector, that run alongside the workloads being observed. These aggregators scrape or receive telemetry from their co-located workloads, then push it to the COS backends over Traefik-managed ingress endpoints. This push-based model means that the COS stack does not need network access to the observed workloads; only the aggregators need to reach the COS endpoints.
+Telemetry is collected by the OpenTelemetry Collector (replacing Grafana Agent), which runs alongside the workloads being observed. OpenTelemetry Collector scrapes or receives telemetry from its co-located workloads, then pushes it to the COS backends over ingress endpoints provided and load-balanced by Traefik. This push-based model means that the COS stack does not need network access to the observed workloads; only OpenTelemetry Collector needs to reach the COS endpoints.
 
 Within the stack:
 
 - **Metrics** are ingested by Prometheus (COS Lite) or Mimir (COS).
 - **Logs** are ingested by Loki.
 - **Traces** are ingested by Tempo (COS only, not available in COS Lite).
-- **Alert rules** are evaluated by Prometheus and Loki, and notifications are routed through Alertmanager.
+- **Alert rules** are evaluated by Prometheus, Mimir and Loki, and notifications are routed through Alertmanager.
 - All **telemetry** is visualized through Grafana, which is pre-configured to query each backend as a datasource.
 
 Juju topology labels are automatically applied to all telemetry, making it possible to filter and correlate data by model, application, unit, or charm. Refer to the [Juju Topology](../architecture/juju-topology) guide for more information about how Juju context is applied to telemetry.
@@ -34,19 +34,14 @@ For more detail, see [Telemetry Flow](../architecture/telemetry-flow) and [Model
 
 ## What COS does
 
-- **Collects telemetry**: Metrics, logs, and (in COS) traces are collected from Juju-managed workloads and, via cross-model relations, from workloads outside of Juju.
-- **Stores telemetry**: Telemetry is persisted in the appropriate backend (Prometheus, Mimir, Loki, or Tempo), backed by persistent storage.
-- **Alerts**: Alert rules — whether bundled into charms or provided through the COS Configuration charm — are evaluated continuously. Firing alerts are routed to the configured notification channels via Alertmanager.
-- **Visualises**: Grafana provides pre-built dashboards for all instrumented charms, and can be extended with custom dashboards.
-- **Self-monitors**: COS collects its own telemetry, so the health of the observability stack itself is observable.
-- **Scales**: COS is built on horizontally-scalable, microservices-based backends (Mimir, Loki, Tempo) for enterprise workloads.
+By modelling observability as a set of Juju relations, COS eliminates the manual configuration burden typically associated with spinning up a monitoring stack. Dashboards, alert rules, and scrape targets are automatically provisioned when charms are related. This application of Juju topology also means that telemetry is contextualised out of the box, enabling opadminserators to filter and correlate data by model, application, or unit without any extra instrumentation. The result is a full-stack, self-monitoring observability platform that evolves alongside the applications it observes.
 
 
 ## Flavours of COS: COS and COS Lite
 
 There are two flavours available: COS and COS Lite. Each is suited to different deployment scenarios:
 
-|                          | **COS**                                                      | **COS Lite**                                              |
+|                          | COS                                                      | COS Lite                                              |
 |--------------------------|--------------------------------------------------------------|-----------------------------------------------------------|
 | Purpose                  | Horizontally scalable, enterprise-ready                      | Resource-constrained or near-edge deployment              |
 | Telemetry types          | Metrics, logs, traces                                        | Metrics, logs                                             |
@@ -66,9 +61,10 @@ Both flavours share the same Grafana, Alertmanager, Traefik, and Catalogue charm
 
 ## Useful links
 
-- [COS components](../../reference/cos-components): Full list of charms, rocks, and snaps in the stack
-- [Telemetry flow](../architecture/telemetry-flow): How telemetry moves through the stack
-- [Design goals](../architecture/design-goals): Why COS was built the way it was
-- [Juju topology](../architecture/juju-topology): How Juju context is applied to telemetry
+- [COS components](/reference/cos-components): Full list of charms, rocks, and snaps in the stack
+- [Telemetry Overview](/explanation/architecture/telemetry-overview): An overview of how COS handles telemetry.
+- [Telemetry flow](/explanation/architecture/telemetry-flow): How telemetry moves through the stack
+- [Design goals](/explanation/architecture/design-goals): Why COS was built the way it was
+- [Juju topology](/explanation/architecture/juju-topology): How Juju context is applied to telemetry
 - [Discourse community](https://discourse.charmhub.io/c/charm/observability/62): Ask questions and follow announcements
 - [Matrix chat](https://matrix.to/#/#cos:ubuntu.com): Real-time community chat
