@@ -12,7 +12,7 @@ You can reproduce the entire tutorial with a [cloud-config](cos-lite-canonical-k
 
 ## Prerequisites
 
-- A 4cpu8gb node or better, with at least 40Gi disk space.
+- A 4cpu8gb node or better, with at least 40Gi disk space (see [Sizing guide](../reference/system-requirements) for production deployments).
 - Juju v3.6 installed ([doc](https://documentation.ubuntu.com/juju/3.6/howto/manage-juju/#install-juju)).
 - Canonical K8s (snap) installed, with local-storage ([doc](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/tutorial/getting-started/))
   and load-balancer ([doc](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/networking/default-loadbalancer/)) enabled.
