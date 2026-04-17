@@ -22,3 +22,58 @@ and [charm](https://documentation.ubuntu.com/canonical-kubernetes/latest/charm/h
 ### MicroK8s
 Use the [`rook-ceph`](https://canonical.com/microk8s/docs/addon-rook-ceph) add-on together with Microceph.
 See the [Microceph tutorial](https://canonical.com/microk8s/docs/how-to-ceph).
+
+## General-purpose storage recommendations
+
+The following estimates are based on past experience for medium-sized COS stacks.
+
+### COS
+#### Kubernetes persistent volume storage
+
+The default storage allocation for charmed persisted volumes is 1GB. The following mount points typically require non-default storage allocations.
+
+| Charm                       | Role              | Storage volume   | Description                                                    | Capacity     | Typical unit count |
+| --------------------------- | ----------------- | ---------------- | -------------------------------------------------------------- | ------------ | ------------------ |
+| loki-worker-k8s             | write or ingester | loki-persisted   | WAL for received logs before they are sent off to S3           | 100GB        | 3                  |
+| mimir-worker-k8s            | write or ingester | data             | WAL for received metrics before they are sent off to S3        | 50GB<br><br> | 3                  |
+| tempo-worker                | ingester          | data             | WAL for received traces                                        | 100GB        | 3                  |
+| grafana-k8s                 | -                 | database         | Configurations, plugins, user data                             | 10GB         | 3                  |
+| alertmanager-k8s            | -                 | data             | nflog and silence snapshots                                    | 1GB          | 3                  |
+| opentelemetry-collector-k8s | -                 | persisted        | Self-monitoring queued telemetry                               | 10GB         | 1                  |
+| traefik-k8s                 | -                 | configurations   | Dynamic configuration files (YAML), x509 certificates and keys | 1GB          | 1                  |
+| cos-configuration-k8s       | -                 | content-from-git | Checked-out content from the git repo                          | 1GB          | 1                  |
+
+The total Kubernetes persistent volume storage needed by COS depends on the scale of each application, and on the replication count.
+For the table above, a COS deployment would require 795 GB per replicated storage pool (e.g. MicroCeph).
+
+#### S3 buckets
+
+Telementry is stored in S3 for long-term storage, decoupling storage from compute and supporting cost-effective retention policies.
+The S3 Integrator provides integration with S3-compatible object storage backends (e.g. Rados Gateway). The object storage should be backed by a 3x replication pool.
+
+| Bucket name | Bucket size |
+| ----------- | ----------- |
+| loki        | 1TB         |
+| mimir       | 500GB       |
+| tempo       | 200GB       |
+
+The total object storage needed by COS depends to the replication count. For the table above, a COS deployment would require 1.7 TB per replicated storage pool.
+
+
+### COS Lite
+
+#### Kubernetes persistent volume storage
+
+The default storage allocation for charmed persisted volumes is 1GB. The following mount points typically require non-default storage allocations.
+
+| Charm                       | Storage volume   | Description                                                    | Capacity     | Typical unit count |
+| --------------------------- | ---------------- | -------------------------------------------------------------- | ------------ | ------------------ |
+| loki-k8s                    | loki-persisted   | WAL for received logs before they are sent off to S3           | 100GB        | 3                  |
+| prometheus-k8s              | database         | WAL for received metrics before they are sent off to S3        | 50GB<br><br> | 3                  |
+| grafana-k8s                 | database         | Configurations, plugins, user data                             | 10GB         | 1                  |
+| alertmanager-k8s            | data             | nflog and silence snapshots                                    | 1GB          | 3                  |
+| traefik-k8s                 | configurations   | Dynamic configuration files (YAML), x509 certificates and keys | 1GB          | 1                  |
+| cos-configuration-k8s       | content-from-git | Checked-out content from the git repo                          | 1GB          | 1                  |
+
+The total Kubernetes persistent volume storage needed by COS depends on the scale of each application, and on the replication count.
+For the table above, a COS deployment would require 465 GB per replicated storage pool (e.g. MicroCeph).
