@@ -5,7 +5,7 @@ module "cos" {
   
   # ... other inputs ...
 
-  # Configure a component's storage directive
+  # Configure a component's storage directives
   prometheus = {
     backend_storage_directives = {
       database: "kubernetes,1,50G",  # sizes are just examples, adjust as needed
