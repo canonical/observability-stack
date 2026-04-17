@@ -8,12 +8,23 @@
 locals {
   clouds          = ["aws", "self-managed"] # list of k8s clouds where this COS module can be deployed.
   tls_termination = var.external_certificates_offer_url != null ? true : false
+  tracks = {
+    alertmanager = "0.31"
+    catalogue    = "3.0"
+    grafana      = "12.4"
+    loki         = "3.7"
+    mimir        = "3.0"
+    otelcol      = "0.130"
+    ssc          = "latest"
+    tempo        = "2.10"
+    traefik      = "latest"
+  }
 }
 
-variable "channel" {
-  description = "Channel that the applications are (unless overwritten by individual channels) deployed from"
+variable "risk" {
+  description = "Risk level that the applications are (unless overwritten by individual channels) deployed from"
   type        = string
-  default     = "dev/edge"
+  default     = "edge"
 }
 
 variable "model_uuid" {

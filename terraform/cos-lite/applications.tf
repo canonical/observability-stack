@@ -1,7 +1,7 @@
 module "alertmanager" {
   source             = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform"
   app_name           = var.alertmanager.app_name
-  channel            = var.channel
+  channel            = local.tracks.alertmanager + "/" + var.risk
   config             = var.alertmanager.config
   constraints        = var.alertmanager.constraints
   model_uuid         = var.model_uuid
@@ -13,7 +13,7 @@ module "alertmanager" {
 module "catalogue" {
   source             = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
   app_name           = var.catalogue.app_name
-  channel            = var.channel
+  channel            = local.tracks.catalogue + "/" + var.risk
   config             = var.catalogue.config
   constraints        = var.catalogue.constraints
   model_uuid         = var.model_uuid
@@ -25,7 +25,7 @@ module "catalogue" {
 module "grafana" {
   source             = "git::https://github.com/canonical/grafana-k8s-operator//terraform"
   app_name           = var.grafana.app_name
-  channel            = var.channel
+  channel            = local.tracks.grafana + "/" + var.risk
   config             = var.grafana.config
   constraints        = var.grafana.constraints
   model_uuid         = var.model_uuid
@@ -37,7 +37,7 @@ module "grafana" {
 module "loki" {
   source             = "git::https://github.com/canonical/loki-k8s-operator//terraform"
   app_name           = var.loki.app_name
-  channel            = var.channel
+  channel            = local.tracks.loki + "/" + var.risk
   config             = var.loki.config
   constraints        = var.loki.constraints
   model_uuid         = var.model_uuid
@@ -49,7 +49,7 @@ module "loki" {
 module "prometheus" {
   source             = "git::https://github.com/canonical/prometheus-k8s-operator//terraform"
   app_name           = var.prometheus.app_name
-  channel            = var.channel
+  channel            = local.tracks.prometheus + "/" + var.risk
   config             = var.prometheus.config
   constraints        = var.prometheus.constraints
   model_uuid         = var.model_uuid
@@ -62,7 +62,7 @@ module "ssc" {
   count       = var.internal_tls ? 1 : 0
   source      = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
   app_name    = var.ssc.app_name
-  channel     = var.ssc.channel
+  channel     = local.tracks.ssc + "/" + var.risk
   config      = var.ssc.config
   constraints = var.ssc.constraints
   model_uuid  = var.model_uuid
@@ -73,7 +73,7 @@ module "ssc" {
 module "traefik" {
   source             = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
   app_name           = var.traefik.app_name
-  channel            = var.traefik.channel
+  channel            = local.tracks.traefik + "/" + var.risk
   config             = var.traefik.config
   constraints        = var.traefik.constraints
   model_uuid         = var.model_uuid

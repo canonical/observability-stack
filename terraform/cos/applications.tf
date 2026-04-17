@@ -1,7 +1,7 @@
 module "alertmanager" {
   source             = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform"
   app_name           = var.alertmanager.app_name
-  channel            = var.channel
+  channel            = local.tracks.alertmanager + "/" + var.risk
   config             = var.alertmanager.config
   constraints        = var.alertmanager.constraints
   model_uuid         = var.model_uuid
@@ -13,7 +13,7 @@ module "alertmanager" {
 module "catalogue" {
   source             = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
   app_name           = var.catalogue.app_name
-  channel            = var.channel
+  channel            = local.tracks.catalogue + "/" + var.risk
   config             = var.catalogue.config
   constraints        = var.catalogue.constraints
   model_uuid         = var.model_uuid
@@ -25,7 +25,7 @@ module "catalogue" {
 module "grafana" {
   source             = "git::https://github.com/canonical/grafana-k8s-operator//terraform"
   app_name           = var.grafana.app_name
-  channel            = var.channel
+  channel            = local.tracks.grafana + "/" + var.risk
   config             = var.grafana.config
   constraints        = var.grafana.constraints
   model_uuid         = var.model_uuid
@@ -37,7 +37,7 @@ module "grafana" {
 module "loki" {
   source                            = "git::https://github.com/canonical/loki-operators//terraform"
   anti_affinity                     = var.anti_affinity
-  channel                           = var.channel
+  channel                           = local.tracks.loki + "/" + var.risk
   model_uuid                        = var.model_uuid
   s3_endpoint                       = var.s3_endpoint
   s3_secret_key                     = var.s3_secret_key
@@ -68,29 +68,21 @@ module "loki" {
 }
 
 module "mimir" {
-  source                           = "git::https://github.com/canonical/mimir-operators//terraform"
-  anti_affinity                    = var.anti_affinity
-  channel                          = var.channel
-  model_uuid                       = var.model_uuid
-  s3_endpoint                      = var.s3_endpoint
-  s3_secret_key                    = var.s3_secret_key
-  s3_access_key                    = var.s3_access_key
-  s3_bucket                        = var.mimir_bucket
-  s3_integrator_channel            = var.s3_integrator.channel
-  s3_integrator_config             = var.s3_integrator.config
-  s3_integrator_constraints        = var.s3_integrator.constraints
-  s3_integrator_revision           = var.s3_integrator.revision
-  s3_integrator_storage_directives = var.s3_integrator.storage_directives
-  s3_integrator_units              = var.s3_integrator.units
-  coordinator_config = merge(
-    var.mimir_coordinator.config,
-    # enable exemplar storage (required for metrics-to-traces).
-    # This config option is not supported in track `1`, so we'll set it only
-    # for newer tracks to maintain backward compatibility.
-    can(regex("^1/", var.channel)) ? {} : {
-      "max_global_exemplars_per_user" = "100000"
-    }
-  )
+  source                            = "git::https://github.com/canonical/mimir-operators//terraform"
+  anti_affinity                     = var.anti_affinity
+  channel                           = local.tracks.mimir + "/" + var.risk
+  model_uuid                        = var.model_uuid
+  s3_endpoint                       = var.s3_endpoint
+  s3_secret_key                     = var.s3_secret_key
+  s3_access_key                     = var.s3_access_key
+  s3_bucket                         = var.mimir_bucket
+  s3_integrator_channel             = var.s3_integrator.channel
+  s3_integrator_config              = var.s3_integrator.config
+  s3_integrator_constraints         = var.s3_integrator.constraints
+  s3_integrator_revision            = var.s3_integrator.revision
+  s3_integrator_storage_directives  = var.s3_integrator.storage_directives
+  s3_integrator_units               = var.s3_integrator.units
+  coordinator_config                = { "max_global_exemplars_per_user" = "100000" }
   coordinator_constraints           = var.mimir_coordinator.constraints
   coordinator_revision              = var.mimir_coordinator.revision
   coordinator_storage_directives    = var.mimir_coordinator.storage_directives
@@ -111,7 +103,7 @@ module "mimir" {
 module "opentelemetry_collector" {
   source             = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform"
   app_name           = var.opentelemetry_collector.app_name
-  channel            = var.channel
+  channel            = local.tracks.otelcol + "/" + var.risk
   config             = var.opentelemetry_collector.config
   constraints        = var.opentelemetry_collector.constraints
   model_uuid         = var.model_uuid
@@ -124,7 +116,7 @@ module "ssc" {
   count       = var.internal_tls ? 1 : 0
   source      = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
   app_name    = var.ssc.app_name
-  channel     = var.ssc.channel
+  channel     = local.tracks.ssc + "/" + var.risk
   config      = var.ssc.config
   constraints = var.ssc.constraints
   model_uuid  = var.model_uuid
@@ -135,7 +127,7 @@ module "ssc" {
 module "tempo" {
   source                                      = "git::https://github.com/canonical/tempo-operators//terraform"
   anti_affinity                               = var.anti_affinity
-  channel                                     = var.channel
+  channel                                     = local.tracks.tempo + "/" + var.risk
   model_uuid                                  = var.model_uuid
   s3_endpoint                                 = var.s3_endpoint
   s3_access_key                               = var.s3_access_key
@@ -177,7 +169,7 @@ module "tempo" {
 module "traefik" {
   source             = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
   app_name           = var.traefik.app_name
-  channel            = var.traefik.channel
+  channel            = local.tracks.traefik + "/" + var.risk
   config             = var.cloud == "aws" ? { "loadbalancer_annotations" = "service.beta.kubernetes.io/aws-load-balancer-scheme=internet-facing" } : var.traefik.config
   constraints        = var.traefik.constraints
   model_uuid         = var.model_uuid
