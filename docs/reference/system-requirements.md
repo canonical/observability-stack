@@ -60,17 +60,17 @@ viewers. Apply a margin of at least 10 % for production use.
 
 **Resource formulas** — where $L$ = log lines/min and $M$ = metric data points/min:
 
-$$
+```{math}
 \text{disk (GiB/day)} = 3.011 \times 10^{-4} L + 3.823 \times 10^{-6} M + 1.023
-$$
+```
 
-$$
+```{math}
 \text{vCPUs} = 1.89 \arctan(1.365 \times 10^{-4} L) + 1.059 \times 10^{-7} M + 1.644
-$$
+```
 
-$$
+```{math}
 \text{mem (GB)} = 2.063 \arctan(2.539 \times 10^{-3} L) + 1.464 \times 10^{-6} M + 3.3
-$$
+```
 
 ### Storage estimation
 
