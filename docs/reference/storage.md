@@ -30,7 +30,7 @@ See the [Microceph tutorial](https://canonical.com/microk8s/docs/how-to-ceph).
 The following storage recommendations are based on:
 - retention period of 30 days;
 - 10k log lines per minute;
-- 400k metrics per minutes.
+- 400k metrics per minute.
 
 ### COS
 #### Kubernetes persistent volume storage
@@ -69,7 +69,7 @@ The total object storage needed by COS depends on the replication count. For the
 
 #### Kubernetes persistent volume storage
 
-The default storage allocation for charmed persisted volumes is 1GB. The following mount points typically require non-default storage allocations.
+The default storage allocation for charmed persistent volumes is 1GB. The following mount points typically require non-default storage allocations.
 
 | Charm                       | Storage volume   | Description                                                    | Capacity     | Typical unit count |
 | --------------------------- | ---------------- | -------------------------------------------------------------- | ------------ | ------------------ |
