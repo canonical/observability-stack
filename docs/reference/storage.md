@@ -35,7 +35,7 @@ The default storage allocation for charmed persisted volumes is 1GB. The followi
 | Charm                       | Role              | Storage volume   | Description                                                    | Capacity     | Typical unit count |
 | --------------------------- | ----------------- | ---------------- | -------------------------------------------------------------- | ------------ | ------------------ |
 | loki-worker-k8s             | write or ingester | loki-persisted   | WAL for received logs before they are sent off to S3           | 100GB        | 3                  |
-| mimir-worker-k8s            | write or ingester | data             | WAL for received metrics before they are sent off to S3        | 50GB<br><br> | 3                  |
+| mimir-worker-k8s            | write or ingester | data             | WAL for received metrics before they are sent off to S3        | 50GB  | 3                  |
 | tempo-worker                | ingester          | data             | WAL for received traces                                        | 100GB        | 3                  |
 | grafana-k8s                 | -                 | database         | Configurations, plugins, user data                             | 10GB         | 3                  |
 | alertmanager-k8s            | -                 | data             | nflog and silence snapshots                                    | 1GB          | 3                  |
@@ -69,7 +69,7 @@ The default storage allocation for charmed persisted volumes is 1GB. The followi
 | Charm                       | Storage volume   | Description                                                    | Capacity     | Typical unit count |
 | --------------------------- | ---------------- | -------------------------------------------------------------- | ------------ | ------------------ |
 | loki-k8s                    | loki-persisted   | WAL for received logs before they are sent off to S3           | 100GB        | 3                  |
-| prometheus-k8s              | database         | WAL for received metrics before they are sent off to S3        | 50GB<br><br> | 3                  |
+| prometheus-k8s              | database         | WAL for received metrics before they are sent off to S3        | 50GB  | 3                  |
 | grafana-k8s                 | database         | Configurations, plugins, user data                             | 10GB         | 1                  |
 | alertmanager-k8s            | data             | nflog and silence snapshots                                    | 1GB          | 3                  |
 | traefik-k8s                 | configurations   | Dynamic configuration files (YAML), x509 certificates and keys | 1GB          | 1                  |
