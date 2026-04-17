@@ -7,6 +7,7 @@ myst:
 # Storage Best Practices
 
 ## Evaluate storage volume needs
+
 Evaluate the [telemetry volume needed](../../how-to/configure-and-tune/evaluate-telemetry-volume) for your solution
 and refer to the storage [sizing guideline](https://discourse.charmhub.io/t/cos-lite-ingestion-limits-for-8cpu-16gb-ssd/13005) for concrete numbers.
 
@@ -19,14 +20,27 @@ has a growth rate of about 50GB per day under normal operations.
 So, if you want a retention interval of about two months, you'll need 3TB of storage only for the telemetry.
 
 ## Set up distributed storage
+
 In production, **do not** use hostPath storage ([`hostpath-storage`](https://canonical.com/microk8s/docs/addon-hostpath-storage) in MicroK8s; `local-storage` in Canonical K8s):
+
 - `PersistentVolumeClaims` created by the host path storage provisioner are bound to the local node, so it is *impossible to move them to a different node*.
 - A `hostpath` volume can *grow beyond the capacity set in the volume claim manifest*.
 
 ### Canonical K8s
+
 Use Ceph CSI. Refer to Canonical Kubernetes [snap](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/storage/ceph/)
 and [charm](https://documentation.ubuntu.com/canonical-kubernetes/latest/charm/howto/ceph-csi/) docs.
 
 ### MicroK8s
+
 Use the [`rook-ceph`](https://canonical.com/microk8s/docs/addon-rook-ceph) add-on together with Microceph.
 See the [Microceph tutorial](https://canonical.com/microk8s/docs/how-to-ceph).
+
+## Configure storage directives with Terraform
+
+The COS Terraform modules allow configuring the [storage directives](https://documentation.ubuntu.com/juju/3.6/reference/storage/#storage-directive) of their components. To know which Juju storages exist in a component, refer to its charmcraft.yaml file in its source.
+
+```{literalinclude} /reference/best-practices/cos-storage.tf
+```
+
+Note that the default for each storage directive is set to 1 GB.
