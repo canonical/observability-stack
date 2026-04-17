@@ -21,6 +21,7 @@ CMRs
 config
 configs
 contextualize
+contrib
 cpu
 cryptographic
 cryptographically
@@ -52,6 +53,7 @@ Furo
 gb
 gh
 Gi
+GiB
 GitHub
 github
 GitOps
@@ -61,6 +63,7 @@ Grafana's
 gRPCs
 gyre
 HostHealth
+haproxy
 hostname
 hostPath
 html
@@ -89,6 +92,7 @@ LogQL
 loki
 Makefile
 matchers
+Mem
 MetalLB
 MetricsEndpointProvider
 Microceph
@@ -119,6 +123,7 @@ OTLP
 OTTL
 PagerDuty
 PDF
+persistency
 PII
 plantuml
 PNG
@@ -135,6 +140,7 @@ provisioner
 proxied
 PVC
 PVCs
+PVs
 Pygments
 pymarkdown
 QEMU
@@ -166,6 +172,8 @@ Spread
 spread_test_example
 SSL
 StatefulSets
+stderr
+stdout
 storages
 subproject
 subprojects
@@ -180,8 +188,8 @@ TLS
 tls
 TOC
 toctree
-Traefik
-Traefik's
+traefik
+traefik's
 txt
 ubuntu
 UI
@@ -192,6 +200,8 @@ unencrypted
 URL
 utils
 uv
+vCPU
+vCPUs
 venv
 visualizes
 VMs

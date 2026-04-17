@@ -275,26 +275,28 @@ resource "juju_integration" "catalogue_integrations" {
 # -------------- # Ingress --------------------------
 resource "juju_integration" "ingress" {
   for_each = {
-    alertmanager = {
-      app_name = module.alertmanager.app_name
-      endpoint = module.alertmanager.endpoints.ingress
-    }
-    catalogue = {
-      app_name = module.catalogue.app_name
-      endpoint = module.catalogue.endpoints.ingress
-    }
-    mimir = {
-      app_name = module.mimir.app_names.mimir_coordinator
-      endpoint = module.mimir.endpoints.ingress
-    }
-    loki = {
-      app_name = module.loki.app_names.loki_coordinator
-      endpoint = module.loki.endpoints.ingress
-    }
-    grafana = {
-      app_name = module.grafana.app_name
-      endpoint = module.grafana.endpoints.ingress
-    }
+    for k, v in {
+      alertmanager = {
+        app_name = module.alertmanager.app_name
+        endpoint = module.alertmanager.endpoints.ingress
+      }
+      catalogue = {
+        app_name = module.catalogue.app_name
+        endpoint = module.catalogue.endpoints.ingress
+      }
+      mimir = {
+        app_name = module.mimir.app_names.mimir_coordinator
+        endpoint = module.mimir.endpoints.ingress
+      }
+      loki = {
+        app_name = module.loki.app_names.loki_coordinator
+        endpoint = module.loki.endpoints.ingress
+      }
+      grafana = {
+        app_name = module.grafana.app_name
+        endpoint = module.grafana.endpoints.ingress
+      }
+    } : k => v if var.ingress[k]
   }
   model_uuid = var.model_uuid
 
@@ -312,10 +314,12 @@ resource "juju_integration" "ingress" {
 
 resource "juju_integration" "traefik_route" {
   for_each = {
-    tempo = {
-      app_name = module.tempo.app_names.tempo_coordinator
-      endpoint = module.tempo.endpoints.ingress
-    }
+    for k, v in {
+      tempo = {
+        app_name = module.tempo.app_names.tempo_coordinator
+        endpoint = module.tempo.endpoints.ingress
+      }
+    } : k => v if var.ingress[k]
   }
   model_uuid = var.model_uuid
 

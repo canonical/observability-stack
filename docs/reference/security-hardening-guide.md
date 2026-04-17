@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+  description: "Secure COS Lite with encryption, Grafana user management, and Juju hardening for production observability deployments."
+---
+
 # Security Hardening Guide
 
 This page is an overview of how to configure COS securely.  While COS is designed with security in mind, some steps are required to ensure your COS is deployed and configured to ensure proper security.
@@ -5,6 +11,7 @@ This page is an overview of how to configure COS securely.  While COS is designe
 ## Secure your substrate
 
 COS can only be as secure as what it is deployed on.  To ensure your substrate is as secure as possible, refer to any hardening guides provided by those layers.  For example, privileged users (both in Juju and the Kubernetes cluster) may be able to get shell access in the running units and inspect the file system.  It is recommended you review the following guides for hardening your substrate:
+
 * [Juju Security](https://documentation.ubuntu.com/juju/latest/user/explanation/juju-security/)
 * [Securing Charmed Kubernetes](https://ubuntu.com/kubernetes/charmed-k8s/docs/how-to-security)
 
@@ -22,7 +29,7 @@ By default, applications of Charmed Grafana are deployed with a single administr
 * change this password as described [in the Grafana charm docs](https://github.com/canonical/grafana-k8s-operator?tab=readme-ov-file#web-interface)
 * consider adding less-privileged accounts as needed (see the [official Grafana Docs](https://grafana.com/docs/grafana/latest/) for how to do this manually inside Grafana)
 
-If you're using the Canonical Identity Platform to manage authentication, this could be used to manage Grafana user accounts directly.  See [the Hydra docs](https://charmhub.io/hydra/docs/how-to/integrate-oidc-compatible-charms) for more details.
+If you're using the Canonical Identity Platform to manage authentication, this could be used to manage Grafana user accounts directly.  See [the Hydra docs](https://canonical-identity.readthedocs-hosted.com/reference/charms/hydra/) for more details.
 
 ### Be judicious about what is exposed via an ingress
 

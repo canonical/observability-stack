@@ -206,44 +206,46 @@ resource "juju_integration" "catalogue_prometheus" {
 
 # -------------- # Provided by Traefik --------------
 
-resource "juju_integration" "alertmanager_ingress" {
+resource "juju_integration" "ingress" {
+  for_each = {
+    for k, v in {
+      alertmanager = {
+        app_name = module.alertmanager.app_name
+        endpoint = module.alertmanager.endpoints.ingress
+      }
+      catalogue = {
+        app_name = module.catalogue.app_name
+        endpoint = module.catalogue.endpoints.ingress
+      }
+    } : k => v if var.ingress[k]
+  }
+
   model_uuid = var.model_uuid
+
+  application {
+    name     = each.value.app_name
+    endpoint = each.value.endpoint
+  }
 
   application {
     name     = module.traefik.app_name
     endpoint = module.traefik.endpoints.ingress
-  }
-
-  application {
-    name     = module.alertmanager.app_name
-    endpoint = module.alertmanager.endpoints.ingress
-  }
-}
-
-resource "juju_integration" "catalogue_ingress" {
-  model_uuid = var.model_uuid
-
-  application {
-    name     = module.traefik.app_name
-    endpoint = module.traefik.endpoints.ingress
-  }
-
-  application {
-    name     = module.catalogue.app_name
-    endpoint = module.catalogue.endpoints.ingress
   }
 }
 
 resource "juju_integration" "grafana_ingress" {
+  count = var.ingress["grafana"] ? 1 : 0
+  
   model_uuid = var.model_uuid
-
-  application {
-    name     = module.traefik.app_name
-  }
 
   application {
     name     = module.grafana.app_name
     endpoint = module.grafana.endpoints.ingress
+  }
+
+  application {
+    name     = module.traefik.app_name
+    endpoint = module.traefik.endpoints.ingress_per_unit
   }
 
   lifecycle {
@@ -251,31 +253,30 @@ resource "juju_integration" "grafana_ingress" {
   }
 }
 
-resource "juju_integration" "prometheus_ingress" {
+resource "juju_integration" "ingress_per_unit" {
+  for_each = {
+    for k, v in {
+      loki = {
+        app_name = module.loki.app_name
+        endpoint = module.loki.endpoints.ingress
+      }
+      prometheus = {
+        app_name = module.prometheus.app_name
+        endpoint = module.prometheus.endpoints.ingress
+      }
+    } : k => v if var.ingress[k]
+  }
+
   model_uuid = var.model_uuid
+
+  application {
+    name     = each.value.app_name
+    endpoint = each.value.endpoint
+  }
 
   application {
     name     = module.traefik.app_name
     endpoint = module.traefik.endpoints.ingress_per_unit
-  }
-
-  application {
-    name     = module.prometheus.app_name
-    endpoint = module.prometheus.endpoints.ingress
-  }
-}
-
-resource "juju_integration" "loki_ingress" {
-  model_uuid = var.model_uuid
-
-  application {
-    name     = module.traefik.app_name
-    endpoint = module.traefik.endpoints.ingress_per_unit
-  }
-
-  application {
-    name     = module.loki.app_name
-    endpoint = module.loki.endpoints.ingress
   }
 }
 
