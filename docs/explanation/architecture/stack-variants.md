@@ -18,7 +18,7 @@ myst:
 | Self-monitoring             | Logs, metrics, traces via in-model opentelemetry-collector charm | Metrics only, via direct relations                                                                   |
 | Minimum system requirements | 3x 8cpu/16gb + storage nodes ([details][sysreqs]) | 1x 4cpu8gb (+storage nodes, if any) ([details][sysreqs])                  |
 
-[sysreqs]: ../../reference/system-requirements
+[sysreqs]: /reference/system-requirements
 
 ## COS Lite
 

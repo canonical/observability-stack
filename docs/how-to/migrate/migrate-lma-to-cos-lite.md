@@ -14,11 +14,11 @@ This post describes how to migrate from LMA to COS with potentially destructive 
 ```
 
 ```{warning}
-Refer to the [best practices guide](../../reference/index) before migrating.
+Refer to the [best practices guide](/reference/index) before migrating.
 ```
 
 ```{warning}
-Refer to [Supported tracks](../../reference/release-policy) to choose the right track for your needs.
+Refer to [Supported tracks](/reference/release-policy) to choose the right track for your needs.
 Note that different tracks may have different ubuntu bases or minimum Juju version requirement.
 ```
 

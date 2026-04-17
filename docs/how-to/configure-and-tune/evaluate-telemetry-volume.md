@@ -106,4 +106,4 @@ Applications may have many knobs and load patterns.
 Transient bursts may be ignored if they are one-offs (not periodic). Such bursts may be accounted for by a fixed margin.
 
 
-[resource requirements]: ../../reference/system-requirements
+[resource requirements]: /reference/system-requirements

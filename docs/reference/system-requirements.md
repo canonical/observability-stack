@@ -9,7 +9,7 @@ myst:
 Use this page to determine the hardware you need **before** deploying COS or
 COS Lite in production.
 If you don't yet know how much telemetry your workloads generate, start with
-[How to evaluate telemetry volume](../how-to/configure-and-tune/evaluate-telemetry-volume).
+[How to evaluate telemetry volume](/how-to/configure-and-tune/evaluate-telemetry-volume).
 
 ## COS
 
@@ -20,7 +20,7 @@ At least 100 GB disk space per node.
 
 As a general rule, plan for a single VM with at least 4 vCPU / 8 GB RAM.
 
-If you have an [estimate for the expected telemetry rate](../how-to/configure-and-tune/evaluate-telemetry-volume), refer to the tables below.
+If you have an [estimate for the expected telemetry rate](/how-to/configure-and-tune/evaluate-telemetry-volume), refer to the tables below.
 
 ### Metrics (Prometheus)
 

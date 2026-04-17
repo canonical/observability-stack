@@ -6,8 +6,10 @@ myst:
 
 # Storage best practices
 
+Use this document to plan storage for a COS or COS Lite deployment.
+
 ## Evaluate storage volume needs
-Evaluate the [telemetry volume needed](../../how-to/configure-and-tune/evaluate-telemetry-volume) for your solution
+Evaluate the [telemetry volume needed](/how-to/configure-and-tune/evaluate-telemetry-volume) for your solution
 and refer to the [sizing guide](system-requirements) for concrete numbers.
 
 ## Set up distributed storage
@@ -25,7 +27,10 @@ See the [Microceph tutorial](https://canonical.com/microk8s/docs/how-to-ceph).
 
 ## General-purpose storage recommendations
 
-The following estimates are based on past experience for medium-sized COS stacks.
+The following storage recommendations are based on:
+- retention period of 30 days;
+- 10k log lines per minute;
+- 400k metrics per minutes.
 
 ### COS
 #### Kubernetes persistent volume storage
