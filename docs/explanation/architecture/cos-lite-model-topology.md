@@ -14,7 +14,7 @@ each one presenting a view of a specific data flow or functionality group. Each 
 separate juju relation.
 
 ## Ingress view
-The workloads that make up COS Lite are servers that need to be reachable from outside the model they are deployed in. Refer to [How to configure granular ingress in COS](https://documentation.ubuntu.com/observability/latest/how-to/install-and-upgrade/configure-granular-ingress/) for configuration steps.
+The workloads that make up COS Lite are servers that need to be reachable from outside the model they are deployed in. Refer to [How to configure granular ingress in COS](/how-to/deploy-and-manage/configure-granular-ingress.md) for configuration steps.
 
 - Grafana ("ingress-to-leader") is the main UI, amalgamating telemetry from all datasources into dashboards.
 - Prometheus and Loki (both "ingress-per-unit"), ingest telemetry pushed from opentelemetry collector from another model.

@@ -96,7 +96,7 @@ See [this guide](https://github.com/canonical/cos-configuration-k8s-operator#dep
 
 ### Using TLS
 
-You can follow [this guide](../install-and-upgrade/configure-tls-encryption.md) to enable TLS in COS and COS Lite.
+You can follow [this guide](../deploy-and-manage/configure-tls-encryption.md) to enable TLS in COS and COS Lite.
 
 ### Opentelemetry Collector snap as a client
 As a client (e.g. scraping `/metrics` endpoint), Opentelemetry Collector must trust the CA that signed the COS charms (or the COS

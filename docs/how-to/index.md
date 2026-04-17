@@ -23,7 +23,7 @@ migrating from older stacks.
 ```{toctree}
 :maxdepth: 1
 
-Install and upgrade <install-and-upgrade/index>
+Deploy and manage <deploy-and-manage/index>
 Migrate <migrate/index>
 ```
 
