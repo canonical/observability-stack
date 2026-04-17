@@ -14,7 +14,7 @@ Sometimes, a _pull_ model is not desirable: network restrictions, metrics from s
 
 A particularly relevant example is our recommended usage of OpenTelemetry Collector: instead of individually relating all the components in your system to COS, the Collector serves as your _aggregation point_. While the metrics from your system are _pulled_ by the Collector, they are sent to Prometheus via a _push_ mechanism: the [remote-write](https://prometheus.io/docs/specs/remote_write_spec_2_0/).
 
-Again, relating two components — such as OpenTelemetry Collector and Prometheus — over `prometheus_remote_write` automatically configures the integration.
+Again, relating two components, such as OpenTelemetry Collector and Prometheus, over `prometheus_remote_write` automatically configures the integration.
 
 ## Logs
 

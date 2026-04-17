@@ -13,7 +13,7 @@ dashboards are managed across the stack.
 
 ## Alert rule management
 
-How COS defines, ships, and orchestrates alert rules — both charm-provided
+How COS defines, ships, and orchestrates alert rules, both charm-provided
 and generic.
 
 ```{toctree}

@@ -57,9 +57,9 @@ while you're on it), so it does not collide with existing deployments that still
 
 This also applies when metrics are renamed in-track. Examples of renamed dashboard files:
 
-- "`postgres-14-overview.json`" → "`postgres-16-overview.json`" (metric change between charm tracks)
-- "`postgres-14-overview.json`" → "`postgres-14-overview-metrics-renamed.json`" (metric change within the same track)
-- "`overview.json`" → "`overview-rev345plus.json`" (using charm revision as a marker)
+- "`postgres-14-overview.json`" to "`postgres-16-overview.json`" (metric change between charm tracks)
+- "`postgres-14-overview.json`" to "`postgres-14-overview-metrics-renamed.json`" (metric change within the same track)
+- "`overview.json`" to "`overview-rev345plus.json`" (using charm revision as a marker)
 
 ## References
 
