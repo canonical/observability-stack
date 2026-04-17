@@ -41,7 +41,7 @@ The default storage allocation for charmed persisted volumes is 1GB. The followi
 | alertmanager-k8s            | -                 | data             | `nflog` and silences snapshots                                    | 1GB          | 3                  |
 | opentelemetry-collector-k8s | -                 | persisted        | Self-monitoring queued telemetry                               | 10GB         | 1                  |
 | traefik-k8s                 | -                 | configurations   | Dynamic configuration files (YAML), x509 certificates and keys | 1GB          | 1                  |
-| cos-configuration-k8s       | -                 | content-from-git | Checked-out content from the git repo                          | 1GB          | 1                  |
+| cos-configuration-k8s       | -                 | content-from-git | Checked-out content from the git repository                    | 1GB          | 1                  |
 
 The total Kubernetes persistent volume storage needed by COS depends on the scale of each application, and on the replication count.
 For the table above, a COS deployment would require 795 GB per replicated storage pool (e.g. MicroCeph).
