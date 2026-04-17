@@ -4,7 +4,7 @@ myst:
   description: "Use COS storage best practices to estimate telemetry volume, set up distributed storage, and avoid retention or performance bottlenecks over time."
 ---
 
-# Storage Best Practices
+# Storage best practices
 
 ## Evaluate storage volume needs
 Evaluate the [telemetry volume needed](../../how-to/configure-and-tune/evaluate-telemetry-volume) for your solution

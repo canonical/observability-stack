@@ -84,6 +84,3 @@ approximately **3 TiB** of storage for telemetry alone.
 
 For guidance on choosing a storage backend for production, see
 [Storage best practices](storage).
-
-## Recommended storage capacities
-
