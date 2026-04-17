@@ -38,4 +38,5 @@ storage.
 :maxdepth: 1
 
 Redact sensitive data <redact-sensitive-data>
+Configure the memory limiter of the OpenTelemetry Collector <configure-memory-limits-otelcol>
 ```
