@@ -35,7 +35,7 @@ The following storage recommendations are based on:
 ### COS
 #### Kubernetes persistent volume storage
 
-The default storage allocation for charmed persisted volumes is 1GB. The following mount points typically require non-default storage allocations.
+The default storage allocation for charmed persistent volumes is 1GB. The following mount points typically require non-default storage allocations.
 
 | Charm                       | Role              | Storage volume   | Description                                                    | Capacity     | Typical unit count |
 | --------------------------- | ----------------- | ---------------- | -------------------------------------------------------------- | ------------ | ------------------ |
