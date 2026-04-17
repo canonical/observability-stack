@@ -34,7 +34,7 @@ For more detail, see [Telemetry Flow](../architecture/telemetry-flow) and [Model
 
 ## What COS does
 
-By modelling observability as a set of Juju relations, COS eliminates the manual configuration burden typically associated with spinning up a monitoring stack. Dashboards, alert rules, and scrape targets are automatically provisioned when charms are related. This application of Juju topology also means that telemetry is contextualised out of the box, enabling opadminserators to filter and correlate data by model, application, or unit without any extra instrumentation. The result is a full-stack, self-monitoring observability platform that evolves alongside the applications it observes.
+By modelling observability as a set of Juju relations, COS eliminates the manual configuration burden typically associated with spinning up a monitoring stack. Dashboards, alert rules, and scrape targets are automatically provisioned when charms are related. This application of Juju topology also means that telemetry is contextualised out of the box, enabling admins to filter and correlate data by model, application, or unit without any extra instrumentation. The result is a full-stack, self-monitoring observability platform that evolves alongside the applications it observes.
 
 
 ## Flavours of COS: COS and COS Lite
