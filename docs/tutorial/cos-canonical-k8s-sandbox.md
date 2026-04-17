@@ -13,7 +13,7 @@ You can reproduce the COS deployment in this tutorial with a [cloud-config](cos-
 
 ## Prerequisites
 
-- A 8cpu16gb node or better, with at least 100GB disk space (see [Sizing guide](../reference/system-requirements) for production deployments)
+- A 8cpu16gb node or better, with at least 100GB disk space (see [Sizing guide](../reference/system-requirements) for production deployments).
 - Juju v3.6 installed ([doc](https://documentation.ubuntu.com/juju/3.6/howto/manage-juju/#install-juju)).
 - Canonical K8s (snap) installed, with local-storage ([doc](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/tutorial/getting-started/))
   and load-balancer ([doc](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/networking/default-loadbalancer/)) enabled.
