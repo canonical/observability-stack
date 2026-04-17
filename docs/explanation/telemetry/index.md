@@ -8,8 +8,14 @@ myst:
 
 # Telemetry
 
-These pages describe how each signal type — logs, metrics, traces — is
+These pages describe how each telemetry type (logs, metrics, traces) is
 collected, labeled, and correlated across the stack.
+
+```{toctree}
+:maxdepth: 1
+
+Overview <telemetry-overview>
+```
 
 ## Collection & labeling
 
@@ -26,7 +32,7 @@ Telemetry Collection <telemetry-collection>
 ## Correlation & interoperability
 
 How COS maps OpenTelemetry Protocol (OTLP) conventions to Juju topology and correlates
-signals for unified insight.
+telemetry for unified insight.
 
 ```{toctree}
 :maxdepth: 1
