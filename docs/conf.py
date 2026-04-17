@@ -293,7 +293,10 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx_sitemap",
     "sphinxcontrib.mermaid",
+    "sphinx.ext.mathjax",
 ]
+
+mathjax_path = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'
 
 # Excludes files or directories from processing
 
