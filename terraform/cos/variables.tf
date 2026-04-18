@@ -19,12 +19,32 @@ locals {
     tempo        = "2.10"
     traefik      = "latest"
   }
+  revisions = {
+    alertmanager      = var.alertmanager.revision ? var.alertmanager.revision : data.juju_charm.alertmanager_info.revision
+    catalogue         = var.catalogue.revision ? var.catalogue.revision : data.juju_charm.catalogue_info.revision
+    grafana           = var.grafana.revision ? var.grafana.revision : data.juju_charm.grafana_info.revision
+    loki_coordinator  = var.loki_coordinator.revision ? var.loki_coordinator.revision : data.juju_charm.loki_info.revision
+    loki_worker       = var.loki_worker.revision ? var.loki_worker.revision : data.juju_charm.loki_info.revision
+    mimir_coordinator = var.mimir_coordinator.revision ? var.mimir_coordinator.revision : data.juju_charm.mimir_info.revision
+    mimir_worker      = var.mimir_worker.revision ? var.mimir_worker.revision : data.juju_charm.mimir_info.revision
+    otelcol           = var.otelcol.revision ? var.otelcol.revision : data.juju_charm.otelcol_info.revision
+    tempo_coordinator = var.tempo_coordinator.revision ? var.tempo_coordinator.revision : data.juju_charm.tempo_info.revision
+    tempo_worker      = var.tempo_worker.revision ? var.tempo_worker.revision : data.juju_charm.tempo_info.revision
+    ssc               = var.ssc.revision ? var.ssc.revision : data.juju_charm.ssc_info.revision
+    traefik           = var.traefik.revision ? var.traefik.revision : data.juju_charm.traefik_info.revision
+  }
 }
 
 variable "risk" {
   description = "Risk level that the applications are (unless overwritten by individual channels) deployed from"
   type        = string
   default     = "edge"
+}
+
+variable "base" {
+  description = "The operating system on which to deploy. E.g. ubuntu@22.04. Changing this value for machine charms will trigger a replace by terraform. Check Charmhub for per-charm base support."
+  default     = "ubuntu@24.04"
+  type        = string
 }
 
 variable "model_uuid" {
