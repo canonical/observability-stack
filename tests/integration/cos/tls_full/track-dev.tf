@@ -44,7 +44,7 @@ module "ssc" {
 }
 
 module "cos" {
-  source                          = "git::https://github.com/canonical/observability-stack//terraform/cos"
+  source                          = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=fix/tf-endpoints"
   model_uuid                      = data.juju_model.cos-model.uuid
   channel                         = "dev/edge"
   internal_tls                    = "true"
@@ -55,7 +55,6 @@ module "cos" {
   s3_secret_key = var.s3_secret_key
   s3_access_key = var.s3_access_key
 
-  traefik           = { channel = "latest/edge" }  # TODO: Switch to latest/stable when rev257 hits stable
   loki_coordinator  = { units = 1 }
   loki_worker       = { backend_units = 1, read_units = 1, write_units = 1 }
   mimir_coordinator = { units = 1 }
