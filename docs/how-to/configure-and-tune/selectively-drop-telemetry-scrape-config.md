@@ -4,7 +4,7 @@ myst:
    description: "Selectively drop telemetry using Prometheus scrape config. Reduce telemetry resources in COS deployment."
 ---
 
-# Selectively drop telemetry using scrape config
+# How to selectively drop telemetry using scrape config
 
 Sometimes, from a resource perspective, applications are instrumented with more telemetry than we want to afford. In such cases, we can choose to selectively drop some before they are ingested.
 
