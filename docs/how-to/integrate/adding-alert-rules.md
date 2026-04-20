@@ -4,7 +4,7 @@ myst:
     description: "Learn how to provide Prometheus and Loki alert rules from your charm via Juju relations, including required interfaces, rule files, and deployment flow."
 ---
 
-# Adding alert rules
+# How to add alert rules
 
 Support for providing alert rules through the relation is available
 for [loki-k8s](https://charmhub.io/loki-k8s) and [prometheus-k8s](https://charmhub.io/prometheus-k8s), both directly and through 

@@ -40,6 +40,5 @@ The available stack configurations and how telemetry moves through them.
 ```{toctree}
 :maxdepth: 1
 
-Stack variants <stack-variants>
 Telemetry Flow <telemetry-flow>
 ```
