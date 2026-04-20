@@ -54,7 +54,7 @@ Both flavours share the same Grafana, Alertmanager, Traefik, and Catalogue charm
 ## Useful links
 
 - [COS components](/reference/cos-components): Full list of charms, rocks, and snaps in the stack
-- [Telemetry Overview](/explanation/architecture/telemetry-overview): An overview of how COS handles telemetry.
+- [Telemetry Overview](/explanation/telemetry/telemetry-overview): An overview of how COS handles telemetry.
 - [Telemetry flow](/explanation/architecture/telemetry-flow): How telemetry moves through the stack
 - [Design goals](/explanation/architecture/design-goals): Why COS was built the way it was
 - [Juju topology](/explanation/architecture/juju-topology): How Juju context is applied to telemetry
