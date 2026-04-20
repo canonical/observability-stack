@@ -29,7 +29,7 @@ resource "juju_integration" "grafana_dashboards" {
 
   application {
     name     = module.grafana.app_name
-    endpoint = module.grafana.provides.grafana_dashboard
+    endpoint = module.grafana.requires.grafana_dashboard
   }
 }
 # -------------- # Charm Tracing ------------------------
@@ -79,7 +79,7 @@ resource "juju_integration" "otelcol_metrics_endpoint" {
     }
     tempo = {
       app_name = module.tempo.app_names.tempo_coordinator
-      endpoint = module.tempo.requires.metrics_endpoint
+      endpoint = module.tempo.provides.metrics_endpoint
     }
   }
   model_uuid = var.model_uuid
@@ -126,7 +126,7 @@ resource "juju_integration" "grafana_sources" {
 
   application {
     name     = module.grafana.app_name
-    endpoint = module.grafana.provides.grafana_source
+    endpoint = module.grafana.requires.grafana_source
   }
 }
 
@@ -193,7 +193,7 @@ resource "juju_integration" "loki_logging_otelcol_logging_consumer" {
 
   application {
     name     = module.loki.app_names.loki_coordinator
-    endpoint = module.loki.requires.logging
+    endpoint = module.loki.provides.logging
   }
 
   application {
@@ -210,7 +210,7 @@ resource "juju_integration" "tempo_tracing_otelcol_tracing" {
 
   application {
     name     = module.tempo.app_names.tempo_coordinator
-    endpoint = module.tempo.requires.tracing
+    endpoint = module.tempo.provides.tracing
   }
 
   application {
@@ -224,7 +224,7 @@ resource "juju_integration" "tempo_send_remote_write_mimir_receive_remote_write"
 
   application {
     name     = module.tempo.app_names.tempo_coordinator
-    endpoint = module.tempo.requires.send_remote_write
+    endpoint = module.tempo.requires.send-remote-write
   }
 
   application {
@@ -260,7 +260,7 @@ resource "juju_integration" "catalogue_integrations" {
 
   application {
     name     = module.catalogue.app_name
-    endpoint = module.catalogue.requires.catalogue
+    endpoint = module.catalogue.provides.catalogue
   }
 
   application {
