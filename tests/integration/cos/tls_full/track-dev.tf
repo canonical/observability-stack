@@ -44,7 +44,7 @@ module "ssc" {
 }
 
 module "cos" {
-  source                          = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=fix/tf-endpoints"
+  source                          = "git::https://github.com/canonical/observability-stack//terraform/cos"
   model_uuid                      = data.juju_model.cos-model.uuid
   channel                         = "dev/edge"
   internal_tls                    = "true"
