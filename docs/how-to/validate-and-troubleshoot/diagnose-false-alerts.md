@@ -8,9 +8,9 @@ myst:
 
 False alerts fall into two categories:
 
-- False positives (noisy alerts), are alerts that fire when they should not, usually due to
+- False positives (noisy alerts) are alerts that fire when they should not, usually due to
   overly broad label matching or an inappropriate threshold in the PromQL/LogQL expression.
-- False negatives, are alerts that do *not* fire when they should. This can be due
+- False negatives are alerts that do *not* fire when they should. This can be due
   to an unintentional label mismatch in the alert expression, a threshold that is too lenient,
   or the alert rule being missing entirely — either because it was not forwarded over Juju
   relation data or was not serialized to disk correctly.
@@ -36,7 +36,7 @@ Inspect which time series match. Look for:
 
 Depending on the root cause:
 
-- Silence the alert in the Alertmanager UI, or come up with apropriate inhibit rules.
+- Silence the alert in the Alertmanager UI, or come up with appropriate inhibit rules.
 - [Disable rule forwarding](/how-to/configure-and-tune/disable-charmed-rules) on the aggregator
   (e.g. `opentelemetry-collector`) if all rules from a particular aggregator are unwanted.
 - File a bug against the upstream charm if the charmed rule threshold is inappropriate for
