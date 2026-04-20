@@ -1,7 +1,7 @@
 module "alertmanager" {
   source             = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform"
   app_name           = var.alertmanager.app_name
-  channel            = local.tracks.alertmanager + "/" + var.risk
+  channel            = local.channels.alertmanager
   config             = var.alertmanager.config
   constraints        = var.alertmanager.constraints
   model_uuid         = var.model_uuid
@@ -13,7 +13,7 @@ module "alertmanager" {
 module "catalogue" {
   source             = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
   app_name           = var.catalogue.app_name
-  channel            = local.tracks.catalogue + "/" + var.risk
+  channel            = local.channels.catalogue
   config             = var.catalogue.config
   constraints        = var.catalogue.constraints
   model_uuid         = var.model_uuid
@@ -25,7 +25,7 @@ module "catalogue" {
 module "grafana" {
   source             = "git::https://github.com/canonical/grafana-k8s-operator//terraform"
   app_name           = var.grafana.app_name
-  channel            = local.tracks.grafana + "/" + var.risk
+  channel            = local.channels.grafana
   config             = var.grafana.config
   constraints        = var.grafana.constraints
   model_uuid         = var.model_uuid
@@ -37,13 +37,13 @@ module "grafana" {
 module "loki" {
   source                            = "git::https://github.com/canonical/loki-operators//terraform"
   anti_affinity                     = var.anti_affinity
-  channel                           = local.tracks.loki + "/" + var.risk
+  channel                           = local.channels.loki
   model_uuid                        = var.model_uuid
   s3_endpoint                       = var.s3_endpoint
   s3_secret_key                     = var.s3_secret_key
   s3_access_key                     = var.s3_access_key
   s3_bucket                         = var.loki_bucket
-  s3_integrator_channel             = var.s3_integrator.channel
+  s3_integrator_channel             = local.channels.s3_integrator
   s3_integrator_config              = var.s3_integrator.config
   s3_integrator_constraints         = var.s3_integrator.constraints
   s3_integrator_revision            = local.revisions.s3_integrator
@@ -70,13 +70,13 @@ module "loki" {
 module "mimir" {
   source                            = "git::https://github.com/canonical/mimir-operators//terraform"
   anti_affinity                     = var.anti_affinity
-  channel                           = local.tracks.mimir + "/" + var.risk
+  channel                           = local.channels.mimir
   model_uuid                        = var.model_uuid
   s3_endpoint                       = var.s3_endpoint
   s3_secret_key                     = var.s3_secret_key
   s3_access_key                     = var.s3_access_key
   s3_bucket                         = var.mimir_bucket
-  s3_integrator_channel             = var.s3_integrator.channel
+  s3_integrator_channel             = local.channels.s3_integrator
   s3_integrator_config              = var.s3_integrator.config
   s3_integrator_constraints         = var.s3_integrator.constraints
   s3_integrator_revision            = local.revisions.s3_integrator
@@ -103,7 +103,7 @@ module "mimir" {
 module "opentelemetry_collector" {
   source             = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform"
   app_name           = var.opentelemetry_collector.app_name
-  channel            = local.tracks.otelcol + "/" + var.risk
+  channel            = local.channels.otelcol
   config             = var.opentelemetry_collector.config
   constraints        = var.opentelemetry_collector.constraints
   model_uuid         = var.model_uuid
@@ -116,7 +116,7 @@ module "ssc" {
   count       = var.internal_tls ? 1 : 0
   source      = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
   app_name    = var.ssc.app_name
-  channel     = local.tracks.ssc + "/" + var.risk
+  channel     = local.channels.ssc
   config      = var.ssc.config
   constraints = var.ssc.constraints
   model_uuid  = var.model_uuid
@@ -127,13 +127,14 @@ module "ssc" {
 module "tempo" {
   source                                      = "git::https://github.com/canonical/tempo-operators//terraform"
   anti_affinity                               = var.anti_affinity
-  channel                                     = local.tracks.tempo + "/" + var.risk
+  channel                                     = local.channels.tempo
   model_uuid                                  = var.model_uuid
   s3_endpoint                                 = var.s3_endpoint
   s3_access_key                               = var.s3_access_key
   s3_secret_key                               = var.s3_secret_key
   s3_bucket                                   = var.tempo_bucket
-  s3_integrator_channel                       = var.s3_integrator.channel
+  # TODO: The same s3_integrator channel for all coordinated-workers?
+  s3_integrator_channel                       = local.channels.s3_integrator
   s3_integrator_config                        = var.s3_integrator.config
   s3_integrator_constraints                   = var.s3_integrator.constraints
   s3_integrator_revision                      = local.revisions.s3_integrator
@@ -169,7 +170,7 @@ module "tempo" {
 module "traefik" {
   source             = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
   app_name           = var.traefik.app_name
-  channel            = local.tracks.traefik + "/" + var.risk
+  channel            = local.channels.traefik
   config             = var.cloud == "aws" ? { "loadbalancer_annotations" = "service.beta.kubernetes.io/aws-load-balancer-scheme=internet-facing" } : var.traefik.config
   constraints        = var.traefik.constraints
   model_uuid         = var.model_uuid

@@ -5,29 +5,6 @@
 # causes the operation to fail due to https://github.com/juju/terraform-provider-juju/issues/344
 # Therefore, we set a default value of "arch=amd64" for all applications.
 
-locals {
-  # https://github.com/juju/terraform-provider-juju/issues/972
-  tls_termination = var.external_certificates_offer_url != null ? true : false
-  tracks = {
-    alertmanager = "0.31"
-    catalogue    = "3.0"
-    grafana      = "12.4"
-    loki         = "3.7"
-    prometheus   = "3.10"
-    ssc          = "latest"
-    traefik      = "latest"
-  }
-  revisions = {
-    alertmanager = var.alertmanager.revision ? var.alertmanager.revision: data.juju_charm.alertmanager_info.revision
-    catalogue    = var.catalogue.revision ? var.catalogue.revision : data.juju_charm.catalogue_info.revision
-    grafana      = var.grafana.revision ? var.grafana.revision : data.juju_charm.grafana_info.revision
-    loki         = var.loki.revision ? var.loki.revision : data.juju_charm.loki_info.revision
-    prometheus   = var.prometheus.revision ? var.prometheus.revision : data.juju_charm.prometheus_info.revision
-    ssc          = var.ssc.revision ? var.ssc.revision : data.juju_charm.ssc_info.revision
-    traefik      = var.traefik.revision ? var.traefik.revision : data.juju_charm.traefik_info.revision
-  }
-}
-
 variable "risk" {
   description = "Risk level that the applications are (unless overwritten by individual channels) deployed from"
   type        = string
