@@ -26,7 +26,8 @@ Inspect which time series match. Look for:
   on the returned time series.
 - Juju topology label mismatches: charmed alert rules are
   [automatically injected](/explanation/architecture/juju-topology) with topology matchers. If the
-  topology labels on the time series do not match what was injected, the wrong set of series may be selected. Query `up` in Prometheus and compare the topology labels there against your expression.
+  topology labels on the time series do not match what was injected, the wrong set of series may be selected. 
+  Query `up` in Prometheus and compare the topology labels there against your expression.
 - Threshold too sensitive: the threshold in the expression may be too aggressive for your
   environment. For example, a CPU usage alert firing at 80% may be normal for your workload.
   [Charmed alert rule](/explanation/alerting/charmed-rules) thresholds are opinionated and not
