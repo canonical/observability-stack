@@ -11,4 +11,4 @@ The COS Terraform modules allow configuring the [storage directives](https://doc
 ```{literalinclude} /how-to/deploy-and-manage/cos-storage.tf
 ```
 
-Note that the default for each storage directive is set to 1 GB. For detailed information regarding storage sizing, see the [Storage best practices](../reference/storage.md) reference.
+Note that the default for each storage directive is set to 1 GB. For detailed information regarding storage sizing, see the [Storage best practices](/reference/storage.md) reference.
