@@ -125,14 +125,14 @@ module "ssc" {
 }
 
 module "tempo" {
-  source                                      = "git::https://github.com/canonical/tempo-operators//terraform"
-  anti_affinity                               = var.anti_affinity
-  channel                                     = local.channels.tempo
-  model_uuid                                  = var.model_uuid
-  s3_endpoint                                 = var.s3_endpoint
-  s3_access_key                               = var.s3_access_key
-  s3_secret_key                               = var.s3_secret_key
-  s3_bucket                                   = var.tempo_bucket
+  source        = "git::https://github.com/canonical/tempo-operators//terraform"
+  anti_affinity = var.anti_affinity
+  channel       = local.channels.tempo
+  model_uuid    = var.model_uuid
+  s3_endpoint   = var.s3_endpoint
+  s3_access_key = var.s3_access_key
+  s3_secret_key = var.s3_secret_key
+  s3_bucket     = var.tempo_bucket
   # TODO: The same s3_integrator channel for all coordinated-workers?
   s3_integrator_channel                       = local.channels.s3_integrator
   s3_integrator_config                        = var.s3_integrator.config

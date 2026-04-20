@@ -235,7 +235,6 @@ variable "opentelemetry_collector" {
   description = "Application configuration for OpenTelemetry Collector. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
-
 variable "ssc" {
   type = object({
     app_name           = optional(string, "ca")

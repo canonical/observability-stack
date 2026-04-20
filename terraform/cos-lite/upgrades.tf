@@ -1,5 +1,3 @@
-# TODO: If we only use the juju-charm datasource then users won't be able to revision pin
-
 data "juju_charm" "alertmanager_info" {
   charm   = "alertmanager-k8s"
   channel = local.channels.alertmanager

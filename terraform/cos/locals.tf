@@ -2,12 +2,12 @@ locals {
   clouds          = ["aws", "self-managed"] # list of k8s clouds where this COS module can be deployed.
   tls_termination = var.external_certificates_offer_url != null ? true : false
   tracks = {
-    alertmanager = "0.31"
-    catalogue    = "3.0"
-    grafana      = "12.4"
-    loki         = "3.7"
-    mimir        = "3.0"
-    otelcol      = "0.130"
+    alertmanager  = "0.31"
+    catalogue     = "3.0"
+    grafana       = "12.4"
+    loki          = "3.7"
+    mimir         = "3.0"
+    otelcol       = "0.130"
     s3_integrator = "2"
     ssc           = "latest"
     tempo         = "2.10"

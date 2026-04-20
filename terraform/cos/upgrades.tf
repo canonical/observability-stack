@@ -1,8 +1,5 @@
 # -------------- # CharmHub API -------------- #
 
-# TODO: Add a utest to assert that a user revision pin is respected and doesn't get overridden by the juju-charm datasource.
-# TODO: assert that if a user doesn't provide a revision pin then the juju-charm datasource is used to determine the revision.
-# TODO: We want one per component to avoid mistakes not applied to all components.
 data "juju_charm" "alertmanager_info" {
   charm   = "alertmanager-k8s"
   channel = local.channels.alertmanager
