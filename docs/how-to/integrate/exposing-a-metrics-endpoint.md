@@ -4,7 +4,7 @@ myst:
    description: "Expose metrics endpoints in COS deployments. Enable your charm to get scraped by Prometheus or Grafana."
 ---
 
-# Exposing a Metrics Endpoint
+# How to expose a metrics endpoint
 
 Integrating with the metrics endpoint interface allows you to, through a minimal 
 amount of code, enable your charm to get scraped by a charm like [prometheus-k8s](https://charmhub.io/prometheus-k8s) or [grafana-agent-k8s](https://charmhub.io/grafana-agent-k8s).
