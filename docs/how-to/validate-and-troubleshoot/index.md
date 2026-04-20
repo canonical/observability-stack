@@ -23,4 +23,5 @@ Diagnose and resolve common issues in a running COS environment.
 :maxdepth: 1
 
 Troubleshooting <troubleshooting>
+Diagnose false alerts <diagnose-false-alerts>
 ```
