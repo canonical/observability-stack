@@ -1,4 +1,12 @@
+---
+myst:
+ html_meta:
+   description: "Customize storage options for Canonical Observability Stack charms, using the Juju Terraform provider."
+---
+
 # How to customize storage options
+
+This guide describes how to configure storage classes and volume sizes for COS components, using the Juju Terraform provider.
 
 ## Configure custom storage class
 

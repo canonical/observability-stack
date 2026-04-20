@@ -1,3 +1,8 @@
+---
+myst:
+ html_meta:
+   description: "Specify which Juju cloud and credential to use for Canonical Observability Stack deployment."
+---
 
 # How to reference a specific cloud to deploy COS
 
