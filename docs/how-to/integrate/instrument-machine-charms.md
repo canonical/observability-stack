@@ -4,7 +4,7 @@ myst:
   description: "Instrument machine charms with Canonical Observability Stack on Kubernetes using the Opentelemetry Collector subordinate charm for metrics, logs, and dashboards."
 ---
 
-# Instrument machine charms
+# How to instrument machine charms
 
 This guide shows you how to integrate a charm deployed on a machine substrate with the Canonical Observability Stack running on Kubernetes.
 

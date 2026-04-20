@@ -4,7 +4,7 @@ myst:
    description: "Deploy Minio and S3 Integrator in COS. Use a script or the command line to configure S3-compatible storage for observability."
 ---
 
-# Deploy Minio and S3 Integrator
+# How to deploy Minio and S3 Integrator
 
 ```{warning}
 The Minio charm is not suitable for production usage. Instead, use [Charmed Ceph](https://ubuntu.com/ceph/docs) and follow [this guide](https://discourse.charmhub.io/t/tempo-ha-docs-how-to-use-ceph-backed-s3-storage-for-ha-charms/15740). 

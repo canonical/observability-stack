@@ -4,7 +4,7 @@ myst:
    description: "Disable built-in charm alert rules in COS, Customize alerting and selectively silence charmed rules for your environment."
 ---
 
-# Disable built-in charm alert rules
+# How to disable built-in charm alert rules
 
 By default, Prometheus and Loki will be configured to evaluate and post alerts for all the
 [charmed rules](/explanation/alerting/charmed-rules) that they receive over relation data.
