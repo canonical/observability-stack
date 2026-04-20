@@ -233,7 +233,7 @@ resource "juju_integration" "ingress" {
   }
 }
 
-//TODO: Consider moving this to upgrades
+//TODO: Consider moving this to upgrades. Also in COS
 resource "juju_integration" "grafana_ingress" {
   count = var.ingress["grafana"] ? 1 : 0
 
