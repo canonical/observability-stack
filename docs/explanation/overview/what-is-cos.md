@@ -19,9 +19,9 @@ COS is deployed and operated through [Juju](https://documentation.ubuntu.com/juj
 
 Telemetry is collected by the OpenTelemetry Collector (replacing Grafana Agent), which runs alongside the workloads being observed. OpenTelemetry Collector scrapes or receives telemetry from its co-located workloads, then pushes it to the COS backends over ingress endpoints provided and load-balanced by Traefik. This push-based model means that the COS stack does not need network access to the observed workloads; only OpenTelemetry Collector needs to reach the COS endpoints.
 
-Juju topology labels are automatically applied to all telemetry, making it possible to filter and correlate data by model, application, unit, or charm. Refer to the [Juju Topology](../architecture/juju-topology) guide for more information about how Juju context is applied to telemetry.
+Juju topology labels are automatically applied to all telemetry, making it possible to filter and correlate data by model, application, unit, or charm. Refer to the [Juju Topology](/explanation/architecture/juju-topology) guide for more information about how Juju context is applied to telemetry.
 
-For more detail, see [Telemetry Flow](../architecture/telemetry-flow) and [Model Topology for COS Lite](../architecture/cos-lite-model-topology).
+For more detail, see [Telemetry Flow](/explanation/architecture/telemetry-flow) and [Model Topology for COS Lite](/explanation/architecture/cos-lite-model-topology).
 
 
 ## What COS does
@@ -43,7 +43,7 @@ There are two flavours available: COS and COS Lite. Each is suited to different 
 | Storage                  | S3 (managed independently)                                   | PVCs, e.g. `ceph-csi` (managed independently)            |
 | Resiliency               | Scalable microservices with node anti-affinity (HA-ready)    | Multi-node non-identical replication                      |
 | Self-monitoring          | Metrics, logs, and traces via OpenTelemetry Collector        | Metrics only, via direct relations                        |
-| Minimum requirements     | 1× 8 CPU / 16 GB RAM + storage nodes                        | 1× 4 CPU / 8 GB RAM (+ storage nodes, if any)            |
+| Minimum system requirements | 3x 8cpu/16gb + storage nodes ([details](/reference/system-requirements)) | 1x 4cpu8gb (+storage nodes, if any) ([details](/reference/system-requirements))                  |
 
 ### Architecture
 The key architectural difference between COS and COS Lite is how the backends are deployed.
