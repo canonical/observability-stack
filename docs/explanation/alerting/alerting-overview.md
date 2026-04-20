@@ -21,8 +21,11 @@ There is no official centralized store for alert rules; the [Awesome Prometheus 
 
 ## Sources of alert rules
 
-COS alert rules come from three sources:
+COS alert rules are sourced in several ways.
 
+```{note}
+Both generic and charmed alert rules can be disabled by setting the `forward_alert_rules` parameter to `False` (default: `True`).
+```
 ### Generic alert rules
 
 Generic rules are a minimal set of host-health rules shipped with COS itself, covering common failure scenarios such as unreachable targets and missing metrics. They require no configuration and apply automatically across deployments. The main focus of these alerts is the health of COS itself, as well as the reachability and `up` status of monitored instances. See [Generic alert rule groups](./generic-rules) for the full list and their behaviour.
@@ -31,9 +34,9 @@ Generic rules are a minimal set of host-health rules shipped with COS itself, co
 
 Charmed rules are bundled directly with a charmed operator, encoding the operational knowledge its author considers important. They are automatically forwarded to Prometheus, Mimir, or Loki over Juju relations when the charm is deployed. They are written by the authors of charms monitored by COS and, unlike generic rules, they focus on specific workload-related health metrics. See [Charmed alert rules](./charmed-rules) for how they are transformed and managed.
 
-### COS config charm
+### Git-ops alert rules
 
-Custom alert rules can be loaded into COS from an external Git repository using the [COS Configuration charm](https://charmhub.io/cos-configuration-k8s). This is the recommended approach for organisation-specific or workload-specific rules that are not bundled with a charm. See [How to sync alert rules from a Git repository](../../how-to/configure-and-tune/sync-alert-rules-from-git) for setup instructions.
+Custom alert rules can be loaded into COS from an external Git repository using the [COS Configuration charm](https://charmhub.io/cos-configuration-k8s). This is the recommended approach for organization-specific or workload-specific rules that are not bundled with a charm. See [How to sync alert rules from a Git repository](../../how-to/configure-and-tune/sync-alert-rules-from-git) for setup instructions.
 
 ## Type of alert rule
 
@@ -59,6 +62,7 @@ annotations:
 ```
 
 Here, `rate(...)` computes the per-second rate of requests over a 5-minute window. Dividing error requests by all requests gives a ratio; the alert fires only when that ratio exceeds 5% for 10 consecutive minutes.
+> Note: in this example, the labels for the alert have been manually added for demonstration purposes. In COS deployments, Juju Topology labels are added automatically. Charm authors are able to set built-in labels through the `extra_alert_labels` parameter. Deployment admins can set additional labels via the `extra_alert_labels` charm config option. 
 
 For more information on PromQL, refer to the official Prometheus docs on [querying](https://prometheus.io/docs/prometheus/latest/querying/basics/).
 

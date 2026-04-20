@@ -18,7 +18,7 @@ and generic.
 
 ```{toctree}
 :maxdepth: 1
-Alert rules overview <alerting-overview>
+Overview <alerting-overview>
 Charmed alert rules <charmed-rules>
 Generic alert rules <generic-rules>
 ```
