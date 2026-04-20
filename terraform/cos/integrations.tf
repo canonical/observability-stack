@@ -302,7 +302,7 @@ resource "juju_integration" "ingress" {
 
   application {
     name     = module.traefik.app_name
-    endpoint = module.traefik.requires.ingress
+    endpoint = module.traefik.endpoints.ingress
   }
 
   application {
@@ -408,7 +408,7 @@ resource "juju_integration" "traefik_receive_ca_certificate" {
 
   application {
     name     = module.traefik.app_name
-    endpoint = module.traefik.requires.receive_ca_cert
+    endpoint = module.traefik.endpoints.receive_ca_cert
   }
 }
 
@@ -424,7 +424,7 @@ resource "juju_integration" "external_traefik_certificates" {
 
   application {
     name     = module.traefik.app_name
-    endpoint = module.traefik.requires.certificates
+    endpoint = module.traefik.endpoints.certificates
   }
 }
 

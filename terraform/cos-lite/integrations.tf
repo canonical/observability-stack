@@ -233,7 +233,7 @@ resource "juju_integration" "ingress" {
 
   application {
     name     = module.traefik.app_name
-    endpoint = module.traefik.requires.ingress
+    endpoint = module.traefik.endpoints.ingress
   }
 }
 
@@ -260,7 +260,7 @@ resource "juju_integration" "ingress_per_unit" {
 
   application {
     name     = module.traefik.app_name
-    endpoint = module.traefik.requires.ingress_per_unit
+    endpoint = module.traefik.endpoints.ingress_per_unit
   }
 }
 
@@ -274,7 +274,7 @@ resource "juju_integration" "traefik_self_monitoring_prometheus" {
 
   application {
     name     = module.traefik.app_name
-    endpoint = module.traefik.requires.metrics_endpoint
+    endpoint = module.traefik.endpoints.metrics_endpoint
   }
 }
 
@@ -366,7 +366,7 @@ resource "juju_integration" "traefik_receive_ca_certificate" {
 
   application {
     name     = module.traefik.app_name
-    endpoint = module.traefik.requires.receive_ca_cert
+    endpoint = module.traefik.endpoints.receive_ca_cert
   }
 }
 
@@ -382,7 +382,7 @@ resource "juju_integration" "external_traefik_certificates" {
 
   application {
     name     = module.traefik.app_name
-    endpoint = module.traefik.requires.certificates
+    endpoint = module.traefik.endpoints.certificates
   }
 }
 
