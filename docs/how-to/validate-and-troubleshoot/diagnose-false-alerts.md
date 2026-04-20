@@ -89,3 +89,14 @@ Common causes:
 - Threshold too lenient: the alert threshold may be higher (or lower) than the values your
   workload produces, so the condition is never satisfied. Evaluate the expressions in the
   alert incrementally to see what values they return.
+- Alert uses `absent()`: the `absent()` function returns `1` when the given selector matches
+  *no* time series at all, and is commonly used to detect missing metrics. However, `absent()`
+  does not support wildcard or regex label matchers — if the selector contains a regex matcher
+  (e.g. `juju_unit=~".+"`), `absent()` will never fire because it cannot determine which label
+  values are "expected". Alert rules that rely on `absent()` must use exact label matchers.
+- Threshold derived from a Grafana dashboard: if the alert threshold was chosen based on values
+  observed in a Grafana panel, be aware that Grafana can apply post-query axis scaling that
+  changes the displayed values. For example, a panel may show a "percentage" axis (0–100) while
+  the underlying PromQL expression returns a ratio (0–1), or a panel may display bytes while the
+  raw metric is in kilobytes. Always verify the raw query result in the Grafana query inspector
+  or directly in the Prometheus UI before setting a threshold.
