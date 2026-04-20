@@ -1,8 +1,8 @@
-# Customize storage options
+# How to customize storage options
 
 ## Configure custom storage class
 
-You may want to use custom storage classes like ceph or cinder backed PVCs for your containers. List the available storage classes:
+You may want to use custom storage classes like Ceph or Cinder-backed PVCs for your containers. List the available storage classes:
 
 ```bash
 kubectl get sc
@@ -63,7 +63,7 @@ module "cos-lite" {
 }
 ```
 
-This shows 3 examples setting sizes for prometheus, loki and alertmanager using the syntax
+This shows 3 examples setting sizes for Prometheus, Loki and Alertmanager using the syntax
 `{storage_directives = {<storage_name> = "<size>"}}`
 
 You can find the names of relevant storage volumes in the [storage reference](/reference/storage).

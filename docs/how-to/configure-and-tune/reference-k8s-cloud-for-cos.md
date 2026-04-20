@@ -1,8 +1,8 @@
 
-# Reference a specific cloud to deploy COS
+# How to reference a specific cloud to deploy COS
 
 In situations where multiple clouds are registered in the controller, you must specify where to deploy the model,
-Reference your cloud and credentials in the base terraform plan. First, see what cloud and credentials are stored in the authenticated controller.
+Reference your cloud and credentials in the base Terraform plan. First, see what cloud and credentials are stored in the authenticated controller.
 For example:
 
 ```bash
@@ -23,7 +23,7 @@ Cloud      Credentials
 k8s-cloud  k8s-cloud     
 ```
 
-Add a `cloud` block and a `credential` reference in the base terraform file within the `juju_model` resource:
+Add a `cloud` block and a `credential` reference in the base Terraform file within the `juju_model` resource:
 
 ```diff
 resource "juju_model" "cos" {
