@@ -4,7 +4,7 @@ myst:
    description: "Add distributed tracing to COS Lite - deploy Tempo Coordinator and Worker for complete trace collection and visualization."
 ---
 
-# Add tracing to COS Lite
+# How to add tracing to COS Lite
 
 If you have an existing COS Lite deployment and you wish to add tracing 
 capabilities to it, you can follow the few steps below.

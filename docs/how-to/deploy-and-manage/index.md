@@ -1,14 +1,14 @@
 ---
 myst:
   html_meta:
-    description: "Practical how-to guides for installing and deploying different components of COS."
+    description: "Practical how-to guides for deploying, upgrading, and managing different components of COS."
 ---
 
-(install-and-upgrade)=
+(deploy-and-manage)=
 
-# Install and upgrade
+# Deploy and manage
 
-These guides cover deploying, upgrading, and securing access to COS.
+These guides cover deploying, upgrading, managing, and securing access to COS.
 
 ## Deploy
 

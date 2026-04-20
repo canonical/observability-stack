@@ -12,6 +12,18 @@ These pages include reference material for deploying, operating and integrating 
 Use it when you need exact requirements, compatibility matrices, or operational hardening
 guidance.
 
+## Sizing & capacity
+
+Plan compute and storage resources for your deployment scale and retention
+requirements.
+
+```{toctree}
+:maxdepth: 1
+
+Sizing Guide <system-requirements>
+Storage <storage>
+```
+
 ## Release & lifecycle
 
 Information about releases, timelines and our policy for updates and
@@ -21,7 +33,6 @@ compatibility.
 :maxdepth: 1
 
 Release Policy <release-policy>
-System Requirements <system-requirements>
 ```
 
 ## Security
@@ -61,12 +72,11 @@ Networking <networking>
 
 ## Day-2 operations
 
-Plan for upgrades, data retention, and storage sizing to keep COS healthy
+Plan for upgrades and data retention to keep COS healthy
 over time.
 
 ```{toctree}
 :maxdepth: 1
 
 Lifecycle <lifecycle>
-Storage <storage>
 ```
