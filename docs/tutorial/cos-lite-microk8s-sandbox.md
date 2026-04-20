@@ -11,7 +11,8 @@ In this tutorial you deploy a single-node COS Lite appliance, backed by hostPath
 ## Prerequisites
 
 This tutorial assumes you have a Juju controller bootstrapped on a 
-MicroK8s cloud that is ready to use, on a 4cpu8gb node or better, with at least 40Gi disk space.
+MicroK8s cloud that is ready to use, on a 4cpu8gb node or better, with at least 40Gi disk space
+(see [Sizing guide](../reference/system-requirements) for production deployments).
 Typical setup using [snaps](https://snapcraft.io/) 
 can be found in the [Juju docs](https://documentation.ubuntu.com/juju/3.6/howto/manage-your-deployment/).
 

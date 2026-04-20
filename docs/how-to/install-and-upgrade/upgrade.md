@@ -4,7 +4,7 @@ myst:
    description: "Upgrade instructions for Canonical Observability Stack. Migrate from COS Lite 1 to COS 2 safely."
 ---
 
-# Upgrade instructions
+# How to upgrade
 
 ## COS 3
 ### Migrate from COS 2 to COS 3
