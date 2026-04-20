@@ -10,7 +10,7 @@ resource "juju_integration" "alertmanager_grafana_dashboards" {
 
   application {
     name     = module.grafana.app_name
-    endpoint = module.grafana.provides.grafana_dashboard
+    endpoint = module.grafana.requires.grafana_dashboard
   }
 }
 
@@ -66,7 +66,7 @@ resource "juju_integration" "grafana_source_alertmanager" {
 
   application {
     name     = module.grafana.app_name
-    endpoint = module.grafana.provides.grafana_source
+    endpoint = module.grafana.requires.grafana_source
   }
 }
 
@@ -82,7 +82,7 @@ resource "juju_integration" "grafana_self_monitoring_prometheus" {
 
   application {
     name     = module.grafana.app_name
-    endpoint = module.grafana.requires.metrics_endpoint
+    endpoint = module.grafana.provides.metrics_endpoint
   }
 }
 
@@ -98,7 +98,7 @@ resource "juju_integration" "prometheus_grafana_dashboards_provider" {
 
   application {
     name     = module.grafana.app_name
-    endpoint = module.grafana.provides.grafana_dashboard
+    endpoint = module.grafana.requires.grafana_dashboard
   }
 }
 
@@ -112,7 +112,7 @@ resource "juju_integration" "prometheus_grafana_source" {
 
   application {
     name     = module.grafana.app_name
-    endpoint = module.grafana.provides.grafana_source
+    endpoint = module.grafana.requires.grafana_source
   }
 }
 
@@ -128,7 +128,7 @@ resource "juju_integration" "loki_grafana_dashboards_provider" {
 
   application {
     name     = module.grafana.app_name
-    endpoint = module.grafana.provides.grafana_dashboard
+    endpoint = module.grafana.requires.grafana_dashboard
   }
 }
 
@@ -142,7 +142,7 @@ resource "juju_integration" "loki_grafana_source" {
 
   application {
     name     = module.grafana.app_name
-    endpoint = module.grafana.provides.grafana_source
+    endpoint = module.grafana.requires.grafana_source
   }
 }
 
@@ -156,7 +156,7 @@ resource "juju_integration" "loki_self_monitoring_prometheus" {
 
   application {
     name     = module.loki.app_name
-    endpoint = module.loki.requires.metrics_endpoint
+    endpoint = module.loki.provides.metrics_endpoint
   }
 }
 
@@ -167,7 +167,7 @@ resource "juju_integration" "catalogue_alertmanager" {
 
   application {
     name     = module.catalogue.app_name
-    endpoint = module.catalogue.requires.catalogue
+    endpoint = module.catalogue.provides.catalogue
   }
 
   application {
@@ -181,7 +181,7 @@ resource "juju_integration" "catalogue_grafana" {
 
   application {
     name     = module.catalogue.app_name
-    endpoint = module.catalogue.requires.catalogue
+    endpoint = module.catalogue.provides.catalogue
   }
 
   application {
@@ -195,7 +195,7 @@ resource "juju_integration" "catalogue_prometheus" {
 
   application {
     name     = module.catalogue.app_name
-    endpoint = module.catalogue.requires.catalogue
+    endpoint = module.catalogue.provides.catalogue
   }
 
   application {

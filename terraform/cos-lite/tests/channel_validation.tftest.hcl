@@ -1,8 +1,6 @@
 mock_provider "juju" {}
 
-variables {
-  model_uuid = "00000000-0000-0000-0000-000000000000"
-}
+variables { model_uuid = "00000000-0000-0000-0000-000000000000" }
 
 # ---Happy path---
 
