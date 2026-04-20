@@ -195,6 +195,14 @@ Create a `cos-lite-microk8s-sandbox.tf` file with the following Terraform module
 
 It is usually a good idea to create a dedicated model for COS Lite. This module creates one named `cos`, which you can override.
 
+If there are multiple clouds registered in the controller or a default cloud is not setup, an explicit reference of the cloud in the base terraform file needs to exist. Look at [how to reference a K8s cloud](../how-to/configure-and-tune/reference-k8s-cloud-for-cos.md) section.
+
+
+By default, COS uses local files on k8s node to store data. 
+To use a custom storage class for container's persistent volume during deployment, refer to guide: [how to configure custom storage options](../how-to/configure-and-tune/customize-storage-options.md)
+
+
+
 Next, deploy COS Lite in the new model, run:
 
 ```bash

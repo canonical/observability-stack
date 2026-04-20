@@ -38,4 +38,6 @@ storage.
 :maxdepth: 1
 
 Redact sensitive data <redact-sensitive-data>
+customize-storage-options
+reference-k8s-cloud-for-cos
 ```
