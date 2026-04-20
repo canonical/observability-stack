@@ -1,3 +1,5 @@
+# -------------- # CharmHub API -------------- #
+
 data "juju_charm" "alertmanager_info" {
   charm   = "alertmanager-k8s"
   channel = local.channels.alertmanager
