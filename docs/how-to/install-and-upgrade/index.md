@@ -34,3 +34,13 @@ Protect and expose COS endpoints for production traffic.
 Configure TLS encryption <configure-tls-encryption>
 Configure ingress <configure-granular-ingress>
 ```
+
+## Deployment sizing
+
+Size the storage for COS components for production requirements.
+
+```{toctree}
+:maxdepth: 1
+
+Configure storage <configure-storage>
+```

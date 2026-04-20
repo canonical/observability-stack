@@ -8,13 +8,13 @@ module "cos" {
   # Configure a component's storage directives
   prometheus = {
     backend_storage_directives = {
-      database: "kubernetes,1,50G",  # sizes are just examples, adjust as needed
+      database: "kubernetes,1,10G",  # sizes are just examples, adjust as needed
     }
   }
   mimir_worker = {
     backend_storage_directives = {
-      data: "kubernetes,1,50G",  # sizes are just examples, adjust as needed
-      recovery-data: "kubernetes,1,10G"  # sizes are just examples, adjust as needed
+      data: "kubernetes,1,10G",  # sizes are just examples, adjust as needed
+      recovery-data: "kubernetes,1,2G"  # sizes are just examples, adjust as needed
     }
   }
 }
