@@ -13,19 +13,19 @@ run "user_revision_pin_is_respected" {
   command = plan
 
   variables {
-    alertmanager = {revision = 1 }
-    catalogue = {revision = 1 }
-    grafana = {revision = 1 }
-    loki_coordinator = {revision = 1 }
-    loki_worker = {revision = 1 }
-    mimir_coordinator = {revision = 1 }
-    mimir_worker = {revision = 1 }
-    opentelemetry_collector = {revision = 1 }
-    ssc = {revision = 1 }
-    s3_integrator = {revision = 1 }
-    tempo_coordinator = {revision = 1 }
-    tempo_worker = {revision = 1 }
-    traefik = {revision = 1 }
+    alertmanager            = { revision = 1 }
+    catalogue               = { revision = 1 }
+    grafana                 = { revision = 1 }
+    loki_coordinator        = { revision = 1 }
+    loki_worker             = { revision = 1 }
+    mimir_coordinator       = { revision = 1 }
+    mimir_worker            = { revision = 1 }
+    opentelemetry_collector = { revision = 1 }
+    ssc                     = { revision = 1 }
+    s3_integrator           = { revision = 1 }
+    tempo_coordinator       = { revision = 1 }
+    tempo_worker            = { revision = 1 }
+    traefik                 = { revision = 1 }
   }
 
   assert {

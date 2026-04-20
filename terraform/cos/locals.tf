@@ -8,8 +8,7 @@ locals {
     loki         = "3.7"
     mimir        = "3.0"
     otelcol      = "0.130"
-    # TODO: update track
-    s3_integrator = "latest"
+    s3_integrator = "2"
     ssc           = "latest"
     tempo         = "2.10"
     traefik       = "latest"
@@ -34,7 +33,7 @@ locals {
     loki_worker       = var.loki_worker.revision != null ? var.loki_worker.revision : data.juju_charm.loki_worker_info.revision
     mimir_coordinator = var.mimir_coordinator.revision != null ? var.mimir_coordinator.revision : data.juju_charm.mimir_coordinator_info.revision
     mimir_worker      = var.mimir_worker.revision != null ? var.mimir_worker.revision : data.juju_charm.mimir_worker_info.revision
-    otelcol           = var.otelcol.revision != null ? var.otelcol.revision : data.juju_charm.otelcol_info.revision
+    otelcol           = var.opentelemetry_collector.revision != null ? var.opentelemetry_collector.revision : data.juju_charm.otelcol_info.revision
     s3_integrator     = var.s3_integrator.revision != null ? var.s3_integrator.revision : data.juju_charm.s3_integrator_info.revision
     ssc               = var.ssc.revision != null ? var.ssc.revision : data.juju_charm.ssc_info.revision
     tempo_coordinator = var.tempo_coordinator.revision != null ? var.tempo_coordinator.revision : data.juju_charm.tempo_coordinator_info.revision

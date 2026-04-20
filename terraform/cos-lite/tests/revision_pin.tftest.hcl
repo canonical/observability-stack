@@ -9,18 +9,12 @@ run "user_revision_pin_is_respected" {
 
   variables {
     alertmanager = { revision = 1 }
-    catalogue = { revision = 1 }
-    grafana = { revision = 1 }
-    loki_coordinator = { revision = 1 }
-    loki_worker = { revision = 1 }
-    mimir_coordinator = { revision = 1 }
-    mimir_worker = { revision = 1 }
-    opentelemetry_collector = { revision = 1 }
-    ssc = { revision = 1 }
-    s3_integrator = { revision = 1 }
-    tempo_coordinator = { revision = 1 }
-    tempo_worker = { revision = 1 }
-    traefik = { revision = 1 }
+    catalogue    = { revision = 1 }
+    grafana      = { revision = 1 }
+    loki         = { revision = 1 }
+    prometheus   = { revision = 1 }
+    ssc          = { revision = 1 }
+    traefik      = { revision = 1 }
   }
 
   assert {
@@ -39,48 +33,18 @@ run "user_revision_pin_is_respected" {
   }
 
   assert {
-    condition     = local.revisions.loki_coordinator == 1
-    error_message = "Expected loki_coordinator revision 1, got ${local.revisions.loki_coordinator}"
+    condition     = local.revisions.loki == 1
+    error_message = "Expected loki revision 1, got ${local.revisions.loki}"
   }
 
   assert {
-    condition     = local.revisions.loki_worker == 1
-    error_message = "Expected loki_worker revision 1, got ${local.revisions.loki_worker}"
-  }
-
-  assert {
-    condition     = local.revisions.mimir_coordinator == 1
-    error_message = "Expected mimir_coordinator revision 1, got ${local.revisions.mimir_coordinator}"
-  }
-
-  assert {
-    condition     = local.revisions.mimir_worker == 1
-    error_message = "Expected mimir_worker revision 1, got ${local.revisions.mimir_worker}"
-  }
-
-  assert {
-    condition     = local.revisions.otelcol == 1
-    error_message = "Expected otelcol revision 1, got ${local.revisions.otelcol}"
+    condition     = local.revisions.prometheus == 1
+    error_message = "Expected prometheus revision 1, got ${local.revisions.prometheus}"
   }
 
   assert {
     condition     = local.revisions.ssc == 1
     error_message = "Expected ssc revision 1, got ${local.revisions.ssc}"
-  }
-
-  assert {
-    condition     = local.revisions.s3_integrator == 1
-    error_message = "Expected s3_integrator revision 1, got ${local.revisions.s3_integrator}"
-  }
-
-  assert {
-    condition     = local.revisions.tempo_coordinator == 1
-    error_message = "Expected tempo_coordinator revision 1, got ${local.revisions.tempo_coordinator}"
-  }
-
-  assert {
-    condition     = local.revisions.tempo_worker == 1
-    error_message = "Expected tempo_worker revision 1, got ${local.revisions.tempo_worker}"
   }
 
   assert {
