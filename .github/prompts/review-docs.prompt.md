@@ -11,6 +11,7 @@ Review the documentation for clarity, completeness, and accuracy.
 - In all non-index markdown files, there should be a brief 1-3 sentence description to break apart H1 and H2 sections.
 - Check for consistency in formatting, style, and tone across the documentation.
 - H1 titles under `docs/how-to` should start with "How to".
+- Section headers and index entries should all use sentence case (not title case).
 - Known product names should be capitalized consistently throughout the documentation.
 
 ## Context
