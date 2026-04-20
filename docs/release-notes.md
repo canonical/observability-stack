@@ -21,7 +21,7 @@ COS track `3` is a release track for the COS bundle and does not correspond to a
 
 If you have COS 2 installed, make plans to upgrade to COS 3 before July 2026.
 
-See our [release policy](reference/release-policy) and [upgrade instructions](how-to/install-and-upgrade/upgrade).
+See our [release policy](reference/release-policy) and [upgrade instructions](how-to/deploy-and-manage/upgrade).
 
 To report bugs or security issues, refer to the index of [COS components](../reference/cos-components).
 

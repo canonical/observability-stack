@@ -33,7 +33,7 @@ For Site Reliability Engineers, COS provides a turn-key, out-of-the-box solution
 [Evaluate telemetry volume]: how-to/configure-and-tune/evaluate-telemetry-volume
 [Validate]: how-to/validate-and-troubleshoot/validate-cos-deployment
 [Hardening]: reference/security-hardening-guide
-[Cross-track upgrade]: how-to/install-and-upgrade/upgrade
+[Cross-track upgrade]: how-to/deploy-and-manage/upgrade
 [Dashboard upgrades]: explanation/alerting/dashboard-upgrades
 [Charmed alert rules]: explanation/alerting/charmed-rules
 [Add alert rules]: how-to/integrate/adding-alert-rules
