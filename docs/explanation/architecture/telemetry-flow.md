@@ -4,7 +4,7 @@ myst:
    description: "Understand telemetry data flow in COS and COS Lite: how metrics, logs, and traces move through the observability stack."
 ---
 
-# Telemetry Flow
+# Telemetry flow
 
 ## COS Lite
 

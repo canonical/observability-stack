@@ -4,7 +4,7 @@ myst:
    description: "Learn how Juju topology metadata identifies telemetry from workloads in Canonical Observability Stack."
 ---
 
-# Juju Topology
+# Juju topology
 
 The Juju topology is a set of metadata associated with each piece of telemetry collected by the COS monitoring stack to uniquely identify which workload is the telemetry reporting about.
 

@@ -158,6 +158,7 @@ robustperception
 Rockcraft
 routable
 rst
+ruleset
 scalable
 SCons
 SDK
