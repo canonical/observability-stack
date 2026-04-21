@@ -13,12 +13,12 @@ dashboards are managed across the stack.
 
 ## Alert rule management
 
-How COS defines, ships, and orchestrates alert rules, both charm-provided
+Overview of alert rules and how COS defines, ships, and orchestrates alert rules, both charm-provided
 and generic.
 
 ```{toctree}
 :maxdepth: 1
-
+Overview <alerting-overview>
 Charmed alert rules <charmed-rules>
 Generic alert rules <generic-rules>
 ```
