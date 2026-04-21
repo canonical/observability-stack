@@ -134,7 +134,6 @@ variable "prometheus" {
 variable "ssc" {
   type = object({
     app_name           = optional(string, "ca")
-    channel            = optional(string, "1/stable")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
     revision           = optional(number, null)
@@ -148,7 +147,6 @@ variable "ssc" {
 variable "traefik" {
   type = object({
     app_name           = optional(string, "traefik")
-    channel            = optional(string, "latest/stable")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
     revision           = optional(number, null)

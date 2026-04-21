@@ -67,7 +67,7 @@ data "juju_charm" "ssc_info" {
 }
 
 data "juju_charm" "s3_integrator_info" {
-  charm   = "s3-integrator-k8s"
+  charm   = "s3-integrator"
   channel = local.channels.s3_integrator
   base    = var.base
 }
@@ -75,5 +75,5 @@ data "juju_charm" "s3_integrator_info" {
 data "juju_charm" "traefik_info" {
   charm   = "traefik-k8s"
   channel = local.channels.traefik
-  base    = var.base
+  base    = local.traefik_base
 }
