@@ -40,12 +40,16 @@ COS --- S3
 COS --- cos-alerter
 ```
 
+### Kubernetes cluster
+
+Deploy COS on a high-availability Kubernetes cluster with at least 3 control plane nodes.
+
 ### Sizing
 
 Use the [sizing guide](/reference/system-requirements) to determine the minimum hardware for your deployment.
 If you don't yet know how much telemetry your workloads generate, start with [How to evaluate telemetry volume](/how-to/configure-and-tune/evaluate-telemetry-volume).
 
-Follow the [storage best practices](/reference/storage) to set up a distributed storage backend.
+Follow the [storage best practices](/reference/storage) to set up a distributed storage backend with a replication factor of 3.
 Do **not** use `hostPath` storage in production.
 
 ### Configure networking
@@ -67,3 +71,13 @@ For exposing Grafana publicly, use two Traefik charms, one for internal connecti
 ### Dedicated Juju controller and model
 
 You should bootstrap a dedicated Juju controller and model just for COS.
+
+## Create Terraform plan
+
+```hcl
+module ... { ... }
+```
+
+## Deploy COS Alerter
+
+COS Alerter is a watchdog service for COS you should deploy on a physically different cloud.
