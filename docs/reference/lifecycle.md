@@ -4,7 +4,7 @@ myst:
   description: "Apply COS lifecycle best practices to plan support windows, coordinate upgrades, and maintain long-term operational consistency across environments."
 ---
 
-# Lifecycle Best Practices
+# Lifecycle best practices
 
 ## Support window
 Refer to [Supported tracks](release-policy) to choose the right track for your needs.

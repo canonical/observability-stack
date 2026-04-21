@@ -4,7 +4,7 @@ myst:
   description: "Understand the design goals of COS and COS Lite: Kubernetes-native, Juju-first observability with integrated telemetry, consistent alerting, and smooth deployment experience."
 ---
 
-# Design Goals
+# Design goals
 
 ## Why a new stack?
 

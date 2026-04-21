@@ -11,5 +11,5 @@ myst:
 ```{toctree}
 :maxdepth: 1
 
-Data Integrity <data-integrity>
+Data integrity <data-integrity>
 ```
