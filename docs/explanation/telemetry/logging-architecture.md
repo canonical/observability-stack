@@ -4,7 +4,7 @@ myst:
   description: "Understand COS logging architecture with Grafana Loki, including ingestion patterns, sending logs, and Juju topology label enrichment for logs."
 ---
 
-# Logging Architecture
+# Logging architecture
 
 In COS, Grafana Loki is the storage and querying backend for logs. Loki is optimized for write performance (ingestion speed), at the cost of slower random reads. This means that filtering structured logs by labels is fast, but full-text search is slower.
 
