@@ -20,7 +20,7 @@ locals {
     s3_integrator = "2"
     ssc           = "1"
     # tempo         = "2.10"
-    traefik       = "latest"
+    traefik = "latest"
   }
   channels = {
     alertmanager  = "${local.tracks.alertmanager}/${var.risk}"
