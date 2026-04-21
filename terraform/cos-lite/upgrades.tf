@@ -39,5 +39,5 @@ data "juju_charm" "ssc_info" {
 data "juju_charm" "traefik_info" {
   charm   = "traefik-k8s"
   channel = local.channels.traefik
-  base    = var.base
+  base    = local.traefik_base
 }
