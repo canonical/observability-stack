@@ -14,14 +14,10 @@ These guides cover deploying, upgrading, managing, and securing access to COS.
 
 See our [tutorials](/tutorial/index) for guidance on deploying COS.
 
-## Upgrades
-
-Move between COS revisions with confidence.
-
 ```{toctree}
 :maxdepth: 1
 
-Cross-track upgrade instructions <upgrade>
+Install <install>
 ```
 
 ## Secure access
@@ -34,3 +30,14 @@ Protect and expose COS endpoints for production traffic.
 Configure TLS encryption <configure-tls-encryption>
 Configure ingress <configure-granular-ingress>
 ```
+
+## Upgrades
+
+Move between COS revisions with confidence.
+
+```{toctree}
+:maxdepth: 1
+
+Cross-track upgrade instructions <upgrade>
+```
+
