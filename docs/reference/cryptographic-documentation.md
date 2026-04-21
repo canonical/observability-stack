@@ -4,7 +4,7 @@ myst:
   description: "Review COS Lite cryptographic documentation covering TLS communication, authentication, and other cryptographic technology."
 ---
 
-# Cryptographic Documentation
+# Cryptographic documentation
 
 ## COS Lite
 
