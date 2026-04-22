@@ -4,7 +4,7 @@ myst:
   description: "Use COS deployment topology best practices to isolate models and design scalable observability deployments for production systems."
 ---
 
-# Deployment Topology Best Practices
+# Deployment topology best practices
 
 ## Deploy in isolation
 COS (or COS Lite) should be deployed in its own Juju model, and preferably on a separate substrate with a dedicated Juju controller.
@@ -114,7 +114,8 @@ applications:
 
 
 ## COS Lite - single node
-This is the most light-weight deployment, which requires a minimum of 4cpu8gb node to run.
+This is the most light-weight deployment, which requires a minimum of a 4cpu8gb node to run.
+(see the [sizing guide](system-requirements) for workload-specific requirements).
 
 ```{mermaid}
 graph LR

@@ -4,7 +4,7 @@ myst:
    description: "Enable TLS encryption in COS and COS Lite - secure communication between Observability Stack components with HTTPS/TLS configuration."
 ---
 
-# TLS encryption in COS
+# How to configure TLS encryption in COS
 
 Both COS and COS Lite, have 2 sections of the deployment (internal and external) which can implement TLS communication.
 
@@ -100,6 +100,6 @@ If you are using COS Lite, create a cos-lite module with the cos-lite source: [`
 The [COS Lite bundle](https://charmhub.io/cos-lite) is now deprecated in favor of Terraform modules.
 ```
 
-```{literalinclude} /how-to/install-and-upgrade/cos-tls.tf
+```{literalinclude} /how-to/deploy-and-manage/cos-tls.tf
 ```
 

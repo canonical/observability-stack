@@ -12,6 +12,18 @@ These pages include reference material for deploying, operating and integrating 
 Use it when you need exact requirements, compatibility matrices, or operational hardening
 guidance.
 
+## Sizing & capacity
+
+Plan compute and storage resources for your deployment scale and retention
+requirements.
+
+```{toctree}
+:maxdepth: 1
+
+Sizing guide <system-requirements>
+Storage <storage>
+```
+
 ## Release & lifecycle
 
 Information about releases, timelines and our policy for updates and
@@ -20,8 +32,7 @@ compatibility.
 ```{toctree}
 :maxdepth: 1
 
-Release Policy <release-policy>
-System Requirements <system-requirements>
+Release policy <release-policy>
 ```
 
 ## Security
@@ -32,8 +43,8 @@ these pages before planning or hardening a deployment.
 ```{toctree}
 :maxdepth: 1
 
-Security Hardening Guide <security-hardening-guide>
-Cryptographic Documentation <cryptographic-documentation>
+Security hardening guide <security-hardening-guide>
+Cryptographic documentation <cryptographic-documentation>
 ```
 
 ## Integrations & artifacts
@@ -43,7 +54,7 @@ Compatibility and packaging information for charms, snaps, and rocks (OCI images
 ```{toctree}
 :maxdepth: 1
 
-Integration Matrix <integration-matrix>
+Integration matrix <integration-matrix>
 COS components <cos-components>
 ```
 
@@ -61,12 +72,11 @@ Networking <networking>
 
 ## Day-2 operations
 
-Plan for upgrades, data retention, and storage sizing to keep COS healthy
+Plan for upgrades and data retention to keep COS healthy
 over time.
 
 ```{toctree}
 :maxdepth: 1
 
 Lifecycle <lifecycle>
-Storage <storage>
 ```

@@ -4,7 +4,7 @@ myst:
   description: "Secure COS Lite with encryption, Grafana user management, and Juju hardening for production observability deployments."
 ---
 
-# Security Hardening Guide
+# Security hardening guide
 
 This page is an overview of how to configure COS securely.  While COS is designed with security in mind, some steps are required to ensure your COS is deployed and configured to ensure proper security.
 

@@ -19,8 +19,8 @@ matters for managing complex infrastructure.
 ```{toctree}
 :maxdepth: 1
 
-What is Observability? <https://canonical.com/observability/what-is-observability>
-Model-Driven Observability <https://ubuntu.com/blog/tag/model-driven-observability>
+What is observability? <https://canonical.com/observability/what-is-observability>
+Model-driven observability <https://ubuntu.com/blog/tag/model-driven-observability>
 ```
 
 ## About COS

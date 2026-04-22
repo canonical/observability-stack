@@ -4,7 +4,7 @@ myst:
    description: "Migrate from LMA to Juju-managed COS Lite. Upgrade observability stack and decomission LMA."
 ---
 
-# Migrate from LMA to COS Lite
+# How to migrate from LMA to COS Lite
 
 COS Lite is not a new version of LMA, but a completely new product that draws upon the lessons learned from LMA to create a heavily integrated,
 mainly automated, turn-key observability stack. This means that there is no direct, in-place migration path.
@@ -14,11 +14,11 @@ This post describes how to migrate from LMA to COS with potentially destructive 
 ```
 
 ```{warning}
-Refer to the [best practices guide](../../reference/index) before migrating.
+Refer to the [best practices guide](/reference/index) before migrating.
 ```
 
 ```{warning}
-Refer to [Supported tracks](../../reference/release-policy) to choose the right track for your needs.
+Refer to [Supported tracks](/reference/release-policy) to choose the right track for your needs.
 Note that different tracks may have different ubuntu bases or minimum Juju version requirement.
 ```
 

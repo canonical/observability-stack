@@ -88,7 +88,7 @@ html_context = {
     # TODO: If there's no such website,
     #       remove the {{ product_page }} link from the page header template
     #       (usually .sphinx/_templates/header.html; also, see README.rst).
-    "product_page": "github.com/canonical/observability",
+    "product_page": "canonical.com/observability",
     # Product tag image; the orange part of your logo, shown in the page header
     #
     # TODO: To add a tag image, uncomment and update as needed.
@@ -263,7 +263,7 @@ linkcheck_retries = 3
 # NOTE: By default, the following MyST extensions are enabled:
 #       substitution, deflist, linkify
 
-# myst_enable_extensions = set()
+myst_enable_extensions = {"dollarmath"}
 
 
 # Custom Sphinx extensions; see
@@ -293,7 +293,10 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx_sitemap",
     "sphinxcontrib.mermaid",
+    "sphinx.ext.mathjax",
 ]
+
+mathjax_path = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'
 
 # Excludes files or directories from processing
 
