@@ -4,7 +4,7 @@ myst:
   description: "Understand COS Lite model topology, including data flow, charm relations, workloads that make up COS Lite, and the architectural structure."
 ---
 
-# Model Topology for COS Lite
+# Model topology for COS Lite
 
 COS Lite consists of a number of charms connected by Juju relations.
 

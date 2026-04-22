@@ -18,7 +18,7 @@ The guiding principles and goals behind the COS architecture.
 ```{toctree}
 :maxdepth: 1
 
-Design Goals <design-goals>
+Design goals <design-goals>
 ```
 
 ## Topology & models
@@ -28,9 +28,9 @@ How COS organizes charms, relations, and models within the Juju ecosystem.
 ```{toctree}
 :maxdepth: 1
 
-Juju Topology <juju-topology>
-Juju Topology Labels <juju-topology-labels>
-Model Topology for COS Lite <cos-lite-model-topology>
+Juju topology <juju-topology>
+Juju topology labels <juju-topology-labels>
+Model topology for COS Lite <cos-lite-model-topology>
 ```
 
 ## Stack shape & data flow
@@ -40,5 +40,5 @@ The available stack configurations and how telemetry moves through them.
 ```{toctree}
 :maxdepth: 1
 
-Telemetry Flow <telemetry-flow>
+Telemetry flow <telemetry-flow>
 ```

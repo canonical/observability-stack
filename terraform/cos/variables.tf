@@ -5,15 +5,16 @@
 # causes the operation to fail due to https://github.com/juju/terraform-provider-juju/issues/344
 # Therefore, we set a default value of "arch=amd64" for all applications.
 
-locals {
-  clouds          = ["aws", "self-managed"] # list of k8s clouds where this COS module can be deployed.
-  tls_termination = var.external_certificates_offer_url != null ? true : false
+variable "risk" {
+  description = "Risk level that the applications are (unless overwritten by individual channels) deployed from"
+  type        = string
+  default     = "edge"
 }
 
-variable "channel" {
-  description = "Channel that the applications are (unless overwritten by individual channels) deployed from"
+variable "base" {
+  description = "The operating system on which to deploy. E.g. ubuntu@22.04. Changing this value for machine charms will trigger a replace by terraform. Check Charmhub for per-charm base support."
+  default     = "ubuntu@24.04"
   type        = string
-  default     = "dev/edge"
 }
 
 variable "model_uuid" {
@@ -234,11 +235,9 @@ variable "opentelemetry_collector" {
   description = "Application configuration for OpenTelemetry Collector. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
-
 variable "ssc" {
   type = object({
     app_name           = optional(string, "ca")
-    channel            = optional(string, "1/stable")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
     revision           = optional(number, null)
@@ -251,7 +250,6 @@ variable "ssc" {
 
 variable "s3_integrator" {
   type = object({
-    channel            = optional(string, "2/edge")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
     revision           = optional(number, null)
@@ -304,7 +302,6 @@ variable "tempo_worker" {
 variable "traefik" {
   type = object({
     app_name           = optional(string, "traefik")
-    channel            = optional(string, "latest/stable")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
     revision           = optional(number, null)

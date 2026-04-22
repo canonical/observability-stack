@@ -20,7 +20,7 @@ requirements.
 ```{toctree}
 :maxdepth: 1
 
-Sizing Guide <system-requirements>
+Sizing guide <system-requirements>
 Storage <storage>
 ```
 
@@ -32,7 +32,7 @@ compatibility.
 ```{toctree}
 :maxdepth: 1
 
-Release Policy <release-policy>
+Release policy <release-policy>
 ```
 
 ## Security
@@ -43,8 +43,8 @@ these pages before planning or hardening a deployment.
 ```{toctree}
 :maxdepth: 1
 
-Security Hardening Guide <security-hardening-guide>
-Cryptographic Documentation <cryptographic-documentation>
+Security hardening guide <security-hardening-guide>
+Cryptographic documentation <cryptographic-documentation>
 ```
 
 ## Integrations & artifacts
@@ -54,7 +54,7 @@ Compatibility and packaging information for charms, snaps, and rocks (OCI images
 ```{toctree}
 :maxdepth: 1
 
-Integration Matrix <integration-matrix>
+Integration matrix <integration-matrix>
 COS components <cos-components>
 ```
 

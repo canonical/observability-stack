@@ -24,9 +24,9 @@ How each signal type is collected and consistently labeled across the stack.
 ```{toctree}
 :maxdepth: 1
 
-Logging Architecture <logging-architecture>
-Telemetry Labels <telemetry-labels>
-Telemetry Collection <telemetry-collection>
+Logging architecture <logging-architecture>
+Telemetry labels <telemetry-labels>
+Telemetry collection <telemetry-collection>
 ```
 
 ## Correlation & interoperability
@@ -37,6 +37,6 @@ telemetry for unified insight.
 ```{toctree}
 :maxdepth: 1
 
-OpenTelemetry Protocol (OTLP) Juju Topology Labels <telemetry-otlp-topology-labels>
-Telemetry Correlation <telemetry-correlation>
+OpenTelemetry Protocol (OTLP) Juju topology labels <telemetry-otlp-topology-labels>
+Telemetry correlation <telemetry-correlation>
 ```
