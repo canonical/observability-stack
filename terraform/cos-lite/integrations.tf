@@ -233,7 +233,7 @@ resource "juju_integration" "ingress" {
   }
 }
 
-//TODO: Consider moving this to upgrades. Also in COS
+//TODO: Consider moving this to upgrades. Also feature this in COS
 resource "juju_integration" "grafana_ingress" {
   count = var.ingress["grafana"] ? 1 : 0
 
@@ -241,7 +241,7 @@ resource "juju_integration" "grafana_ingress" {
 
   application {
     name     = module.grafana.app_name
-    endpoint = module.grafana.endpoints.ingress
+    endpoint = module.grafana.requires.ingress
   }
 
   application {
@@ -249,9 +249,7 @@ resource "juju_integration" "grafana_ingress" {
     endpoint = module.traefik.endpoints.ingress_per_unit
   }
 
-  lifecycle {
-    replace_triggered_by = [terraform_data.grafana_ingress_interface]
-  }
+  lifecycle { replace_triggered_by = [terraform_data.grafana_ingress_interface] }
 }
 
 resource "juju_integration" "ingress_per_unit" {
