@@ -26,7 +26,7 @@ def test_envvars():
     )
 
 
-def test_deploy_from_track_2(tmp_path, tf_manager, cos_model: jubilant.Juju):
+def test_deploy_from_track_2(tf_manager, cos_model: jubilant.Juju):
     # GIVEN a module deployed from track 2
     tf_manager.init(TRACK_2_TF_FILE)
     tf_manager.apply(model=cos_model.model, **S3_ENDPOINT)
@@ -34,7 +34,7 @@ def test_deploy_from_track_2(tmp_path, tf_manager, cos_model: jubilant.Juju):
     catalogue_apps_are_reachable(cos_model)
 
 
-def test_deploy_to_track_dev(tmp_path, tf_manager, cos_model: jubilant.Juju):
+def test_deploy_to_track_dev(tf_manager, cos_model: jubilant.Juju):
     # WHEN upgraded to track dev
     tf_manager.init(TRACK_DEV_TF_FILE)
     tf_manager.apply(model=cos_model.model, **S3_ENDPOINT)
