@@ -16,6 +16,7 @@ The `memory_limit_percentage` Juju config option sets the hard limit as a percen
 | User input (%) | Hard limit (% of total) | Soft limit (% of hard) |
 |-----------------|-------------------------|------------------------|
 | -10             | 0 (disabled)            | 0                      |
+| 0               | 0 (disabled)            | 0                      |
 | 50              | 50                      | 40                     |
 | 100 *(default)* | 100                     | 80                     |
 
@@ -24,14 +25,9 @@ The memory limiter processor is **not** a replacement for properly sizing the ho
 If the collector consistently operates near its memory limit, the correct response is to add resources or scale out — not to raise the limit further.
 ```
 
-## Prerequisites
-
-- A deployed `opentelemetry-collector` charm.
-- Access to the collector's Prometheus metrics endpoint (port `8888` by default) or a Grafana dashboard that scrapes it.
-
 ## Identify when the collector is memory-limited
 
-The memory limiter reports its activity through Prometheus metrics exposed on the collector's metrics endpoint.
+The memory limiter reports its activity through logs and metrics.
 
 ### Check current Go heap usage
 
@@ -39,10 +35,14 @@ The memory limiter reports its activity through Prometheus metrics exposed on th
 juju ssh <unit> "curl -s http://localhost:8888/metrics" | grep 'go_memstats_alloc_bytes{'
 ```
 
-This returns the current Go heap allocation in bytes — the value the memory limiter monitors. Compare it to the configured limits:
+This returns the current Go heap allocation in bytes — the same value the memory limiter monitors (`runtime.MemStats.Alloc`). Compare it to the configured limits:
 
 ```shell
 juju ssh <unit> "cat /etc/otelcol/config.d/<unit_name>.yaml" | yq '.processors.memory_limiter'
+```
+
+```{note}
+The memory limiter checks heap usage every second, but Prometheus scrapes `go_memstats_alloc_bytes` much less frequently (typically every minute). Go heap can spike between scrapes, trigger the limiter, and be garbage-collected before the next scrape. A low `go_memstats_alloc_bytes` value does not mean the limiter has not been triggered — check the `otelcol_processor_refused_*` counters and collector logs instead.
 ```
 
 ### Check for refused telemetry
@@ -69,13 +69,37 @@ Non-zero values confirm the collector is actively dropping telemetry due to memo
 
 ### Check collector logs
 
-The collector also logs when the limiter activates:
+The collector logs when the limiter activates. Filter for memory-related messages:
 
 ```shell
-juju ssh <unit> "journalctl -u snap.opentelemetry-collector.opentelemetry-collector --since '10 min ago'" | grep -i "memory"
+juju ssh <unit> "tail -f /var/snap/opentelemetry-collector/common/otelcol.log" | grep -i "memory usage"
 ```
 
-Look for messages such as `Memory usage is above soft limit. Refusing data.` or `Memory usage is above hard limit. Forcing a GC.`
+Messages to look for, in order of escalation:
+
+1. **Soft limit reached** — the processor starts refusing incoming data:
+
+   ```log
+   warn  memorylimiter  Memory usage is above soft limit. Refusing data.  {"cur_mem_mib": 8}
+   ```
+
+2. **Hard limit reached** — the processor forces garbage collection:
+
+   ```log
+   warn  memorylimiter  Memory usage is above hard limit. Forcing a GC.  {"cur_mem_mib": 12}
+   ```
+
+3. **Post-GC report** — heap usage after garbage collection:
+
+   ```log
+   info  memorylimiter  Memory usage after GC.  {"cur_mem_mib": 11}
+   ```
+
+4. **Upstream receivers refuse telemetry** — receivers propagate backpressure to their data sources:
+
+   ```log
+   error  adapter/receiver.go  ConsumeLogs() failed  {"error": "data refused due to high memory usage"}
+   ```
 
 ## Configure the memory limit
 
@@ -90,7 +114,7 @@ This sets the hard limit to 50% of total memory and the soft limit to 40% (80% o
 To restore the default (hard limit at 100% of total memory):
 
 ```shell
-juju config <app> memory_limit_percentage=100
+juju config <app> --reset memory_limit_percentage
 ```
 
 To disable the memory limiter entirely:
