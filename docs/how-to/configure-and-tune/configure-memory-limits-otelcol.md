@@ -8,8 +8,8 @@ myst:
 
 The `opentelemetry-collector` charm applies a [memory limiter processor](https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/memorylimiterprocessor) to every pipeline. This processor monitors the collector's Go heap usage and begins refusing data when memory consumption crosses configurable thresholds:
 
-- **Soft limit** (80% of the hard limit) - the processor starts returning errors to upstream pipeline components so that receivers can back-pressure or retry.
-- **Hard limit** - the processor additionally forces garbage collection.
+- **Soft limit** (80% of the hard limit): the processor starts returning errors to upstream pipeline components so that receivers can back-pressure or retry.
+- **Hard limit**: the processor additionally forces garbage collection.
 
 The `memory_limit_percentage` Juju config option sets the hard limit as a percentage of total available memory. The soft limit is always 80% of that value. Invalid inputs are clamped to `[0, 100]`; a value of `0` disables the limiter.
 
@@ -77,27 +77,27 @@ juju ssh <unit> "tail -f /var/snap/opentelemetry-collector/common/otelcol.log" |
 
 Messages to look for, in order of escalation:
 
-1. **Soft limit reached** - the processor starts refusing incoming data:
+1. Soft limit reached; the processor starts refusing incoming data:
 
-   ```log
+   ```text
    warn  memorylimiter  Memory usage is above soft limit. Refusing data.  {"cur_mem_mib": 8}
    ```
 
-2. **Hard limit reached** - the processor forces garbage collection:
+2. Hard limit reached; the processor forces garbage collection:
 
-   ```log
+   ```text
    warn  memorylimiter  Memory usage is above hard limit. Forcing a GC.  {"cur_mem_mib": 12}
    ```
 
-3. **Post-GC report** - heap usage after garbage collection:
+3. Post-GC report; heap usage after garbage collection:
 
-   ```log
+   ```text
    info  memorylimiter  Memory usage after GC.  {"cur_mem_mib": 11}
    ```
 
-4. **Upstream receivers refuse telemetry** - receivers propagate backpressure to their data sources:
+4. Upstream receivers refuse telemetry and propagate backpressure to their data sources:
 
-   ```log
+   ```text
    error  adapter/receiver.go  ConsumeLogs() failed  {"error": "data refused due to high memory usage"}
    ```
 
