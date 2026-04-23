@@ -148,3 +148,24 @@ The charm reads the cgroup memory limit from `/sys/fs/cgroup/memory.max`. If the
 ```shell
 juju ssh <unit> "cat /sys/fs/cgroup/memory.max"
 ```
+
+## Override the default memory limiter
+
+If you require more control over the configuration of the `memory_limiter`, the charm's `processors` config option allows you to define custom processors, applied to all pipelines in YAML format. For example, define an `override.yaml` to change the `check_interval` to 10 seconds:
+
+```yaml
+memory_limiter:
+   check_interval: 10s
+   limit_mib: 250
+   spike_limit_mib: 50
+```
+
+and apply it with:
+
+```shell
+juju config <app> processors=@override.yaml
+```
+
+```{note}
+If you define a custom `memory_limiter` processor, the default one will be replaced. Make sure to configure it with appropriate limits to avoid OOM kills.
+```
