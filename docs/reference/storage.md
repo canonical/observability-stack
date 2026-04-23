@@ -13,7 +13,7 @@ Evaluate the [telemetry volume needed](/how-to/configure-and-tune/evaluate-telem
 and refer to the [sizing guide](system-requirements) for concrete numbers.
 
 ## Set up distributed storage
-In production, **do not** use hostPath storage ([`hostpath-storage`](https://canonical.com/microk8s/docs/addon-hostpath-storage) in MicroK8s; `local-storage` in Canonical K8s):
+In production, do not use hostPath storage ([`hostpath-storage`](https://canonical.com/microk8s/docs/addon-hostpath-storage) in MicroK8s; `local-storage` in Canonical K8s):
 - `PersistentVolumeClaims` created by the host path storage provisioner are bound to the local node, so it is *impossible to move them to a different node*.
 - A `hostpath` volume can *grow beyond the capacity set in the volume claim manifest*.
 
@@ -73,12 +73,12 @@ The default storage allocation for charmed persistent volumes is 1GB. The follow
 
 | Charm                       | Storage volume   | Description                                                    | Capacity     | Typical unit count |
 | --------------------------- | ---------------- | -------------------------------------------------------------- | ------------ | ------------------ |
-| loki-k8s                    | loki-chunks      | WAL for received logs                                          | 100GB        | 3                  |
-| prometheus-k8s              | database         | WAL for received metrics                                       | 50GB  | 3                  |
+| loki-k8s                    | loki-chunks      | WAL for received logs, and long term storage                        | 1TB        | 1                  |
+| prometheus-k8s              | database         | WAL for received metrics, and long term storage                | 500GB  | 1                  |
 | grafana-k8s                 | database         | Configurations, plugins, user data                             | 10GB         | 1                  |
-| alertmanager-k8s            | data             | `nflog` and silences snapshots                                    | 1GB          | 3                  |
+| alertmanager-k8s            | data             | `nflog` and silences snapshots                                    | 1GB          | 1                  |
 | traefik-k8s                 | configurations   | Dynamic configuration files (YAML), x509 certificates and keys | 1GB          | 1                  |
 | cos-configuration-k8s       | content-from-git | Checked-out content from the git repository                    | 1GB          | 1                  |
 
 The total Kubernetes persistent volume storage needed by COS depends on the scale of each application, and on the replication count.
-For the table above, a COS Lite deployment would require 465 GB per replicated storage pool (e.g. MicroCeph).
+For the table above, a COS Lite deployment would require 1.52TB per replicated storage pool (e.g. MicroCeph).
