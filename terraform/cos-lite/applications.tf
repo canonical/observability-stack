@@ -1,3 +1,16 @@
+resource "terraform_data" "grafana_ingress_interface" {
+  input = data.juju_charm.grafana_info.requires["ingress"]
+}
+
+data "juju_charm" "grafana_info" {
+  charm   = "grafana-k8s"
+  channel = var.channel
+  base    = "ubuntu@24.04"
+}
+
+
+
+
 module "alertmanager" {
   source             = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform?ref=track/2"
   app_name           = var.alertmanager.app_name
