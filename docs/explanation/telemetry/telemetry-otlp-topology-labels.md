@@ -1,4 +1,4 @@
-# Opentelemetry Protocol (OTLP) Juju Topology Labels
+# OpenTelemetry Protocol (OTLP) Juju topology labels
 
 This document focuses on telemetry labeling in the OTLP data model that is core to the opentelemetry-collector (K8s or VM) charm pipelines.
 

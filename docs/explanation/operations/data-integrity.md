@@ -4,7 +4,7 @@ myst:
   description: "Understand data integrity in COS Lite, which is addressed in Ceph. COS and COS Lite charms don't need additional configuration."
 ---
 
-# Data Integrity
+# Data integrity
 
 COS and COS Lite rely on Kubernetes persistent volumes (PVs) for data persistency. COS charms also rely on S3 storage.
 

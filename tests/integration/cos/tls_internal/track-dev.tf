@@ -33,7 +33,7 @@ module "cos" {
   source       = "git::https://github.com/canonical/observability-stack//terraform/cos"
   model_uuid   = data.juju_model.model.uuid
   channel      = "dev/edge"
-  internal_tls = "true"
+  internal_tls = true
 
   s3_endpoint   = var.s3_endpoint
   s3_secret_key = var.s3_secret_key

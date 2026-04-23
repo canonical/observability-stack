@@ -5,6 +5,7 @@ alertmanager
 backend
 backend's
 backends
+backpressure
 BCrypt
 bhat
 blackbox
@@ -13,6 +14,7 @@ Canonical('s)?
 catalogue
 catalogue's
 Ceph
+cgroup
 Charmcraft
 Charmhub
 cjk
@@ -159,6 +161,7 @@ robustperception
 Rockcraft
 routable
 rst
+ruleset
 scalable
 SCons
 SDK

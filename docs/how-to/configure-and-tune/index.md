@@ -41,3 +41,13 @@ Redact sensitive data <redact-sensitive-data>
 customize-storage-options
 reference-k8s-cloud-for-cos
 ```
+
+## Resource limits
+
+Set the resource consumption limits to avoid COS components from starving their hosts.
+
+```{toctree}
+:maxdepth: 1
+
+Configure the memory limit of the OpenTelemetry Collector <configure-memory-limits-otelcol>
+```

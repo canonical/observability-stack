@@ -49,7 +49,7 @@ The [COS Lite bundle](https://charmhub.io/cos-lite) is now deprecated in favor o
 
 Using the following Terraform module, set your ingress options to enable or disable routing traffic through Traefik.
 
-```{literalinclude} /how-to/install-and-upgrade/cos-ingress.tf
+```{literalinclude} /how-to/deploy-and-manage/cos-ingress.tf
 ```
 
 Ensure that you have provided any required variables (update the `... other inputs ...` placeholder) for the respective COS module before applying the configuration, by running `terraform apply`.

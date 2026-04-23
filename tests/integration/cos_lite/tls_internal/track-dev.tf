@@ -21,5 +21,5 @@ module "cos-lite" {
   source       = "git::https://github.com/canonical/observability-stack//terraform/cos-lite"
   model_uuid   = data.juju_model.model.uuid
   channel      = "dev/edge"
-  internal_tls = "true"
+  internal_tls = true
 }
