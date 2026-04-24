@@ -43,7 +43,7 @@ mimir-backend ---|mimir-cluster| coordinator
 end
 
 subgraph cos
-coordinator ---|alertmanager_dispatch| prometheus
+coordinator ---|alertmanager_dispatch| alertmanager
 coordinator ---|grafana_dashboards| grafana
 coordinator ---|ingress| Traefik
 end

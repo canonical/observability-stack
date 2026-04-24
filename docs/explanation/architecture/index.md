@@ -49,5 +49,5 @@ The coordinated workers pattern and the role it plays in COS HA.
 ```{toctree}
 :maxdepth: 1
 
-Coordinated Workers <coordinated-workers>
+Coordinated workers <coordinated-workers>
 ```
