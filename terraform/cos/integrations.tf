@@ -294,6 +294,7 @@ resource "juju_integration" "ingress" {
       }
       grafana = {
         app_name = module.grafana.app_name
+        # TODO: move this out so I can add a lifecycle
         endpoint = module.grafana.requires.ingress
       }
     } : k => v if var.ingress[k]

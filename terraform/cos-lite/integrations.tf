@@ -246,7 +246,7 @@ resource "juju_integration" "grafana_ingress" {
 
   application {
     name     = module.traefik.app_name
-    endpoint = module.traefik.endpoints.ingress_per_unit
+    endpoint = module.traefik.endpoints.ingress
   }
 
   lifecycle { replace_triggered_by = [terraform_data.grafana_ingress_interface] }
