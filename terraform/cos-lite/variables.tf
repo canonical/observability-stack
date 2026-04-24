@@ -12,7 +12,7 @@ variable "risk" {
 }
 
 variable "base" {
-  description = "The operating system on which to deploy. E.g. ubuntu@24.04. Changing this value for machine charms will trigger a replace by terraform. Check Charmhub for per-charm base support."
+  description = "The operating system on which to deploy. E.g. ubuntu@24.04. Check Charmhub for per-charm base support."
   default     = "ubuntu@24.04"
   type        = string
 }
@@ -92,8 +92,6 @@ variable "catalogue" {
   description = "Application configuration for Catalogue. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
-# TODO: Update all charms to surface their channel input, since we will have fine-grained channels per charm
-# TODO: Update the channel defaults to be the track
 variable "grafana" {
   type = object({
     app_name           = optional(string, "grafana")

@@ -5,7 +5,7 @@
 # lifecycle to trigger integration replacement, otherwise the upgrade will fail
 # https://github.com/canonical/observability-stack/issues/165
 resource "terraform_data" "grafana_ingress_interface" {
-  input = data.juju_charm.grafana_info.requires["ingress"]
+  triggers_replace = data.juju_charm.grafana_info.requires["ingress"]
 }
 
 
