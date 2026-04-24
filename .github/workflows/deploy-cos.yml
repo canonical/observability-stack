@@ -1,0 +1,191 @@
+name: Deploy COS
+run-name: Deploy COS (scale=${{ inputs.scale }}, storage=${{ inputs.storage }})
+
+on:
+  workflow_call:
+    inputs:
+      scale:
+        description: "COS scale mode: monolithic (single role-all worker) or distributed (separate backend/read/write workers)"
+        required: true
+        type: string
+      storage:
+        description: "S3 storage backend: seaweedfs or ceph"
+        required: true
+        type: string
+      cos-model:
+        description: "Name of the Juju model to deploy COS into"
+        required: false
+        type: string
+        default: cos
+      juju-channel:
+        description: "Juju snap channel"
+        required: false
+        type: string
+        default: "3.6/stable"
+      runner:
+        description: "Runner label"
+        required: false
+        type: string
+        default: ubuntu-latest
+    outputs:
+      cos-model:
+        description: "Name of the Juju model where COS was deployed"
+        value: ${{ jobs.deploy.outputs.cos-model }}
+
+jobs:
+  deploy:
+    name: Deploy COS (scale=${{ inputs.scale }}, storage=${{ inputs.storage }})
+    runs-on: ${{ inputs.runner }}
+    outputs:
+      cos-model: ${{ inputs.cos-model }}
+    steps:
+      - name: Validate inputs
+        run: |
+          case "${{ inputs.scale }}" in
+            monolithic|distributed) ;;
+            *) echo "Unknown scale: ${{ inputs.scale }}. Must be 'monolithic' or 'distributed'."; exit 1 ;;
+          esac
+          case "${{ inputs.storage }}" in
+            seaweedfs|ceph) ;;
+            *) echo "Unknown storage: ${{ inputs.storage }}. Must be 'seaweedfs' or 'ceph'."; exit 1 ;;
+          esac
+
+      - name: Checkout observability-stack
+        uses: actions/checkout@v4
+        with:
+          repository: canonical/observability-stack
+
+      # --- Infrastructure setup ---
+      - name: Concierge prepare
+        if: ${{ runner.environment == 'github-hosted' }}
+        run: |
+          sudo snap install concierge --classic
+          sudo concierge prepare --juju-channel ${{ inputs.juju-channel }} -p microk8s --extra-snaps terraform
+
+      - name: Install snaps
+        if: ${{ runner.environment == 'self-hosted' }}
+        run: |
+          sudo snap install juju --classic --channel=${{ inputs.juju-channel }}
+          sudo snap install terraform --classic
+
+      - name: (IS hosted) Configure microk8s Docker Hub mirror
+        timeout-minutes: 10
+        if: ${{ runner.environment == 'self-hosted' }}
+        run: |
+          sudo snap install microk8s --channel "1.34-strict/stable" --classic
+          sudo adduser "$USER" snap_microk8s
+
+          until sudo iptables --list | grep -q -i "microk8s"
+          do
+            echo "MicroK8s has not yet configured iptables."
+            sleep 10
+          done
+
+          sudo tee /var/snap/microk8s/current/args/certs.d/docker.io/hosts.toml << EOF
+          server = "$DOCKERHUB_MIRROR"
+          [host."${DOCKERHUB_MIRROR#'https://'}"]
+          capabilities = ["pull", "resolve"]
+          EOF
+          sudo microk8s stop
+          sudo microk8s start
+
+      - name: Set up microk8s
+        timeout-minutes: 15
+        if: ${{ runner.environment == 'self-hosted' }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install retry -y
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable dns
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s.kubectl rollout status --namespace kube-system --watch --timeout=5m deployments/coredns
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable hostpath-storage
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s.kubectl rollout status --namespace kube-system --watch --timeout=5m deployments/hostpath-provisioner
+
+          IPADDR=$(ip -4 -j route get 2.2.2.2 | sed -n -e 's/^.*prefsrc\":"\([^ "]*\).*/\1/p')
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable "metallb:$IPADDR-$IPADDR"
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable rbac
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
+
+          mkdir ~/.kube/
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s config | sudo tee ~/.kube/config > /dev/null
+
+      - name: Set up Juju environment
+        timeout-minutes: 15
+        if: ${{ runner.environment == 'self-hosted' }}
+        run: |
+          mkdir -p ~/.local/share/juju
+          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- juju bootstrap microk8s --config model-logs-size=10G microk8s
+          juju model-defaults logging-config='<root>=INFO; unit=DEBUG'
+
+      # --- S3 storage backend ---
+      - name: Install and configure MicroCeph
+        if: ${{ inputs.storage == 'ceph' }}
+        run: |
+          function check_ceph_ok_or_exit () {
+              i=0
+              for i in {1..5}; do
+                  if sudo microceph.ceph status | grep HEALTH_OK; then
+                      break
+                  else
+                      sudo microceph.ceph status
+                      sleep 30
+                      sudo microceph.ceph health detail
+                  fi
+              done
+              if [ "$i" -eq 5 ]; then
+                  exit 1
+              fi
+          }
+
+          sudo snap install microceph
+          sudo microceph cluster bootstrap
+          sleep 30s
+          sudo microceph.ceph config set "mon.$(hostname)" mon_data_avail_warn 6
+          sudo microceph disk add loop,2G,3
+          check_ceph_ok_or_exit
+
+          sudo microceph enable rgw --port 8080 --ssl-port 8443
+          sudo microceph.radosgw-admin user create --uid=user --display-name=User
+          sudo microceph.radosgw-admin key create --uid=user --key-type=s3 --access-key=access-key --secret-key=secret-key
+
+          echo "S3_ENDPOINT=http://$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc'):8080" >> "$GITHUB_ENV"
+          echo "S3_ACCESS_KEY=access-key" >> "$GITHUB_ENV"
+          echo "S3_SECRET_KEY=secret-key" >> "$GITHUB_ENV"
+
+      # --- Create model and deploy COS ---
+      - name: Create Juju model
+        run: |
+          juju add-model ${{ inputs.cos-model }}
+
+      - name: Deploy SeaweedFS
+        if: ${{ inputs.storage == 'seaweedfs' }}
+        run: |
+          MODEL_UUID=$(juju show-model ${{ inputs.cos-model }} --format json | jq -r '.["${{ inputs.cos-model }}"]["model-uuid"]')
+          cd terraform/seaweedfs
+          terraform init
+          terraform apply -auto-approve \
+            -var="model_uuid=${MODEL_UUID}"
+
+          # SeaweedFS exposes S3 on port 8333 by default
+          S3_ENDPOINT="http://$(juju status --model ${{ inputs.cos-model }} --format json | jq -r '.applications.seaweedfs.units | to_entries[0].value.address'):8333"
+          echo "S3_ENDPOINT=${S3_ENDPOINT}" >> "$GITHUB_ENV"
+          echo "S3_ACCESS_KEY=" >> "$GITHUB_ENV"
+          echo "S3_SECRET_KEY=" >> "$GITHUB_ENV"
+
+      - name: Deploy COS
+        run: |
+          MODEL_UUID=$(juju show-model ${{ inputs.cos-model }} --format json | jq -r '.["${{ inputs.cos-model }}"]["model-uuid"]')
+          cd terraform/cos
+          terraform init
+          terraform apply -auto-approve \
+            -var-file="../scale/${{ inputs.scale }}.tfvars" \
+            -var="model_uuid=${MODEL_UUID}" \
+            -var="s3_endpoint=${S3_ENDPOINT}" \
+            -var="s3_access_key=${S3_ACCESS_KEY}" \
+            -var="s3_secret_key=${S3_SECRET_KEY}"
+
+      - name: Wait for deployment
+        run: |
+          juju wait-for model ${{ inputs.cos-model }} --timeout 30m --query 'forEach(applications, app => app.status == "active")'
