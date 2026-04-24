@@ -19,7 +19,7 @@ The `memory_limit_percentage` Juju config option sets the hard limit as a percen
 | 50              | 50                      | 40                      |
 | 100 *(default)* | 100                     | 80                      |
 
-Values outside `[0, 100]` or non-integer strings are rejected: the charm enters BlockedStatus and falls back to the default (100%).
+Values outside `[0, 100]` or non-integer strings are rejected: the charm enters BlockedStatus and the Opentelemetry Collector workload process continues operations with the fallback value of 100%.
 
 ```{warning}
 The memory limiter processor is **not** a replacement for properly sizing the host or container where the collector runs.
