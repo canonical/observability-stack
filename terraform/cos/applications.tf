@@ -65,6 +65,10 @@ module "loki" {
   backend_units                     = var.loki_worker.backend_units
   read_units                        = var.loki_worker.read_units
   write_units                       = var.loki_worker.write_units
+  monolithic                        = var.monolithic
+  all_config                        = var.loki_worker.all_config
+  all_worker_storage_directives     = var.loki_worker.all_storage_directives
+  all_units                         = var.loki_worker.all_units
 }
 
 module "mimir" {
@@ -98,6 +102,10 @@ module "mimir" {
   backend_units                     = var.mimir_worker.backend_units
   read_units                        = var.mimir_worker.read_units
   write_units                       = var.mimir_worker.write_units
+  monolithic                        = var.monolithic
+  all_config                        = var.mimir_worker.all_config
+  all_worker_storage_directives     = var.mimir_worker.all_storage_directives
+  all_units                         = var.mimir_worker.all_units
 }
 
 module "opentelemetry_collector" {
@@ -165,6 +173,10 @@ module "tempo" {
   metrics_generator_units                     = var.tempo_worker.metrics_generator_units
   querier_units                               = var.tempo_worker.querier_units
   query_frontend_units                        = var.tempo_worker.query_frontend_units
+  monolithic                                  = var.monolithic
+  all_config                                  = var.tempo_worker.all_config
+  all_worker_storage_directives               = var.tempo_worker.all_storage_directives
+  all_units                                   = var.tempo_worker.all_units
 }
 
 module "traefik" {

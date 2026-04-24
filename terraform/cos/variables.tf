@@ -38,6 +38,12 @@ variable "anti_affinity" {
   default     = true
 }
 
+variable "monolithic" {
+  description = "Deploy coordinated workers in monolithic mode (single role-all worker per signal) instead of separate backend/read/write workers"
+  type        = bool
+  default     = false
+}
+
 # -------------- # TLS configurations --------------
 
 variable "internal_tls" {
@@ -187,6 +193,9 @@ variable "loki_worker" {
     backend_units              = optional(number, 3)
     read_units                 = optional(number, 3)
     write_units                = optional(number, 3)
+    all_config                 = optional(map(string), {})
+    all_storage_directives     = optional(map(string), {})
+    all_units                  = optional(number, 1)
   })
   default     = {}
   description = "Application configuration for all Loki Workers. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
@@ -217,6 +226,9 @@ variable "mimir_worker" {
     backend_units              = optional(number, 3)
     read_units                 = optional(number, 3)
     write_units                = optional(number, 3)
+    all_config                 = optional(map(string), {})
+    all_storage_directives     = optional(map(string), {})
+    all_units                  = optional(number, 1)
   })
   default     = {}
   description = "Application configuration for all Mimir Workers. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
@@ -294,6 +306,9 @@ variable "tempo_worker" {
     metrics_generator_units                     = optional(number, 3)
     querier_units                               = optional(number, 3)
     query_frontend_units                        = optional(number, 3)
+    all_config                                  = optional(map(string), {})
+    all_storage_directives                      = optional(map(string), {})
+    all_units                                   = optional(number, 1)
   })
   default     = {}
   description = "Application configuration for all Tempo workers. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
