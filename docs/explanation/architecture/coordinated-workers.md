@@ -106,4 +106,4 @@ The coordinator also blocks or waits on its own prerequisites:
 Because the coordinator owns the workload config and forwards it to workers over the cluster relation, a worker that has not yet received its config will remain in `waiting` until the coordinator becomes ready and publishes it.
 
 ## References
-- [Meta roles used in COS](/reference/coodinated-workers-meta-roles.md)
+- [Meta roles used in COS](/reference/coordinated-workers-meta-roles.md)
