@@ -23,6 +23,6 @@ resource "terraform_data" "grafana_ingress_interface" {
 
 data "juju_charm" "grafana_info" {
   charm   = "grafana-k8s"
-  channel = local.channels.grafana
+  channel = var.channel
   base    = var.base
 }
