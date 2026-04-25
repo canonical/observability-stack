@@ -23,7 +23,7 @@ module "catalogue" {
 }
 
 module "grafana" {
-  source             = "git::https://github.com/canonical/grafana-k8s-operator//terraform?ref=track/2"
+  source             = "git::https://github.com/canonical/grafana-k8s-operator//terraform?ref=test/lifecycle-input-track-2"
   app_name           = var.grafana.app_name
   channel            = var.channel
   config             = var.grafana.config
