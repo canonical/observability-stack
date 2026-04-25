@@ -233,7 +233,6 @@ resource "juju_integration" "ingress" {
   }
 }
 
-//TODO: Feature this in COS
 resource "juju_integration" "grafana_ingress" {
   count = var.ingress["grafana"] ? 1 : 0
 

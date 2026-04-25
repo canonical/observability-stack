@@ -292,11 +292,6 @@ resource "juju_integration" "ingress" {
         app_name = module.loki.app_names.loki_coordinator
         endpoint = module.loki.requires.ingress
       }
-      grafana = {
-        app_name = module.grafana.app_name
-        # TODO: move this out so I can add a lifecycle
-        endpoint = module.grafana.requires.ingress
-      }
     } : k => v if var.ingress[k]
   }
   model_uuid = var.model_uuid
@@ -312,6 +307,23 @@ resource "juju_integration" "ingress" {
   }
 }
 
+resource "juju_integration" "grafana_ingress" {
+  count = var.ingress["grafana"] ? 1 : 0
+
+  model_uuid = var.model_uuid
+
+  application {
+    name     = module.grafana.app_name
+    endpoint = module.grafana.requires.ingress
+  }
+
+  application {
+    name     = module.traefik.app_name
+    endpoint = module.traefik.endpoints.ingress
+  }
+
+  lifecycle { replace_triggered_by = [terraform_data.grafana_ingress_interface] }
+}
 
 resource "juju_integration" "traefik_route" {
   for_each = {
