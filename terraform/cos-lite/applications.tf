@@ -23,7 +23,7 @@ module "catalogue" {
 }
 
 module "grafana" {
-  source             = "git::https://github.com/canonical/grafana-k8s-operator//terraform"
+  source             = "git::https://github.com/canonical/grafana-k8s-operator//terraform?ref=test/lifecycle-input"
   app_name           = var.grafana.app_name
   channel            = local.channels.grafana
   config             = var.grafana.config
@@ -32,6 +32,7 @@ module "grafana" {
   revision           = local.revisions.grafana
   storage_directives = var.grafana.storage_directives
   units              = var.grafana.units
+  replace_triggers   = [terraform_data.grafana_litestream_resource.id]
 }
 
 module "loki" {

@@ -8,6 +8,7 @@ This is a Terraform module facilitating the deployment of the COS Lite solution,
 | Name | Version |
 |------|---------|
 | <a name="provider_juju"></a> [juju](#provider\_juju) | ~> 1.0 |
+| <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 
 ## Modules
 
@@ -63,7 +64,7 @@ Otherwise, you can deploy from main (without `?ref`) which uses the Terraform Ju
 
 ### Basic usage
 
-To deploy the COS HA solution in a model named `cos`, create this root module:
+To deploy the COS Lite solution in a model named `cos`, create this root module:
 ```hcl
 terraform {
   required_version = ">= 1.5"
@@ -76,7 +77,7 @@ terraform {
 }
 
 resource "juju_model" "cos" {
-  name = "cos"
+  name = "cos-lite"
 }
 
 module "cos-lite" {
