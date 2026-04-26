@@ -15,7 +15,7 @@ resource "terraform_data" "grafana_litestream_resource" {
 #   trigger integration replacement, otherwise the upgrade will fail
 #   https://github.com/canonical/observability-stack/issues/165
 resource "terraform_data" "grafana_ingress_interface" {
-  triggers_replace = data.juju_charm.grafana_info.requires["ingress"]
+  triggers_replace = lookup(data.juju_charm.grafana_info.requires, "ingress", "")
 }
 
 # -------------- # CharmHub API -------------- #

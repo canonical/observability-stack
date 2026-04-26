@@ -31,6 +31,8 @@ resource "juju_integration" "grafana_dashboards" {
     name     = module.grafana.app_name
     endpoint = module.grafana.requires.grafana_dashboard
   }
+
+  lifecycle { replace_triggered_by = [terraform_data.grafana_litestream_resource] }
 }
 # -------------- # Charm Tracing ------------------------
 
@@ -128,6 +130,8 @@ resource "juju_integration" "grafana_sources" {
     name     = module.grafana.app_name
     endpoint = module.grafana.requires.grafana_source
   }
+
+  lifecycle { replace_triggered_by = [terraform_data.grafana_litestream_resource] }
 }
 
 # -------------- # Receive Loki Logs ---------------------
@@ -322,7 +326,7 @@ resource "juju_integration" "grafana_ingress" {
     endpoint = module.traefik.endpoints.ingress
   }
 
-  lifecycle { replace_triggered_by = [terraform_data.grafana_ingress_interface] }
+  lifecycle { replace_triggered_by = [terraform_data.grafana_ingress_interface, terraform_data.grafana_litestream_resource] }
 }
 
 resource "juju_integration" "traefik_route" {
