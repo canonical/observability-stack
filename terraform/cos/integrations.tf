@@ -64,7 +64,7 @@ resource "juju_integration" "charm_tracing_grafana" {
   model_uuid = var.model_uuid
 
   application {
-    name = module.grafana.app_name
+    name     = module.grafana.app_name
     endpoint = module.grafana.requires.charm_tracing
   }
 
