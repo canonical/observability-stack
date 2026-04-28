@@ -14,7 +14,7 @@ Using Terraform:
 
 1. Update all references to track 2/stable and then:
     ```bash
-    terraform apply
+    terraform init -upgrade; terraform apply
     ```
 2. Manually refresh all charms to 2/stable
     ```bash
