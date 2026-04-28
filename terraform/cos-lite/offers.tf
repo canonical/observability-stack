@@ -9,8 +9,6 @@ resource "juju_offer" "grafana_dashboards" {
   name             = "grafana-dashboards"
   model_uuid       = var.model_uuid
   application_name = module.grafana.app_name
-  # TODO: Replace these with module.grafana.requires.grafana_dashboard in a tandem PR?
-  # TODO: and module.grafana.endpoints.grafana_dashboard in track/2?
   endpoints        = ["grafana-dashboard"]
 
   lifecycle { replace_triggered_by = [terraform_data.grafana_litestream_resource] }

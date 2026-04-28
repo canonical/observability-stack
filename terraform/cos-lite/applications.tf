@@ -23,7 +23,7 @@ module "catalogue" {
 }
 
 module "grafana" {
-  source             = "git::https://github.com/canonical/grafana-k8s-operator//terraform?ref=feat/resource-lifecycle"
+  source             = "git::https://github.com/canonical/grafana-k8s-operator//terraform"
   app_name           = var.grafana.app_name
   channel            = local.channels.grafana
   config             = var.grafana.config
