@@ -20,7 +20,7 @@ Using Terraform:
     ```bash
     juju refresh <charm-name> --channel 2/stable
     ```
-3. Update all references to track 3/stable and then:
+3. Update all references to track `tf-cos-3.0.0` and then:
     ```bash
     terraform apply
     ```
