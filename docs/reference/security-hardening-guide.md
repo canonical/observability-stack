@@ -34,7 +34,7 @@ If you're using the Canonical Identity Platform to manage authentication, this c
 ### Be judicious about what is exposed via an ingress
 
 Generally, some COS components must be exposed via ingress to other audiences for COS to work effectively.  Examples where this is necessary include:
-* allowing applications to send metrics to COS when COS is deployed on a different substrate (as recommended by the [COS deployment best practices guide](https://charmhub.io/topics/canonical-observability-stack/reference/best-practices#deploy-in-isolation) 
+* allowing applications to send metrics to COS when COS is deployed on a different substrate (as recommended by the [COS deployment best practices guide](https://documentation.ubuntu.com/observability/latest/reference/topology/#deploy-in-isolation)
 * exposing Grafana dashboards outside the COS network
 
 Whatever the reason, administrators should consider what should be exposed and to which audiences, and set up their ingresses accordingly.  For example:
