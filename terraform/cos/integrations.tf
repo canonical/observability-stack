@@ -31,6 +31,8 @@ resource "juju_integration" "grafana_dashboards" {
     name     = module.grafana.app_name
     endpoint = module.grafana.requires.grafana_dashboard
   }
+
+  lifecycle { replace_triggered_by = [terraform_data.grafana_litestream_resource] }
 }
 # -------------- # Charm Tracing ------------------------
 
@@ -44,10 +46,6 @@ resource "juju_integration" "charm_tracing" {
       app_name = module.loki.app_names.loki_coordinator
       endpoint = module.loki.requires.charm_tracing
     }
-    grafana = {
-      app_name = module.grafana.app_name
-      endpoint = module.grafana.requires.charm_tracing
-    }
   }
   model_uuid = var.model_uuid
 
@@ -60,6 +58,22 @@ resource "juju_integration" "charm_tracing" {
     name     = module.opentelemetry_collector.app_name
     endpoint = module.opentelemetry_collector.provides.receive_traces
   }
+}
+
+resource "juju_integration" "charm_tracing_grafana" {
+  model_uuid = var.model_uuid
+
+  application {
+    name     = module.grafana.app_name
+    endpoint = module.grafana.requires.charm_tracing
+  }
+
+  application {
+    name     = module.opentelemetry_collector.app_name
+    endpoint = module.opentelemetry_collector.provides.receive_traces
+  }
+
+  lifecycle { replace_triggered_by = [terraform_data.grafana_litestream_resource] }
 }
 
 # -------------- # Metrics Endpoint ----------------------
@@ -128,6 +142,8 @@ resource "juju_integration" "grafana_sources" {
     name     = module.grafana.app_name
     endpoint = module.grafana.requires.grafana_source
   }
+
+  lifecycle { replace_triggered_by = [terraform_data.grafana_litestream_resource] }
 }
 
 # -------------- # Receive Loki Logs ---------------------
@@ -242,10 +258,6 @@ resource "juju_integration" "catalogue_integrations" {
       app_name = module.alertmanager.app_name
       endpoint = module.alertmanager.requires.catalogue
     }
-    grafana = {
-      app_name = module.grafana.app_name
-      endpoint = module.grafana.requires.catalogue
-    }
     tempo = {
       app_name = module.tempo.app_names.tempo_coordinator
       endpoint = module.tempo.requires.catalogue
@@ -269,6 +281,21 @@ resource "juju_integration" "catalogue_integrations" {
   }
 }
 
+resource "juju_integration" "catalogue_integration_grafana" {
+  model_uuid = var.model_uuid
+
+  application {
+    name     = module.catalogue.app_name
+    endpoint = module.catalogue.provides.catalogue
+  }
+
+  application {
+    name     = module.grafana.app_name
+    endpoint = module.grafana.requires.catalogue
+  }
+
+  lifecycle { replace_triggered_by = [terraform_data.grafana_litestream_resource] }
+}
 
 # -------------- # Provided by Traefik --------------
 
@@ -292,10 +319,6 @@ resource "juju_integration" "ingress" {
         app_name = module.loki.app_names.loki_coordinator
         endpoint = module.loki.requires.ingress
       }
-      grafana = {
-        app_name = module.grafana.app_name
-        endpoint = module.grafana.requires.ingress
-      }
     } : k => v if var.ingress[k]
   }
   model_uuid = var.model_uuid
@@ -311,6 +334,23 @@ resource "juju_integration" "ingress" {
   }
 }
 
+resource "juju_integration" "grafana_ingress" {
+  count = var.ingress.grafana ? 1 : 0
+
+  model_uuid = var.model_uuid
+
+  application {
+    name     = module.grafana.app_name
+    endpoint = module.grafana.requires.ingress
+  }
+
+  application {
+    name     = module.traefik.app_name
+    endpoint = module.traefik.endpoints.ingress
+  }
+
+  lifecycle { replace_triggered_by = [terraform_data.grafana_ingress_interface, terraform_data.grafana_litestream_resource] }
+}
 
 resource "juju_integration" "traefik_route" {
   for_each = {

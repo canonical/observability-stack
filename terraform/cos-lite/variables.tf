@@ -5,15 +5,16 @@
 # causes the operation to fail due to https://github.com/juju/terraform-provider-juju/issues/344
 # Therefore, we set a default value of "arch=amd64" for all applications.
 
-locals {
-  # https://github.com/juju/terraform-provider-juju/issues/972
-  tls_termination = var.external_certificates_offer_url != null ? true : false
+variable "risk" {
+  description = "Risk level that the applications are (unless overwritten by individual channels) deployed from"
+  type        = string
+  default     = "edge"
 }
 
-variable "channel" {
-  description = "Channel that the applications are (unless overwritten by individual channels) deployed from"
+variable "base" {
+  description = "The operating system on which to deploy. E.g. ubuntu@24.04. Check Charmhub for per-charm base support."
+  default     = "ubuntu@24.04"
   type        = string
-  default     = "dev/edge"
 }
 
 variable "model_uuid" {
@@ -133,7 +134,6 @@ variable "prometheus" {
 variable "ssc" {
   type = object({
     app_name           = optional(string, "ca")
-    channel            = optional(string, "1/stable")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
     revision           = optional(number, null)
@@ -147,7 +147,6 @@ variable "ssc" {
 variable "traefik" {
   type = object({
     app_name           = optional(string, "traefik")
-    channel            = optional(string, "latest/stable")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
     revision           = optional(number, null)
