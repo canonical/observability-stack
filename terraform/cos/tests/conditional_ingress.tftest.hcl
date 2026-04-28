@@ -13,8 +13,14 @@ run "default_ingress_all_enabled" {
   command = plan
 
   assert {
-    condition     = length(juju_integration.ingress) == 5
-    error_message = "Expected 5 ingress integrations (alertmanager, catalogue, grafana, loki, mimir), got ${length(juju_integration.ingress)}"
+    condition     = length(juju_integration.ingress) == 4
+    error_message = "Expected 4 ingress integrations (alertmanager, catalogue, loki, mimir), got ${length(juju_integration.ingress)}"
+  }
+
+  # Grafana uses a separate count-based resource due to lifecycle replace_triggered_by
+  assert {
+    condition     = length(juju_integration.grafana_ingress) == 1
+    error_message = "Expected 1 grafana_ingress integration, got ${length(juju_integration.grafana_ingress)}"
   }
 
   assert {
@@ -45,6 +51,11 @@ run "ingress_all_disabled" {
   }
 
   assert {
+    condition     = length(juju_integration.grafana_ingress) == 0
+    error_message = "Expected 0 grafana_ingress integrations, got ${length(juju_integration.grafana_ingress)}"
+  }
+
+  assert {
     condition     = length(juju_integration.traefik_route) == 0
     error_message = "Expected 0 traefik_route integrations, got ${length(juju_integration.traefik_route)}"
   }
@@ -67,13 +78,13 @@ run "ingress_only_grafana" {
   }
 
   assert {
-    condition     = length(juju_integration.ingress) == 1
-    error_message = "Expected 1 ingress integration (grafana only), got ${length(juju_integration.ingress)}"
+    condition     = length(juju_integration.ingress) == 0
+    error_message = "Expected 0 ingress integrations, got ${length(juju_integration.ingress)}"
   }
 
   assert {
-    condition     = contains(keys(juju_integration.ingress), "grafana")
-    error_message = "Expected ingress to contain 'grafana' key"
+    condition     = length(juju_integration.grafana_ingress) == 1
+    error_message = "Expected 1 grafana_ingress integration, got ${length(juju_integration.grafana_ingress)}"
   }
 
   assert {
@@ -127,13 +138,18 @@ run "ingress_partial_override" {
   }
 
   assert {
-    condition     = length(juju_integration.ingress) == 4
-    error_message = "Expected 4 ingress integrations (catalogue, grafana, loki, mimir), got ${length(juju_integration.ingress)}"
+    condition     = length(juju_integration.ingress) == 3
+    error_message = "Expected 3 ingress integrations (catalogue, loki, mimir), got ${length(juju_integration.ingress)}"
   }
 
   assert {
     condition     = !contains(keys(juju_integration.ingress), "alertmanager")
     error_message = "Expected ingress to NOT contain 'alertmanager' key"
+  }
+
+  assert {
+    condition     = length(juju_integration.grafana_ingress) == 1
+    error_message = "Expected 1 grafana_ingress integration, got ${length(juju_integration.grafana_ingress)}"
   }
 
   assert {
