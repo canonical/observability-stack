@@ -355,6 +355,10 @@ resource "juju_integration" "grafana_ingress" {
 resource "juju_integration" "traefik_route" {
   for_each = {
     for k, v in {
+      opentelemetry_collector = {
+        app_name = module.opentelemetry_collector.app_name
+        endpoint = module.opentelemetry_collector.requires.ingress
+      }
       tempo = {
         app_name = module.tempo.app_names.tempo_coordinator
         endpoint = module.tempo.requires.ingress
