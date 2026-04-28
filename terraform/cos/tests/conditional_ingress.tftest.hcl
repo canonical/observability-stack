@@ -25,7 +25,7 @@ run "default_ingress_all_enabled" {
 
   assert {
     condition     = length(juju_integration.traefik_route) == 2
-    error_message = "Expected 2 traefik_route integrations (otelcol, tempo), got ${length(juju_integration.traefik_route)}"
+    error_message = "Expected 2 traefik_route integrations (opentelemetry_collector, tempo), got ${length(juju_integration.traefik_route)}"
   }
 }
 
@@ -36,13 +36,13 @@ run "ingress_all_disabled" {
 
   variables {
     ingress = {
-      alertmanager = false
-      catalogue    = false
-      grafana      = false
-      loki         = false
-      mimir        = false
-      otelcol      = false
-      tempo        = false
+      alertmanager            = false
+      catalogue               = false
+      grafana                 = false
+      loki                    = false
+      mimir                   = false
+      opentelemetry_collector = false
+      tempo                   = false
     }
   }
 
@@ -69,13 +69,13 @@ run "ingress_only_grafana" {
 
   variables {
     ingress = {
-      alertmanager = false
-      catalogue    = false
-      grafana      = true
-      loki         = false
-      mimir        = false
-      otelcol      = false
-      tempo        = false
+      alertmanager            = false
+      catalogue               = false
+      grafana                 = true
+      loki                    = false
+      mimir                   = false
+      opentelemetry_collector = false
+      tempo                   = false
     }
   }
 
@@ -107,7 +107,7 @@ run "ingress_only_tempo" {
       grafana      = false
       loki         = false
       mimir        = false
-      otelcol      = false
+      opentelemetry_collector = false
       tempo        = true
     }
   }
@@ -135,8 +135,8 @@ run "ingress_partial_override" {
 
   variables {
     ingress = {
-      alertmanager = false
-      tempo        = false
+      alertmanager            = false
+      tempo                   = false
     }
   }
 
@@ -157,11 +157,11 @@ run "ingress_partial_override" {
 
   assert {
     condition     = length(juju_integration.traefik_route) == 1
-    error_message = "Expected 1 traefik_route integration (otelcol), got ${length(juju_integration.traefik_route)}"
+    error_message = "Expected 1 traefik_route integration (opentelemetry_collector), got ${length(juju_integration.traefik_route)}"
   }
 
   assert {
-    condition     = contains(keys(juju_integration.traefik_route), "otelcol")
-    error_message = "Expected traefik_route to contain 'otelcol' key"
+    condition     = contains(keys(juju_integration.traefik_route), "opentelemetry_collector")
+    error_message = "Expected traefik_route to contain 'opentelemetry_collector' key"
   }
 }
