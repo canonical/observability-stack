@@ -54,6 +54,14 @@ COS 3 is compatible with Juju v3.6+.
 
 ### COS Lite components
 
+| Component                | Version |
+|--------------------------|---------|
+| alertmanager             | 0.31    |
+| catalogue                |         |
+| grafana                  | 12.4    |
+| loki                     | 3.7     |
+| prometheus               | 3.11    |
+| traefik                  | 2.11    |
 
 ## Notable changes in peripheral charms
 
