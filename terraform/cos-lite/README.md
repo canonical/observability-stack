@@ -77,7 +77,7 @@ terraform {
 }
 
 resource "juju_model" "cos" {
-  name = "cos"
+  name = "cos-lite"
 }
 
 module "cos-lite" {
