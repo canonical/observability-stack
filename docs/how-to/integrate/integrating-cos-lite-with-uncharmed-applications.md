@@ -16,7 +16,7 @@ This how-to assumes that you already have a working deployment of COS Lite. If t
 The first step will be to get a hold of a machine, somewhere, and follow
 [this guide on how to get started with COS lite on MicroK8s](https://charmhub.io/topics/canonical-observability-stack/tutorials/install-microk8s).
 
-Unless you're also planning to monitor some charmed applications with this COS Lite deployment, you will **not** need to use [the `offers` overlay](https://charmhub.io/topics/canonical-observability-stack/tutorials/install-microk8s#heading--deploy-the-cos-lite-bundle-with-overlays).
+Unless you're also planning to monitor some charmed applications with this COS Lite deployment, you will **not** need to use [the `offers` overlay](https://documentation.ubuntu.com/observability/latest/tutorial/cos-lite-microk8s-sandbox/#deploy-the-cos-lite-bundle-with-overlays).
 
 ## Deploy Opentelemetry Collector
 
