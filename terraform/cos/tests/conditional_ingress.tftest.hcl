@@ -102,13 +102,13 @@ run "ingress_only_tempo" {
 
   variables {
     ingress = {
-      alertmanager = false
-      catalogue    = false
-      grafana      = false
-      loki         = false
-      mimir        = false
+      alertmanager            = false
+      catalogue               = false
+      grafana                 = false
+      loki                    = false
+      mimir                   = false
       opentelemetry_collector = false
-      tempo        = true
+      tempo                   = true
     }
   }
 
@@ -135,8 +135,8 @@ run "ingress_partial_override" {
 
   variables {
     ingress = {
-      alertmanager            = false
-      tempo                   = false
+      alertmanager = false
+      tempo        = false
     }
   }
 
