@@ -217,10 +217,6 @@ resource "juju_integration" "ingress" {
         app_name = module.catalogue.app_name
         endpoint = module.catalogue.requires.ingress
       }
-      grafana = {
-        app_name = module.grafana.app_name
-        endpoint = module.grafana.requires.ingress
-      }
     } : k => v if var.ingress[k]
   }
 
@@ -235,6 +231,24 @@ resource "juju_integration" "ingress" {
     name     = module.traefik.app_name
     endpoint = module.traefik.endpoints.ingress
   }
+}
+
+resource "juju_integration" "grafana_ingress" {
+  count = var.ingress.grafana ? 1 : 0
+
+  model_uuid = var.model_uuid
+
+  application {
+    name     = module.grafana.app_name
+    endpoint = module.grafana.requires.ingress
+  }
+
+  application {
+    name     = module.traefik.app_name
+    endpoint = module.traefik.endpoints.ingress
+  }
+
+  lifecycle { replace_triggered_by = [terraform_data.grafana_ingress_interface] }
 }
 
 resource "juju_integration" "ingress_per_unit" {

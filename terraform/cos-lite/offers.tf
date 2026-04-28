@@ -10,6 +10,8 @@ resource "juju_offer" "grafana_dashboards" {
   model_uuid       = var.model_uuid
   application_name = module.grafana.app_name
   endpoints        = ["grafana-dashboard"]
+
+  lifecycle { replace_triggered_by = [terraform_data.grafana_litestream_resource] }
 }
 
 resource "juju_offer" "loki_logging" {

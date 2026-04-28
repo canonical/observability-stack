@@ -7,11 +7,7 @@ https://documentation.ubuntu.com/observability/latest/how-to/configure-tls-encry
 import os
 from pathlib import Path
 
-from helpers import (
-    catalogue_apps_are_reachable,
-    refresh_o11y_apps,
-    wait_for_active_idle_without_error,
-)
+from helpers import catalogue_apps_are_reachable, wait_for_active_idle_without_error
 
 import jubilant
 
@@ -30,20 +26,16 @@ def test_envvars():
     )
 
 
-def test_deploy_from_track(tf_manager, cos_model: jubilant.Juju):
-    # GIVEN a module deployed from track n
+def test_deploy_from_track_2(tf_manager, cos_model: jubilant.Juju):
+    # GIVEN a module deployed from track 2
     tf_manager.init(TRACK_2_TF_FILE)
     tf_manager.apply(model=cos_model.model, **S3_ENDPOINT)
     wait_for_active_idle_without_error([cos_model], timeout=5400)
     catalogue_apps_are_reachable(cos_model)
 
 
-def test_deploy_to_track(tmp_path, tf_manager, cos_model: jubilant.Juju):
-    # WHEN upgraded to track n
-    cos_model.remove_relation("traefik:traefik-route", "grafana:ingress")
-    wait_for_active_idle_without_error([cos_model])
-    # FIXME: https://github.com/juju/terraform-provider-juju/issues/967
-    refresh_o11y_apps(cos_model, channel="dev/edge", base="ubuntu@24.04")
+def test_deploy_to_track_dev(tf_manager, cos_model: jubilant.Juju):
+    # WHEN upgraded to track dev
     tf_manager.init(TRACK_DEV_TF_FILE)
     tf_manager.apply(model=cos_model.model, **S3_ENDPOINT)
 
