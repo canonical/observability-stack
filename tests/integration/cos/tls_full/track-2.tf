@@ -44,7 +44,7 @@ module "ssc" {
 }
 
 module "cos" {
-  source                          = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=test/lifecycle-input-track-2"
+  source                          = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=track/2"
   model_uuid                      = data.juju_model.cos-model.uuid
   channel                         = "2/stable"
   internal_tls                    = true
