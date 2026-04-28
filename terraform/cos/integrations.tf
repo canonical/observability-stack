@@ -14,6 +14,10 @@ resource "juju_integration" "grafana_dashboards" {
       app_name = module.loki.app_names.loki_coordinator
       endpoint = module.loki.provides.grafana_dashboards_provider
     }
+    otelcol = {
+      app_name = module.opentelemetry_collector.app_name
+      endpoint = module.opentelemetry_collector.provides.grafana_dashboards_provider
+    }
     tempo = {
       app_name = module.tempo.app_names.tempo_coordinator
       endpoint = module.tempo.provides.grafana_dashboard
