@@ -71,12 +71,13 @@ variable "external_ca_cert_offer_url" {
 variable "ingress" {
   description = "Per-component toggle for ingress integrations"
   type = object({
-    alertmanager = optional(bool, true)
-    catalogue    = optional(bool, true)
-    grafana      = optional(bool, true)
-    loki         = optional(bool, true)
-    mimir        = optional(bool, true)
-    tempo        = optional(bool, true)
+    alertmanager            = optional(bool, true)
+    catalogue               = optional(bool, true)
+    grafana                 = optional(bool, true)
+    loki                    = optional(bool, true)
+    mimir                   = optional(bool, true)
+    opentelemetry_collector = optional(bool, true)
+    tempo                   = optional(bool, true)
   })
   default = {}
 }
