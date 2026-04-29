@@ -13,6 +13,7 @@ Review the documentation for clarity, completeness, and accuracy.
 - H1 titles under `docs/how-to` should start with "How to".
 - Section headers and index entries should all use sentence case (not title case).
 - Known product names should be capitalized consistently throughout the documentation.
+- Spelling according to US English conventions.
 
 ## Context
 
