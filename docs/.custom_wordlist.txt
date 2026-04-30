@@ -221,3 +221,7 @@ xml
 yaml
 YouTube
 ZooKeeper
+rsyslog
+syslog
+URIs
+
