@@ -22,7 +22,7 @@ fmt: format-terraform format-terraform-docs
 
 # Run unit tests
 [group("Unit")]
-unit: (unit-test "cos") (unit-test "cos-lite")
+unit: (unit-test "cos") (unit-test "cos-lite") (unit-test "cos-dev")
 
 # Lint the Github workflows
 [group("Lint")]
