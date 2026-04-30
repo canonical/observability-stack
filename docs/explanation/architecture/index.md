@@ -42,3 +42,12 @@ The available stack configurations and how telemetry moves through them.
 
 Telemetry flow <telemetry-flow>
 ```
+
+## Coordinated workers
+The coordinated workers pattern and the role it plays in COS HA.
+
+```{toctree}
+:maxdepth: 1
+
+Coordinated workers <coordinated-workers>
+```

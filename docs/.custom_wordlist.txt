@@ -104,6 +104,7 @@ microservice
 microservices
 Mimir
 Minio
+misconfiguration
 Multipass
 MyST
 Nginx

@@ -80,3 +80,13 @@ over time.
 
 Lifecycle <lifecycle>
 ```
+
+## Coordinated workers meta roles
+
+Meta roles used in the coordinated workers
+
+```{toctree}
+:maxdepth: 1
+
+Coordinated workers meta roles <coordinated-workers-meta-roles>
+```
