@@ -5,7 +5,7 @@ output "app_name" {
 
 output "provides" {
   value = {
-    s3 = "s3"
+    s3 = "s3-credentials"
   }
   description = "All Juju integration endpoints where the charm is the provider"
 }
