@@ -4,6 +4,7 @@ myst:
    description: "Integrate COS Lite with uncharmed applications using Opentelemetry Collector. Send metrics and logs from non-charm workloads to the observability stack."
 ---
 
+(integrating-cos-lite-with-uncharmed-applications)=
 # How to integrate COS Lite with uncharmed applications
 
 The [COS Lite solution](https://github.com/canonical/observability-stack/tree/main/terraform/cos-lite) is designed to be deployed and operated using Juju. However, not all workloads that you may want to monitor will be. The good news is that you can use COS Lite to monitor
