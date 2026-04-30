@@ -5,18 +5,11 @@ This is a Terraform module facilitating the deployment of the COS Dev solution, 
 This module is intended for development and testing environments where full HA is not required. It uses the individual coordinator and worker charm modules, rather than the bundled operator modules used by the main COS module.
 
 <!-- BEGIN_TF_DOCS -->
-## Requirements
-
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5 |
-| <a name="requirement_juju"></a> [juju](#requirement\_juju) | ~> 1.0 |
-
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_juju"></a> [juju](#provider\_juju) | 1.5.0 |
+| <a name="provider_juju"></a> [juju](#provider\_juju) | ~> 1.0 |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 
 ## Modules
@@ -48,84 +41,6 @@ This module is intended for development and testing environments where full HA i
 | <a name="module_tempo_worker_querier"></a> [tempo\_worker\_querier](#module\_tempo\_worker\_querier) | git::https://github.com/canonical/tempo-operators//worker/terraform | n/a |
 | <a name="module_tempo_worker_query_frontend"></a> [tempo\_worker\_query\_frontend](#module\_tempo\_worker\_query\_frontend) | git::https://github.com/canonical/tempo-operators//worker/terraform | n/a |
 | <a name="module_traefik"></a> [traefik](#module\_traefik) | git::https://github.com/canonical/traefik-k8s-operator//terraform | n/a |
-
-## Resources
-
-| Name | Type |
-|------|------|
-| [juju_access_secret.loki_s3_credentials_access](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/access_secret) | resource |
-| [juju_access_secret.mimir_s3_credentials_access](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/access_secret) | resource |
-| [juju_access_secret.tempo_s3_credentials_access](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/access_secret) | resource |
-| [juju_application.s3_integrator_loki](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application) | resource |
-| [juju_application.s3_integrator_mimir](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application) | resource |
-| [juju_application.s3_integrator_tempo](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application) | resource |
-| [juju_integration.alerting](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.catalogue_integration_grafana](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.catalogue_integrations](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.charm_tracing](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.charm_tracing_grafana](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.external_grafana_ca_cert](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.external_otelcol_ca_cert](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.external_traefik_certificates](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.grafana_dashboards](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.grafana_ingress](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.grafana_sources](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.ingress](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.internal_certificates](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.loki_cluster](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.loki_cluster_backend](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.loki_cluster_read](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.loki_cluster_write](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.loki_logging_otelcol_logging_consumer](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.mimir_cluster](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.mimir_cluster_backend](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.mimir_cluster_read](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.mimir_cluster_write](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.opentelemetry_collector_mimir_metrics](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.otelcol_logging_provider](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.otelcol_metrics_endpoint](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.s3_integrator_loki](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.s3_integrator_mimir](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.s3_integrator_tempo](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.seaweedfs_loki](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.seaweedfs_mimir](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.seaweedfs_tempo](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.tempo_cluster](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.tempo_cluster_compactor](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.tempo_cluster_distributor](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.tempo_cluster_ingester](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.tempo_cluster_metrics_generator](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.tempo_cluster_querier](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.tempo_cluster_query_frontend](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.tempo_send_remote_write_mimir_receive_remote_write](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.tempo_tracing_otelcol_tracing](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.traces_and_logs_correlation](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.traces_and_metrics_correlation](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.traefik_receive_ca_certificate](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.traefik_route](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_offer.alertmanager_karma_dashboard](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/offer) | resource |
-| [juju_offer.grafana_dashboards](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/offer) | resource |
-| [juju_offer.loki_logging](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/offer) | resource |
-| [juju_offer.mimir_receive_remote_write](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/offer) | resource |
-| [juju_secret.loki_s3_credentials](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/secret) | resource |
-| [juju_secret.mimir_s3_credentials](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/secret) | resource |
-| [juju_secret.tempo_s3_credentials](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/secret) | resource |
-| [terraform_data.grafana_ingress_interface](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
-| [terraform_data.grafana_litestream_resource](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
-| [juju_charm.alertmanager_info](https://registry.terraform.io/providers/juju/juju/latest/docs/data-sources/charm) | data source |
-| [juju_charm.catalogue_info](https://registry.terraform.io/providers/juju/juju/latest/docs/data-sources/charm) | data source |
-| [juju_charm.grafana_info](https://registry.terraform.io/providers/juju/juju/latest/docs/data-sources/charm) | data source |
-| [juju_charm.loki_coordinator_info](https://registry.terraform.io/providers/juju/juju/latest/docs/data-sources/charm) | data source |
-| [juju_charm.loki_worker_info](https://registry.terraform.io/providers/juju/juju/latest/docs/data-sources/charm) | data source |
-| [juju_charm.mimir_coordinator_info](https://registry.terraform.io/providers/juju/juju/latest/docs/data-sources/charm) | data source |
-| [juju_charm.mimir_worker_info](https://registry.terraform.io/providers/juju/juju/latest/docs/data-sources/charm) | data source |
-| [juju_charm.otelcol_info](https://registry.terraform.io/providers/juju/juju/latest/docs/data-sources/charm) | data source |
-| [juju_charm.s3_integrator_info](https://registry.terraform.io/providers/juju/juju/latest/docs/data-sources/charm) | data source |
-| [juju_charm.seaweedfs_info](https://registry.terraform.io/providers/juju/juju/latest/docs/data-sources/charm) | data source |
-| [juju_charm.ssc_info](https://registry.terraform.io/providers/juju/juju/latest/docs/data-sources/charm) | data source |
-| [juju_charm.tempo_coordinator_info](https://registry.terraform.io/providers/juju/juju/latest/docs/data-sources/charm) | data source |
-| [juju_charm.tempo_worker_info](https://registry.terraform.io/providers/juju/juju/latest/docs/data-sources/charm) | data source |
-| [juju_charm.traefik_info](https://registry.terraform.io/providers/juju/juju/latest/docs/data-sources/charm) | data source |
 
 ## Inputs
 
