@@ -22,6 +22,30 @@ variable "model_uuid" {
   type        = string
 }
 
+# -------------- # Topology configuration --------------
+
+variable "topology" {
+  description = "Deployment topology: 'monolithic' (single role-all worker per component) or 'distributed' (separate workers per role)."
+  type        = string
+  default     = "monolithic"
+  validation {
+    condition     = contains(["monolithic", "distributed"], var.topology)
+    error_message = "topology must be either 'monolithic' or 'distributed'."
+  }
+}
+
+# -------------- # Storage backend configuration --------------
+
+variable "storage_backend" {
+  description = "Storage backend: 'seaweedfs' (built-in S3-compatible storage) or 's3' (external S3/Ceph via s3-integrator)."
+  type        = string
+  default     = "seaweedfs"
+  validation {
+    condition     = contains(["seaweedfs", "s3"], var.storage_backend)
+    error_message = "storage_backend must be either 'seaweedfs' or 's3'."
+  }
+}
+
 # -------------- # TLS configurations --------------
 
 variable "internal_tls" {
@@ -64,6 +88,58 @@ variable "ingress" {
     tempo                   = optional(bool, true)
   })
   default = {}
+}
+
+# -------------- # S3 storage configuration (required when storage_backend = "s3") --------------
+
+variable "s3_endpoint" {
+  description = "S3 endpoint URL. Required when storage_backend is 's3'."
+  type        = string
+  default     = null
+}
+
+variable "s3_access_key" {
+  description = "S3 access-key credential. Required when storage_backend is 's3'."
+  type        = string
+  sensitive   = true
+  default     = null
+}
+
+variable "s3_secret_key" {
+  description = "S3 secret-key credential. Required when storage_backend is 's3'."
+  type        = string
+  sensitive   = true
+  default     = null
+}
+
+variable "loki_bucket" {
+  description = "Loki S3 bucket name"
+  type        = string
+  default     = "loki"
+}
+
+variable "mimir_bucket" {
+  description = "Mimir S3 bucket name"
+  type        = string
+  default     = "mimir"
+}
+
+variable "tempo_bucket" {
+  description = "Tempo S3 bucket name"
+  type        = string
+  default     = "tempo"
+}
+
+variable "s3_integrator" {
+  type = object({
+    config             = optional(map(string), {})
+    constraints        = optional(string, "arch=amd64")
+    revision           = optional(number, null)
+    storage_directives = optional(map(string), {})
+    units              = optional(number, 1)
+  })
+  default     = {}
+  description = "Application configuration shared by all S3-integrators (one deployed per coordinated worker). For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
 # -------------- # Application configurations --------------
@@ -122,15 +198,26 @@ variable "loki_coordinator" {
 
 variable "loki_worker" {
   type = object({
-    app_name           = optional(string, "loki-worker")
+    app_name    = optional(string, "loki-worker")
+    constraints = optional(string, "arch=amd64")
+    revision    = optional(number, null)
+    # Monolithic mode (role-all)
     config             = optional(map(string), {})
-    constraints        = optional(string, "arch=amd64")
-    revision           = optional(number, null)
     storage_directives = optional(map(string), {})
     units              = optional(number, 1)
+    # Distributed mode
+    backend_config             = optional(map(string), {})
+    read_config                = optional(map(string), {})
+    write_config               = optional(map(string), {})
+    backend_storage_directives = optional(map(string), {})
+    read_storage_directives    = optional(map(string), {})
+    write_storage_directives   = optional(map(string), {})
+    backend_units              = optional(number, 1)
+    read_units                 = optional(number, 1)
+    write_units                = optional(number, 1)
   })
   default     = {}
-  description = "Application configuration for the Loki worker (deployed with role-all). For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
+  description = "Application configuration for the Loki worker(s). For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
 variable "mimir_coordinator" {
@@ -148,15 +235,26 @@ variable "mimir_coordinator" {
 
 variable "mimir_worker" {
   type = object({
-    app_name           = optional(string, "mimir-worker")
+    app_name    = optional(string, "mimir-worker")
+    constraints = optional(string, "arch=amd64")
+    revision    = optional(number, null)
+    # Monolithic mode (role-all)
     config             = optional(map(string), {})
-    constraints        = optional(string, "arch=amd64")
-    revision           = optional(number, null)
     storage_directives = optional(map(string), {})
     units              = optional(number, 1)
+    # Distributed mode
+    backend_config             = optional(map(string), {})
+    read_config                = optional(map(string), {})
+    write_config               = optional(map(string), {})
+    backend_storage_directives = optional(map(string), {})
+    read_storage_directives    = optional(map(string), {})
+    write_storage_directives   = optional(map(string), {})
+    backend_units              = optional(number, 1)
+    read_units                 = optional(number, 1)
+    write_units                = optional(number, 1)
   })
   default     = {}
-  description = "Application configuration for the Mimir worker (deployed with role-all). For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
+  description = "Application configuration for the Mimir worker(s). For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
 variable "opentelemetry_collector" {
@@ -213,15 +311,35 @@ variable "tempo_coordinator" {
 
 variable "tempo_worker" {
   type = object({
-    app_name           = optional(string, "tempo-worker")
+    app_name    = optional(string, "tempo-worker")
+    constraints = optional(string, "arch=amd64")
+    revision    = optional(number, null)
+    # Monolithic mode (role-all)
     config             = optional(map(string), {})
-    constraints        = optional(string, "arch=amd64")
-    revision           = optional(number, null)
     storage_directives = optional(map(string), {})
     units              = optional(number, 1)
+    # Distributed mode
+    querier_config                       = optional(map(string), {})
+    query_frontend_config                = optional(map(string), {})
+    ingester_config                      = optional(map(string), {})
+    distributor_config                   = optional(map(string), {})
+    compactor_config                     = optional(map(string), {})
+    metrics_generator_config             = optional(map(string), {})
+    querier_storage_directives           = optional(map(string), {})
+    query_frontend_storage_directives    = optional(map(string), {})
+    ingester_storage_directives          = optional(map(string), {})
+    distributor_storage_directives       = optional(map(string), {})
+    compactor_storage_directives         = optional(map(string), {})
+    metrics_generator_storage_directives = optional(map(string), {})
+    querier_units                        = optional(number, 1)
+    query_frontend_units                 = optional(number, 1)
+    ingester_units                       = optional(number, 1)
+    distributor_units                    = optional(number, 1)
+    compactor_units                      = optional(number, 1)
+    metrics_generator_units              = optional(number, 1)
   })
   default     = {}
-  description = "Application configuration for the Tempo worker (deployed with role-all). For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
+  description = "Application configuration for the Tempo worker(s). For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
 variable "traefik" {

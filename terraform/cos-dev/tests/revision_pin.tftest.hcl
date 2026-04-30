@@ -19,6 +19,7 @@ run "user_revision_pin_is_respected" {
     mimir_worker            = { revision = 7 }
     opentelemetry_collector = { revision = 8 }
     seaweedfs               = { revision = 9 }
+    s3_integrator           = { revision = 14 }
     ssc                     = { revision = 10 }
     tempo_coordinator       = { revision = 11 }
     tempo_worker            = { revision = 12 }
@@ -68,6 +69,11 @@ run "user_revision_pin_is_respected" {
   assert {
     condition     = local.revisions.seaweedfs == 9
     error_message = "Expected seaweedfs revision 9, got ${local.revisions.seaweedfs}"
+  }
+
+  assert {
+    condition     = local.revisions.s3_integrator == 14
+    error_message = "Expected s3_integrator revision 14, got ${local.revisions.s3_integrator}"
   }
 
   assert {
@@ -139,6 +145,11 @@ run "no_pin_uses_datasource" {
   assert {
     condition     = local.revisions.seaweedfs == data.juju_charm.seaweedfs_info.revision
     error_message = "seaweedfs revision should come from datasource when no pin is set"
+  }
+
+  assert {
+    condition     = local.revisions.s3_integrator == data.juju_charm.s3_integrator_info.revision
+    error_message = "s3_integrator revision should come from datasource when no pin is set"
   }
 
   assert {

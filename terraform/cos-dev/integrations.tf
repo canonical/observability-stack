@@ -1,6 +1,8 @@
 # -------------- # Cluster integrations ---------------------
 
+# Monolithic: coordinator ↔ single all-in-one worker
 resource "juju_integration" "loki_cluster" {
+  count      = var.topology == "monolithic" ? 1 : 0
   model_uuid = var.model_uuid
 
   application {
@@ -9,12 +11,59 @@ resource "juju_integration" "loki_cluster" {
   }
 
   application {
-    name     = module.loki_worker.app_name
-    endpoint = module.loki_worker.requires.loki_cluster
+    name     = module.loki_worker[0].app_name
+    endpoint = module.loki_worker[0].requires.loki_cluster
+  }
+}
+
+# Distributed: coordinator ↔ separate backend, read, write workers
+resource "juju_integration" "loki_cluster_backend" {
+  count      = var.topology == "distributed" ? 1 : 0
+  model_uuid = var.model_uuid
+
+  application {
+    name     = module.loki_coordinator.app_name
+    endpoint = module.loki_coordinator.provides.loki_cluster
+  }
+
+  application {
+    name     = module.loki_worker_backend[0].app_name
+    endpoint = module.loki_worker_backend[0].requires.loki_cluster
+  }
+}
+
+resource "juju_integration" "loki_cluster_read" {
+  count      = var.topology == "distributed" ? 1 : 0
+  model_uuid = var.model_uuid
+
+  application {
+    name     = module.loki_coordinator.app_name
+    endpoint = module.loki_coordinator.provides.loki_cluster
+  }
+
+  application {
+    name     = module.loki_worker_read[0].app_name
+    endpoint = module.loki_worker_read[0].requires.loki_cluster
+  }
+}
+
+resource "juju_integration" "loki_cluster_write" {
+  count      = var.topology == "distributed" ? 1 : 0
+  model_uuid = var.model_uuid
+
+  application {
+    name     = module.loki_coordinator.app_name
+    endpoint = module.loki_coordinator.provides.loki_cluster
+  }
+
+  application {
+    name     = module.loki_worker_write[0].app_name
+    endpoint = module.loki_worker_write[0].requires.loki_cluster
   }
 }
 
 resource "juju_integration" "mimir_cluster" {
+  count      = var.topology == "monolithic" ? 1 : 0
   model_uuid = var.model_uuid
 
   application {
@@ -23,12 +72,58 @@ resource "juju_integration" "mimir_cluster" {
   }
 
   application {
-    name     = module.mimir_worker.app_name
-    endpoint = module.mimir_worker.requires.mimir_cluster
+    name     = module.mimir_worker[0].app_name
+    endpoint = module.mimir_worker[0].requires.mimir_cluster
+  }
+}
+
+resource "juju_integration" "mimir_cluster_backend" {
+  count      = var.topology == "distributed" ? 1 : 0
+  model_uuid = var.model_uuid
+
+  application {
+    name     = module.mimir_coordinator.app_name
+    endpoint = module.mimir_coordinator.provides.mimir_cluster
+  }
+
+  application {
+    name     = module.mimir_worker_backend[0].app_name
+    endpoint = module.mimir_worker_backend[0].requires.mimir_cluster
+  }
+}
+
+resource "juju_integration" "mimir_cluster_read" {
+  count      = var.topology == "distributed" ? 1 : 0
+  model_uuid = var.model_uuid
+
+  application {
+    name     = module.mimir_coordinator.app_name
+    endpoint = module.mimir_coordinator.provides.mimir_cluster
+  }
+
+  application {
+    name     = module.mimir_worker_read[0].app_name
+    endpoint = module.mimir_worker_read[0].requires.mimir_cluster
+  }
+}
+
+resource "juju_integration" "mimir_cluster_write" {
+  count      = var.topology == "distributed" ? 1 : 0
+  model_uuid = var.model_uuid
+
+  application {
+    name     = module.mimir_coordinator.app_name
+    endpoint = module.mimir_coordinator.provides.mimir_cluster
+  }
+
+  application {
+    name     = module.mimir_worker_write[0].app_name
+    endpoint = module.mimir_worker_write[0].requires.mimir_cluster
   }
 }
 
 resource "juju_integration" "tempo_cluster" {
+  count      = var.topology == "monolithic" ? 1 : 0
   model_uuid = var.model_uuid
 
   application {
@@ -37,19 +132,110 @@ resource "juju_integration" "tempo_cluster" {
   }
 
   application {
-    name     = module.tempo_worker.app_name
-    endpoint = module.tempo_worker.requires.tempo_cluster
+    name     = module.tempo_worker[0].app_name
+    endpoint = module.tempo_worker[0].requires.tempo_cluster
+  }
+}
+
+resource "juju_integration" "tempo_cluster_querier" {
+  count      = var.topology == "distributed" ? 1 : 0
+  model_uuid = var.model_uuid
+
+  application {
+    name     = module.tempo_coordinator.app_name
+    endpoint = "tempo-cluster"
+  }
+
+  application {
+    name     = module.tempo_worker_querier[0].app_name
+    endpoint = "tempo-cluster"
+  }
+}
+
+resource "juju_integration" "tempo_cluster_query_frontend" {
+  count      = var.topology == "distributed" ? 1 : 0
+  model_uuid = var.model_uuid
+
+  application {
+    name     = module.tempo_coordinator.app_name
+    endpoint = "tempo-cluster"
+  }
+
+  application {
+    name     = module.tempo_worker_query_frontend[0].app_name
+    endpoint = "tempo-cluster"
+  }
+}
+
+resource "juju_integration" "tempo_cluster_ingester" {
+  count      = var.topology == "distributed" ? 1 : 0
+  model_uuid = var.model_uuid
+
+  application {
+    name     = module.tempo_coordinator.app_name
+    endpoint = "tempo-cluster"
+  }
+
+  application {
+    name     = module.tempo_worker_ingester[0].app_name
+    endpoint = "tempo-cluster"
+  }
+}
+
+resource "juju_integration" "tempo_cluster_distributor" {
+  count      = var.topology == "distributed" ? 1 : 0
+  model_uuid = var.model_uuid
+
+  application {
+    name     = module.tempo_coordinator.app_name
+    endpoint = "tempo-cluster"
+  }
+
+  application {
+    name     = module.tempo_worker_distributor[0].app_name
+    endpoint = "tempo-cluster"
+  }
+}
+
+resource "juju_integration" "tempo_cluster_compactor" {
+  count      = var.topology == "distributed" ? 1 : 0
+  model_uuid = var.model_uuid
+
+  application {
+    name     = module.tempo_coordinator.app_name
+    endpoint = "tempo-cluster"
+  }
+
+  application {
+    name     = module.tempo_worker_compactor[0].app_name
+    endpoint = "tempo-cluster"
+  }
+}
+
+resource "juju_integration" "tempo_cluster_metrics_generator" {
+  count      = var.topology == "distributed" ? 1 : 0
+  model_uuid = var.model_uuid
+
+  application {
+    name     = module.tempo_coordinator.app_name
+    endpoint = "tempo-cluster"
+  }
+
+  application {
+    name     = module.tempo_worker_metrics_generator[0].app_name
+    endpoint = "tempo-cluster"
   }
 }
 
 # -------------- # SeaweedFS S3 storage -------------------
 
 resource "juju_integration" "seaweedfs_loki" {
+  count      = var.storage_backend == "seaweedfs" ? 1 : 0
   model_uuid = var.model_uuid
 
   application {
-    name     = module.seaweedfs.app_name
-    endpoint = module.seaweedfs.provides.s3
+    name     = module.seaweedfs[0].app_name
+    endpoint = module.seaweedfs[0].provides.s3
   }
 
   application {
@@ -59,11 +245,12 @@ resource "juju_integration" "seaweedfs_loki" {
 }
 
 resource "juju_integration" "seaweedfs_mimir" {
+  count      = var.storage_backend == "seaweedfs" ? 1 : 0
   model_uuid = var.model_uuid
 
   application {
-    name     = module.seaweedfs.app_name
-    endpoint = module.seaweedfs.provides.s3
+    name     = module.seaweedfs[0].app_name
+    endpoint = module.seaweedfs[0].provides.s3
   }
 
   application {
@@ -73,11 +260,59 @@ resource "juju_integration" "seaweedfs_mimir" {
 }
 
 resource "juju_integration" "seaweedfs_tempo" {
+  count      = var.storage_backend == "seaweedfs" ? 1 : 0
   model_uuid = var.model_uuid
 
   application {
-    name     = module.seaweedfs.app_name
-    endpoint = module.seaweedfs.provides.s3
+    name     = module.seaweedfs[0].app_name
+    endpoint = module.seaweedfs[0].provides.s3
+  }
+
+  application {
+    name     = module.tempo_coordinator.app_name
+    endpoint = module.tempo_coordinator.requires.s3
+  }
+}
+
+# -------------- # S3-integrator storage -------------------
+
+resource "juju_integration" "s3_integrator_loki" {
+  count      = var.storage_backend == "s3" ? 1 : 0
+  model_uuid = var.model_uuid
+
+  application {
+    name     = juju_application.s3_integrator_loki[0].name
+    endpoint = "s3-credentials"
+  }
+
+  application {
+    name     = module.loki_coordinator.app_name
+    endpoint = "s3"
+  }
+}
+
+resource "juju_integration" "s3_integrator_mimir" {
+  count      = var.storage_backend == "s3" ? 1 : 0
+  model_uuid = var.model_uuid
+
+  application {
+    name     = juju_application.s3_integrator_mimir[0].name
+    endpoint = "s3-credentials"
+  }
+
+  application {
+    name     = module.mimir_coordinator.app_name
+    endpoint = "s3"
+  }
+}
+
+resource "juju_integration" "s3_integrator_tempo" {
+  count      = var.storage_backend == "s3" ? 1 : 0
+  model_uuid = var.model_uuid
+
+  application {
+    name     = juju_application.s3_integrator_tempo[0].name
+    endpoint = "s3-credentials"
   }
 
   application {
@@ -626,3 +861,4 @@ resource "juju_integration" "traces_and_metrics_correlation" {
     endpoint = "send-datasource"
   }
 }
+
