@@ -47,7 +47,9 @@ module "loki_coordinator" {
   units              = var.loki_coordinator.units
 }
 
+# Monolithic: single all-in-one worker
 module "loki_worker" {
+  count      = var.topology == "monolithic" ? 1 : 0
   source     = "git::https://github.com/canonical/loki-operators//worker/terraform"
   depends_on = [module.loki_coordinator]
 
@@ -59,6 +61,52 @@ module "loki_worker" {
   revision           = local.revisions.loki_worker
   storage_directives = var.loki_worker.storage_directives
   units              = var.loki_worker.units
+}
+
+# Distributed: separate backend, read, and write workers
+module "loki_worker_backend" {
+  count      = var.topology == "distributed" ? 1 : 0
+  source     = "git::https://github.com/canonical/loki-operators//worker/terraform"
+  depends_on = [module.loki_coordinator]
+
+  app_name           = "${var.loki_worker.app_name}-backend"
+  channel            = local.channels.loki
+  config             = merge({ "role-backend" = "true" }, var.loki_worker.backend_config)
+  constraints        = var.loki_worker.constraints
+  model_uuid         = var.model_uuid
+  revision           = local.revisions.loki_worker
+  storage_directives = var.loki_worker.backend_storage_directives
+  units              = var.loki_worker.backend_units
+}
+
+module "loki_worker_read" {
+  count      = var.topology == "distributed" ? 1 : 0
+  source     = "git::https://github.com/canonical/loki-operators//worker/terraform"
+  depends_on = [module.loki_coordinator]
+
+  app_name           = "${var.loki_worker.app_name}-read"
+  channel            = local.channels.loki
+  config             = merge({ "role-read" = "true" }, var.loki_worker.read_config)
+  constraints        = var.loki_worker.constraints
+  model_uuid         = var.model_uuid
+  revision           = local.revisions.loki_worker
+  storage_directives = var.loki_worker.read_storage_directives
+  units              = var.loki_worker.read_units
+}
+
+module "loki_worker_write" {
+  count      = var.topology == "distributed" ? 1 : 0
+  source     = "git::https://github.com/canonical/loki-operators//worker/terraform"
+  depends_on = [module.loki_coordinator]
+
+  app_name           = "${var.loki_worker.app_name}-write"
+  channel            = local.channels.loki
+  config             = merge({ "role-write" = "true" }, var.loki_worker.write_config)
+  constraints        = var.loki_worker.constraints
+  model_uuid         = var.model_uuid
+  revision           = local.revisions.loki_worker
+  storage_directives = var.loki_worker.write_storage_directives
+  units              = var.loki_worker.write_units
 }
 
 module "mimir_coordinator" {
@@ -73,7 +121,9 @@ module "mimir_coordinator" {
   units              = var.mimir_coordinator.units
 }
 
+# Monolithic: single all-in-one worker
 module "mimir_worker" {
+  count      = var.topology == "monolithic" ? 1 : 0
   source     = "git::https://github.com/canonical/mimir-operators//worker/terraform"
   depends_on = [module.mimir_coordinator]
 
@@ -85,6 +135,52 @@ module "mimir_worker" {
   revision           = local.revisions.mimir_worker
   storage_directives = var.mimir_worker.storage_directives
   units              = var.mimir_worker.units
+}
+
+# Distributed: separate backend, read, and write workers
+module "mimir_worker_backend" {
+  count      = var.topology == "distributed" ? 1 : 0
+  source     = "git::https://github.com/canonical/mimir-operators//worker/terraform"
+  depends_on = [module.mimir_coordinator]
+
+  app_name           = "${var.mimir_worker.app_name}-backend"
+  channel            = local.channels.mimir
+  config             = merge({ "role-backend" = "true" }, var.mimir_worker.backend_config)
+  constraints        = var.mimir_worker.constraints
+  model_uuid         = var.model_uuid
+  revision           = local.revisions.mimir_worker
+  storage_directives = var.mimir_worker.backend_storage_directives
+  units              = var.mimir_worker.backend_units
+}
+
+module "mimir_worker_read" {
+  count      = var.topology == "distributed" ? 1 : 0
+  source     = "git::https://github.com/canonical/mimir-operators//worker/terraform"
+  depends_on = [module.mimir_coordinator]
+
+  app_name           = "${var.mimir_worker.app_name}-read"
+  channel            = local.channels.mimir
+  config             = merge({ "role-read" = "true" }, var.mimir_worker.read_config)
+  constraints        = var.mimir_worker.constraints
+  model_uuid         = var.model_uuid
+  revision           = local.revisions.mimir_worker
+  storage_directives = var.mimir_worker.read_storage_directives
+  units              = var.mimir_worker.read_units
+}
+
+module "mimir_worker_write" {
+  count      = var.topology == "distributed" ? 1 : 0
+  source     = "git::https://github.com/canonical/mimir-operators//worker/terraform"
+  depends_on = [module.mimir_coordinator]
+
+  app_name           = "${var.mimir_worker.app_name}-write"
+  channel            = local.channels.mimir
+  config             = merge({ "role-write" = "true" }, var.mimir_worker.write_config)
+  constraints        = var.mimir_worker.constraints
+  model_uuid         = var.model_uuid
+  revision           = local.revisions.mimir_worker
+  storage_directives = var.mimir_worker.write_storage_directives
+  units              = var.mimir_worker.write_units
 }
 
 module "opentelemetry_collector" {
@@ -99,7 +195,10 @@ module "opentelemetry_collector" {
   units              = var.opentelemetry_collector.units
 }
 
+# -------------- # SeaweedFS (storage_backend = "seaweedfs") --------------
+
 module "seaweedfs" {
+  count              = var.storage_backend == "seaweedfs" ? 1 : 0
   source             = "git::https://github.com/canonical/observability-stack//terraform/seaweedfs"
   app_name           = var.seaweedfs.app_name
   channel            = local.channels.seaweedfs
@@ -109,6 +208,126 @@ module "seaweedfs" {
   revision           = local.revisions.seaweedfs
   storage_directives = var.seaweedfs.storage_directives
   units              = var.seaweedfs.units
+}
+
+# -------------- # S3-integrators (storage_backend = "s3") --------------
+
+resource "juju_secret" "loki_s3_credentials" {
+  count      = var.storage_backend == "s3" ? 1 : 0
+  model_uuid = var.model_uuid
+  name       = "loki-s3-credentials"
+  value = {
+    access-key = var.s3_access_key
+    secret-key = var.s3_secret_key
+  }
+  info = "S3 credentials for Loki"
+}
+
+resource "juju_access_secret" "loki_s3_credentials_access" {
+  count        = var.storage_backend == "s3" ? 1 : 0
+  model_uuid   = var.model_uuid
+  applications = [juju_application.s3_integrator_loki[0].name]
+  secret_id    = juju_secret.loki_s3_credentials[0].secret_id
+}
+
+# TODO: Replace with a remote terraform module once the s3-integrator charm exposes one.
+resource "juju_application" "s3_integrator_loki" {
+  count = var.storage_backend == "s3" ? 1 : 0
+  config = merge({
+    endpoint    = var.s3_endpoint
+    bucket      = var.loki_bucket
+    credentials = "secret:${juju_secret.loki_s3_credentials[0].secret_id}"
+  }, var.s3_integrator.config)
+  constraints        = var.s3_integrator.constraints
+  model_uuid         = var.model_uuid
+  name               = "${var.loki_coordinator.app_name}-s3-integrator"
+  storage_directives = var.s3_integrator.storage_directives
+  trust              = true
+  units              = var.s3_integrator.units
+
+  charm {
+    name     = "s3-integrator"
+    channel  = local.channels.s3_integrator
+    revision = local.revisions.s3_integrator
+  }
+}
+
+resource "juju_secret" "mimir_s3_credentials" {
+  count      = var.storage_backend == "s3" ? 1 : 0
+  model_uuid = var.model_uuid
+  name       = "mimir-s3-credentials"
+  value = {
+    access-key = var.s3_access_key
+    secret-key = var.s3_secret_key
+  }
+  info = "S3 credentials for Mimir"
+}
+
+resource "juju_access_secret" "mimir_s3_credentials_access" {
+  count        = var.storage_backend == "s3" ? 1 : 0
+  model_uuid   = var.model_uuid
+  applications = [juju_application.s3_integrator_mimir[0].name]
+  secret_id    = juju_secret.mimir_s3_credentials[0].secret_id
+}
+
+resource "juju_application" "s3_integrator_mimir" {
+  count = var.storage_backend == "s3" ? 1 : 0
+  config = merge({
+    endpoint    = var.s3_endpoint
+    bucket      = var.mimir_bucket
+    credentials = "secret:${juju_secret.mimir_s3_credentials[0].secret_id}"
+  }, var.s3_integrator.config)
+  constraints        = var.s3_integrator.constraints
+  model_uuid         = var.model_uuid
+  name               = "${var.mimir_coordinator.app_name}-s3-integrator"
+  storage_directives = var.s3_integrator.storage_directives
+  trust              = true
+  units              = var.s3_integrator.units
+
+  charm {
+    name     = "s3-integrator"
+    channel  = local.channels.s3_integrator
+    revision = local.revisions.s3_integrator
+  }
+}
+
+resource "juju_secret" "tempo_s3_credentials" {
+  count      = var.storage_backend == "s3" ? 1 : 0
+  model_uuid = var.model_uuid
+  name       = "tempo-s3-credentials"
+  value = {
+    access-key = var.s3_access_key
+    secret-key = var.s3_secret_key
+  }
+  info = "S3 credentials for Tempo"
+}
+
+resource "juju_access_secret" "tempo_s3_credentials_access" {
+  count        = var.storage_backend == "s3" ? 1 : 0
+  model_uuid   = var.model_uuid
+  applications = [juju_application.s3_integrator_tempo[0].name]
+  secret_id    = juju_secret.tempo_s3_credentials[0].secret_id
+}
+
+resource "juju_application" "s3_integrator_tempo" {
+  count = var.storage_backend == "s3" ? 1 : 0
+  config = merge({
+    endpoint    = var.s3_endpoint
+    bucket      = var.tempo_bucket
+    credentials = "secret:${juju_secret.tempo_s3_credentials[0].secret_id}"
+  }, var.s3_integrator.config)
+  constraints        = var.s3_integrator.constraints
+  model_uuid         = var.model_uuid
+  name               = "${var.tempo_coordinator.app_name}-s3-integrator"
+  storage_directives = var.s3_integrator.storage_directives
+  trust              = true
+  units              = var.s3_integrator.units
+
+  charm {
+    name     = "s3-integrator"
+    channel  = local.channels.s3_integrator
+    revision = local.revisions.s3_integrator
+  }
 }
 
 module "ssc" {
@@ -135,7 +354,9 @@ module "tempo_coordinator" {
   units              = var.tempo_coordinator.units
 }
 
+# Monolithic: single all-in-one worker
 module "tempo_worker" {
+  count      = var.topology == "monolithic" ? 1 : 0
   source     = "git::https://github.com/canonical/tempo-operators//worker/terraform"
   depends_on = [module.tempo_coordinator]
 
@@ -147,6 +368,97 @@ module "tempo_worker" {
   revision           = local.revisions.tempo_worker
   storage_directives = var.tempo_worker.storage_directives
   units              = var.tempo_worker.units
+}
+
+# Distributed: separate workers per role
+module "tempo_worker_querier" {
+  count      = var.topology == "distributed" ? 1 : 0
+  source     = "git::https://github.com/canonical/tempo-operators//worker/terraform"
+  depends_on = [module.tempo_coordinator]
+
+  app_name           = "${var.tempo_worker.app_name}-querier"
+  channel            = local.channels.tempo
+  config             = merge({ "role-all" = "false", "role-querier" = "true" }, var.tempo_worker.querier_config)
+  constraints        = var.tempo_worker.constraints
+  model_uuid         = var.model_uuid
+  revision           = local.revisions.tempo_worker
+  storage_directives = var.tempo_worker.querier_storage_directives
+  units              = var.tempo_worker.querier_units
+}
+
+module "tempo_worker_query_frontend" {
+  count      = var.topology == "distributed" ? 1 : 0
+  source     = "git::https://github.com/canonical/tempo-operators//worker/terraform"
+  depends_on = [module.tempo_coordinator]
+
+  app_name           = "${var.tempo_worker.app_name}-query-frontend"
+  channel            = local.channels.tempo
+  config             = merge({ "role-all" = "false", "role-query-frontend" = "true" }, var.tempo_worker.query_frontend_config)
+  constraints        = var.tempo_worker.constraints
+  model_uuid         = var.model_uuid
+  revision           = local.revisions.tempo_worker
+  storage_directives = var.tempo_worker.query_frontend_storage_directives
+  units              = var.tempo_worker.query_frontend_units
+}
+
+module "tempo_worker_ingester" {
+  count      = var.topology == "distributed" ? 1 : 0
+  source     = "git::https://github.com/canonical/tempo-operators//worker/terraform"
+  depends_on = [module.tempo_coordinator]
+
+  app_name           = "${var.tempo_worker.app_name}-ingester"
+  channel            = local.channels.tempo
+  config             = merge({ "role-all" = "false", "role-ingester" = "true" }, var.tempo_worker.ingester_config)
+  constraints        = var.tempo_worker.constraints
+  model_uuid         = var.model_uuid
+  revision           = local.revisions.tempo_worker
+  storage_directives = var.tempo_worker.ingester_storage_directives
+  units              = var.tempo_worker.ingester_units
+}
+
+module "tempo_worker_distributor" {
+  count      = var.topology == "distributed" ? 1 : 0
+  source     = "git::https://github.com/canonical/tempo-operators//worker/terraform"
+  depends_on = [module.tempo_coordinator]
+
+  app_name           = "${var.tempo_worker.app_name}-distributor"
+  channel            = local.channels.tempo
+  config             = merge({ "role-all" = "false", "role-distributor" = "true" }, var.tempo_worker.distributor_config)
+  constraints        = var.tempo_worker.constraints
+  model_uuid         = var.model_uuid
+  revision           = local.revisions.tempo_worker
+  storage_directives = var.tempo_worker.distributor_storage_directives
+  units              = var.tempo_worker.distributor_units
+}
+
+module "tempo_worker_compactor" {
+  count      = var.topology == "distributed" ? 1 : 0
+  source     = "git::https://github.com/canonical/tempo-operators//worker/terraform"
+  depends_on = [module.tempo_coordinator]
+
+  app_name           = "${var.tempo_worker.app_name}-compactor"
+  channel            = local.channels.tempo
+  config             = merge({ "role-all" = "false", "role-compactor" = "true" }, var.tempo_worker.compactor_config)
+  constraints        = var.tempo_worker.constraints
+  model_uuid         = var.model_uuid
+  revision           = local.revisions.tempo_worker
+  storage_directives = var.tempo_worker.compactor_storage_directives
+  units              = var.tempo_worker.compactor_units
+}
+
+module "tempo_worker_metrics_generator" {
+  count      = var.topology == "distributed" ? 1 : 0
+  source     = "git::https://github.com/canonical/tempo-operators//worker/terraform"
+  depends_on = [module.tempo_coordinator]
+
+  app_name           = "${var.tempo_worker.app_name}-metrics-generator"
+  channel            = local.channels.tempo
+  config             = merge({ "role-all" = "false", "role-metrics-generator" = "true" }, var.tempo_worker.metrics_generator_config)
+  constraints        = var.tempo_worker.constraints
+  model_uuid         = var.model_uuid
+  revision           = local.revisions.tempo_worker
+  storage_directives = var.tempo_worker.metrics_generator_storage_directives
+  units              = var.tempo_worker.metrics_generator_units
 }
 
 module "traefik" {

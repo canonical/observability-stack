@@ -16,16 +16,17 @@ locals {
     traefik       = "latest"
   }
   channels = {
-    alertmanager = "${local.tracks.alertmanager}/${var.risk}"
-    catalogue    = "${local.tracks.catalogue}/${var.risk}"
-    grafana      = "${local.tracks.grafana}/${var.risk}"
-    loki         = "${local.tracks.loki}/${var.risk}"
-    mimir        = "${local.tracks.mimir}/${var.risk}"
-    otelcol      = "${local.tracks.otelcol}/${var.risk}"
-    seaweedfs    = "${local.tracks.seaweedfs}/${var.risk}"
-    ssc          = "${local.tracks.ssc}/${var.risk}"
-    tempo        = "${local.tracks.tempo}/${var.risk}"
-    traefik      = "${local.tracks.traefik}/${var.risk}"
+    alertmanager  = "${local.tracks.alertmanager}/${var.risk}"
+    catalogue     = "${local.tracks.catalogue}/${var.risk}"
+    grafana       = "${local.tracks.grafana}/${var.risk}"
+    loki          = "${local.tracks.loki}/${var.risk}"
+    mimir         = "${local.tracks.mimir}/${var.risk}"
+    otelcol       = "${local.tracks.otelcol}/${var.risk}"
+    s3_integrator = "${local.tracks.s3_integrator}/${var.risk}"
+    seaweedfs     = "${local.tracks.seaweedfs}/${var.risk}"
+    ssc           = "${local.tracks.ssc}/${var.risk}"
+    tempo         = "${local.tracks.tempo}/${var.risk}"
+    traefik       = "${local.tracks.traefik}/${var.risk}"
   }
   revisions = {
     alertmanager      = var.alertmanager.revision != null ? var.alertmanager.revision : data.juju_charm.alertmanager_info.revision
@@ -36,6 +37,7 @@ locals {
     mimir_coordinator = var.mimir_coordinator.revision != null ? var.mimir_coordinator.revision : data.juju_charm.mimir_coordinator_info.revision
     mimir_worker      = var.mimir_worker.revision != null ? var.mimir_worker.revision : data.juju_charm.mimir_worker_info.revision
     otelcol           = var.opentelemetry_collector.revision != null ? var.opentelemetry_collector.revision : data.juju_charm.otelcol_info.revision
+    s3_integrator     = var.s3_integrator.revision != null ? var.s3_integrator.revision : data.juju_charm.s3_integrator_info.revision
     seaweedfs         = var.seaweedfs.revision != null ? var.seaweedfs.revision : data.juju_charm.seaweedfs_info.revision
     ssc               = var.ssc.revision != null ? var.ssc.revision : data.juju_charm.ssc_info.revision
     tempo_coordinator = var.tempo_coordinator.revision != null ? var.tempo_coordinator.revision : data.juju_charm.tempo_coordinator_info.revision
