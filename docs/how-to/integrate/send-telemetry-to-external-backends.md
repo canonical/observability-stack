@@ -6,7 +6,7 @@ myst:
 
 # How to send logs to an external rsyslog server
 
-The [OpenTelemetry Collector Integrator](https://github.com/canonical/opentelemetry-collector-integrator-operator) charm enables you to export telemetry from Juju-managed OpenTelemetry Collector instances to backends that do not have native Juju charms. It acts as a secure configuration bridge that injects exporter configurations and manages credentials as Juju secrets.
+The [OpenTelemetry Collector Integrator](https://github.com/canonical/opentelemetry-collector-integrator-operator) charm enables you to export telemetry from charmed OpenTelemetry Collector to non-charmed backends. It acts as a configuration add-on that injects arbitrary exporter configurations, backed by Juju secrets.
 
 For metrics specifically, this provides a push-based alternative to [Prometheus federation](https://prometheus.io/docs/prometheus/latest/federation/) — instead of configuring hierarchical scrape chains, the Collector forwards metrics directly to a remote backend via any supported exporter (such as `prometheusremotewrite` or `otlp`).
 
