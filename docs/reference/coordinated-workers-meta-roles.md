@@ -1,18 +1,14 @@
 ---
 myst:
  html_meta:
-  description: "Reference for the worker roles and meta-roles available in the Mimir, Loki, and Tempo coordinated worker deployments in COS HA."
+  description: "Reference for the worker roles and meta-roles available in the Mimir, Loki, and Tempo coordinated worker deployments in COS."
 ---
 
 # Coordinated worker roles and meta-roles
 
-In COS HA, each telemetry backend (Mimir, Loki, Tempo) is deployed using the [coordinator-worker pattern](../explanation/architecture/coordinated-workers.md). Workers are configured with one or more *roles*, which determine which internal services the workload process will run.
+In COS, each telemetry backend (Mimir, Loki, Tempo) is deployed using the [coordinator-worker pattern](../explanation/architecture/coordinated-workers.md). Workers are configured with one or more *roles*, which determine which internal services the workload process will run.
 
-*Meta-roles* are named shortcuts that expand to a predefined set of roles. They allow operators to deploy common groupings of roles without having to enumerate each one individually. For example, assigning `role-write=true` to a Mimir worker is equivalent to enabling both the `distributor` and `ingester` roles.
-
-A deployment is considered:
-- **Consistent** (or coherent) when all roles in the *minimal deployment* set are covered by at least one worker unit.
-- **Recommended** when all roles in the *recommended deployment* set are covered with the suggested number of units.
+*Meta-roles* are named shortcuts that expand to a predefined set of roles. They allow operators to deploy common groupings of roles without having to enumerate each one individually. For example, setting the charm config option `role-write=true` to a Mimir worker is equivalent to enabling both the `distributor` and `ingester` roles.
 
 ---
 
