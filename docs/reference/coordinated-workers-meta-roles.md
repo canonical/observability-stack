@@ -5,11 +5,6 @@ myst:
 ---
 
 # Coordinated worker roles and meta-roles
-
-In COS, each telemetry backend (Mimir, Loki, Tempo) is deployed using the [coordinator-worker pattern](../explanation/architecture/coordinated-workers.md). Workers are configured with one or more *roles*, which determine which internal services the workload process will run.
-
-*Meta-roles* are named shortcuts that expand to a predefined set of roles. They allow operators to deploy common groupings of roles without having to enumerate each one individually. For example, setting the charm config option `role-write=true` to a Mimir worker is equivalent to enabling both the `distributor` and `ingester` roles.
-
 ---
 
 ## Mimir
@@ -81,6 +76,7 @@ Loki's microservices mode uses three top-level roles (`read`, `write`, `backend`
 | `metrics-generator` | `all` | no | 1 |
 
 ## References
+- [Grafana Mimir architecture](https://grafana.com/docs/mimir/latest/get-started/about-grafana-mimir-architecture/)
 - [Mimir components](https://grafana.com/docs/mimir/latest/references/architecture/components/)
 - [Loki components](https://grafana.com/docs/loki/latest/get-started/components/)
 - [Tempo components](https://grafana.com/docs/tempo/latest/introduction/architecture/)

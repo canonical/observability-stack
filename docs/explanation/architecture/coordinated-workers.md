@@ -15,13 +15,13 @@ This guide explains the coordinator-worker pattern in COS HA.
 The telemetry backend components in the COS stack (namely Loki, Mimir, and Tempo) are built on top of a single executable that can operate in two modes:
 
 - Monolithic mode: a single process runs all internal services. This is the mode that is used in COS Lite, where Prometheus and Loki each run as one service.
-- Microservices mode: multiple processes each run a subset of services, known as *roles*.
+- Microservices mode: multiple processes each run a subset of services. Grafana Labs calls these subsets *roles*, with named groupings called *meta-roles*.
 
 ## The coordinator-worker pattern
 
 Mimir, Loki and Tempo are charmed using two distinct charms:
 
-1. A **coordinator charm**, which acts as the single entrypoint for all communication with the cluster. It runs an nginx reverse proxy to route and load-balance requests across workers, verifies that the cluster is consistent (i.e. all required roles are deployed), and owns all rule files and dashboards. It also handles integration with the rest of COS. As a result, individual workers do not need to be related to other charms directly. The coordinator, based on its relations and current config options, determines the necessary workload config file that the workers must run and forwards it to them over relation data.
+1. A **coordinator charm**, which acts as the single entrypoint for all communication with the cluster. It runs an nginx reverse proxy (as per Grafana Labs' original design for these services) to route and load-balance requests across workers, verifies that the cluster is consistent (i.e. all required roles are deployed), and owns all rule files and dashboards. It also handles integration with the rest of COS. As a result, individual workers do not need to be related to other charms directly. The coordinator, based on its relations and current config options, determines the necessary workload config file that the workers must run and forwards it to them over relation data.
 
 1. A worker charm, which runs one or more roles as configured by the admin via a charm config option. All units of a worker charm will have the exact same role(s). Multiple worker applications can be deployed with different roles to make a full cluster.
 
