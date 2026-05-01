@@ -40,7 +40,7 @@ TODO: add a link to the tutorial.
 
 The Integrator manages secrets through a dedicated action. Secrets with characters not accepted by the Juju CLI (such as new-line), must be base64-encoded.
 
-To create a secret, use the `create-secret` action, for exmaple:
+To create a secret, use the `create-secret` action, for example:
 
 ```bash
 juju run otelcol-integrator/leader create-secret \
