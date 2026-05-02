@@ -42,7 +42,7 @@ See [COS components](/reference/cos-components).
 
 ## COS Lite
 
-A less resource-intensive flavour of COS that runs monolithic Loki and
+A resource-constrained flavour of COS that runs monolithic Loki and
 Prometheus, without Tempo. Recommended for near-edge and single-node deployments.
 See [What is COS?](/explanation/overview/what-is-cos).
 
@@ -74,6 +74,7 @@ See [What is COS?](/explanation/overview/what-is-cos).
 A Juju relation that spans two separate models. Because COS is deployed in its own model,
 CMRs are the primary mechanism by which workloads in other models — including machine
 models — send telemetry to COS.
+See [Integration matrix](/reference/integration-matrix).
 
 ## Flavour
 
@@ -92,16 +93,14 @@ per-charm host-health alerts. See [Generic alert rule groups](/explanation/alert
 Alert rules (and dashboards or scrape targets) loaded from an external git repository via
 the [COS Configuration](#cos-configuration) charm. Allows version-controlled,
 operator-defined rules outside of any charmed operator.
+See [Alert rules](/explanation/alerting/alerting-overview).
 
 ## Juju topology labels
 
 The set of metadata — model name, model UUID, application, unit, charm name — that
 uniquely identifies the source workload of a telemetry signal within a Juju-managed deployment.
-Automatically associated with all telemetry by COS charm libraries.
-
-Enables filtering and correlating telemetry by
-model or application without manual instrumentation.
-
+Automatically associated with all telemetry by COS charm libraries, enabling filtering and
+correlating telemetry by model or application without manual instrumentation.
 See [Juju topology](/explanation/architecture/juju-topology) and
 [Juju topology labels](/explanation/architecture/juju-topology-labels).
 
