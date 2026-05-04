@@ -13,7 +13,7 @@ This page is an overview of how to configure COS securely.  While COS is designe
 COS can only be as secure as what it is deployed on.  To ensure your substrate is as secure as possible, refer to any hardening guides provided by those layers.  For example, privileged users (both in Juju and the Kubernetes cluster) may be able to get shell access in the running units and inspect the file system.  It is recommended you review the following guides for hardening your substrate:
 
 * [Juju Security](https://documentation.ubuntu.com/juju/latest/user/explanation/juju-security/)
-* [Securing Charmed Kubernetes](https://ubuntu.com/kubernetes/charmed-k8s/docs/how-to-security)
+* [Securing Canonical Kubernetes](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/security/hardening/)
 
 ## Secure COS
 
@@ -51,3 +51,7 @@ For cases where:
 * unauthenticated access cannot be allowed
 
 It may be possible to secure the entire ingress with authentication.  For example, see the [basic authentication](https://charmhub.io/traefik-k8s/configurations#basic_auth_user) and [`forward_auth`](https://charmhub.io/traefik-k8s/configurations#enable_experimental_forward_auth) integrations on the Traefik charm.
+
+## Secure configuation
+Use Juju secrets where applicable. For example, the opentelemetry-collector-integrator can be used for forwarding exporter
+configuration to opentelemetry-collector. Do not pass secrets, such as token in cleartext; use Juju secrets instead.
