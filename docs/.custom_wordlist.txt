@@ -18,6 +18,7 @@ cgroup
 Charmcraft
 Charmhub
 cjk
+cleartext
 CMR
 CMRs
 config
@@ -98,6 +99,7 @@ Mem
 MetalLB
 MetricsEndpointProvider
 Microceph
+MicroCeph
 MicroK
 MicroK8s
 microservice
