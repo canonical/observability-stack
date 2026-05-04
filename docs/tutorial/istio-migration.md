@@ -8,7 +8,7 @@ For more info on Istio, you can [browse the docs](https://canonical-service-mesh
 
 * [Kubernetes](https://documentation.ubuntu.com/canonical-kubernetes/latest/)
 * [Juju](https://documentation.ubuntu.com/juju/)
-* The [Canonical Observability Stack](https://link-to-cos-docs)
+* The [Canonical Observability Stack](https://documentation.ubuntu.com/observability)
 
 ```{note}
 The Istio charms work with Microk8s out of box. If you are using Canonical Kubernetes, see [these instructions](https://canonical-service-mesh-documentation.readthedocs-hosted.com/latest/how-to/use-charmed-istio-with-canonical-kubernetes/). If you are using any other flavor of Kubernetes, see the [Istio docs](https://istio.io/latest/docs/setup/platform-setup/).
