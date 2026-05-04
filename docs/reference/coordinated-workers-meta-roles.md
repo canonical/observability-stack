@@ -5,7 +5,7 @@ myst:
 ---
 
 # Coordinated worker roles and meta-roles
----
+Worker meta-roles and roles for Mimir, Loki, and Tempo in COS HA. See the [coordinated workers explanation guide](/explanation/architecture/coordinated-workers.md) for an overview of the coordinator-worker pattern in COS.
 
 ## Mimir
 
