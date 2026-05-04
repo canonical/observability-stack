@@ -32,5 +32,5 @@ resource "juju_offer" "prometheus_metrics_endpoint" {
   name             = "prometheus-metrics-endpoint"
   model_uuid       = var.model_uuid
   application_name = module.prometheus.app_name
-  endpoints        = [module.prometheus.provides.metrics_endpoint]
+  endpoints        = [module.prometheus.requires.metrics_endpoint]
 }
