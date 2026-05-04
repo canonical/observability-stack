@@ -54,5 +54,5 @@ For cases where:
 It may be possible to secure the entire ingress with authentication.  For example, see the [basic authentication](https://charmhub.io/traefik-k8s/configurations#basic_auth_user) and [`forward_auth`](https://charmhub.io/traefik-k8s/configurations#enable_experimental_forward_auth) integrations on the Traefik charm.
 
 ## Secure configuation
-Use Juju secrets where applicable. For example, the opentelemetry-collector-integrator can be used for forwarding exporter
-configuration to opentelemetry-collector. Do not pass secrets, such as token in cleartext; use Juju secrets instead.
+Use Juju secrets where applicable. For example, the `opentelemetry-collector-integrator` can be used for forwarding exporter
+configuration to `opentelemetry-collector`. Do not pass secrets, such as token in cleartext; use Juju secrets instead.
