@@ -14,6 +14,7 @@ COS can only be as secure as what it is deployed on.  To ensure your substrate i
 
 * [Juju Security](https://documentation.ubuntu.com/juju/latest/user/explanation/juju-security/)
 * [Securing Canonical Kubernetes](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/security/hardening/)
+* [MicroCeph security overview](https://canonical-microceph.readthedocs-hosted.com/stable/explanation/security/security-overview/)
 
 ## Secure COS
 
