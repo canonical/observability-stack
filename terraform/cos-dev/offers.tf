@@ -18,12 +18,19 @@ resource "juju_offer" "loki_logging" {
   name             = "loki-logging"
   model_uuid       = var.model_uuid
   application_name = module.loki_coordinator.app_name
-  endpoints        = [module.loki_coordinator.provides.logging]
+  endpoints        = ["logging"]
 }
 
 resource "juju_offer" "mimir_receive_remote_write" {
   name             = "mimir-receive-remote-write"
   model_uuid       = var.model_uuid
   application_name = module.mimir_coordinator.app_name
-  endpoints        = [module.mimir_coordinator.provides.receive_remote_write]
+  endpoints        = ["receive-remote-write"]
+}
+
+resource "juju_offer" "tempo_tracing" {
+  name             = "tempo-tracing"
+  model_uuid       = var.model_uuid
+  application_name = module.tempo_coordinator.app_name
+  endpoints        = [module.tempo_coordinator.provides.tracing]
 }

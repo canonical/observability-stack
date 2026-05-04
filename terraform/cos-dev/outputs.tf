@@ -6,6 +6,7 @@ output "offers" {
     grafana_dashboards           = juju_offer.grafana_dashboards
     loki_logging                 = juju_offer.loki_logging
     mimir_receive_remote_write   = juju_offer.mimir_receive_remote_write
+    tempo_tracing                = juju_offer.tempo_tracing
   }
   description = "All Juju offers which are exposed by this product module"
 }
