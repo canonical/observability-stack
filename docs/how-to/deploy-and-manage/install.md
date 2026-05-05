@@ -75,8 +75,25 @@ You should bootstrap a dedicated Juju controller and model just for COS.
 ## Create Terraform plan
 
 ```hcl
-module ... { ... }
+resource "juju_model" "cos" {
+  name = "cos"
+}
+
+module "cos" {
+  source = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=tf-cos-3.0.n"
+  risk         = "stable"
+  model_uuid   = juju_model.cos.uuid
+  s3_endpoint   = "http://IP_ADDRESS:PORT"
+  s3_secret_key = "REPLACE_ME"
+  s3_access_key = "REPLACE_ME"
+}
 ```
+
+where `.n` in `tf-cos-3.0.n` is the latest available patch version in the [COS tags](https://github.com/canonical/observability-stack/tags) list.
+
+### Revision pins
+
+Deploying COS without revision pins, per component, will deploy the latest charms revisions in-track. Any subsequent Terraform plans will experience the same behaviour i.e., keeping COS up-to-date. However, if you require more stability, it is advised to pin the charm revisions of all components.
 
 ## Deploy COS Alerter
 
