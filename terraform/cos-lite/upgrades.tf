@@ -35,3 +35,9 @@ data "juju_charm" "grafana_info" {
   channel = var.channel
   base    = "ubuntu@24.04"
 }
+
+data "juju_charm" "traefik_info" {
+  charm   = "traefik-k8s"
+  channel = var.traefik.channel
+  base    = "ubuntu@24.04"
+}
