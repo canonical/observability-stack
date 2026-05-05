@@ -58,8 +58,8 @@ variable "cloud" {
   type        = string
   default     = "self-managed"
   validation {
-    condition     = contains(local.clouds, var.cloud) 
-    error_message = "Allowed values are: ${join(", ", local.clouds)}."
+    condition     = contains(["aws", "self-managed"], var.cloud)
+    error_message = "Allowed values are: aws, self-managed."
   }
 }
 
