@@ -33,6 +33,8 @@ A dedicated Alertmanager instance deployed **outside** the COS model to receive 
 heartbeat alert from COS. Fires when the heartbeat stops, signalling that COS's own
 alerting pipeline has failed. See [Topology](/reference/topology).
 
+(cos-configuration)=
+
 ## COS Configuration
 
 A [peripheral charm](#peripheral-charm) that clones a git repository (via a `git-sync`
@@ -115,6 +117,8 @@ and relation-driven. See [Design goals](/explanation/architecture/design-goals).
 A mechanism by which Kubernetes charm workloads stream logs from their Pebble-managed
 processes directly to a Loki push endpoint, without a sidecar scraping agent.
 See [Telemetry collection](/explanation/telemetry/telemetry-collection).
+
+(peripheral-charm)=
 
 ## Peripheral charm
 
