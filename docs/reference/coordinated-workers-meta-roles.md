@@ -20,7 +20,7 @@ Worker meta-roles and roles for Mimir, Loki, and Tempo in COS HA. See the [coord
 
 ### Roles
 
-| Role | Part of meta-role | Min. deployment | Recommended units |
+| Role | Part of meta-role | Required | Recommended units |
 |---|---|:---:|:---:|
 | `compactor` | `backend`, `all` | yes | 1 |
 | `distributor` | `write`, `all` | yes | 1 |
@@ -48,7 +48,7 @@ Loki's microservices mode uses three top-level roles (`read`, `write`, `backend`
 
 ### Roles
 
-| Role | Part of meta-role | Min. deployment | Recommended units |
+| Role | Part of meta-role | Required | Recommended units |
 |---|---|:---:|:---:|
 | `read` | `all` | yes | 3 |
 | `write` | `all` | yes | 3 |
@@ -66,7 +66,7 @@ Loki's microservices mode uses three top-level roles (`read`, `write`, `backend`
 
 ### Roles
 
-| Role | Part of meta-role | Min. deployment | Recommended units |
+| Role | Part of meta-role | Required | Recommended units |
 |---|---|:---:|:---:|
 | `querier` | `all` | yes | 1 |
 | `query-frontend` | `all` | yes | 1 |
