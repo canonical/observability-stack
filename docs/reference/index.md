@@ -80,3 +80,13 @@ over time.
 
 Lifecycle <lifecycle>
 ```
+
+## Glossary
+
+Definitions of terms and concepts specific to COS and Charmed Observability.
+
+```{toctree}
+:maxdepth: 1
+
+Glossary <glossary>
+```

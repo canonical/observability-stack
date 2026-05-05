@@ -14,6 +14,8 @@ Review the documentation for clarity, completeness, and accuracy.
 - Section headers and index entries should all use sentence case (not title case).
 - Known product names should be capitalized consistently throughout the documentation.
 - Spelling according to US English conventions.
+- Changes in docs should be reflected in the glossary, if the changes are related to terms/concepts that are unique to
+  COS or charmed observability (don't redefine all/general terms).
 
 ## Context
 
