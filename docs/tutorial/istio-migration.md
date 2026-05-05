@@ -1,4 +1,4 @@
-# Migrating from Traefik to Istio
+# How to migrate from Traefik to Istio
 
 In this guide, you will learn how to migrate the Canonical Observability Stack from using Traefik as its ingress to
 using Istio. Istio is a service mesh which allows you to secure and control all the network traffic on your cluster.
