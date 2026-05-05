@@ -21,8 +21,8 @@ locals {
     grafana      = "${local.tracks.grafana}/${var.risk}"
     loki         = "${local.tracks.loki}/${var.risk}"
     prometheus   = "${local.tracks.prometheus}/${var.risk}"
-    ssc          = "${local.tracks.ssc}/stable"
-    traefik      = "${local.tracks.traefik}/stable"
+    ssc          = "${local.tracks.ssc}/${var.risk}"
+    traefik      = "${local.tracks.traefik}/${var.risk}"
   }
   revisions = {
     alertmanager = var.alertmanager.revision != null ? var.alertmanager.revision : data.juju_charm.alertmanager_info.revision

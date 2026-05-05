@@ -29,10 +29,10 @@ locals {
     loki          = "${local.tracks.loki}/${var.risk}"
     mimir         = "${local.tracks.mimir}/${var.risk}"
     otelcol       = "${local.tracks.otelcol}/${var.risk}"
-    s3_integrator = "${local.tracks.s3_integrator}/stable"
-    ssc           = "${local.tracks.ssc}/stable"
+    s3_integrator = "${local.tracks.s3_integrator}/${var.risk}"
+    ssc           = "${local.tracks.ssc}/${var.risk}"
     tempo         = "${local.tracks.tempo}/${var.risk}"
-    traefik       = "${local.tracks.traefik}/stable"
+    traefik       = "${local.tracks.traefik}/${var.risk}"
   }
   revisions = {
     alertmanager      = var.alertmanager.revision != null ? var.alertmanager.revision : data.juju_charm.alertmanager_info.revision
