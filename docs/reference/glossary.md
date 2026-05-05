@@ -122,34 +122,7 @@ A charm that integrates with COS but is not part of its core stack — e.g. COS
 Configuration, COS Proxy, Blackbox Exporter, Prometheus Scrape Config.
 See [COS components](/reference/cos-components).
 
-## Remote-write
-
-The push-based protocol by which metrics are sent from an OpenTelemetry Collector or
-Grafana Agent to Mimir or Prometheus (`prometheus_remote_write` relation/interface).
-The primary delivery path for metrics from machine workloads and OTel pipelines in COS.
-See [Telemetry collection](/explanation/telemetry/telemetry-collection).
-
-## Rock
-
-A Canonical OCI container image built with [`rockcraft`](https://documentation.ubuntu.com/rockcraft/en/latest/),
-used as the workload image for COS charms. Published under the `ubuntu/` prefix.
-See [COS components](/reference/cos-components).
-
-## Scrape job
-
-A named configuration block telling Prometheus or OpenTelemetry Collector which target to
-poll, at what interval, and which labels to attach. COS charm libraries generate and manage
-scrape jobs automatically when charms relate over `prometheus_scrape`, injecting
-[Juju topology labels](#juju-topology-labels).
-See [Telemetry labels](/explanation/telemetry/telemetry-labels).
-
 ## Self-monitoring
 
 The capability of COS to observe its own components using the same stack it operates.
 See [What is COS?](/explanation/overview/what-is-cos).
-
-## Substrate
-
-The environment type a charm targets: `k8s` (Kubernetes) or `machine` (bare-metal/VM).
-Integration patterns and available [peripheral charms](#peripheral-charm) differ by
-substrate. See [Integration matrix](/reference/integration-matrix).
