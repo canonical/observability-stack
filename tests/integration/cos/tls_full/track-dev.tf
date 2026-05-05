@@ -44,7 +44,7 @@ module "ssc" {
 }
 
 module "cos" {
-  source                          = "git::https://github.com/canonical/observability-stack//terraform/cos"
+  source                          = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=test/ci"
   model_uuid                      = data.juju_model.cos-model.uuid
   risk                            = "edge"
   internal_tls                    = true
