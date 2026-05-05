@@ -458,6 +458,8 @@ resource "juju_integration" "traefik_receive_ca_certificate" {
     name     = module.traefik.app_name
     endpoint = module.traefik.endpoints.receive_ca_cert
   }
+
+  lifecycle { replace_triggered_by = [terraform_data.traefik_revision] }
 }
 
 # -------------- # Provided by an external CA --------------
