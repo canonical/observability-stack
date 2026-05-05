@@ -21,7 +21,7 @@ for example:
 curl -sf localhost:8080/metrics | grep -v "^# " | wc -l
 ```
 
-This will give you the number of timeseries that will be created for the workload, per unit.
+This will give you the number of time series that will be created for the workload, per unit.
 
 Another option is to deploy a temporary pilot Prometheus charm.
 
