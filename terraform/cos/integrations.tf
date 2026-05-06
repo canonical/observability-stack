@@ -113,8 +113,8 @@ resource "juju_integration" "otelcol_metrics_endpoint" {
   }
 }
 
-
 # -------------- # Grafana Source Integrations --------------
+
 resource "juju_integration" "grafana_sources" {
   for_each = {
     alertmanager = {
@@ -154,6 +154,14 @@ resource "juju_integration" "grafana_sources" {
 
 resource "juju_integration" "otelcol_logging_provider" {
   for_each = {
+    alertmanager = {
+      app_name = module.alertmanager.app_name
+      endpoint = module.alertmanager.requires.logging
+    }
+    grafana = {
+      app_name = module.grafana.app_name
+      endpoint = module.grafana.requires.logging
+    }
     mimir = {
       app_name = module.mimir.app_names.mimir_coordinator
       endpoint = module.mimir.requires.logging_consumer
@@ -179,6 +187,7 @@ resource "juju_integration" "otelcol_logging_provider" {
     endpoint = module.opentelemetry_collector.provides.receive_loki_logs
   }
 }
+
 # -------- Provided by Alertmanager --------------
 
 resource "juju_integration" "alerting" {
