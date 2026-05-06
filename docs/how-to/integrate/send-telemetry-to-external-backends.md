@@ -28,8 +28,8 @@ end
 
 opentelemetry-collector -.-|"syslog/rfc5424"| non-charmed[Non-charmed e.g. rsyslog]
 
-juju-config@{ shape: braces, label: "Admin config<br> for rsyslog" } -.->|juju config| opentelemetry-collector-integrator
-juju-action@{ shape: braces, label: "Optional secrets<br> for rsyslog" } -.->|juju run| opentelemetry-collector-integrator
+juju-config@{ shape: braces, label: "Admin config<br> for rsyslog" } -.->|juju config\nconfig_yaml| opentelemetry-collector-integrator
+juju-action@{ shape: braces, label: "Optional secrets<br> for rsyslog" } -.->|juju run\ncreate-secret| opentelemetry-collector-integrator
 ```
 
 The Integrator injects a syslog exporter and a transform processor into the Collector's logs pipeline. Once the `external-config` integration is established, the Collector automatically merges the injected configuration and begins forwarding logs.
