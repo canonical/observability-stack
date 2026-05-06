@@ -6,7 +6,7 @@ myst:
 
 # How to send logs to non-charmed backends
 
-The [OpenTelemetry Collector Integrator](https://github.com/canonical/opentelemetry-collector-integrator-operator) charm enables you to export telemetry from charmed OpenTelemetry Collector to non-charmed backends. It acts as a configuration add-on that injects arbitrary exporter configurations, backed by Juju secrets.
+The [OpenTelemetry Collector Integrator](https://github.com/canonical/opentelemetry-collector-integrator-operator) charm enables exporting telemetry from the charmed OpenTelemetry Collector to non-charmed backends. It acts as a configuration add-on that injects arbitrary exporter configurations, backed by Juju secrets.
 
 This removes the need for [Prometheus federation](https://prometheus.io/docs/prometheus/latest/federation/) or similar other solutions.
 
