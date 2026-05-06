@@ -19,7 +19,7 @@ In this tutorial you deploy a single-node COS Lite appliance, backed by hostPath
 - K8s cloud added to Juju ([doc](https://documentation.ubuntu.com/juju/3.6/howto/manage-clouds/#add-a-kubernetes-cloud)).
 
 
-## Deploy COS Lite with Terraform
+## Deploy COS Lite using Terraform
 
 To deploy the COS Lite solution in a model named `cos-lite`, create this root module:
 
