@@ -128,4 +128,4 @@ Obtain the Grafana admin password,
 juju run grafana/leader get-admin-password
 ```
 
-then head over to the URL listed in the outputm and use the provided password to log in.
+then head over to the URL listed in the output and use the provided password to log in.
