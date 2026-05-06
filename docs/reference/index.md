@@ -80,3 +80,23 @@ over time.
 
 Lifecycle <lifecycle>
 ```
+
+## Glossary
+
+Definitions of terms and concepts specific to COS and Charmed Observability.
+
+```{toctree}
+:maxdepth: 1
+
+Glossary <glossary>
+```
+
+## Coordinated workers roles & meta-roles
+
+Roles and meta-roles used in the coordinated workers.
+
+```{toctree}
+:maxdepth: 1
+
+Coordinated workers roles & meta-roles <coordinated-workers-meta-roles>
+ ```
