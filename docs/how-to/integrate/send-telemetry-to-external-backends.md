@@ -164,7 +164,7 @@ App                 Version  Status   Scale  Charm                              
 otelcol-integrator           active       1  opentelemetry-collector-integrator  latest/edge      3  no       Pipelines: logs configured
 ```
 
-If the charm shows `blocked`, check `juju debug-log --include otelcol-integrator` for validation errors in your YAML or pipeline configuration.
+If the charm shows `blocked`, check `juju debug-log --include otelcol-integrator --replay` for validation errors in your YAML or pipeline configuration.
 
 ## Step 5: Integrate the Collector with the Integrator
 
