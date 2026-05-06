@@ -21,10 +21,15 @@ In this tutorial you deploy a single-node COS Lite appliance, backed by hostPath
 
 ## Deploy COS Lite using Terraform
 
-To deploy the COS Lite solution in a model named `cos-lite`, create this root module:
+To deploy the COS Lite solution, create this root module and set the `model` to `cos-lite`:
 
+```{literalinclude} ../../tests/integration/cos_lite/tls_internal/track-dev.tf
+```
 
-```{literalinclude} cos-lite.tf
+```{dropdown} Customize COS Lite
+You can customize the deployment of COS Lite by overriding the defaults of these variables:
+
+```{literalinclude} ../../terraform/cos-lite/variables.tf
 ```
 
 Then, use terraform to deploy the module:
