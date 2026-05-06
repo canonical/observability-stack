@@ -30,7 +30,7 @@ variable "s3_access_key" {
 }
 
 module "cos" {
-  source       = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=track/2"
+  source       = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=fix/backport-tf-data-traefik-revision"
   model_uuid   = data.juju_model.model.uuid
   channel      = "2/stable"
   internal_tls = true

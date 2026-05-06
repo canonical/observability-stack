@@ -32,11 +32,10 @@ module "ssc" {
 }
 
 module "cos-lite" {
-  source                          = "git::https://github.com/canonical/observability-stack//terraform/cos-lite"
+  source                          = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=test/ci"
   model_uuid                      = data.juju_model.cos-model.uuid
   risk                            = "edge"
   internal_tls                    = true
   external_certificates_offer_url = "admin/${var.ca_model}.certificates"
   external_ca_cert_offer_url      = "admin/${var.ca_model}.send-ca-cert"
 }
-
