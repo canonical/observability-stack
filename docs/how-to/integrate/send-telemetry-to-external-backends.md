@@ -61,7 +61,7 @@ Wait for it to settle:
 juju status --watch 2s
 ```
 
-The Integrator enters `blocked` status until you provide a valid configuration with at least one pipeline enabled. This is expected.
+The Integrator enters `blocked` status until you provide a valid configuration with at least one pipeline enabled.
 
 ## Step 2: Create a Juju secret with TLS certificates
 
