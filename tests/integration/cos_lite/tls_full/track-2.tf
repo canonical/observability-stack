@@ -32,7 +32,7 @@ module "ssc" {
 }
 
 module "cos-lite" {
-  source                          = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=fix/backport-tf-data-traefik-revision"
+  source                          = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=track/2"
   model_uuid                      = data.juju_model.cos-model.uuid
   channel                         = "2/stable"
   internal_tls                    = true
