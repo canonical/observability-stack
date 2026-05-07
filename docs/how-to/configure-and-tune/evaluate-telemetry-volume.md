@@ -11,6 +11,21 @@ In order to correctly size the VM(s) needed for COS, you need to know how much t
 
 
 ## Metrics rate
+
+### Manual evaluation
+Find out the metrics endpoint manifest for each observed workload. If it is not documented,
+you will need to manually count the number of non-comment lines served on the metrics endpoint,
+for example:
+
+```bash
+curl -sf localhost:8080/metrics | grep -v "^# " | wc -l
+```
+
+This will give you the number of time series that will be created for the workload, per unit.
+
+Another option is to deploy a temporary pilot Prometheus charm.
+
+### With charmed Prometheus
 Have your deployment sending all metrics to Prometheus (or Mimir) and inspect the 48hr plot for `count({__name__=~".+"})`.
 The raw data can also be obtained by querying the Prometheus `query` endpoint directly:
 
@@ -36,8 +51,13 @@ load[load generator] ---|db| postgresql
 postgresql ---|metrics-endpoint| prometheus
 ```
 
-
 ## Logs rate
+### Manual evaluation
+The most reliable way to evaluate the logging rate of a workload is with load tests.
+
+Another option is to deploy temporary pilot Loki and Prometheus charms.
+
+### With charmed Loki and Prometheus
 Have your deployment sending all logs to Loki, and inspect the 48hr plot for `loki_distributor_*_received_total`:
 
 ```
