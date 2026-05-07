@@ -55,12 +55,6 @@ Deploy the Integrator charm into the same model where `otelcol` is running:
 juju deploy opentelemetry-collector-integrator otelcol-integrator --channel latest/edge
 ```
 
-Wait for it to settle:
-
-```bash
-juju status --watch 2s
-```
-
 The Integrator enters `blocked` status until you provide a valid configuration with at least one pipeline enabled.
 
 ## Step 2: Create a Juju secret with TLS certificates
