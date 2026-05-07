@@ -8,25 +8,34 @@ terraform {
   }
 }
 
+variable "ca_model" { type = string }
+variable "cos_model" { type = string }
 variable "s3_endpoint" { type = string }
 variable "s3_secret_key" { type = string }
 variable "s3_access_key" { type = string }
 
-resource "juju_model" "ca" { name = "ca" }
-resource "juju_model" "cos" { name = "cos" }
+data "juju_model" "ca-model" {
+  name  = var.ca_model
+  owner = "admin"
+}
+
+data "juju_model" "cos-model" {
+  name  = var.cos_model
+  owner = "admin"
+}
 
 module "ssc" {
   source     = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
-  model_uuid = juju_model.ca.uuid
+  model_uuid = data.juju_model.ca-model.uuid
 }
 
 module "cos" {
   source                          = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=track/2"
-  model_uuid                      = juju_model.cos.uuid
+  model_uuid                      = data.juju_model.cos-model.uuid
   channel                         = "2/stable"
   internal_tls                    = false
-  external_certificates_offer_url = "admin/${juju_model.ca.name}.certificates"
-  external_ca_cert_offer_url      = "admin/${juju_model.ca.name}.send-ca-cert"
+  external_certificates_offer_url = "admin/${var.ca_model}.certificates"
+  external_ca_cert_offer_url      = "admin/${var.ca_model}.send-ca-cert"
 
   s3_endpoint   = var.s3_endpoint
   s3_secret_key = var.s3_secret_key

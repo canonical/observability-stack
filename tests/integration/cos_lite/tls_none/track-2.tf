@@ -8,11 +8,15 @@ terraform {
   }
 }
 
-resource "juju_model" "cos" { name = "cos-lite" }
+variable "model" { type = string }
+data "juju_model" "model" {
+  name  = var.model
+  owner = "admin"
+}
 
 module "cos-lite" {
   source       = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=track/2"
-  model_uuid   = juju_model.cos.uuid
+  model_uuid   = data.juju_model.model.uuid
   channel      = "2/stable"
   internal_tls = false
 }

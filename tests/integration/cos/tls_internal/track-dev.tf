@@ -8,15 +8,20 @@ terraform {
   }
 }
 
+variable "model" { type = string }
 variable "s3_endpoint" { type = string }
 variable "s3_secret_key" { type = string }
 variable "s3_access_key" { type = string }
 
-resource "juju_model" "cos" { name = "cos" }
+data "juju_model" "model" {
+  name  = var.model
+  owner = "admin"
+}
 
+# [docs:cos]
 module "cos" {
   source       = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=fix/remove-traefik-patch"
-  model_uuid   = juju_model.cos.uuid
+  model_uuid   = data.juju_model.model.uuid
   risk         = "edge"
   internal_tls = true
 

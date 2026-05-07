@@ -14,19 +14,19 @@ TRACK_2_TF_FILE = Path(__file__).parent.resolve() / "track-2.tf"
 TRACK_DEV_TF_FILE = Path(__file__).parent.resolve() / "track-dev.tf"
 
 
-def test_deploy_from_track_2(tf_manager, cos_lite_model: jubilant.Juju):
+def test_deploy_from_track_2(tf_manager, cos_model: jubilant.Juju):
     # GIVEN a module deployed from track 2
     tf_manager.init(TRACK_2_TF_FILE)
-    tf_manager.apply()
-    wait_for_active_idle_without_error([cos_lite_model], timeout=60 * 60)
-    catalogue_apps_are_reachable(cos_lite_model)
+    tf_manager.apply(model=cos_model.model)
+    wait_for_active_idle_without_error([cos_model], timeout=60 * 60)
+    catalogue_apps_are_reachable(cos_model)
 
 
-def test_deploy_to_track_dev(tf_manager, cos_lite_model: jubilant.Juju):
+def test_deploy_to_track_dev(tf_manager, cos_model: jubilant.Juju):
     # WHEN upgraded to track dev
     tf_manager.init(TRACK_DEV_TF_FILE)
-    tf_manager.apply()
+    tf_manager.apply(model=cos_model.model)
 
     # THEN the model is upgraded and is healthy
-    wait_for_active_idle_without_error([cos_lite_model])
-    catalogue_apps_are_reachable(cos_lite_model)
+    wait_for_active_idle_without_error([cos_model])
+    catalogue_apps_are_reachable(cos_model)
