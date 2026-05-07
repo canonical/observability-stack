@@ -1,62 +1,74 @@
-name: Test the Terraform product module
-run-name: Deploy ${{ inputs.product }} on ${{ inputs.runner }}
+name: Deploy COS
+run-name: Deploy COS (scale=${{ inputs.scale }}, storage=${{ inputs.storage }})
 
 on:
-  workflow_dispatch:
-    inputs:
-      product:
-        description: 'The name of the Terraform product module to test.'
-        required: true
-        type: choice
-        default: cos
-        options:
-        - cos
-        - cos_lite
-        - cos_dev
-      runner:
-        description: 'The runner label to use for the job.'
-        type: choice
-        default: ubuntu-latest
-        options:
-        - ubuntu-latest
-        - self-hosted-linux-amd64-noble-large
-        - self-hosted-linux-amd64-noble-xlarge
-        - self-hosted-linux-amd64-noble-2xlarge
   workflow_call:
     inputs:
-      product:
+      scale:
+        description: "COS scale mode: monolithic (single role-all worker) or distributed (separate backend/read/write workers)"
         required: true
         type: string
+      storage:
+        description: "S3 storage backend: seaweedfs or ceph"
+        required: true
+        type: string
+      cos-model:
+        description: "Name of the Juju model to deploy COS into"
+        required: false
+        type: string
+        default: cos
+      juju-channel:
+        description: "Juju snap channel"
+        required: false
+        type: string
+        default: "3.6/stable"
       runner:
+        description: "Runner label"
+        required: false
         type: string
         default: ubuntu-latest
+    outputs:
+      cos-model:
+        description: "Name of the Juju model where COS was deployed"
+        value: ${{ jobs.deploy.outputs.cos-model }}
 
 jobs:
-  terraform-test:
-    name: Test product module
+  deploy:
+    name: Deploy COS (scale=${{ inputs.scale }}, storage=${{ inputs.storage }})
     runs-on: ${{ inputs.runner }}
-    strategy:
-      fail-fast: false
-      matrix:
-        juju-channel: ["3.6/stable"]
-        scenario: ${{ fromJSON(inputs.product == 'cos_dev' && '["tls_internal", "tls_none"]' || '["tls_full", "tls_external", "tls_internal", "tls_none"]') }}
+    outputs:
+      cos-model: ${{ inputs.cos-model }}
     steps:
-      - name: Checkout
+      - name: Validate inputs
+        run: |
+          case "${{ inputs.scale }}" in
+            monolithic|distributed) ;;
+            *) echo "Unknown scale: ${{ inputs.scale }}. Must be 'monolithic' or 'distributed'."; exit 1 ;;
+          esac
+          case "${{ inputs.storage }}" in
+            seaweedfs|ceph) ;;
+            *) echo "Unknown storage: ${{ inputs.storage }}. Must be 'seaweedfs' or 'ceph'."; exit 1 ;;
+          esac
+
+      - name: Checkout observability-stack
         uses: actions/checkout@v4
+        with:
+          repository: canonical/observability-stack
+          ref: feat/cos-dev
+
+      # --- Infrastructure setup ---
       - name: Concierge prepare
         if: ${{ runner.environment == 'github-hosted' }}
         run: |
           sudo snap install concierge --classic
-          sudo concierge prepare --juju-channel ${{ matrix.juju-channel }} -p microk8s --extra-snaps just,astral-uv,terraform
+          sudo concierge prepare --juju-channel ${{ inputs.juju-channel }} -p microk8s --extra-snaps terraform
 
-      # Setup for Self-hosted (PS7) runners
       - name: Install snaps
         if: ${{ runner.environment == 'self-hosted' }}
         run: |
-          sudo snap install juju --classic --channel=${{ matrix.juju-channel }}
-          sudo snap install just --classic
-          sudo snap install astral-uv --classic
+          sudo snap install juju --classic --channel=${{ inputs.juju-channel }}
           sudo snap install terraform --classic
+
       - name: (IS hosted) Configure microk8s Docker Hub mirror
         timeout-minutes: 10
         if: ${{ runner.environment == 'self-hosted' }}
@@ -64,8 +76,6 @@ jobs:
           sudo snap install microk8s --channel "1.34-strict/stable" --classic
           sudo adduser "$USER" snap_microk8s
 
-          # Wait for microk8s to populate iptables
-          # https://chat.canonical.com/canonical/pl/jo5cg6wqjjrudqd5ybj6hhttee
           until sudo iptables --list | grep -q -i "microk8s"
           do
             echo "MicroK8s has not yet configured iptables."
@@ -79,15 +89,13 @@ jobs:
           EOF
           sudo microk8s stop
           sudo microk8s start
+
       - name: Set up microk8s
-        id: microk8s-setup
         timeout-minutes: 15
         if: ${{ runner.environment == 'self-hosted' }}
         run: |
           sudo apt-get update
           sudo apt-get install retry -y
-
-          # `newgrp` does not work in GitHub Actions; use `sudo --user` instead
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable dns
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
@@ -98,28 +106,24 @@ jobs:
           IPADDR=$(ip -4 -j route get 2.2.2.2 | sed -n -e 's/^.*prefsrc\":"\([^ "]*\).*/\1/p')
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable "metallb:$IPADDR-$IPADDR"
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable ingress
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable rbac
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable registry
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
 
           mkdir ~/.kube/
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s config | sudo tee ~/.kube/config > /dev/null
-      - name: Set up environment
+
+      - name: Set up Juju environment
         timeout-minutes: 15
         if: ${{ runner.environment == 'self-hosted' }}
         run: |
-          mkdir -p ~/.local/share/juju  # Workaround for juju 3 strict snap
+          mkdir -p ~/.local/share/juju
           sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- juju bootstrap microk8s --config model-logs-size=10G microk8s
           juju model-defaults logging-config='<root>=INFO; unit=DEBUG'
 
-      # Runner-independent setup
-      - name: Install and configure microceph
-        if: ${{ inputs.product == 'cos' }}
+      # --- S3 storage backend ---
+      - name: Install and configure MicroCeph
+        if: ${{ inputs.storage == 'ceph' }}
         run: |
-          # https://github.com/canonical/microceph-action/blob/main/microceph.sh
           function check_ceph_ok_or_exit () {
               i=0
               for i in {1..5}; do
@@ -147,12 +151,34 @@ jobs:
           sudo microceph.radosgw-admin user create --uid=user --display-name=User
           sudo microceph.radosgw-admin key create --uid=user --key-type=s3 --access-key=access-key --secret-key=secret-key
 
-      - name: Test deployment
+          echo "S3_ENDPOINT=http://$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc'):8080" >> "$GITHUB_ENV"
+          echo "S3_ACCESS_KEY=access-key" >> "$GITHUB_ENV"
+          echo "S3_SECRET_KEY=secret-key" >> "$GITHUB_ENV"
+
+      # --- Create model and deploy COS ---
+      - name: Create Juju model
         run: |
-          if [[ "${{ inputs.product }}" != "cos_dev" ]]; then
-            S3_ENDPOINT=http://$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc'):8080
-            export S3_ENDPOINT
-            export S3_ACCESS_KEY=access-key
-            export S3_SECRET_KEY=secret-key
+          juju add-model ${{ inputs.cos-model }}
+
+      - name: Deploy COS
+        run: |
+          MODEL_UUID=$(juju show-model ${{ inputs.cos-model }} --format json | jq -r '.["${{ inputs.cos-model }}"]["model-uuid"]')
+
+          if [[ "${{ inputs.storage }}" == "ceph" ]]; then
+            export TF_VAR_storage_backend=s3
+            export TF_VAR_s3_endpoint="${S3_ENDPOINT}"
+            export TF_VAR_s3_access_key="${S3_ACCESS_KEY}"
+            export TF_VAR_s3_secret_key="${S3_SECRET_KEY}"
+          else
+            export TF_VAR_storage_backend=seaweedfs
           fi
-          just integration ${{ inputs.product }}/${{ matrix.scenario }}
+
+          cd terraform/cos-dev
+          terraform init
+          terraform apply -auto-approve \
+            -var="model_uuid=${MODEL_UUID}" \
+            -var="topology=${{ inputs.scale }}"
+
+      - name: Wait for deployment
+        run: |
+          juju wait-for model ${{ inputs.cos-model }} --timeout 30m --query 'forEach(applications, app => app.status == "active")'
