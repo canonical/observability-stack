@@ -42,19 +42,6 @@ class TfDirManager:
         subprocess.run(shlex.split(cmd_str), check=True)
 
 
-def refresh_o11y_apps(juju: jubilant.Juju, channel: str, base: Optional[str] = None):
-    """Temporary workaround for the issue:
-
-    FIXME: https://github.com/juju/terraform-provider-juju/issues/967
-    """
-    for app in juju.status().apps:
-        if app in {"traefik", "ca"}:
-            continue
-        if "s3-integrator" in app:
-            continue
-        juju.refresh(app, channel=channel, base=base)
-
-
 def wait_for_active_idle_without_error(
     jujus: List[jubilant.Juju], timeout: int = 60 * 45
 ):
@@ -99,3 +86,11 @@ def catalogue_apps_are_reachable(
             continue
         response = urlopen(url, data=None, timeout=2.0, context=tls_context)
         assert response.code == 200, f"{app} was not reachable"
+
+
+def no_errors_in_otelcol_logs(juju: jubilant.Juju):
+    # By default, no debug exporters have been configured and otelcol logs at the WARN level
+    # Thus, there should be no logs outputted if otelcol is operating correctly
+    # TODO: Should I grep for "WARN" or "ERROR"?
+    stdout = juju.ssh("otelcol/0", "pebble logs", container="otelcol")
+    assert not stdout
