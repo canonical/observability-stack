@@ -59,11 +59,11 @@ class TfDirManager:
             return True
         # Exit code 1 means error
         raise subprocess.CalledProcessError(result.returncode, plan_cmd)
-    # TODO: Rename to apps_to_replace
+
     def apps_to_replace(self, destroys: List[str], **kwargs):
         plan = self.plan_json(**kwargs)
         destroy_plan_apps = [
-            rc["address"]
+            rc["address"].split(".")[-1]
             for rc in plan.get("resource_changes", [])
             if "delete" in rc["change"]["actions"]
             and rc.get("type", "") == "juju_application"
