@@ -14,9 +14,9 @@ resource "juju_model" "cos" {
 }
 
 module "cos-lite" {
-  source     = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=track/2"
+  source     = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=main"
   model_uuid = juju_model.cos.uuid
-  channel    = "2/stable"
+  risk       = "edge"
   ssc        = { channel = "1/stable" }
   traefik    = { channel = "latest/edge" }
 }
