@@ -20,7 +20,7 @@ data "juju_model" "cos" {
 
 module "cos" {
   source       = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=track/2"
-  model_uuid   = data.juju_model.model.uuid
+  model_uuid   = data.juju_model.cos.uuid
   channel      = "2/stable"
   internal_tls = true
 
