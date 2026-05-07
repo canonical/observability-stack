@@ -7,9 +7,12 @@ https://documentation.ubuntu.com/observability/latest/how-to/configure-tls-encry
 import os
 from pathlib import Path
 
-from helpers import catalogue_apps_are_reachable, wait_for_active_idle_without_error
-
 import jubilant
+from helpers import (
+    catalogue_apps_are_reachable,
+    no_errors_in_otelcol_logs,
+    wait_for_active_idle_without_error,
+)
 
 TRACK_2_TF_FILE = Path(__file__).parent.resolve() / "track-2.tf"
 TRACK_DEV_TF_FILE = Path(__file__).parent.resolve() / "track-dev.tf"
