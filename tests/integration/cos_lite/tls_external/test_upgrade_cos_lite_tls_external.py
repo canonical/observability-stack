@@ -19,24 +19,24 @@ TRACK_DEV_TF_FILE = Path(__file__).parent.resolve() / "track-dev.tf"
 
 
 def test_deploy_from_track_2(
-    tmp_path, tf_manager, ca_model: jubilant.Juju, cos_model: jubilant.Juju
+    tmp_path, tf_manager, ca_model: jubilant.Juju, cos_lite_model: jubilant.Juju
 ):
     # GIVEN a module deployed from track 2
     tf_manager.init(TRACK_2_TF_FILE)
-    tf_manager.apply(ca_model=ca_model.model, cos_model=cos_model.model)
-    wait_for_active_idle_without_error([ca_model, cos_model], timeout=60 * 60)
+    tf_manager.apply()
+    wait_for_active_idle_without_error([ca_model, cos_lite_model], timeout=60 * 60)
     tls_ctx = get_tls_context(tmp_path, ca_model, "self-signed-certificates")
-    catalogue_apps_are_reachable(cos_model, tls_ctx)
+    catalogue_apps_are_reachable(cos_lite_model, tls_ctx)
 
 
 def test_deploy_to_track_dev(
-    tmp_path, tf_manager, ca_model: jubilant.Juju, cos_model: jubilant.Juju
+    tmp_path, tf_manager, ca_model: jubilant.Juju, cos_lite_model: jubilant.Juju
 ):
     # WHEN upgraded to track dev
     tf_manager.init(TRACK_DEV_TF_FILE)
-    tf_manager.apply(ca_model=ca_model.model, cos_model=cos_model.model)
+    tf_manager.apply()
 
     # THEN the model is upgraded and is healthy
-    wait_for_active_idle_without_error([ca_model, cos_model])
+    wait_for_active_idle_without_error([ca_model, cos_lite_model])
     tls_ctx = get_tls_context(tmp_path, ca_model, "self-signed-certificates")
-    catalogue_apps_are_reachable(cos_model, tls_ctx)
+    catalogue_apps_are_reachable(cos_lite_model, tls_ctx)

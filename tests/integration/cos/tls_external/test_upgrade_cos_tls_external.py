@@ -35,7 +35,7 @@ def test_deploy_from_track_2(
 ):
     # GIVEN a module deployed from track 2
     tf_manager.init(TRACK_2_TF_FILE)
-    tf_manager.apply(ca_model=ca_model.model, cos_model=cos_model.model, **S3_ENDPOINT)
+    tf_manager.apply(**S3_ENDPOINT)
     wait_for_active_idle_without_error([cos_model], timeout=5400)
     tls_ctx = get_tls_context(tmp_path, ca_model, "self-signed-certificates")
     catalogue_apps_are_reachable(cos_model, tls_ctx)
@@ -46,7 +46,7 @@ def test_deploy_to_track_dev(
 ):
     # WHEN upgraded to track dev
     tf_manager.init(TRACK_DEV_TF_FILE)
-    tf_manager.apply(ca_model=ca_model.model, cos_model=cos_model.model, **S3_ENDPOINT)
+    tf_manager.apply(**S3_ENDPOINT)
 
     # THEN the model is upgraded and is healthy
     wait_for_active_idle_without_error([ca_model, cos_model])
