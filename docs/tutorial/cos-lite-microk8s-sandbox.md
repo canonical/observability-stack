@@ -182,18 +182,22 @@ $ juju deploy cos-lite \
 
 ## Deploy COS Lite using Terraform
 
-Create a `cos-lite-microk8s-sandbox.tf` file with the following Terraform module, or include it in your Terraform plan:
+To deploy the COS Lite solution, create this root module and set the `model` to `cos-lite`:
 
-```{literalinclude} /tutorial/cos-lite-microk8s-sandbox.tf
+```{literalinclude} ../../tests/integration/cos_lite/tls_internal/track-dev.tf
 ```
 
 <!-- if Field wants, allow setting `anti_affinity` by something other than `kubernetes/hostname` -->
 
-**Note**: You can customize further the revisions of each charm and other aspects of COS Lite: have a look at the [`variables.tf`](../../terraform/cos-lite/variables.tf) file of the COS Lite Terraform module for the complete documentation.
+```{dropdown} Customize COS Lite
+You can customize the deployment of COS Lite by overriding the defaults of these variables:
+
+```{literalinclude} ../../terraform/cos-lite/variables.tf
+```
 
 <!-- Once we allow enabling internal TLS and external TLS separately, add the explanation to this tutorial -->
 
-It is usually a good idea to create a dedicated model for COS Lite. This module creates one named `cos`, which you can override.
+It is usually a good idea to create a dedicated model for COS Lite. This module creates one named `cos-lite`.
 
 If there are multiple clouds registered in the controller or a default cloud is not setup, an explicit reference of the cloud in the base terraform file needs to exist. Look at [how to reference a K8s cloud](../how-to/configure-and-tune/reference-k8s-cloud-for-cos.md) section.
 
