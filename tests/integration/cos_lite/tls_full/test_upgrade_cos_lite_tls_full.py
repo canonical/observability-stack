@@ -32,11 +32,16 @@ def test_deploy_from_track_2(
 def test_deploy_to_track_dev(
     tmp_path, tf_manager, ca_model: jubilant.Juju, cos_model: jubilant.Juju
 ):
-    # WHEN upgraded to track dev
+    jubilant_args = {"ca_model": ca_model.model, "cos_model": cos_model.model}
+    # WHEN planning to upgrade to track dev
     tf_manager.init(TRACK_DEV_TF_FILE)
-    tf_manager.apply(ca_model=ca_model.model, cos_model=cos_model.model)
-
-    # THEN the model is upgraded and is healthy
+    # THEN only expected apps are replaced
+    tf_manager.apps_to_replace(["grafana"], **jubilant_args)
+    # AND WHEN upgraded to track dev
+    tf_manager.apply(**jubilant_args)
+    # THEN a single apply is sufficient (no further changes pending)
+    # * the model is upgraded and is healthy
     wait_for_active_idle_without_error([ca_model, cos_model])
     tls_ctx = get_tls_context(tmp_path, ca_model, "self-signed-certificates")
     catalogue_apps_are_reachable(cos_model, tls_ctx)
+    assert not tf_manager.plan_has_changes(**jubilant_args)
