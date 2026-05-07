@@ -182,9 +182,20 @@ $ juju deploy cos-lite \
 
 ## Deploy COS Lite using Terraform
 
-Create a `cos-lite-microk8s-sandbox.tf` file with the following Terraform module, or include it in your Terraform plan:
+To deploy the COS Lite solution, create this root module e.g., `cos-lite.tf`:
 
-```{literalinclude} /tutorial/cos-lite-microk8s-sandbox.tf
+```{literalinclude} cos-meta.tf
+  :start-after: [docs:providers]
+  :end-before: [docs:providers-end]
+```
+
+```{literalinclude} cos-meta.tf
+  :start-after: [docs:cos-lite]
+  :end-before: [docs:cos-lite-end]
+```
+
+```{literalinclude} ../../tests/integration/cos_lite/tls_internal/track-dev.tf
+  :start-after: [docs:cos-lite]
 ```
 
 <!-- if Field wants, allow setting `anti_affinity` by something other than `kubernetes/hostname` -->

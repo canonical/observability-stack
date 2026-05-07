@@ -9,7 +9,7 @@ terraform {
 }
 
 variable "model" { type = string }
-data "juju_model" "model" {
+data "juju_model" "cos" {
   name  = var.model
   owner = "admin"
 }
@@ -17,7 +17,7 @@ data "juju_model" "model" {
 # [docs:cos-lite]
 module "cos-lite" {
   source       = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=fix/remove-traefik-patch"
-  model_uuid   = data.juju_model.model.uuid
+  model_uuid   = data.juju_model.cos.uuid
   risk         = "edge"
   internal_tls = true
 }

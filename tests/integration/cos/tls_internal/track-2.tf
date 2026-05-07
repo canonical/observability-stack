@@ -13,14 +13,14 @@ variable "s3_endpoint" { type = string }
 variable "s3_secret_key" { type = string }
 variable "s3_access_key" { type = string }
 
-data "juju_model" "model" {
+data "juju_model" "cos" {
   name  = var.model
   owner = "admin"
 }
 
 module "cos" {
   source       = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=fix/remove-traefik-patch-track-2"
-  model_uuid   = data.juju_model.model.uuid
+  model_uuid   = data.juju_model.cos.uuid
   channel      = "2/stable"
   internal_tls = true
 
