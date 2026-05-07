@@ -26,7 +26,6 @@ Production deployment configuration may differ from the setup showcased here.
 :maxdepth: 1
 
 COS on Canonical K8s <cos-canonical-k8s-sandbox>
-Migrate COS from traefik to istio <istio-migration>
 ```
 
 ## COS Lite
