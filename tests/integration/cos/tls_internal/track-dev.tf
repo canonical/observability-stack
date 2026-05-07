@@ -20,8 +20,8 @@ data "juju_model" "cos" {
 
 # [docs:cos]
 module "cos" {
-  source       = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=fix/remove-traefik-patch"
-  model_uuid   = data.juju_model.cos.uuid
+  source       = "git::https://github.com/canonical/observability-stack//terraform/cos"
+  model_uuid   = data.juju_model.model.uuid
   risk         = "edge"
   internal_tls = true
 
