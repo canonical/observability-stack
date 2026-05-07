@@ -5,13 +5,15 @@
 # causes the operation to fail due to https://github.com/juju/terraform-provider-juju/issues/344
 # Therefore, we set a default value of "arch=amd64" for all applications.
 
-locals {
-  clouds          = ["aws", "self-managed"] # list of k8s clouds where this COS module can be deployed.
-  tls_termination = var.external_certificates_offer_url != null ? true : false
+variable "risk" {
+  description = "Risk level that the applications are (unless overwritten by individual channels) deployed from"
+  type        = string
+  default     = "edge"
 }
 
-variable "channel" {
-  description = "Channel that the applications are (unless overwritten by external_channels) deployed from"
+variable "base" {
+  description = "The operating system on which to deploy. E.g. ubuntu@24.04. Check Charmhub for per-charm base support."
+  default     = "ubuntu@24.04"
   type        = string
 }
 
@@ -19,6 +21,24 @@ variable "model_uuid" {
   description = "Reference to an existing model resource or data source for the model to deploy to"
   type        = string
 }
+
+variable "cloud" {
+  description = "Kubernetes cloud or environment where this COS module will be deployed (e.g self-managed, aws)"
+  type        = string
+  default     = "self-managed"
+  validation {
+    condition     = contains(["aws", "self-managed"], var.cloud)
+    error_message = "Allowed values are: aws, self-managed."
+  }
+}
+
+variable "anti_affinity" {
+  description = "Enable anti-affinity constraints across all HA modules (Mimir, Loki, Tempo)"
+  type        = bool
+  default     = true
+}
+
+# -------------- # TLS configurations --------------
 
 variable "internal_tls" {
   description = "Specify whether to use TLS or not for internal COS communication. By default, TLS is enabled using self-signed-certificates"
@@ -46,20 +66,20 @@ variable "external_ca_cert_offer_url" {
   default     = null
 }
 
-variable "cloud" {
-  description = "Kubernetes cloud or environment where this COS module will be deployed (e.g self-managed, aws)"
-  type        = string
-  default     = "self-managed"
-  validation {
-    condition     = contains(local.clouds, var.cloud)
-    error_message = "Allowed values are: ${join(", ", local.clouds)}."
-  }
-}
+# -------------- # Ingress configurations --------------
 
-variable "anti_affinity" {
-  description = "Enable anti-affinity constraints across all HA modules (Mimir, Loki, Tempo)"
-  type        = bool
-  default     = true
+variable "ingress" {
+  description = "Per-component toggle for ingress integrations"
+  type = object({
+    alertmanager            = optional(bool, true)
+    catalogue               = optional(bool, true)
+    grafana                 = optional(bool, true)
+    loki                    = optional(bool, true)
+    mimir                   = optional(bool, true)
+    opentelemetry_collector = optional(bool, true)
+    tempo                   = optional(bool, true)
+  })
+  default = {}
 }
 
 # -------------- # S3 storage configuration --------------
@@ -157,15 +177,17 @@ variable "loki_coordinator" {
 
 variable "loki_worker" {
   type = object({
-    backend_config     = optional(map(string), {})
-    read_config        = optional(map(string), {})
-    write_config       = optional(map(string), {})
-    constraints        = optional(string, "arch=amd64")
-    revision           = optional(number, null)
-    storage_directives = optional(map(string), {})
-    backend_units      = optional(number, 3)
-    read_units         = optional(number, 3)
-    write_units        = optional(number, 3)
+    backend_config             = optional(map(string), {})
+    read_config                = optional(map(string), {})
+    write_config               = optional(map(string), {})
+    constraints                = optional(string, "arch=amd64")
+    revision                   = optional(number, null)
+    backend_storage_directives = optional(map(string), {})
+    read_storage_directives    = optional(map(string), {})
+    write_storage_directives   = optional(map(string), {})
+    backend_units              = optional(number, 3)
+    read_units                 = optional(number, 3)
+    write_units                = optional(number, 3)
   })
   default     = {}
   description = "Application configuration for all Loki Workers. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
@@ -185,15 +207,17 @@ variable "mimir_coordinator" {
 
 variable "mimir_worker" {
   type = object({
-    backend_config     = optional(map(string), {})
-    read_config        = optional(map(string), {})
-    write_config       = optional(map(string), {})
-    constraints        = optional(string, "arch=amd64")
-    revision           = optional(number, null)
-    storage_directives = optional(map(string), {})
-    backend_units      = optional(number, 3)
-    read_units         = optional(number, 3)
-    write_units        = optional(number, 3)
+    backend_config             = optional(map(string), {})
+    read_config                = optional(map(string), {})
+    write_config               = optional(map(string), {})
+    constraints                = optional(string, "arch=amd64")
+    revision                   = optional(number, null)
+    backend_storage_directives = optional(map(string), {})
+    read_storage_directives    = optional(map(string), {})
+    write_storage_directives   = optional(map(string), {})
+    backend_units              = optional(number, 3)
+    read_units                 = optional(number, 3)
+    write_units                = optional(number, 3)
   })
   default     = {}
   description = "Application configuration for all Mimir Workers. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
@@ -212,11 +236,9 @@ variable "opentelemetry_collector" {
   description = "Application configuration for OpenTelemetry Collector. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
-
 variable "ssc" {
   type = object({
     app_name           = optional(string, "ca")
-    channel            = optional(string, "1/stable")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
     revision           = optional(number, null)
@@ -229,7 +251,6 @@ variable "ssc" {
 
 variable "s3_integrator" {
   type = object({
-    channel            = optional(string, "2/edge")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
     revision           = optional(number, null)
@@ -254,21 +275,26 @@ variable "tempo_coordinator" {
 
 variable "tempo_worker" {
   type = object({
-    querier_config           = optional(map(string), {})
-    query_frontend_config    = optional(map(string), {})
-    ingester_config          = optional(map(string), {})
-    distributor_config       = optional(map(string), {})
-    compactor_config         = optional(map(string), {})
-    metrics_generator_config = optional(map(string), {})
-    constraints              = optional(string, "arch=amd64")
-    revision                 = optional(number, null)
-    storage_directives       = optional(map(string), {})
-    compactor_units          = optional(number, 3)
-    distributor_units        = optional(number, 3)
-    ingester_units           = optional(number, 3)
-    metrics_generator_units  = optional(number, 3)
-    querier_units            = optional(number, 3)
-    query_frontend_units     = optional(number, 3)
+    querier_config                              = optional(map(string), {})
+    query_frontend_config                       = optional(map(string), {})
+    ingester_config                             = optional(map(string), {})
+    distributor_config                          = optional(map(string), {})
+    compactor_config                            = optional(map(string), {})
+    metrics_generator_config                    = optional(map(string), {})
+    constraints                                 = optional(string, "arch=amd64")
+    revision                                    = optional(number, null)
+    compactor_worker_storage_directives         = optional(map(string), {})
+    distributor_worker_storage_directives       = optional(map(string), {})
+    ingester_worker_storage_directives          = optional(map(string), {})
+    metrics_generator_worker_storage_directives = optional(map(string), {})
+    querier_worker_storage_directives           = optional(map(string), {})
+    query_frontend_worker_storage_directives    = optional(map(string), {})
+    compactor_units                             = optional(number, 3)
+    distributor_units                           = optional(number, 3)
+    ingester_units                              = optional(number, 3)
+    metrics_generator_units                     = optional(number, 3)
+    querier_units                               = optional(number, 3)
+    query_frontend_units                        = optional(number, 3)
   })
   default     = {}
   description = "Application configuration for all Tempo workers. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
@@ -277,7 +303,6 @@ variable "tempo_worker" {
 variable "traefik" {
   type = object({
     app_name           = optional(string, "traefik")
-    channel            = optional(string, "latest/stable")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
     revision           = optional(number, null)

@@ -8,6 +8,7 @@ This is a Terraform module facilitating the deployment of the COS Lite solution,
 | Name | Version |
 |------|---------|
 | <a name="provider_juju"></a> [juju](#provider\_juju) | ~> 1.0 |
+| <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 
 ## Modules
 
@@ -26,17 +27,19 @@ This is a Terraform module facilitating the deployment of the COS Lite solution,
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_alertmanager"></a> [alertmanager](#input\_alertmanager) | Application configuration for Alertmanager. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    app_name           = optional(string, "alertmanager")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
+| <a name="input_base"></a> [base](#input\_base) | The operating system on which to deploy. E.g. ubuntu@24.04. Check Charmhub for per-charm base support. | `string` | `"ubuntu@24.04"` | no |
 | <a name="input_catalogue"></a> [catalogue](#input\_catalogue) | Application configuration for Catalogue. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    app_name           = optional(string, "catalogue")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
-| <a name="input_channel"></a> [channel](#input\_channel) | Channel that the applications are (unless overwritten by external\_channels) deployed from | `string` | n/a | yes |
 | <a name="input_external_ca_cert_offer_url"></a> [external\_ca\_cert\_offer\_url](#input\_external\_ca\_cert\_offer\_url) | A Juju offer URL (e.g. admin/external-ca.send-ca-cert) of a CA providing the 'certificate\_transfer' integration for applications to trust ingress via Traefik. | `string` | `null` | no |
 | <a name="input_external_certificates_offer_url"></a> [external\_certificates\_offer\_url](#input\_external\_certificates\_offer\_url) | A Juju offer URL (e.g. admin/external-ca.certificates) of a CA providing the 'tls\_certificates' integration for Traefik to supply it with server certificates. | `string` | `null` | no |
 | <a name="input_grafana"></a> [grafana](#input\_grafana) | Application configuration for Grafana. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    app_name           = optional(string, "grafana")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
+| <a name="input_ingress"></a> [ingress](#input\_ingress) | Per-component toggle for ingress integrations | <pre>object({<br/>    alertmanager = optional(bool, true)<br/>    catalogue    = optional(bool, true)<br/>    grafana      = optional(bool, true)<br/>    loki         = optional(bool, true)<br/>    prometheus   = optional(bool, true)<br/>  })</pre> | `{}` | no |
 | <a name="input_internal_tls"></a> [internal\_tls](#input\_internal\_tls) | Specify whether to use TLS or not for internal COS communication. By default, TLS is enabled using self-signed-certificates | `bool` | `true` | no |
 | <a name="input_loki"></a> [loki](#input\_loki) | Application configuration for Loki. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    app_name           = optional(string, "loki")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
 | <a name="input_model_uuid"></a> [model\_uuid](#input\_model\_uuid) | Reference to an existing model resource or data source for the model to deploy to | `string` | n/a | yes |
 | <a name="input_prometheus"></a> [prometheus](#input\_prometheus) | Application configuration for Prometheus. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    app_name           = optional(string, "prometheus")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
-| <a name="input_ssc"></a> [ssc](#input\_ssc) | Application configuration for self-signed-certificates. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    app_name           = optional(string, "ca")<br/>    channel            = optional(string, "1/stable")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
-| <a name="input_traefik"></a> [traefik](#input\_traefik) | Application configuration for Traefik. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    app_name           = optional(string, "traefik")<br/>    channel            = optional(string, "latest/stable")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
+| <a name="input_risk"></a> [risk](#input\_risk) | Risk level that the applications are (unless overwritten by individual channels) deployed from | `string` | `"edge"` | no |
+| <a name="input_ssc"></a> [ssc](#input\_ssc) | Application configuration for self-signed-certificates. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    app_name           = optional(string, "ca")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
+| <a name="input_traefik"></a> [traefik](#input\_traefik) | Application configuration for Traefik. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    app_name           = optional(string, "traefik")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
 
 ## Outputs
 
@@ -61,7 +64,7 @@ Otherwise, you can deploy from main (without `?ref`) which uses the Terraform Ju
 
 ### Basic usage
 
-To deploy the COS HA solution in a model named `cos`, create this root module:
+To deploy the COS Lite solution in a model named `cos`, create this root module:
 ```hcl
 terraform {
   required_version = ">= 1.5"
@@ -74,13 +77,13 @@ terraform {
 }
 
 resource "juju_model" "cos" {
-  name = "cos"
+  name = "cos-lite"
 }
 
 module "cos-lite" {
-  source     = "git::https://github.com/canonical/observability-stack//terraform/cos-lite"
+  source     = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=track/2"
   model_uuid = juju_model.cos.uuid
-  channel    = "2/edge"
+  channel    = "2/stable"
 }
 ```
 

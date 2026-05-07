@@ -4,19 +4,23 @@ resource "juju_integration" "grafana_dashboards" {
   for_each = {
     alertmanager = {
       app_name = module.alertmanager.app_name
-      endpoint = module.alertmanager.endpoints.grafana_dashboard
+      endpoint = module.alertmanager.provides.grafana_dashboard
     }
     mimir = {
       app_name = module.mimir.app_names.mimir_coordinator
-      endpoint = module.mimir.endpoints.grafana_dashboards_provider
+      endpoint = module.mimir.provides.grafana_dashboards_provider
     }
     loki = {
       app_name = module.loki.app_names.loki_coordinator
-      endpoint = module.loki.endpoints.grafana_dashboards_provider
+      endpoint = module.loki.provides.grafana_dashboards_provider
+    }
+    otelcol = {
+      app_name = module.opentelemetry_collector.app_name
+      endpoint = module.opentelemetry_collector.provides.grafana_dashboards_provider
     }
     tempo = {
       app_name = module.tempo.app_names.tempo_coordinator
-      endpoint = module.tempo.endpoints.grafana_dashboard
+      endpoint = module.tempo.provides.grafana_dashboard
     }
   }
 
@@ -29,8 +33,10 @@ resource "juju_integration" "grafana_dashboards" {
 
   application {
     name     = module.grafana.app_name
-    endpoint = module.grafana.endpoints.grafana_dashboard
+    endpoint = module.grafana.requires.grafana_dashboard
   }
+
+  lifecycle { replace_triggered_by = [terraform_data.grafana_litestream_resource] }
 }
 # -------------- # Charm Tracing ------------------------
 
@@ -38,15 +44,11 @@ resource "juju_integration" "charm_tracing" {
   for_each = {
     mimir = {
       app_name = module.mimir.app_names.mimir_coordinator
-      endpoint = module.mimir.endpoints.charm_tracing
+      endpoint = module.mimir.requires.charm_tracing
     }
     loki = {
       app_name = module.loki.app_names.loki_coordinator
-      endpoint = module.loki.endpoints.charm_tracing
-    }
-    grafana = {
-      app_name = module.grafana.app_name
-      endpoint = module.grafana.endpoints.charm_tracing
+      endpoint = module.loki.requires.charm_tracing
     }
   }
   model_uuid = var.model_uuid
@@ -58,8 +60,24 @@ resource "juju_integration" "charm_tracing" {
 
   application {
     name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.receive_traces
+    endpoint = module.opentelemetry_collector.provides.receive_traces
   }
+}
+
+resource "juju_integration" "charm_tracing_grafana" {
+  model_uuid = var.model_uuid
+
+  application {
+    name     = module.grafana.app_name
+    endpoint = module.grafana.requires.charm_tracing
+  }
+
+  application {
+    name     = module.opentelemetry_collector.app_name
+    endpoint = module.opentelemetry_collector.provides.receive_traces
+  }
+
+  lifecycle { replace_triggered_by = [terraform_data.grafana_litestream_resource] }
 }
 
 # -------------- # Metrics Endpoint ----------------------
@@ -67,19 +85,19 @@ resource "juju_integration" "otelcol_metrics_endpoint" {
   for_each = {
     alertmanager = {
       app_name = module.alertmanager.app_name
-      endpoint = module.alertmanager.endpoints.self_metrics_endpoint
+      endpoint = module.alertmanager.provides.self_metrics_endpoint
     }
     mimir = {
       app_name = module.mimir.app_names.mimir_coordinator
-      endpoint = module.mimir.endpoints.self_metrics_endpoint
+      endpoint = module.mimir.provides.self_metrics_endpoint
     }
     loki = {
       app_name = module.loki.app_names.loki_coordinator
-      endpoint = module.loki.endpoints.self_metrics_endpoint
+      endpoint = module.loki.provides.self_metrics_endpoint
     }
     tempo = {
       app_name = module.tempo.app_names.tempo_coordinator
-      endpoint = module.tempo.endpoints.metrics_endpoint
+      endpoint = module.tempo.provides.metrics_endpoint
     }
   }
   model_uuid = var.model_uuid
@@ -91,29 +109,29 @@ resource "juju_integration" "otelcol_metrics_endpoint" {
 
   application {
     name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.metrics_endpoint
+    endpoint = module.opentelemetry_collector.requires.metrics_endpoint
   }
 }
 
-
 # -------------- # Grafana Source Integrations --------------
+
 resource "juju_integration" "grafana_sources" {
   for_each = {
     alertmanager = {
       app_name = module.alertmanager.app_name
-      endpoint = module.alertmanager.endpoints.grafana_source
+      endpoint = module.alertmanager.provides.grafana_source
     }
     mimir = {
       app_name = module.mimir.app_names.mimir_coordinator
-      endpoint = module.mimir.endpoints.grafana_source
+      endpoint = module.mimir.provides.grafana_source
     }
     loki = {
       app_name = module.loki.app_names.loki_coordinator
-      endpoint = module.loki.endpoints.grafana_source
+      endpoint = module.loki.provides.grafana_source
     }
     tempo = {
       app_name = module.tempo.app_names.tempo_coordinator
-      endpoint = module.tempo.endpoints.grafana_source
+      endpoint = module.tempo.provides.grafana_source
     }
   }
 
@@ -126,25 +144,35 @@ resource "juju_integration" "grafana_sources" {
 
   application {
     name     = module.grafana.app_name
-    endpoint = module.grafana.endpoints.grafana_source
+    endpoint = module.grafana.requires.grafana_source
   }
+
+  lifecycle { replace_triggered_by = [terraform_data.grafana_litestream_resource] }
 }
 
 # -------------- # Receive Loki Logs ---------------------
 
 resource "juju_integration" "otelcol_logging_provider" {
   for_each = {
+    alertmanager = {
+      app_name = module.alertmanager.app_name
+      endpoint = module.alertmanager.requires.logging
+    }
+    grafana = {
+      app_name = module.grafana.app_name
+      endpoint = module.grafana.requires.logging
+    }
     mimir = {
       app_name = module.mimir.app_names.mimir_coordinator
-      endpoint = module.mimir.endpoints.logging_consumer
+      endpoint = module.mimir.requires.logging_consumer
     }
     loki = {
       app_name = module.loki.app_names.loki_coordinator
-      endpoint = module.loki.endpoints.logging_consumer
+      endpoint = module.loki.requires.logging_consumer
     }
     tempo = {
       app_name = module.tempo.app_names.tempo_coordinator
-      endpoint = module.tempo.endpoints.logging
+      endpoint = module.tempo.requires.logging
     }
   }
   model_uuid = var.model_uuid
@@ -156,20 +184,21 @@ resource "juju_integration" "otelcol_logging_provider" {
 
   application {
     name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.receive_loki_logs
+    endpoint = module.opentelemetry_collector.provides.receive_loki_logs
   }
 }
+
 # -------- Provided by Alertmanager --------------
 
 resource "juju_integration" "alerting" {
   for_each = {
     mimir = {
       app_name = module.mimir.app_names.mimir_coordinator
-      endpoint = module.mimir.endpoints.alertmanager
+      endpoint = module.mimir.requires.alertmanager
     }
     loki = {
       app_name = module.loki.app_names.loki_coordinator
-      endpoint = module.loki.endpoints.alertmanager
+      endpoint = module.loki.requires.alertmanager
     }
   }
   model_uuid = var.model_uuid
@@ -181,7 +210,7 @@ resource "juju_integration" "alerting" {
 
   application {
     name     = module.alertmanager.app_name
-    endpoint = module.alertmanager.endpoints.alerting
+    endpoint = module.alertmanager.provides.alerting
   }
 }
 
@@ -193,12 +222,12 @@ resource "juju_integration" "loki_logging_otelcol_logging_consumer" {
 
   application {
     name     = module.loki.app_names.loki_coordinator
-    endpoint = module.loki.endpoints.logging
+    endpoint = module.loki.provides.logging
   }
 
   application {
     name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.send_loki_logs
+    endpoint = module.opentelemetry_collector.requires.send_loki_logs
   }
 }
 
@@ -210,12 +239,12 @@ resource "juju_integration" "tempo_tracing_otelcol_tracing" {
 
   application {
     name     = module.tempo.app_names.tempo_coordinator
-    endpoint = module.tempo.endpoints.tracing
+    endpoint = module.tempo.provides.tracing
   }
 
   application {
     name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.send_traces
+    endpoint = module.opentelemetry_collector.requires.send_traces
   }
 }
 
@@ -224,12 +253,12 @@ resource "juju_integration" "tempo_send_remote_write_mimir_receive_remote_write"
 
   application {
     name     = module.tempo.app_names.tempo_coordinator
-    endpoint = module.tempo.endpoints.send-remote-write
+    endpoint = module.tempo.requires.send-remote-write
   }
 
   application {
     name     = module.mimir.app_names.mimir_coordinator
-    endpoint = module.mimir.endpoints.receive_remote_write
+    endpoint = module.mimir.provides.receive_remote_write
   }
 }
 
@@ -240,19 +269,15 @@ resource "juju_integration" "catalogue_integrations" {
   for_each = {
     alertmanager = {
       app_name = module.alertmanager.app_name
-      endpoint = module.alertmanager.endpoints.catalogue
-    }
-    grafana = {
-      app_name = module.grafana.app_name
-      endpoint = module.grafana.endpoints.catalogue
+      endpoint = module.alertmanager.requires.catalogue
     }
     tempo = {
       app_name = module.tempo.app_names.tempo_coordinator
-      endpoint = module.tempo.endpoints.catalogue
+      endpoint = module.tempo.requires.catalogue
     }
     mimir = {
       app_name = module.mimir.app_names.mimir_coordinator
-      endpoint = module.mimir.endpoints.catalogue
+      endpoint = module.mimir.requires.catalogue
     }
   }
 
@@ -260,7 +285,7 @@ resource "juju_integration" "catalogue_integrations" {
 
   application {
     name     = module.catalogue.app_name
-    endpoint = module.catalogue.endpoints.catalogue
+    endpoint = module.catalogue.provides.catalogue
   }
 
   application {
@@ -269,32 +294,45 @@ resource "juju_integration" "catalogue_integrations" {
   }
 }
 
+resource "juju_integration" "catalogue_integration_grafana" {
+  model_uuid = var.model_uuid
+
+  application {
+    name     = module.catalogue.app_name
+    endpoint = module.catalogue.provides.catalogue
+  }
+
+  application {
+    name     = module.grafana.app_name
+    endpoint = module.grafana.requires.catalogue
+  }
+
+  lifecycle { replace_triggered_by = [terraform_data.grafana_litestream_resource] }
+}
 
 # -------------- # Provided by Traefik --------------
 
 # -------------- # Ingress --------------------------
 resource "juju_integration" "ingress" {
   for_each = {
-    alertmanager = {
-      app_name = module.alertmanager.app_name
-      endpoint = module.alertmanager.endpoints.ingress
-    }
-    catalogue = {
-      app_name = module.catalogue.app_name
-      endpoint = module.catalogue.endpoints.ingress
-    }
-    mimir = {
-      app_name = module.mimir.app_names.mimir_coordinator
-      endpoint = module.mimir.endpoints.ingress
-    }
-    loki = {
-      app_name = module.loki.app_names.loki_coordinator
-      endpoint = module.loki.endpoints.ingress
-    }
-    grafana = {
-      app_name = module.grafana.app_name
-      endpoint = module.grafana.endpoints.ingress
-    }
+    for k, v in {
+      alertmanager = {
+        app_name = module.alertmanager.app_name
+        endpoint = module.alertmanager.requires.ingress
+      }
+      catalogue = {
+        app_name = module.catalogue.app_name
+        endpoint = module.catalogue.requires.ingress
+      }
+      mimir = {
+        app_name = module.mimir.app_names.mimir_coordinator
+        endpoint = module.mimir.requires.ingress
+      }
+      loki = {
+        app_name = module.loki.app_names.loki_coordinator
+        endpoint = module.loki.requires.ingress
+      }
+    } : k => v if var.ingress[k]
   }
   model_uuid = var.model_uuid
 
@@ -309,13 +347,36 @@ resource "juju_integration" "ingress" {
   }
 }
 
+resource "juju_integration" "grafana_ingress" {
+  count = var.ingress.grafana ? 1 : 0
+
+  model_uuid = var.model_uuid
+
+  application {
+    name     = module.grafana.app_name
+    endpoint = module.grafana.requires.ingress
+  }
+
+  application {
+    name     = module.traefik.app_name
+    endpoint = module.traefik.endpoints.ingress
+  }
+
+  lifecycle { replace_triggered_by = [terraform_data.grafana_ingress_interface, terraform_data.grafana_litestream_resource] }
+}
 
 resource "juju_integration" "traefik_route" {
   for_each = {
-    tempo = {
-      app_name = module.tempo.app_names.tempo_coordinator
-      endpoint = module.tempo.endpoints.ingress
-    }
+    for k, v in {
+      opentelemetry_collector = {
+        app_name = module.opentelemetry_collector.app_name
+        endpoint = module.opentelemetry_collector.requires.ingress
+      }
+      tempo = {
+        app_name = module.tempo.app_names.tempo_coordinator
+        endpoint = module.tempo.requires.ingress
+      }
+    } : k => v if var.ingress[k]
   }
   model_uuid = var.model_uuid
 
@@ -336,12 +397,12 @@ resource "juju_integration" "opentelemetry_collector_mimir_metrics" {
 
   application {
     name     = module.mimir.app_names.mimir_coordinator
-    endpoint = module.mimir.endpoints.receive_remote_write
+    endpoint = module.mimir.provides.receive_remote_write
   }
 
   application {
     name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.send_remote_write
+    endpoint = module.opentelemetry_collector.requires.send_remote_write
   }
 }
 
@@ -352,31 +413,31 @@ resource "juju_integration" "internal_certificates" {
   for_each = var.internal_tls ? {
     alertmanager = {
       app_name = module.alertmanager.app_name
-      endpoint = module.alertmanager.endpoints.certificates
+      endpoint = module.alertmanager.requires.certificates
     }
     catalogue = {
       app_name = module.catalogue.app_name
-      endpoint = module.catalogue.endpoints.certificates
+      endpoint = module.catalogue.requires.certificates
     }
     grafana = {
       app_name = module.grafana.app_name
-      endpoint = module.grafana.endpoints.certificates
+      endpoint = module.grafana.requires.certificates
     }
     opentelemetry_collector = {
       app_name = module.opentelemetry_collector.app_name
-      endpoint = module.opentelemetry_collector.endpoints.receive_server_cert
+      endpoint = module.opentelemetry_collector.requires.receive_server_cert
     }
     loki = {
       app_name = module.loki.app_names.loki_coordinator
-      endpoint = module.loki.endpoints.certificates
+      endpoint = module.loki.requires.certificates
     }
     mimir = {
       app_name = module.mimir.app_names.mimir_coordinator
-      endpoint = module.mimir.endpoints.certificates
+      endpoint = module.mimir.requires.certificates
     }
     tempo = {
       app_name = module.tempo.app_names.tempo_coordinator
-      endpoint = module.tempo.endpoints.certificates
+      endpoint = module.tempo.requires.certificates
     }
   } : {}
 
@@ -434,7 +495,7 @@ resource "juju_integration" "external_grafana_ca_cert" {
 
   application {
     name     = module.grafana.app_name
-    endpoint = module.grafana.endpoints.receive_ca_cert
+    endpoint = module.grafana.requires.receive_ca_cert
   }
 }
 
@@ -448,7 +509,7 @@ resource "juju_integration" "external_otelcol_ca_cert" {
 
   application {
     name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.receive_ca_cert
+    endpoint = module.opentelemetry_collector.requires.receive_ca_cert
   }
 }
 
@@ -459,12 +520,12 @@ resource "juju_integration" "traces_and_logs_correlation" {
 
   application {
     name     = module.tempo.app_names.tempo_coordinator
-    endpoint = module.tempo.endpoints.receive_datasource
+    endpoint = module.tempo.requires.receive_datasource
   }
 
   application {
     name     = module.loki.app_names.loki_coordinator
-    endpoint = module.loki.endpoints.send_datasource
+    endpoint = module.loki.provides.send_datasource
   }
 }
 
@@ -473,11 +534,11 @@ resource "juju_integration" "traces_and_metrics_correlation" {
 
   application {
     name     = module.tempo.app_names.tempo_coordinator
-    endpoint = module.tempo.endpoints.receive_datasource
+    endpoint = module.tempo.requires.receive_datasource
   }
 
   application {
     name     = module.mimir.app_names.mimir_coordinator
-    endpoint = module.mimir.endpoints.send_datasource
+    endpoint = module.mimir.provides.send_datasource
   }
 }

@@ -5,12 +5,12 @@ resource "juju_integration" "alertmanager_grafana_dashboards" {
 
   application {
     name     = module.alertmanager.app_name
-    endpoint = module.alertmanager.endpoints.grafana_dashboard
+    endpoint = module.alertmanager.provides.grafana_dashboard
   }
 
   application {
     name     = module.grafana.app_name
-    endpoint = module.grafana.endpoints.grafana_dashboard
+    endpoint = module.grafana.requires.grafana_dashboard
   }
 }
 
@@ -19,12 +19,12 @@ resource "juju_integration" "alertmanager_prometheus" {
 
   application {
     name     = module.prometheus.app_name
-    endpoint = module.prometheus.endpoints.alertmanager
+    endpoint = module.prometheus.requires.alertmanager
   }
 
   application {
     name     = module.alertmanager.app_name
-    endpoint = module.alertmanager.endpoints.alerting
+    endpoint = module.alertmanager.provides.alerting
   }
 }
 
@@ -33,12 +33,12 @@ resource "juju_integration" "alertmanager_self_monitoring_prometheus" {
 
   application {
     name     = module.prometheus.app_name
-    endpoint = module.prometheus.endpoints.metrics_endpoint
+    endpoint = module.prometheus.requires.metrics_endpoint
   }
 
   application {
     name     = module.alertmanager.app_name
-    endpoint = module.alertmanager.endpoints.self_metrics_endpoint
+    endpoint = module.alertmanager.provides.self_metrics_endpoint
   }
 }
 
@@ -47,12 +47,12 @@ resource "juju_integration" "alertmanager_loki" {
 
   application {
     name     = module.loki.app_name
-    endpoint = module.loki.endpoints.alertmanager
+    endpoint = module.loki.requires.alertmanager
   }
 
   application {
     name     = module.alertmanager.app_name
-    endpoint = module.alertmanager.endpoints.alerting
+    endpoint = module.alertmanager.provides.alerting
   }
 }
 
@@ -61,12 +61,12 @@ resource "juju_integration" "grafana_source_alertmanager" {
 
   application {
     name     = module.alertmanager.app_name
-    endpoint = module.alertmanager.endpoints.grafana_source
+    endpoint = module.alertmanager.provides.grafana_source
   }
 
   application {
     name     = module.grafana.app_name
-    endpoint = module.grafana.endpoints.grafana_source
+    endpoint = module.grafana.requires.grafana_source
   }
 }
 
@@ -77,12 +77,12 @@ resource "juju_integration" "grafana_self_monitoring_prometheus" {
 
   application {
     name     = module.prometheus.app_name
-    endpoint = module.prometheus.endpoints.metrics_endpoint
+    endpoint = module.prometheus.requires.metrics_endpoint
   }
 
   application {
     name     = module.grafana.app_name
-    endpoint = module.grafana.endpoints.metrics_endpoint
+    endpoint = module.grafana.provides.metrics_endpoint
   }
 }
 
@@ -93,12 +93,12 @@ resource "juju_integration" "prometheus_grafana_dashboards_provider" {
 
   application {
     name     = module.prometheus.app_name
-    endpoint = module.prometheus.endpoints.grafana_dashboard
+    endpoint = module.prometheus.provides.grafana_dashboard
   }
 
   application {
     name     = module.grafana.app_name
-    endpoint = module.grafana.endpoints.grafana_dashboard
+    endpoint = module.grafana.requires.grafana_dashboard
   }
 }
 
@@ -107,12 +107,12 @@ resource "juju_integration" "prometheus_grafana_source" {
 
   application {
     name     = module.prometheus.app_name
-    endpoint = module.prometheus.endpoints.grafana_source
+    endpoint = module.prometheus.provides.grafana_source
   }
 
   application {
     name     = module.grafana.app_name
-    endpoint = module.grafana.endpoints.grafana_source
+    endpoint = module.grafana.requires.grafana_source
   }
 }
 
@@ -123,12 +123,12 @@ resource "juju_integration" "loki_grafana_dashboards_provider" {
 
   application {
     name     = module.loki.app_name
-    endpoint = module.loki.endpoints.grafana_dashboard
+    endpoint = module.loki.provides.grafana_dashboard
   }
 
   application {
     name     = module.grafana.app_name
-    endpoint = module.grafana.endpoints.grafana_dashboard
+    endpoint = module.grafana.requires.grafana_dashboard
   }
 }
 
@@ -137,12 +137,12 @@ resource "juju_integration" "loki_grafana_source" {
 
   application {
     name     = module.loki.app_name
-    endpoint = module.loki.endpoints.grafana_source
+    endpoint = module.loki.provides.grafana_source
   }
 
   application {
     name     = module.grafana.app_name
-    endpoint = module.grafana.endpoints.grafana_source
+    endpoint = module.grafana.requires.grafana_source
   }
 }
 
@@ -151,12 +151,40 @@ resource "juju_integration" "loki_self_monitoring_prometheus" {
 
   application {
     name     = module.prometheus.app_name
-    endpoint = module.prometheus.endpoints.metrics_endpoint
+    endpoint = module.prometheus.requires.metrics_endpoint
   }
 
   application {
     name     = module.loki.app_name
-    endpoint = module.loki.endpoints.metrics_endpoint
+    endpoint = module.loki.provides.metrics_endpoint
+  }
+}
+
+resource "juju_integration" "loki_logging" {
+  for_each = {
+    alertmanager = {
+      app_name = module.alertmanager.app_name
+      endpoint = module.alertmanager.requires.logging
+    }
+    grafana = {
+      app_name = module.grafana.app_name
+      endpoint = module.grafana.requires.logging
+    }
+    prometheus = {
+      app_name = module.prometheus.app_name
+      endpoint = module.prometheus.requires.logging
+    }
+  }
+  model_uuid = var.model_uuid
+
+  application {
+    name     = each.value.app_name
+    endpoint = each.value.endpoint
+  }
+
+  application {
+    name     = module.loki.app_name
+    endpoint = module.loki.provides.logging
   }
 }
 
@@ -167,12 +195,12 @@ resource "juju_integration" "catalogue_alertmanager" {
 
   application {
     name     = module.catalogue.app_name
-    endpoint = module.catalogue.endpoints.catalogue
+    endpoint = module.catalogue.provides.catalogue
   }
 
   application {
     name     = module.alertmanager.app_name
-    endpoint = module.alertmanager.endpoints.catalogue
+    endpoint = module.alertmanager.requires.catalogue
   }
 }
 
@@ -181,12 +209,12 @@ resource "juju_integration" "catalogue_grafana" {
 
   application {
     name     = module.catalogue.app_name
-    endpoint = module.catalogue.endpoints.catalogue
+    endpoint = module.catalogue.provides.catalogue
   }
 
   application {
     name     = module.grafana.app_name
-    endpoint = module.grafana.endpoints.catalogue
+    endpoint = module.grafana.requires.catalogue
   }
 }
 
@@ -195,84 +223,86 @@ resource "juju_integration" "catalogue_prometheus" {
 
   application {
     name     = module.catalogue.app_name
-    endpoint = module.catalogue.endpoints.catalogue
+    endpoint = module.catalogue.provides.catalogue
   }
 
   application {
     name     = module.prometheus.app_name
-    endpoint = module.prometheus.endpoints.catalogue
+    endpoint = module.prometheus.requires.catalogue
   }
 }
 
 # -------------- # Provided by Traefik --------------
 
-resource "juju_integration" "alertmanager_ingress" {
+resource "juju_integration" "ingress" {
+  for_each = {
+    for k, v in {
+      alertmanager = {
+        app_name = module.alertmanager.app_name
+        endpoint = module.alertmanager.requires.ingress
+      }
+      catalogue = {
+        app_name = module.catalogue.app_name
+        endpoint = module.catalogue.requires.ingress
+      }
+    } : k => v if var.ingress[k]
+  }
+
   model_uuid = var.model_uuid
+
+  application {
+    name     = each.value.app_name
+    endpoint = each.value.endpoint
+  }
 
   application {
     name     = module.traefik.app_name
     endpoint = module.traefik.endpoints.ingress
-  }
-
-  application {
-    name     = module.alertmanager.app_name
-    endpoint = module.alertmanager.endpoints.ingress
-  }
-}
-
-resource "juju_integration" "catalogue_ingress" {
-  model_uuid = var.model_uuid
-
-  application {
-    name     = module.traefik.app_name
-    endpoint = module.traefik.endpoints.ingress
-  }
-
-  application {
-    name     = module.catalogue.app_name
-    endpoint = module.catalogue.endpoints.ingress
   }
 }
 
 resource "juju_integration" "grafana_ingress" {
+  count = var.ingress.grafana ? 1 : 0
+
   model_uuid = var.model_uuid
+
+  application {
+    name     = module.grafana.app_name
+    endpoint = module.grafana.requires.ingress
+  }
 
   application {
     name     = module.traefik.app_name
     endpoint = module.traefik.endpoints.ingress
   }
 
-  application {
-    name     = module.grafana.app_name
-    endpoint = module.grafana.endpoints.ingress
-  }
+  lifecycle { replace_triggered_by = [terraform_data.grafana_ingress_interface] }
 }
 
-resource "juju_integration" "prometheus_ingress" {
+resource "juju_integration" "ingress_per_unit" {
+  for_each = {
+    for k, v in {
+      loki = {
+        app_name = module.loki.app_name
+        endpoint = module.loki.requires.ingress
+      }
+      prometheus = {
+        app_name = module.prometheus.app_name
+        endpoint = module.prometheus.requires.ingress
+      }
+    } : k => v if var.ingress[k]
+  }
+
   model_uuid = var.model_uuid
+
+  application {
+    name     = each.value.app_name
+    endpoint = each.value.endpoint
+  }
 
   application {
     name     = module.traefik.app_name
     endpoint = module.traefik.endpoints.ingress_per_unit
-  }
-
-  application {
-    name     = module.prometheus.app_name
-    endpoint = module.prometheus.endpoints.ingress
-  }
-}
-
-resource "juju_integration" "loki_ingress" {
-  model_uuid = var.model_uuid
-
-  application {
-    name     = module.traefik.app_name
-    endpoint = module.traefik.endpoints.ingress_per_unit
-  }
-
-  application {
-    name     = module.loki.app_name
-    endpoint = module.loki.endpoints.ingress
   }
 }
 
@@ -281,7 +311,7 @@ resource "juju_integration" "traefik_self_monitoring_prometheus" {
 
   application {
     name     = module.prometheus.app_name
-    endpoint = module.prometheus.endpoints.metrics_endpoint
+    endpoint = module.prometheus.requires.metrics_endpoint
   }
 
   application {
@@ -303,7 +333,7 @@ resource "juju_integration" "alertmanager_certificates" {
 
   application {
     name     = module.alertmanager.app_name
-    endpoint = module.alertmanager.endpoints.certificates
+    endpoint = module.alertmanager.requires.certificates
   }
 }
 
@@ -318,7 +348,7 @@ resource "juju_integration" "catalogue_certificates" {
 
   application {
     name     = module.catalogue.app_name
-    endpoint = module.catalogue.endpoints.certificates
+    endpoint = module.catalogue.requires.certificates
   }
 }
 
@@ -333,7 +363,7 @@ resource "juju_integration" "grafana_certificates" {
 
   application {
     name     = module.grafana.app_name
-    endpoint = module.grafana.endpoints.certificates
+    endpoint = module.grafana.requires.certificates
   }
 }
 
@@ -348,7 +378,7 @@ resource "juju_integration" "loki_certificates" {
 
   application {
     name     = module.loki.app_name
-    endpoint = module.loki.endpoints.certificates
+    endpoint = module.loki.requires.certificates
   }
 }
 
@@ -363,7 +393,7 @@ resource "juju_integration" "prometheus_certificates" {
 
   application {
     name     = module.prometheus.app_name
-    endpoint = module.prometheus.endpoints.certificates
+    endpoint = module.prometheus.requires.certificates
   }
 }
 
@@ -408,7 +438,7 @@ resource "juju_integration" "external_grafana_ca_cert" {
 
   application {
     name     = module.grafana.app_name
-    endpoint = module.grafana.endpoints.receive_ca_cert
+    endpoint = module.grafana.requires.receive_ca_cert
   }
 }
 
@@ -422,6 +452,6 @@ resource "juju_integration" "external_prom_ca_cert" {
 
   application {
     name     = module.prometheus.app_name
-    endpoint = module.prometheus.endpoints.receive_ca_cert
+    endpoint = module.prometheus.requires.receive_ca_cert
   }
 }

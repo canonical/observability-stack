@@ -1,4 +1,10 @@
-# Cryptographic Documentation
+---
+myst:
+ html_meta:
+  description: "Review COS Lite cryptographic documentation covering TLS communication, authentication, and other cryptographic technology."
+---
+
+# Cryptographic documentation
 
 ## COS Lite
 
