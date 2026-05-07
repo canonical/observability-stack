@@ -42,7 +42,7 @@ copyright = f"{datetime.date.today().year}"
 #
 # TODO: To disable the title, set to an empty string.
 
-html_title = project + " documentation"
+html_title = project + " 3 documentation"
 
 
 # Documentation website URL
