@@ -10,7 +10,7 @@ The [OpenTelemetry Collector Integrator](https://github.com/canonical/openteleme
 
 This removes the need for [Prometheus federation](https://prometheus.io/docs/prometheus/latest/federation/) or similar other solutions.
 
-This guide walks through sending logs to an external rsyslog server over TLS, demonstrating how the Integrator handles sensitive material like certificates through its secret templating system.
+This guide walks through sending logs to an external rsyslog server over TLS, demonstrating how the Integrator handles sensitive material like certificates through its secret templating system. The general approach here can be used with other backends.
 
 ```{important}
 Available components (exporters, receivers, processors) depend on the OpenTelemetry Collector build compiled by Canonical. Check the [manifest-additions.yaml](https://github.com/canonical/opentelemetry-collector-rock) in the opentelemetry-collector-rock repository for your version to confirm what's included.
