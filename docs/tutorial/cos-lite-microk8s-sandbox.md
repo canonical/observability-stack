@@ -182,14 +182,18 @@ $ juju deploy cos-lite \
 
 ## Deploy COS Lite using Terraform
 
-Create a `cos-lite.tf` file with the following Terraform module, or include it in your Terraform plan:
+To deploy the COS Lite solution, create this root module and set the `model` to `cos-lite`:
 
-```{literalinclude} cos-lite.tf
+```{literalinclude} ../../tests/integration/cos_lite/tls_internal/track-dev.tf
 ```
 
 <!-- if Field wants, allow setting `anti_affinity` by something other than `kubernetes/hostname` -->
 
-**Note**: You can customize further the revisions of each charm and other aspects of COS Lite: have a look at the [`variables.tf`](../../terraform/cos-lite/variables.tf) file of the COS Lite Terraform module for the complete documentation.
+```{dropdown} Customize COS Lite
+You can customize the deployment of COS Lite by overriding the defaults of these variables:
+
+```{literalinclude} ../../terraform/cos-lite/variables.tf
+```
 
 <!-- Once we allow enabling internal TLS and external TLS separately, add the explanation to this tutorial -->
 
