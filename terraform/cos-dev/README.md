@@ -83,3 +83,37 @@ This module is intended for development and testing environments where full HA i
 | <a name="output_components"></a> [components](#output\_components) | All Terraform charm modules which make up this product module |
 | <a name="output_offers"></a> [offers](#output\_offers) | All Juju offers which are exposed by this product module |
 <!-- END_TF_DOCS -->
+
+## Usage
+
+### Basic usage
+
+To deploy the COS Dev solution in a model named `cos-dev`, create this root module:
+
+```hcl
+terraform {
+  required_version = ">= 1.5"
+  required_providers {
+    juju = {
+      source  = "juju/juju"
+      version = "~> 1.0"
+    }
+  }
+}
+
+resource "juju_model" "cos-dev" {
+  name = "cos-dev"
+}
+
+module "cos-dev" {
+  source     = "git::https://github.com/canonical/observability-stack//terraform/cos-dev"
+  model_uuid = juju_model.cos-dev.uuid
+}
+```
+
+Then, use terraform to deploy the module:
+
+```shell
+terraform init
+terraform apply
+```
