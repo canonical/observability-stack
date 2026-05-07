@@ -160,6 +160,34 @@ resource "juju_integration" "loki_self_monitoring_prometheus" {
   }
 }
 
+resource "juju_integration" "loki_logging" {
+  for_each = {
+    alertmanager = {
+      app_name = module.alertmanager.app_name
+      endpoint = module.alertmanager.requires.logging
+    }
+    grafana = {
+      app_name = module.grafana.app_name
+      endpoint = module.grafana.requires.logging
+    }
+    prometheus = {
+      app_name = module.prometheus.app_name
+      endpoint = module.prometheus.requires.logging
+    }
+  }
+  model_uuid = var.model_uuid
+
+  application {
+    name     = each.value.app_name
+    endpoint = each.value.endpoint
+  }
+
+  application {
+    name     = module.loki.app_name
+    endpoint = module.loki.provides.logging
+  }
+}
+
 # -------------- # Provided by Catalogue --------------
 
 resource "juju_integration" "catalogue_alertmanager" {
@@ -382,8 +410,6 @@ resource "juju_integration" "traefik_receive_ca_certificate" {
     name     = module.traefik.app_name
     endpoint = module.traefik.endpoints.receive_ca_cert
   }
-
-  lifecycle { replace_triggered_by = [terraform_data.traefik_revision] }
 }
 
 # -------------- # Provided by an external CA --------------
