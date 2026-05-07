@@ -38,7 +38,7 @@ The Integrator injects a syslog exporter and a transform processor into the Coll
 
 - A Juju controller and model on a machine cloud (for example, LXD)
 - The `ubuntu` charm deployed in the model
-- The `opentelemetry-collector` charm deployed as a subordinate of `ubuntu`, named `otelcol` for short.
+- The `opentelemetry-collector` charm deployed as a subordinate of `ubuntu`.  This guide names the charm `otelcol` for short.
 - An external rsyslog server reachable from the Juju machines, configured to accept TLS connections on port `6514`
 - TLS certificate material for mutual TLS: CA certificate, client certificate, and client key
 - `juju` CLI version 3.6 or later
