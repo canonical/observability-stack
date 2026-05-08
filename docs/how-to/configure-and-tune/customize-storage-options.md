@@ -47,12 +47,10 @@ If you don't specify a size, a PVC will be created with a default size of 1G bac
 Add a `storage_directive` for each storage container in your terraform file. For COS Lite it may look like this:
 
 ```diff
-module "cos-lite" {                                                                                    
-  source     = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=track/2" 
+module "cos-lite" {
+  source     = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=main" 
   model_uuid = juju_model.cos.uuid
-  channel    = "2/stable"
-  ssc        = { channel = "1/stable" }
-  traefik    = { channel = "latest/stable" }
+  risk       = "edge"
 
 + # Adding storage for Prometheus
 + prometheus = {
