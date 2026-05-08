@@ -98,5 +98,11 @@ _LOG_LEVEL_RE = re.compile(r"^(?:\S+ \[otelcol\] )?\S+\t(\w+)\t|^\S+ (\w+) ")
 
 def no_errors_in_otelcol_logs(juju: jubilant.Juju):
     stdout = juju.ssh("otelcol/0", "pebble logs", container="otelcol")
-    error_lines = [line for line in stdout.splitlines() if (m := _LOG_LEVEL_RE.match(line)) and (m.group(1) or m.group(2)) in ["warn", "error"]]
+    assert stdout, "no logs found for otelcol"
+    error_lines = [
+        line
+        for line in stdout.splitlines()
+        if (m := _LOG_LEVEL_RE.match(line))
+        and (m.group(1) or m.group(2)) in ["warn", "error"]
+    ]
     assert not error_lines, "otelcol error logs:\n" + "\n".join(error_lines)
