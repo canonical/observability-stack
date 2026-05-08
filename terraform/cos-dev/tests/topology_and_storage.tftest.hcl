@@ -15,58 +15,90 @@ run "default_monolithic_seaweedfs" {
   }
 
   assert {
-    condition     = length(module.loki_worker) == 1
-    error_message = "Expected monolithic loki_worker to be deployed"
+    condition = alltrue([
+      length(juju_integration.seaweedfs_loki) == 1,
+      length(juju_integration.seaweedfs_mimir) == 1,
+      length(juju_integration.seaweedfs_tempo) == 1,
+    ])
+    error_message = "Expected seaweedfs integrations to all coordinators"
   }
 
   assert {
-    condition     = length(module.mimir_worker) == 1
-    error_message = "Expected monolithic mimir_worker to be deployed"
+    condition = alltrue([
+      length(module.loki_worker) == 1,
+      length(module.mimir_worker) == 1,
+      length(module.tempo_worker) == 1,
+    ])
+    error_message = "Expected all monolithic workers to be deployed"
   }
 
   assert {
-    condition     = length(module.tempo_worker) == 1
-    error_message = "Expected monolithic tempo_worker to be deployed"
+    condition = !anytrue([
+      length(module.loki_worker_backend) > 0,
+      length(module.loki_worker_read) > 0,
+      length(module.loki_worker_write) > 0,
+    ])
+    error_message = "Expected no distributed loki workers in monolithic mode"
   }
 
   assert {
-    condition     = length(module.loki_worker_backend) == 0
-    error_message = "Expected no distributed loki_worker_backend in monolithic mode"
+    condition = !anytrue([
+      length(module.mimir_worker_backend) > 0,
+      length(module.mimir_worker_read) > 0,
+      length(module.mimir_worker_write) > 0,
+    ])
+    error_message = "Expected no distributed mimir workers in monolithic mode"
   }
 
   assert {
-    condition     = length(module.mimir_worker_backend) == 0
-    error_message = "Expected no distributed mimir_worker_backend in monolithic mode"
+    condition = !anytrue([
+      length(module.tempo_worker_querier) > 0,
+      length(module.tempo_worker_query_frontend) > 0,
+      length(module.tempo_worker_ingester) > 0,
+      length(module.tempo_worker_distributor) > 0,
+      length(module.tempo_worker_compactor) > 0,
+      length(module.tempo_worker_metrics_generator) > 0,
+    ])
+    error_message = "Expected no distributed tempo workers in monolithic mode"
   }
 
   assert {
-    condition     = length(module.tempo_worker_ingester) == 0
-    error_message = "Expected no distributed tempo_worker_ingester in monolithic mode"
+    condition = alltrue([
+      length(juju_integration.loki_cluster) == 1,
+      length(juju_integration.mimir_cluster) == 1,
+      length(juju_integration.tempo_cluster) == 1,
+    ])
+    error_message = "Expected monolithic cluster integrations for all coordinators"
   }
 
   assert {
-    condition     = length(juju_integration.seaweedfs_loki) == 1
-    error_message = "Expected seaweedfs_loki integration in seaweedfs mode"
+    condition = !anytrue([
+      length(juju_integration.loki_cluster_backend) > 0,
+      length(juju_integration.loki_cluster_read) > 0,
+      length(juju_integration.loki_cluster_write) > 0,
+    ])
+    error_message = "Expected no distributed loki cluster integrations in monolithic mode"
   }
 
   assert {
-    condition     = length(juju_integration.seaweedfs_mimir) == 1
-    error_message = "Expected seaweedfs_mimir integration in seaweedfs mode"
+    condition = !anytrue([
+      length(juju_integration.mimir_cluster_backend) > 0,
+      length(juju_integration.mimir_cluster_read) > 0,
+      length(juju_integration.mimir_cluster_write) > 0,
+    ])
+    error_message = "Expected no distributed mimir cluster integrations in monolithic mode"
   }
 
   assert {
-    condition     = length(juju_integration.seaweedfs_tempo) == 1
-    error_message = "Expected seaweedfs_tempo integration in seaweedfs mode"
-  }
-
-  assert {
-    condition     = length(juju_integration.loki_cluster) == 1
-    error_message = "Expected monolithic loki_cluster integration"
-  }
-
-  assert {
-    condition     = length(juju_integration.loki_cluster_backend) == 0
-    error_message = "Expected no distributed loki_cluster_backend integration in monolithic mode"
+    condition = !anytrue([
+      length(juju_integration.tempo_cluster_querier) > 0,
+      length(juju_integration.tempo_cluster_query_frontend) > 0,
+      length(juju_integration.tempo_cluster_ingester) > 0,
+      length(juju_integration.tempo_cluster_distributor) > 0,
+      length(juju_integration.tempo_cluster_compactor) > 0,
+      length(juju_integration.tempo_cluster_metrics_generator) > 0,
+    ])
+    error_message = "Expected no distributed tempo cluster integrations in monolithic mode"
   }
 }
 
@@ -85,93 +117,90 @@ run "distributed_seaweedfs" {
   }
 
   assert {
-    condition     = length(module.loki_worker) == 0
-    error_message = "Expected no monolithic loki_worker in distributed mode"
+    condition = alltrue([
+      length(juju_integration.seaweedfs_loki) == 1,
+      length(juju_integration.seaweedfs_mimir) == 1,
+      length(juju_integration.seaweedfs_tempo) == 1,
+    ])
+    error_message = "Expected seaweedfs integrations to all coordinators"
   }
 
   assert {
-    condition     = length(module.loki_worker_backend) == 1
-    error_message = "Expected distributed loki_worker_backend in distributed mode"
+    condition = !anytrue([
+      length(module.loki_worker) > 0,
+      length(module.mimir_worker) > 0,
+      length(module.tempo_worker) > 0,
+    ])
+    error_message = "Expected no monolithic workers in distributed mode"
   }
 
   assert {
-    condition     = length(module.loki_worker_read) == 1
-    error_message = "Expected distributed loki_worker_read in distributed mode"
+    condition = alltrue([
+      length(module.loki_worker_backend) == 1,
+      length(module.loki_worker_read) == 1,
+      length(module.loki_worker_write) == 1,
+    ])
+    error_message = "Expected all distributed loki workers (backend, read, write)"
   }
 
   assert {
-    condition     = length(module.loki_worker_write) == 1
-    error_message = "Expected distributed loki_worker_write in distributed mode"
+    condition = alltrue([
+      length(module.mimir_worker_backend) == 1,
+      length(module.mimir_worker_read) == 1,
+      length(module.mimir_worker_write) == 1,
+    ])
+    error_message = "Expected all distributed mimir workers (backend, read, write)"
   }
 
   assert {
-    condition     = length(module.mimir_worker_backend) == 1
-    error_message = "Expected distributed mimir_worker_backend in distributed mode"
+    condition = alltrue([
+      length(module.tempo_worker_querier) == 1,
+      length(module.tempo_worker_query_frontend) == 1,
+      length(module.tempo_worker_ingester) == 1,
+      length(module.tempo_worker_distributor) == 1,
+      length(module.tempo_worker_compactor) == 1,
+      length(module.tempo_worker_metrics_generator) == 1,
+    ])
+    error_message = "Expected all distributed tempo workers (querier, query_frontend, ingester, distributor, compactor, metrics_generator)"
   }
 
   assert {
-    condition     = length(module.tempo_worker_querier) == 1
-    error_message = "Expected distributed tempo_worker_querier in distributed mode"
+    condition = !anytrue([
+      length(juju_integration.loki_cluster) > 0,
+      length(juju_integration.mimir_cluster) > 0,
+      length(juju_integration.tempo_cluster) > 0,
+    ])
+    error_message = "Expected no monolithic cluster integrations in distributed mode"
   }
 
   assert {
-    condition     = length(module.tempo_worker_query_frontend) == 1
-    error_message = "Expected distributed tempo_worker_query_frontend in distributed mode"
+    condition = alltrue([
+      length(juju_integration.loki_cluster_backend) == 1,
+      length(juju_integration.loki_cluster_read) == 1,
+      length(juju_integration.loki_cluster_write) == 1,
+    ])
+    error_message = "Expected all distributed loki cluster integrations (backend, read, write)"
   }
 
   assert {
-    condition     = length(module.tempo_worker_ingester) == 1
-    error_message = "Expected distributed tempo_worker_ingester in distributed mode"
+    condition = alltrue([
+      length(juju_integration.mimir_cluster_backend) == 1,
+      length(juju_integration.mimir_cluster_read) == 1,
+      length(juju_integration.mimir_cluster_write) == 1,
+    ])
+    error_message = "Expected all distributed mimir cluster integrations (backend, read, write)"
   }
 
   assert {
-    condition     = length(module.tempo_worker_distributor) == 1
-    error_message = "Expected distributed tempo_worker_distributor in distributed mode"
-  }
-
-  assert {
-    condition     = length(module.tempo_worker_compactor) == 1
-    error_message = "Expected distributed tempo_worker_compactor in distributed mode"
-  }
-
-  assert {
-    condition     = length(module.tempo_worker_metrics_generator) == 1
-    error_message = "Expected distributed tempo_worker_metrics_generator in distributed mode"
-  }
-
-  assert {
-    condition     = length(juju_integration.seaweedfs_loki) == 1
-    error_message = "Expected seaweedfs_loki integration in seaweedfs mode"
-  }
-
-  assert {
-    condition     = length(juju_integration.loki_cluster) == 0
-    error_message = "Expected no monolithic loki_cluster integration in distributed mode"
-  }
-
-  assert {
-    condition     = length(juju_integration.loki_cluster_backend) == 1
-    error_message = "Expected distributed loki_cluster_backend integration"
-  }
-
-  assert {
-    condition     = length(juju_integration.loki_cluster_read) == 1
-    error_message = "Expected distributed loki_cluster_read integration"
-  }
-
-  assert {
-    condition     = length(juju_integration.loki_cluster_write) == 1
-    error_message = "Expected distributed loki_cluster_write integration"
-  }
-
-  assert {
-    condition     = length(juju_integration.mimir_cluster_backend) == 1
-    error_message = "Expected distributed mimir_cluster_backend integration"
-  }
-
-  assert {
-    condition     = length(juju_integration.tempo_cluster_ingester) == 1
-    error_message = "Expected distributed tempo_cluster_ingester integration"
+    condition = alltrue([
+      length(juju_integration.tempo_cluster_querier) == 1,
+      length(juju_integration.tempo_cluster_query_frontend) == 1,
+      length(juju_integration.tempo_cluster_ingester) == 1,
+      length(juju_integration.tempo_cluster_distributor) == 1,
+      length(juju_integration.tempo_cluster_compactor) == 1,
+      length(juju_integration.tempo_cluster_metrics_generator) == 1,
+    ])
+    error_message = "Expected all distributed tempo cluster integrations"
   }
 }
 
@@ -196,43 +225,57 @@ run "monolithic_s3" {
   }
 
   assert {
-    condition     = length(module.loki_worker) == 1
-    error_message = "Expected monolithic loki_worker in monolithic mode"
+    condition = alltrue([
+      length(juju_application.s3_integrator_loki) == 1,
+      length(juju_application.s3_integrator_mimir) == 1,
+      length(juju_application.s3_integrator_tempo) == 1,
+    ])
+    error_message = "Expected s3-integrator applications for all coordinators"
   }
 
   assert {
-    condition     = length(juju_application.s3_integrator_loki) == 1
-    error_message = "Expected s3_integrator_loki application in s3 mode"
+    condition = alltrue([
+      length(juju_integration.s3_integrator_loki) == 1,
+      length(juju_integration.s3_integrator_mimir) == 1,
+      length(juju_integration.s3_integrator_tempo) == 1,
+    ])
+    error_message = "Expected s3-integrator integrations for all coordinators"
   }
 
   assert {
-    condition     = length(juju_application.s3_integrator_mimir) == 1
-    error_message = "Expected s3_integrator_mimir application in s3 mode"
+    condition = !anytrue([
+      length(juju_integration.seaweedfs_loki) > 0,
+      length(juju_integration.seaweedfs_mimir) > 0,
+      length(juju_integration.seaweedfs_tempo) > 0,
+    ])
+    error_message = "Expected no seaweedfs integrations with s3 storage backend"
   }
 
   assert {
-    condition     = length(juju_application.s3_integrator_tempo) == 1
-    error_message = "Expected s3_integrator_tempo application in s3 mode"
+    condition = alltrue([
+      length(module.loki_worker) == 1,
+      length(module.mimir_worker) == 1,
+      length(module.tempo_worker) == 1,
+    ])
+    error_message = "Expected all monolithic workers in monolithic mode"
   }
 
   assert {
-    condition     = length(juju_integration.s3_integrator_loki) == 1
-    error_message = "Expected s3_integrator_loki integration in s3 mode"
-  }
-
-  assert {
-    condition     = length(juju_integration.s3_integrator_mimir) == 1
-    error_message = "Expected s3_integrator_mimir integration in s3 mode"
-  }
-
-  assert {
-    condition     = length(juju_integration.s3_integrator_tempo) == 1
-    error_message = "Expected s3_integrator_tempo integration in s3 mode"
-  }
-
-  assert {
-    condition     = length(juju_integration.seaweedfs_loki) == 0
-    error_message = "Expected no seaweedfs_loki integration with s3 storage backend"
+    condition = !anytrue([
+      length(module.loki_worker_backend) > 0,
+      length(module.loki_worker_read) > 0,
+      length(module.loki_worker_write) > 0,
+      length(module.mimir_worker_backend) > 0,
+      length(module.mimir_worker_read) > 0,
+      length(module.mimir_worker_write) > 0,
+      length(module.tempo_worker_querier) > 0,
+      length(module.tempo_worker_query_frontend) > 0,
+      length(module.tempo_worker_ingester) > 0,
+      length(module.tempo_worker_distributor) > 0,
+      length(module.tempo_worker_compactor) > 0,
+      length(module.tempo_worker_metrics_generator) > 0,
+    ])
+    error_message = "Expected no distributed workers in monolithic mode"
   }
 }
 
@@ -258,32 +301,107 @@ run "distributed_s3" {
   }
 
   assert {
-    condition     = length(module.loki_worker) == 0
-    error_message = "Expected no monolithic loki_worker in distributed mode"
+    condition = alltrue([
+      length(juju_application.s3_integrator_loki) == 1,
+      length(juju_application.s3_integrator_mimir) == 1,
+      length(juju_application.s3_integrator_tempo) == 1,
+    ])
+    error_message = "Expected s3-integrator applications for all coordinators"
   }
 
   assert {
-    condition     = length(module.loki_worker_backend) == 1
-    error_message = "Expected distributed loki_worker_backend in distributed mode"
+    condition = alltrue([
+      length(juju_integration.s3_integrator_loki) == 1,
+      length(juju_integration.s3_integrator_mimir) == 1,
+      length(juju_integration.s3_integrator_tempo) == 1,
+    ])
+    error_message = "Expected s3-integrator integrations for all coordinators"
   }
 
   assert {
-    condition     = length(juju_application.s3_integrator_loki) == 1
-    error_message = "Expected s3_integrator_loki application in s3 mode"
+    condition = !anytrue([
+      length(juju_integration.seaweedfs_loki) > 0,
+      length(juju_integration.seaweedfs_mimir) > 0,
+      length(juju_integration.seaweedfs_tempo) > 0,
+    ])
+    error_message = "Expected no seaweedfs integrations with s3 storage backend"
   }
 
   assert {
-    condition     = length(juju_integration.s3_integrator_loki) == 1
-    error_message = "Expected s3_integrator_loki integration in s3 mode"
+    condition = !anytrue([
+      length(module.loki_worker) > 0,
+      length(module.mimir_worker) > 0,
+      length(module.tempo_worker) > 0,
+    ])
+    error_message = "Expected no monolithic workers in distributed mode"
   }
 
   assert {
-    condition     = length(juju_integration.seaweedfs_loki) == 0
-    error_message = "Expected no seaweedfs_loki integration with s3 storage backend"
+    condition = alltrue([
+      length(module.loki_worker_backend) == 1,
+      length(module.loki_worker_read) == 1,
+      length(module.loki_worker_write) == 1,
+    ])
+    error_message = "Expected all distributed loki workers (backend, read, write)"
   }
 
   assert {
-    condition     = length(juju_integration.loki_cluster_backend) == 1
-    error_message = "Expected distributed loki_cluster_backend integration"
+    condition = alltrue([
+      length(module.mimir_worker_backend) == 1,
+      length(module.mimir_worker_read) == 1,
+      length(module.mimir_worker_write) == 1,
+    ])
+    error_message = "Expected all distributed mimir workers (backend, read, write)"
+  }
+
+  assert {
+    condition = alltrue([
+      length(module.tempo_worker_querier) == 1,
+      length(module.tempo_worker_query_frontend) == 1,
+      length(module.tempo_worker_ingester) == 1,
+      length(module.tempo_worker_distributor) == 1,
+      length(module.tempo_worker_compactor) == 1,
+      length(module.tempo_worker_metrics_generator) == 1,
+    ])
+    error_message = "Expected all distributed tempo workers"
+  }
+
+  assert {
+    condition = !anytrue([
+      length(juju_integration.loki_cluster) > 0,
+      length(juju_integration.mimir_cluster) > 0,
+      length(juju_integration.tempo_cluster) > 0,
+    ])
+    error_message = "Expected no monolithic cluster integrations in distributed mode"
+  }
+
+  assert {
+    condition = alltrue([
+      length(juju_integration.loki_cluster_backend) == 1,
+      length(juju_integration.loki_cluster_read) == 1,
+      length(juju_integration.loki_cluster_write) == 1,
+    ])
+    error_message = "Expected all distributed loki cluster integrations"
+  }
+
+  assert {
+    condition = alltrue([
+      length(juju_integration.mimir_cluster_backend) == 1,
+      length(juju_integration.mimir_cluster_read) == 1,
+      length(juju_integration.mimir_cluster_write) == 1,
+    ])
+    error_message = "Expected all distributed mimir cluster integrations"
+  }
+
+  assert {
+    condition = alltrue([
+      length(juju_integration.tempo_cluster_querier) == 1,
+      length(juju_integration.tempo_cluster_query_frontend) == 1,
+      length(juju_integration.tempo_cluster_ingester) == 1,
+      length(juju_integration.tempo_cluster_distributor) == 1,
+      length(juju_integration.tempo_cluster_compactor) == 1,
+      length(juju_integration.tempo_cluster_metrics_generator) == 1,
+    ])
+    error_message = "Expected all distributed tempo cluster integrations"
   }
 }
