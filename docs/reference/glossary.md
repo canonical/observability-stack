@@ -44,7 +44,7 @@ See [COS components](/reference/cos-components).
 
 ## COS Lite
 
-A resource-constrained flavour of COS that runs monolithic Loki and
+A resource-constrained flavor of COS that runs monolithic Loki and
 Prometheus, without Tempo. Recommended for near-edge and single-node deployments.
 See [What is COS?](/explanation/overview/what-is-cos).
 
@@ -69,7 +69,7 @@ The deployment pattern used by COS backends (Mimir, Loki, Tempo): each backend i
 into a **coordinator charm** + one or more **worker charms**, each assigned a specific
 role (e.g. `ingester`, `querier`, `compactor`). Enables independent scaling and
 pod anti-affinity across nodes. COS Lite uses a monolithic charm instead.
-See [What is COS?](/explanation/overview/what-is-cos).
+See [the coordinated workers explanation doc](/explanation/architecture/coordinated-workers) for more information.
 
 ## Cross-model relation (CMR)
 
@@ -78,7 +78,7 @@ CMRs are the primary mechanism by which workloads in other models — including 
 models — send telemetry to COS.
 See [Integration matrix](/reference/integration-matrix).
 
-## Flavour
+## Flavor
 
 Informal term for the two COS deployment variants: **COS** (scalable, HA) and
 **COS Lite** (monolithic, resource-constrained). Both share Grafana, Alertmanager,
