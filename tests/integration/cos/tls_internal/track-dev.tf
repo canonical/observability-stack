@@ -1,3 +1,4 @@
+# [docs:providers]
 terraform {
   required_version = ">= 1.5"
   required_providers {
@@ -7,6 +8,7 @@ terraform {
     }
   }
 }
+# [docs:providers-end]
 
 variable "model" { type = string }
 variable "s3_endpoint" { type = string }
@@ -20,7 +22,7 @@ data "juju_model" "cos" {
 
 # [docs:cos]
 module "cos" {
-  source       = "git::https://github.com/canonical/observability-stack//terraform/cos"
+  source       = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=main"
   model_uuid   = data.juju_model.cos.uuid
   risk         = "edge"
   internal_tls = true
@@ -36,3 +38,4 @@ module "cos" {
   tempo_coordinator = { units = 1 }
   tempo_worker      = { compactor_units = 1, distributor_units = 1, ingester_units = 1, metrics_generator_units = 1, querier_units = 1, query_frontend_units = 1 }
 }
+# [docs:cos-end]

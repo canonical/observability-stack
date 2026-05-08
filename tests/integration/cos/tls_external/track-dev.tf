@@ -25,12 +25,12 @@ data "juju_model" "cos" {
 }
 
 module "ssc" {
-  source     = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
+  source     = "git::https://github.com/canonical/self-signed-certificates-operator//terraform?ref=main"
   model_uuid = data.juju_model.ca.uuid
 }
 
 module "cos" {
-  source                          = "git::https://github.com/canonical/observability-stack//terraform/cos"
+  source                          = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=main"
   model_uuid                      = data.juju_model.cos.uuid
   risk                            = "edge"
   internal_tls                    = false
