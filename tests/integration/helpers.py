@@ -80,8 +80,10 @@ def catalogue_apps_are_reachable(
     juju: jubilant.Juju, tls_context: Optional[ssl.SSLContext] = None
 ):
     stdout = juju.ssh("catalogue/0", "cat /web/config.json", container="catalogue")
+    assert stdout, "No config found in catalogue unit"
     cat_conf = json.loads(stdout)
     apps = {app["name"]: app["url"] for app in cat_conf["apps"]}
+    assert apps, "No apps found in catalogue config"
     for app, url in apps.items():
         if not url:
             continue
