@@ -6,10 +6,42 @@ In this tutorial you deploy a single-node COS Lite appliance, backed by hostPath
 
 This tutorial assumes you have a Juju controller bootstrapped on a 
 MicroK8s cloud that is ready to use, on a 4cpu8gb node or better, with at least 40Gi disk space.
-Typical setup using [snaps](https://snapcraft.io/) 
-can be found in the [Juju docs](https://documentation.ubuntu.com/juju/3.6/howto/manage-your-deployment/).
 
-Follow the instructions there to install Juju and MicroK8s.
+Juju 3.x is a strictly confined snap and can only bootstrap a **strictly confined** MicroK8s, so install
+MicroK8s from a strict channel (not `--classic`). Strict channels follow the pattern
+`<k8s-version>-strict/<risk>`; pick a current one from:
+
+```bash
+$ snap info microk8s | grep strict/stable
+```
+
+Then install it and add your user to its group:
+
+```bash
+$ sudo snap install microk8s --channel=<k8s-version>-strict/stable
+$ sudo usermod -a -G snap_microk8s $USER
+$ newgrp snap_microk8s
+```
+
+```{note}
+Strict MicroK8s uses the group `snap_microk8s` (older guides referencing the unprefixed `microk8s`
+group apply only to the classic snap).
+```
+
+Then install Juju and bootstrap the controller:
+
+```bash
+$ sudo snap install juju --channel=3.6/stable
+$ juju bootstrap microk8s
+```
+
+This tutorial also uses `jq` (for JSON parsing in the metallb step below), which is not preinstalled on a fresh Ubuntu image:
+
+```bash
+$ sudo apt-get update && sudo apt-get install -y jq
+```
+
+For more detailed setup notes, see the [Juju docs](https://documentation.ubuntu.com/juju/3.6/howto/manage-your-deployment/).
 
 ## Introduction
 
