@@ -42,7 +42,7 @@ See [COS components](/reference/cos-components).
 
 ## COS Lite
 
-A resource-constrained flavour of COS that runs monolithic Loki and
+A resource-constrained flavor of COS that runs monolithic Loki and
 Prometheus, without Tempo. Recommended for near-edge and single-node deployments.
 See [What is COS?](/explanation/overview/what-is-cos).
 
@@ -76,7 +76,7 @@ CMRs are the primary mechanism by which workloads in other models — including 
 models — send telemetry to COS.
 See [Integration matrix](/reference/integration-matrix).
 
-## Flavour
+## Flavor
 
 Informal term for the two COS deployment variants: **COS** (scalable, HA) and
 **COS Lite** (monolithic, resource-constrained). Both share Grafana, Alertmanager,
