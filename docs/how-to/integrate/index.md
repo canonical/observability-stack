@@ -25,6 +25,7 @@ deployment.
 ```{toctree}
 :maxdepth: 1
 
+Send telemetry to external backends <send-telemetry-to-external-backends>
 Tier OpenTelemetry Collector with different pipelines per data stream <tiered-otelcols>
 Add tracing to COS Lite <add-tracing-to-cos-lite>
 Add alert rules <adding-alert-rules>

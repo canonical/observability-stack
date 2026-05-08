@@ -67,7 +67,7 @@ The deployment pattern used by COS backends (Mimir, Loki, Tempo): each backend i
 into a **coordinator charm** + one or more **worker charms**, each assigned a specific
 role (e.g. `ingester`, `querier`, `compactor`). Enables independent scaling and
 pod anti-affinity across nodes. COS Lite uses a monolithic charm instead.
-See [What is COS?](/explanation/overview/what-is-cos).
+See [the coordinated workers explanation doc](/explanation/architecture/coordinated-workers) for more information.
 
 ## Cross-model relation (CMR)
 

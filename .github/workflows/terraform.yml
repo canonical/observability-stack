@@ -68,3 +68,9 @@ jobs:
     with:
       product: cos
       runner: self-hosted-linux-amd64-noble-xlarge
+  test-integration-cos-dev:
+    name: COS Dev Terraform integration
+    uses: canonical/observability-stack/.github/workflows/_integration.yml@main
+    with:
+      product: cos_dev
+      runner: self-hosted-linux-amd64-noble-large
