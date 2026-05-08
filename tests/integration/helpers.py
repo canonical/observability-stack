@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import shlex
 import shutil
 import ssl
@@ -88,9 +89,14 @@ def catalogue_apps_are_reachable(
         assert response.code == 200, f"{app} was not reachable"
 
 
+# Pebble log format:  "PEBBLE_TS [service] OTELCOL_TS\tLEVEL\t..."
+# 2026-04-22T12:08:55.177Z [otelcol] 2026-04-22T12:08:55.177Z warn memorylimiter@v0.130.1/memorylimiter.go:196 Memory usage is above hard limit. Forcing a GC. {"resource": {"service.instance.id": "9f774ce2-bbdd-44b8-95aa-abe1bd6b72eb", "service.name": "otelcol", "service.version": "0.130.1"}, "otelcol.component.id": "memory_limiter", "otelcol.component.kind": "processor", "otelcol.pipeline.id": "traces/otelcol/0", "otelcol.signal": "traces", "cur_mem_mib": 12}
+# 2026-04-22T12:00:54.179Z [otelcol] 2026-04-22T12:00:54.179Z info memorylimiter@v0.130.1/memorylimiter.go:171 Memory usage after GC. {"resource": {"service.instance.id": "9f774ce2-bbdd-44b8-95aa-abe1bd6b72eb", "service.name": "otelcol", "service.version": "0.130.1"}, "otelcol.component.id": "memory_limiter", "otelcol.component.kind": "processor", "otelcol.pipeline.id": "traces/otelcol/0", "otelcol.signal": "traces", "cur_mem_mib": 11}
+# 2026-04-22T12:08:54.309Z [otelcol] 2026-04-22T12:08:54.309Z error adapter/receiver.go:61 ConsumeLogs() failed {"resource": {"service.instance.id": "9f774ce2-bbdd-44b8-95aa-abe1bd6b72eb", "service.name": "otelcol", "service.version": "0.130.1"}, "otelcol.component.id": "filelog/var-log", "otelcol.component.kind": "receiver", "otelcol.signal": "logs", "error": "data refused due to high memory usage"}
+_LOG_LEVEL_RE = re.compile(r"^(?:\S+ \[otelcol\] )?\S+\t(\w+)\t|^\S+ (\w+) ")
+
+
 def no_errors_in_otelcol_logs(juju: jubilant.Juju):
-    # By default, no debug exporters have been configured and otelcol logs at the WARN level
-    # Thus, there should be no logs outputted if otelcol is operating correctly
-    # TODO: Should I grep for "WARN" or "ERROR"?
     stdout = juju.ssh("otelcol/0", "pebble logs", container="otelcol")
-    assert not stdout
+    error_lines = [line for line in stdout.splitlines() if (m := _LOG_LEVEL_RE.match(line)) and (m.group(1) or m.group(2)) in ["warn", "error"]]
+    assert not error_lines, "otelcol error logs:\n" + "\n".join(error_lines)
