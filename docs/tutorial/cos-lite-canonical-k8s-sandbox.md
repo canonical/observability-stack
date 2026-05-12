@@ -28,25 +28,25 @@ It is usually a good idea to create a dedicated model for the COS Lite bundle. S
 Create a new juju model, `cos`:
 
 ```bash
-$ juju add-model cos
+juju add-model cos
 ```
 
 Next, deploy the bundle with:
 
 ```bash
-$ juju deploy cos-lite --trust
+juju deploy cos-lite --trust
 ```
 
 You can watch the model as it settles with:
 
 ```bash
-$ juju status --relations --watch=5s
+juju status --relations --watch=5s
 ```
 
 The status of your deployment should eventually be very similar to the following:
 
 ```
-$ juju status --relations --storage
+juju status --relations --storage
 Model  Controller  Cloud/Region  Version  SLA          Timestamp
 cos    ck8s        ck8s          3.6.6    unsupported  16:44:44-04:00
 

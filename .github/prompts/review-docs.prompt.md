@@ -15,6 +15,7 @@ Review the documentation for clarity, completeness, and accuracy.
 - Known product names should be capitalized consistently throughout the documentation.
 - Changes in docs should be reflected in the glossary, if the changes are related to terms/concepts that are unique to
   COS or charmed observability (don't redefine all/general terms).
+- DO NOT use prompt marks (e.g. $ or #) in code samples.
 
 ## Context
 
