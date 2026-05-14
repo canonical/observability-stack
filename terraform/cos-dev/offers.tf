@@ -34,3 +34,107 @@ resource "juju_offer" "tempo_tracing" {
   application_name = module.tempo_coordinator.app_name
   endpoints        = [module.tempo_coordinator.provides.tracing]
 }
+
+# -------------- # CMR Mesh offers -------------- #
+
+resource "juju_offer" "alertmanager_provide_cmr_mesh" {
+  name             = "alertmanager-provide-cmr-mesh"
+  model_uuid       = var.model_uuid
+  application_name = module.alertmanager.app_name
+  endpoints        = [module.alertmanager.provides.provide_cmr_mesh]
+}
+
+resource "juju_offer" "alertmanager_require_cmr_mesh" {
+  name             = "alertmanager-require-cmr-mesh"
+  model_uuid       = var.model_uuid
+  application_name = module.alertmanager.app_name
+  endpoints        = [module.alertmanager.requires.require_cmr_mesh]
+}
+
+resource "juju_offer" "catalogue_provide_cmr_mesh" {
+  name             = "catalogue-provide-cmr-mesh"
+  model_uuid       = var.model_uuid
+  application_name = module.catalogue.app_name
+  endpoints        = [module.catalogue.provides.provide_cmr_mesh]
+}
+
+resource "juju_offer" "catalogue_require_cmr_mesh" {
+  name             = "catalogue-require-cmr-mesh"
+  model_uuid       = var.model_uuid
+  application_name = module.catalogue.app_name
+  endpoints        = [module.catalogue.requires.require_cmr_mesh]
+}
+
+resource "juju_offer" "grafana_provide_cmr_mesh" {
+  name             = "grafana-provide-cmr-mesh"
+  model_uuid       = var.model_uuid
+  application_name = module.grafana.app_name
+  endpoints        = [module.grafana.provides.provide_cmr_mesh]
+
+  lifecycle { replace_triggered_by = [terraform_data.grafana_litestream_resource] }
+}
+
+resource "juju_offer" "grafana_require_cmr_mesh" {
+  name             = "grafana-require-cmr-mesh"
+  model_uuid       = var.model_uuid
+  application_name = module.grafana.app_name
+  endpoints        = [module.grafana.requires.require_cmr_mesh]
+
+  lifecycle { replace_triggered_by = [terraform_data.grafana_litestream_resource] }
+}
+
+resource "juju_offer" "loki_provide_cmr_mesh" {
+  name             = "loki-provide-cmr-mesh"
+  model_uuid       = var.model_uuid
+  application_name = module.loki_coordinator.app_name
+  endpoints        = [module.loki_coordinator.provides.provide_cmr_mesh]
+}
+
+resource "juju_offer" "loki_require_cmr_mesh" {
+  name             = "loki-require-cmr-mesh"
+  model_uuid       = var.model_uuid
+  application_name = module.loki_coordinator.app_name
+  endpoints        = [module.loki_coordinator.requires.require_cmr_mesh]
+}
+
+resource "juju_offer" "mimir_provide_cmr_mesh" {
+  name             = "mimir-provide-cmr-mesh"
+  model_uuid       = var.model_uuid
+  application_name = module.mimir_coordinator.app_name
+  endpoints        = [module.mimir_coordinator.provides.provide_cmr_mesh]
+}
+
+resource "juju_offer" "mimir_require_cmr_mesh" {
+  name             = "mimir-require-cmr-mesh"
+  model_uuid       = var.model_uuid
+  application_name = module.mimir_coordinator.app_name
+  endpoints        = [module.mimir_coordinator.requires.require_cmr_mesh]
+}
+
+resource "juju_offer" "opentelemetry_collector_provide_cmr_mesh" {
+  name             = "opentelemetry-collector-provide-cmr-mesh"
+  model_uuid       = var.model_uuid
+  application_name = module.opentelemetry_collector.app_name
+  endpoints        = [module.opentelemetry_collector.provides.provide_cmr_mesh]
+}
+
+resource "juju_offer" "opentelemetry_collector_require_cmr_mesh" {
+  name             = "opentelemetry-collector-require-cmr-mesh"
+  model_uuid       = var.model_uuid
+  application_name = module.opentelemetry_collector.app_name
+  endpoints        = [module.opentelemetry_collector.requires.require_cmr_mesh]
+}
+
+resource "juju_offer" "tempo_provide_cmr_mesh" {
+  name             = "tempo-provide-cmr-mesh"
+  model_uuid       = var.model_uuid
+  application_name = module.tempo_coordinator.app_name
+  endpoints        = [module.tempo_coordinator.provides.provide_cmr_mesh]
+}
+
+resource "juju_offer" "tempo_require_cmr_mesh" {
+  name             = "tempo-require-cmr-mesh"
+  model_uuid       = var.model_uuid
+  application_name = module.tempo_coordinator.app_name
+  endpoints        = [module.tempo_coordinator.requires.require_cmr_mesh]
+}

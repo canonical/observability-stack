@@ -649,7 +649,7 @@ resource "juju_integration" "ingress" {
         app_name = module.mimir_coordinator.app_name
         endpoint = "ingress"
       }
-    } : k => v if var.ingress[k]
+    } : k => v if var.ingress[k] && !var.mesh_enabled
   }
 
   model_uuid = var.model_uuid
@@ -666,7 +666,7 @@ resource "juju_integration" "ingress" {
 }
 
 resource "juju_integration" "grafana_ingress" {
-  count = var.ingress.grafana ? 1 : 0
+  count = var.ingress.grafana && !var.mesh_enabled ? 1 : 0
 
   model_uuid = var.model_uuid
 
@@ -694,7 +694,7 @@ resource "juju_integration" "traefik_route" {
         app_name = module.tempo_coordinator.app_name
         endpoint = module.tempo_coordinator.requires.ingress
       }
-    } : k => v if var.ingress[k]
+    } : k => v if var.ingress[k] && !var.mesh_enabled
   }
 
   model_uuid = var.model_uuid
@@ -702,6 +702,86 @@ resource "juju_integration" "traefik_route" {
   application {
     name     = module.traefik.app_name
     endpoint = module.traefik.endpoints.traefik_route
+  }
+
+  application {
+    name     = each.value.app_name
+    endpoint = each.value.endpoint
+  }
+}
+
+resource "juju_integration" "istio_ingress" {
+  for_each = {
+    for k, v in {
+      alertmanager = {
+        app_name = module.alertmanager.app_name
+        endpoint = module.alertmanager.requires.ingress
+      }
+      catalogue = {
+        app_name = module.catalogue.app_name
+        endpoint = module.catalogue.requires.ingress
+      }
+      loki = {
+        app_name = module.loki_coordinator.app_name
+        endpoint = "ingress"
+      }
+      mimir = {
+        app_name = module.mimir_coordinator.app_name
+        endpoint = "ingress"
+      }
+    } : k => v if var.ingress[k] && var.mesh_enabled
+  }
+
+  model_uuid = var.model_uuid
+
+  application {
+    name     = module.istio_ingress[0].app_name
+    endpoint = module.istio_ingress[0].provides.ingress
+  }
+
+  application {
+    name     = each.value.app_name
+    endpoint = each.value.endpoint
+  }
+}
+
+resource "juju_integration" "grafana_istio_ingress" {
+  count = var.ingress.grafana && var.mesh_enabled ? 1 : 0
+
+  model_uuid = var.model_uuid
+
+  application {
+    name     = module.grafana.app_name
+    endpoint = module.grafana.requires.ingress
+  }
+
+  application {
+    name     = module.istio_ingress[0].app_name
+    endpoint = module.istio_ingress[0].provides.ingress
+  }
+
+  lifecycle { replace_triggered_by = [terraform_data.grafana_ingress_interface, terraform_data.grafana_litestream_resource] }
+}
+
+resource "juju_integration" "istio_ingress_route" {
+  for_each = {
+    for k, v in {
+      opentelemetry_collector = {
+        app_name = module.opentelemetry_collector.app_name
+        endpoint = module.opentelemetry_collector.requires.ingress
+      }
+      tempo = {
+        app_name = module.tempo_coordinator.app_name
+        endpoint = module.tempo_coordinator.requires.ingress
+      }
+    } : k => v if var.ingress[k] && var.mesh_enabled
+  }
+
+  model_uuid = var.model_uuid
+
+  application {
+    name     = module.istio_ingress[0].app_name
+    endpoint = module.istio_ingress[0].provides["istio-ingress-route"]
   }
 
   application {
@@ -859,6 +939,53 @@ resource "juju_integration" "traces_and_metrics_correlation" {
   application {
     name     = module.mimir_coordinator.app_name
     endpoint = "send-datasource"
+  }
+}
+
+# -------------- # Service Mesh ---------------------
+
+resource "juju_integration" "istio_beacon" {
+  for_each = var.mesh_enabled ? {
+    alertmanager = {
+      app_name = module.alertmanager.app_name
+      endpoint = module.alertmanager.requires.service_mesh
+    }
+    catalogue = {
+      app_name = module.catalogue.app_name
+      endpoint = module.catalogue.requires.service_mesh
+    }
+    grafana = {
+      app_name = module.grafana.app_name
+      endpoint = module.grafana.requires.service_mesh
+    }
+    loki = {
+      app_name = module.loki_coordinator.app_name
+      endpoint = module.loki_coordinator.requires.service_mesh
+    }
+    mimir = {
+      app_name = module.mimir_coordinator.app_name
+      endpoint = module.mimir_coordinator.requires.service_mesh
+    }
+    opentelemetry_collector = {
+      app_name = module.opentelemetry_collector.app_name
+      endpoint = module.opentelemetry_collector.requires.service_mesh
+    }
+    tempo = {
+      app_name = module.tempo_coordinator.app_name
+      endpoint = module.tempo_coordinator.requires.service_mesh
+    }
+  } : {}
+
+  model_uuid = var.model_uuid
+
+  application {
+    name     = module.istio_beacon[0].app_name
+    endpoint = module.istio_beacon[0].provides.service_mesh
+  }
+
+  application {
+    name     = each.value.app_name
+    endpoint = each.value.endpoint
   }
 }
 

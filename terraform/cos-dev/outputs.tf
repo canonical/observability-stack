@@ -7,6 +7,22 @@ output "offers" {
     loki_logging                 = juju_offer.loki_logging
     mimir_receive_remote_write   = juju_offer.mimir_receive_remote_write
     tempo_tracing                = juju_offer.tempo_tracing
+
+    # CMR Mesh
+    alertmanager_provide_cmr_mesh            = juju_offer.alertmanager_provide_cmr_mesh
+    alertmanager_require_cmr_mesh            = juju_offer.alertmanager_require_cmr_mesh
+    catalogue_provide_cmr_mesh               = juju_offer.catalogue_provide_cmr_mesh
+    catalogue_require_cmr_mesh               = juju_offer.catalogue_require_cmr_mesh
+    grafana_provide_cmr_mesh                 = juju_offer.grafana_provide_cmr_mesh
+    grafana_require_cmr_mesh                 = juju_offer.grafana_require_cmr_mesh
+    loki_provide_cmr_mesh                    = juju_offer.loki_provide_cmr_mesh
+    loki_require_cmr_mesh                    = juju_offer.loki_require_cmr_mesh
+    mimir_provide_cmr_mesh                   = juju_offer.mimir_provide_cmr_mesh
+    mimir_require_cmr_mesh                   = juju_offer.mimir_require_cmr_mesh
+    opentelemetry_collector_provide_cmr_mesh  = juju_offer.opentelemetry_collector_provide_cmr_mesh
+    opentelemetry_collector_require_cmr_mesh  = juju_offer.opentelemetry_collector_require_cmr_mesh
+    tempo_provide_cmr_mesh                   = juju_offer.tempo_provide_cmr_mesh
+    tempo_require_cmr_mesh                   = juju_offer.tempo_require_cmr_mesh
   }
   description = "All Juju offers which are exposed by this product module"
 }

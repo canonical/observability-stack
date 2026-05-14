@@ -162,3 +162,119 @@ run "ingress_partial_override" {
     error_message = "Expected traefik_route to contain 'opentelemetry_collector' key"
   }
 }
+
+# --- mesh_enabled: all ingress via istio, none via traefik ---
+
+run "mesh_ingress_all_enabled" {
+  command = plan
+
+  variables {
+    mesh_enabled = true
+    internal_tls = false
+  }
+
+  # Traefik ingress resources should be empty
+  assert {
+    condition     = length(juju_integration.ingress) == 0
+    error_message = "Expected 0 traefik ingress integrations when mesh is enabled, got ${length(juju_integration.ingress)}"
+  }
+
+  assert {
+    condition     = length(juju_integration.grafana_ingress) == 0
+    error_message = "Expected 0 grafana_ingress integrations when mesh is enabled, got ${length(juju_integration.grafana_ingress)}"
+  }
+
+  assert {
+    condition     = length(juju_integration.traefik_route) == 0
+    error_message = "Expected 0 traefik_route integrations when mesh is enabled, got ${length(juju_integration.traefik_route)}"
+  }
+
+  # Istio ingress resources should be populated
+  assert {
+    condition     = length(juju_integration.istio_ingress) == 4
+    error_message = "Expected 4 istio_ingress integrations (alertmanager, catalogue, loki, mimir), got ${length(juju_integration.istio_ingress)}"
+  }
+
+  assert {
+    condition     = length(juju_integration.grafana_istio_ingress) == 1
+    error_message = "Expected 1 grafana_istio_ingress integration, got ${length(juju_integration.grafana_istio_ingress)}"
+  }
+
+  assert {
+    condition     = length(juju_integration.istio_ingress_route) == 2
+    error_message = "Expected 2 istio_ingress_route integrations (opentelemetry_collector, tempo), got ${length(juju_integration.istio_ingress_route)}"
+  }
+}
+
+# --- mesh_enabled with partial ingress override ---
+
+run "mesh_ingress_partial" {
+  command = plan
+
+  variables {
+    mesh_enabled = true
+    internal_tls = false
+    ingress = {
+      alertmanager            = false
+      catalogue               = true
+      grafana                 = false
+      loki                    = true
+      mimir                   = false
+      opentelemetry_collector = true
+      tempo                   = false
+    }
+  }
+
+  # Traefik resources should all be empty
+  assert {
+    condition     = length(juju_integration.ingress) == 0
+    error_message = "Expected 0 traefik ingress integrations when mesh is enabled, got ${length(juju_integration.ingress)}"
+  }
+
+  assert {
+    condition     = length(juju_integration.grafana_ingress) == 0
+    error_message = "Expected 0 grafana_ingress integrations when mesh is enabled"
+  }
+
+  assert {
+    condition     = length(juju_integration.traefik_route) == 0
+    error_message = "Expected 0 traefik_route integrations when mesh is enabled"
+  }
+
+  # Istio resources should respect the ingress toggles
+  assert {
+    condition     = length(juju_integration.istio_ingress) == 2
+    error_message = "Expected 2 istio_ingress integrations (catalogue, loki), got ${length(juju_integration.istio_ingress)}"
+  }
+
+  assert {
+    condition     = length(juju_integration.grafana_istio_ingress) == 0
+    error_message = "Expected 0 grafana_istio_ingress integrations when grafana ingress is disabled"
+  }
+
+  assert {
+    condition     = length(juju_integration.istio_ingress_route) == 1
+    error_message = "Expected 1 istio_ingress_route integration (opentelemetry_collector), got ${length(juju_integration.istio_ingress_route)}"
+  }
+}
+
+# --- mesh disabled (default): no istio ingress resources ---
+
+run "no_mesh_no_istio_ingress" {
+  command = plan
+
+  assert {
+    condition     = length(juju_integration.istio_ingress) == 0
+    error_message = "Expected 0 istio_ingress integrations when mesh is disabled, got ${length(juju_integration.istio_ingress)}"
+  }
+
+  assert {
+    condition     = length(juju_integration.grafana_istio_ingress) == 0
+    error_message = "Expected 0 grafana_istio_ingress integrations when mesh is disabled"
+  }
+
+  assert {
+    condition     = length(juju_integration.istio_ingress_route) == 0
+    error_message = "Expected 0 istio_ingress_route integrations when mesh is disabled"
+  }
+}

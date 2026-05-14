@@ -46,6 +46,18 @@ variable "storage_backend" {
   }
 }
 
+# -------------- # Mesh configurations --------------
+variable "mesh_enabled" {
+  description = "Specify whether to enable the service mesh or not."
+  type        = bool
+  default     = false
+
+  validation {
+    condition     = !(var.mesh_enabled && var.internal_tls)
+    error_message = "mesh_enabled and internal_tls cannot both be enabled at the same time."
+  }
+}
+
 # -------------- # TLS configurations --------------
 
 variable "internal_tls" {
@@ -181,6 +193,32 @@ variable "grafana" {
   })
   default     = {}
   description = "Application configuration for Grafana. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
+}
+
+variable "istio_beacon" {
+  type = object({
+    app_name           = optional(string, "istio-beacon")
+    config             = optional(map(string), {})
+    constraints        = optional(string, "arch=amd64")
+    revision           = optional(number, null)
+    storage_directives = optional(map(string), {})
+    units              = optional(number, 1)
+  })
+  default     = {}
+  description = "Application configuration for istio-beacon. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
+}
+
+variable "istio_ingress" {
+  type = object({
+    app_name           = optional(string, "istio-ingress")
+    config             = optional(map(string), {})
+    constraints        = optional(string, "arch=amd64")
+    revision           = optional(number, null)
+    storage_directives = optional(map(string), {})
+    units              = optional(number, 1)
+  })
+  default     = {}
+  description = "Application configuration for istio-ingress. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
 variable "loki_coordinator" {
