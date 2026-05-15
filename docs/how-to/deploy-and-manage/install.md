@@ -6,14 +6,16 @@ myst:
 
 # How to install COS
 
+This guide walks you through the prerequisites and deployment planning needed to install the Canonical Observability Stack (COS). Use it to prepare your environment, create a Terraform plan, and deploy supporting components in the recommended order.
+
 ## Preparation
 
 Before deploying COS or COS Lite, work through the items below.
 
 ### COS flavor
 
-The [flavor of COS](/explanation/overview/what-is-cos) to install depends on your use-case.
-If you want to install on edge devices, then COS Lite is likely the right choice; otherwise
+The [flavor of COS](/explanation/overview/what-is-cos) to install depends on your use case.
+If you want to install on edge devices, want to rely on local storage, or do not need high availability, then COS Lite is likely the right choice; otherwise
 you should probably go with "full" COS.
 
 ```{mermaid}
@@ -65,14 +67,16 @@ Production deployments should use TLS.
 See [How to configure TLS encryption](/how-to/deploy-and-manage/configure-tls-encryption) for the available modes and what you need to prepare (for example, an external certificates provider).
 
 ### Authentication and authorization
-Only the Grafana and Traefik charms support auth.
-For exposing Grafana publicly, use two Traefik charms, one for internal connections, and another for external access, which will provide ingress to Grafana.
+Only the Grafana and Traefik charms support authentication.
+To expose Grafana publicly, deploy two Traefik charms: one for internal connections and another for external access to provide ingress.
 
 ### Dedicated Juju controller and model
 
 You should bootstrap a dedicated Juju controller and model just for COS.
 
-## Create Terraform plan
+## Terraform plan
+
+Create a `main.tf` file like this one:
 
 ```hcl
 resource "juju_model" "cos" {
@@ -97,4 +101,4 @@ Deploying COS without revision pins, per component, will deploy the latest charm
 
 ## Deploy COS Alerter
 
-COS Alerter is a watchdog service for COS you should deploy on a physically different cloud.
+COS Alerter is a watchdog service for COS. Deploy it on dedicated infrastructure that is separate from your COS or COS Lite deployment. For more information, including deployment details, see the [COS Alerter repository](https://github.com/canonical/cos-alerter).

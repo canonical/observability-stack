@@ -31,7 +31,7 @@ The raw data can also be obtained by querying the Prometheus `query` endpoint di
 
 ```bash
 curl -s --data-urlencode 'query=count({__name__=~".+"})' \
-  ${PROM_UNIT_IP}:9090/api/v1/query"
+  http://${PROM_UNIT_IP}:9090/api/v1/query
 ```
 
 Compare the output to the number of metrics exposed by individual applications.
