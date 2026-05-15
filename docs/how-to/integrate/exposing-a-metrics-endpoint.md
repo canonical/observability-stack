@@ -19,7 +19,7 @@ amount of code, enable your charm to get scraped by a charm like [prometheus-k8s
 Fetch the `prometheus_scrape` library using  the `charmcraft` command:
 
 ```bash
-$ charmcraft fetch-lib charms.prometheus_k8s.v0.prometheus_scrape
+charmcraft fetch-lib charms.prometheus_k8s.v0.prometheus_scrape
 ```
 
 ## Import the Library

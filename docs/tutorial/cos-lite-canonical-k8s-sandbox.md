@@ -42,15 +42,17 @@ terraform apply -var="model=cos-lite"
 
 You can watch the model as it settles with:
 
-```bash
-$ juju status --relations --watch=5s
+```shell
+juju status --relations --watch=5s
 ```
 
 The status of your deployment should eventually be very similar to the following:
 
+```shell
+juju status --relations --storage
 ```
-$ juju status --relations --storage
 
+```
 Model     Controller  Cloud/Region  Version  SLA          Timestamp
 cos-lite  kub         k8s           3.6.21   unsupported  11:39:52+02:00
 

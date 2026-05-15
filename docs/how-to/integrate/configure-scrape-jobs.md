@@ -22,15 +22,15 @@ Deploying the [Prometheus Scrape Config charm](https://charmhub.io/prometheus-sc
 deploy it from the edge channel:
 
 ```bash
-$ juju deploy prometheus-scrape-config-k8s --channel latest/edge
+juju deploy prometheus-scrape-config-k8s --channel latest/edge
 ```
 
 Then relate it to the application you want to scrape, in this case 
 [the Zinc charm](https://charmhub.io/zinc-k8s), as well as to Prometheus itself:
 
 ```bash
-$ juju relate prometheus-scrape-config-k8s zinc-k8s
-$ juju relate prometheus-scrape-config-k8s prometheus-k8s
+juju relate prometheus-scrape-config-k8s zinc-k8s
+juju relate prometheus-scrape-config-k8s prometheus-k8s
 ```
 
 With that done, you'll now be able to tweak the configuration of the scrape job.
@@ -40,7 +40,7 @@ With that done, you'll now be able to tweak the configuration of the scrape job.
 For a list of configuration options and explanations about what they do as well as what their defaults are, run the `juju config` command without any configuration option:
 
 ```
-$ juju config prometheus-scrape-config-k8s
+juju config prometheus-scrape-config-k8s
 ```
 
 ## Changing the Configuration
@@ -49,7 +49,7 @@ Let's go ahead and have a look at how our scrape job currently looks:
 
 ```bash
 
-$ juju show-unit prometheus-k8s/0
+juju show-unit prometheus-k8s/0
 
 ...
     
@@ -85,14 +85,13 @@ $ juju show-unit prometheus-k8s/0
 Then, we will set the `scrape_interval` in the prometheus-scrape-config-k8s charm:
 
 ```bash
-$ juju config prometheus-scrape-config-k8s scrape_interval=2m
+juju config prometheus-scrape-config-k8s scrape_interval=2m
 ```
 
 Let's have a look again:
 
 ```bash
-    
-$ juju show-unit prometheus-k8s/0
+juju show-unit prometheus-k8s/0
 
 ...
 
