@@ -18,7 +18,7 @@ This tutorial assumes you have:
   for how Juju integrates with it. Your user must also be a member of the
   `snap_microk8s` group.
 
-```{dropdown} Add your user to the snap_microk8s group
+```{dropdown} Add your user to the `snap_microk8s` group
   Strict MicroK8s uses the `snap_microk8s` group rather than the `microk8s`
   group used by the classic snap. To add your current user and pick up the new
   membership in the current shell:
