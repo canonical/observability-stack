@@ -172,7 +172,6 @@ SHA
 sitemapindex
 SLAs
 Snapcraft
-snap_microk8s
 SNMP
 Sphinx
 Spread
