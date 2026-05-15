@@ -51,20 +51,9 @@ This is a Terraform module facilitating the deployment of the COS Lite solution,
 
 ## Usage
 
-### Using different Terraform Juju provider versions
-If you require the Terraform Juju provider `< 1.0.0`, then deploy the COS Lite module with the `tf-provider-v0` tag:
+The minimum version of Terraform Juju provider required is `1.5`.
 
-```hcl
-module "cos-lite" {
-  source     = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=tf-provider-v0"
-}
-```
-
-Otherwise, you can deploy from main (without `?ref`) which uses the Terraform Juju provider `~> 1.0`. See the [v1 migration documentation](https://documentation.ubuntu.com/terraform-provider-juju/v1/howto/manage-provider/upgrade-provider-to-v1/) if you need to upgrade your modules.
-
-### Basic usage
-
-To deploy the COS Lite solution in a model named `cos`, create this root module:
+To deploy the COS Lite solution in a model named `cos-lite`, create this root module:
 ```hcl
 terraform {
   required_version = ">= 1.5"
@@ -76,14 +65,14 @@ terraform {
   }
 }
 
-resource "juju_model" "cos" {
+resource "juju_model" "cos_lite" {
   name = "cos-lite"
 }
 
 module "cos-lite" {
-  source     = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=track/2"
-  model_uuid = juju_model.cos.uuid
-  channel    = "2/stable"
+  source     = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=main"
+  model_uuid = juju_model.cos_lite.uuid
+  risk    = "edge"
 }
 ```
 
