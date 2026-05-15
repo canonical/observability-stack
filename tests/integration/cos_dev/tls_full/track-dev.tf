@@ -31,8 +31,8 @@ module "ssc" {
   model_uuid = data.juju_model.ca-model.uuid
 }
 
-module "cos-lite" {
-  source                          = "git::https://github.com/canonical/observability-stack//terraform/cos-lite"
+module "cos-dev" {
+  source                          = "git::https://github.com/canonical/observability-stack//terraform/cos-dev?ref=feat/cos-dev"
   model_uuid                      = data.juju_model.cos-model.uuid
   risk                            = "edge"
   internal_tls                    = true
