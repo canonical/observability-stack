@@ -22,9 +22,9 @@ By convention, applications expose labeled metrics under a [`/metrics` endpoint]
 For example, you can run the prometheus application and curl its `:9090/metrics` endpoint to obtain the metrics exposed by the process.
 
 ```bash
-$ sudo snap install prometheus
+sudo snap install prometheus
 
-$ curl localhost:9090/metrics
+curl localhost:9090/metrics
 
 # -- snip --
 
@@ -69,7 +69,7 @@ scrape_configs:
 Labels that are specified under a `static_configs` entry are automatically attached to all metrics scraped from the targets:
 
 ```bash
-$ curl -s --data-urlencode 'match[]={__name__="prometheus_http_requests_total"}' localhost:9090/api/v1/series | jq '.data'
+curl -s --data-urlencode 'match[]={__name__="prometheus_http_requests_total"}' localhost:9090/api/v1/series | jq '.data'
 [
   {
     "__name__": "prometheus_http_requests_total",

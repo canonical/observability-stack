@@ -24,7 +24,7 @@ using a boolean configuration option, called `forward_alert_rules`:
 For example, to disable forwarding of all alert rules from opentelemetry collector,
 
 ```
-$ juju config opentelemetry-collector forward_alert_rules=false
+juju config opentelemetry-collector forward_alert_rules=false
 ```
 
 ## Silence charmed rules using alertmanager configuration

@@ -40,14 +40,14 @@ apply, although you will need to tailor the exact steps and commands to your set
 Check with:
 
 ```bash
-$ microk8s status -a metallb
+microk8s status -a metallb
 ```
 
 If it is disabled, you can enable it with:
 
 ```bash
-$ IPADDR=$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc')
-$ microk8s enable metallb:$IPADDR-$IPADDR
+IPADDR=$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc')
+microk8s enable metallb:$IPADDR-$IPADDR
 ```
 
 This command will fetch the IPv4 address assigned to your host, and hand it to MetalLB
@@ -60,8 +60,8 @@ for instance `IPADDR=10.0.0.1-10.0.0.100`.
 Does the Traefik service have an external IP assigned to it? Check with:
 
 ```bash
-$ JUJU_APP_NAME="traefik"
-$ kubectl get svc -A -o wide | grep -E "^NAMESPACE|$JUJU_APP_NAME"
+JUJU_APP_NAME="traefik"
+kubectl get svc -A -o wide | grep -E "^NAMESPACE|$JUJU_APP_NAME"
 ```
 
 #### No available IP in address pool
@@ -77,14 +77,14 @@ This can happen when:
 Check with:
 
 ```bash
-$ kubectl get ipaddresspool -n metallb-system -o yaml && kubectl get all -n metallb-system
+kubectl get ipaddresspool -n metallb-system -o yaml && kubectl get all -n metallb-system
 ```
 
 You could add more IPs to the range:
 
 ```bash
-$ FROM_IP="..." TO_IP="..."
-$ microk8s enable metallb:$FROM_IP-$TO_IP
+FROM_IP="..." TO_IP="..."
+microk8s enable metallb:$FROM_IP-$TO_IP
 ```
 
 #### The Load Balancer service type reverted to `ClusterIP`
@@ -95,7 +95,7 @@ Juju controller cycling may cause the type to revert from `LoadBalancer` back to
 Check with:
 
 ```bash
-$ kubectl get svc -A -o wide | grep -E "^NAMESPACE|LoadBalancer"
+kubectl get svc -A -o wide | grep -E "^NAMESPACE|LoadBalancer"
 ```
 
 If Traefik isn't listed (it's not `LoadBalancer`), then recreate the pod to have it
@@ -114,7 +114,7 @@ Verify that the Traefik Kubernetes service now has been assigned an external IP:
 
 ```
 
-$ microk8s.kubectl get services -A
+microk8s.kubectl get services -A
 
 NAMESPACE         NAME                     TYPE           CLUSTER-IP       EXTERNAL-IP                 PORT(S)
 cos               traefik                  LoadBalancer   10.152.183.130   10.70.43.245                80:32343/TCP,443:30698/TCP   4d3h
@@ -127,7 +127,7 @@ If you have COS Lite deployed, you may check that if works as expected using the
 ```bash
 # curl http://<TRAEFIKS_EXTERNAL_IP>/<YOUR_MODEL_NAME>-catalogue/
 # for example...
-$ curl http://10.70.43.245/cos-catalogue/
+curl http://10.70.43.245/cos-catalogue/
 ```
 
 This command should return a long HTML code block if everything works as expected.
@@ -177,9 +177,9 @@ You can use:
 Make sure your alerts manifest matches the output of:
 
 ```bash
-$ juju ssh prometheus/0 curl localhost:9090/api/v1/rules | jq -r '.data.groups | .[] | .rules | .[] | .name'
+juju ssh prometheus/0 curl localhost:9090/api/v1/rules | jq -r '.data.groups | .[] | .rules | .[] | .name'
 # and...
-$ juju ssh loki/0 curl localhost:3100/loki/api/v1/rules
+juju ssh loki/0 curl localhost:3100/loki/api/v1/rules
 ```
 
 #### Integration tests
@@ -224,7 +224,7 @@ When related to Loki, make sure your logging sources are listed in:
 Make sure the dashboards manifest you have in the charm matches:
 
 ```bash
-$ juju ssh grafana/0 curl http://admin:password@localhost:3000/api/search
+juju ssh grafana/0 curl http://admin:password@localhost:3000/api/search
 ```
 
 ### Data Duplication
@@ -235,7 +235,7 @@ Charms should use `limit: 1` for the cos-agent relation (see example [here](http
 but this cannot be enforced by opentelemetry-collector itself.  You can confirm this is the case with `jq`:
 
 ```bash
-$ juju export-bundle | yq -o json '.' | jq -r '
+juju export-bundle | yq -o json '.' | jq -r '
     .applications as $apps |
     .relations as $relations |
     $apps
@@ -313,7 +313,7 @@ for agent, principals in agents.items():
 Then run it using:
 
 ```bash
-$ juju status --format=yaml | ./is_multi_agent.py
+juju status --format=yaml | ./is_multi_agent.py
 ```
 
 If there is a problem, you would see output such as:
@@ -454,7 +454,7 @@ deployment itself. For MicroK8s, this would be done by increasing the limits in
 ### 1. Juju SSH into the machine
 
 ```bash
-$ juju ssh uk8s/1
+juju ssh uk8s/1
 ```
 
 Substitute `uk8s/1` with the name of your MicroK8s unit. If you have more than
@@ -465,7 +465,7 @@ one unit, you will need to repeat this for each of them.
 You can use whatever editor you prefer for this. In this how-to, we'll use ``vim``.
 
 ```bash
-$ vim /var/snap/microk8s/current/args/containerd-env
+vim /var/snap/microk8s/current/args/containerd-env
 ```
 
 ### 3. Increase the `ulimit`
@@ -490,7 +490,7 @@ $ vim /var/snap/microk8s/current/args/containerd-env
 Restart the machine the MicroK8s unit is deployed on and then wait for it to come back up.
 
 ```bash
-$ sudo reboot
+sudo reboot
 ```
 
 ### 5. Validate
@@ -499,7 +499,7 @@ Validate that the change made it through and had the desired effect once the mac
 back up and running.
 
 ```bash
-$ juju ssh uk8s/1 cat /var/snap/microk8s/current/args/containerd-env
+juju ssh uk8s/1 cat /var/snap/microk8s/current/args/containerd-env
 
 [...]
 
