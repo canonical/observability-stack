@@ -36,7 +36,7 @@ Then, use terraform to deploy the module:
 
 ```shell
 terraform init
-terraform apply
+terraform apply -var="model=cos-lite"
 ```
 
 
