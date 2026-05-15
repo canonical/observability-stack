@@ -33,11 +33,9 @@ A dedicated Alertmanager instance deployed **outside** the COS model to receive 
 heartbeat alert from COS. Fires when the heartbeat stops, signalling that COS's own
 alerting pipeline has failed. See [Topology](/reference/topology).
 
-(cos-configuration)=
-
 ## COS Configuration
 
-A [peripheral charm](#peripheral-charm) that clones a git repository (via a `git-sync`
+A peripheral charm that clones a git repository (via a `git-sync`
 workload) and provisions alert rules, dashboards, and scrape targets from it into COS.
 Enables git-ops–style configuration independently of any charmed operator.
 See [COS components](/reference/cos-components).
@@ -92,10 +90,9 @@ per-charm host-health alerts. See [Generic alert rule groups](/explanation/alert
 
 ## Git-ops alert rules
 
-Alert rules (and dashboards or scrape targets) loaded from an external git repository via
-the [COS Configuration](#cos-configuration) charm. Allows version-controlled,
-operator-defined rules outside of any charmed operator.
-See [Alert rules](/explanation/alerting/alerting-overview).
+Alert rules (and dashboards or scrape targets) loaded from an external git repository via the COS
+Configuration charm. Allows version-controlled, operator-defined rules outside of any charmed
+operator. See [Alert rules](/explanation/alerting/alerting-overview).
 
 ## Juju topology labels
 
@@ -117,8 +114,6 @@ and relation-driven. See [Design goals](/explanation/architecture/design-goals).
 A mechanism by which Kubernetes charm workloads stream logs from their Pebble-managed
 processes directly to a Loki push endpoint, without a sidecar scraping agent.
 See [Telemetry collection](/explanation/telemetry/telemetry-collection).
-
-(peripheral-charm)=
 
 ## Peripheral charm
 
