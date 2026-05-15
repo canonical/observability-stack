@@ -4,44 +4,36 @@ In this tutorial you deploy a single-node COS Lite appliance, backed by hostPath
 
 ## Prerequisites
 
-This tutorial assumes you have a Juju controller bootstrapped on a 
-MicroK8s cloud that is ready to use, on a 4cpu8gb node or better, with at least 40Gi disk space.
+This tutorial assumes you have:
 
-Juju 3.x is a strictly confined snap and can only bootstrap a **strictly confined** MicroK8s, so install
-MicroK8s from a strict channel (not `--classic`). Strict channels follow the pattern
-`<k8s-version>-strict/<risk>`; pick a current one from:
+- A Juju controller bootstrapped on a MicroK8s cloud, running on a node with
+  at least 4 CPU, 8 GB RAM, and 40 GB of disk space.
+
+  MicroK8s must be installed from a **strict** channel (not `--classic`): Juju
+  3.x is itself a strictly confined snap and cannot bootstrap a classic
+  MicroK8s installation. See the MicroK8s
+  [strict install guide](https://canonical.com/microk8s/docs/install-strict)
+  for channel selection, and the Juju
+  [MicroK8s cloud reference](https://documentation.ubuntu.com/juju/3.6/reference/cloud/list-of-supported-clouds/the-microk8s-cloud-and-juju/)
+  for how Juju integrates with it. Your user must also be a member of the
+  `snap_microk8s` group.
+
+```{dropdown} Add your user to the snap_microk8s group
+  Strict MicroK8s uses the `snap_microk8s` group rather than the `microk8s`
+  group used by the classic snap. To add your current user and pick up the new
+  membership in the current shell:
+
+      $ sudo usermod -a -G snap_microk8s $USER
+      $ newgrp snap_microk8s
+```
+
+- `jq` installed on the machine running the Juju client. It is used for JSON
+  parsing in the `metallb` step below and is not preinstalled on a fresh
+  Ubuntu image. Install it with:
 
 ```bash
-$ snap info microk8s | grep strict/stable
+  $ sudo apt-get update && sudo apt-get install -y jq
 ```
-
-Then install it and add your user to its group:
-
-```bash
-$ sudo snap install microk8s --channel=<k8s-version>-strict/stable
-$ sudo usermod -a -G snap_microk8s $USER
-$ newgrp snap_microk8s
-```
-
-```{note}
-Strict MicroK8s uses the group `snap_microk8s` (older guides referencing the unprefixed `microk8s`
-group apply only to the classic snap).
-```
-
-Then install Juju and bootstrap the controller:
-
-```bash
-$ sudo snap install juju --channel=3.6/stable
-$ juju bootstrap microk8s
-```
-
-This tutorial also uses `jq` (for JSON parsing in the metallb step below), which is not preinstalled on a fresh Ubuntu image:
-
-```bash
-$ sudo apt-get update && sudo apt-get install -y jq
-```
-
-For more detailed setup notes, see the [Juju docs](https://documentation.ubuntu.com/juju/3.6/howto/manage-your-deployment/).
 
 ## Introduction
 
