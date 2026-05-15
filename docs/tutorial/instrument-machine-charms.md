@@ -9,7 +9,7 @@
 
 This tutorial will teach you how to integrate a charm deployed on a machine substrate with the Canonical Observability Stack running on Kubernetes.
 
-The Grafana Agent machine charm handles installation, configuration, and Day 2 operations specific to the [Grafana Agent](https://grafana.com/oss/agent/), using [Juju](https://juju.is). The charm is designed to run in virtual machines as a [subordinate](https://discourse.charmhub.io/t/subordinate-applications/1053). 
+The Grafana Agent machine charm handles installation, configuration, and Day 2 operations specific to the [Grafana Agent](https://grafana.com/oss/agent/), using [Juju](https://canonical.com/juju). The charm is designed to run in virtual machines as a [subordinate](https://discourse.charmhub.io/t/subordinate-applications/1053). 
 
 ```{note}
 Application units are typically run in an isolated container on a machine with no knowledge or access to other applications deployed onto the same machine.

@@ -217,6 +217,7 @@ linkcheck_ignore = [
     "https://github.com/canonical/ACME/*",
     "troubleshooting/",
     "https://github.com/canonical/observability-stack//terraform/cos-lite",
+    r"https://matrix\.to/.*",
     ]
 
 
@@ -275,6 +276,7 @@ extensions = [
 
 exclude_patterns = [
     "doc-cheat-sheet*",
+    ".venv",
 ]
 
 # Adds custom CSS files, located under 'html_static_path'
