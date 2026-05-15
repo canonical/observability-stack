@@ -211,7 +211,7 @@ Next, deploy COS Lite in the new model, run:
 
 ```bash
 $ terraform init
-$ terraform apply -var="model=cos-lite" # verify the changes you're applying before accepting!
+$ terraform apply -var="model=cos-lite"
 ```
 
 Now you can sit back and watch the deployment take place:
