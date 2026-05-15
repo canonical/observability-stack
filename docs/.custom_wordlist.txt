@@ -130,6 +130,7 @@ SDK
 SHA
 SLAs
 Snapcraft
+snap_microk8s
 SNMP
 SSL
 StatefulSets
