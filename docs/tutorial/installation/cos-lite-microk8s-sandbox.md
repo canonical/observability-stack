@@ -18,13 +18,13 @@ This tutorial assumes you have:
   for how Juju integrates with it. Your user must also be a member of the
   `snap_microk8s` group.
 
-```{dropdown} Add your user to the `snap_microk8s` group
+```{dropdown} Add your user to the snap_microk8s group
   Strict MicroK8s uses the `snap_microk8s` group rather than the `microk8s`
   group used by the classic snap. To add your current user and pick up the new
   membership in the current shell:
 
-      sudo usermod -a -G snap_microk8s $USER
-      newgrp snap_microk8s
+    sudo usermod -a -G snap_microk8s $USER
+    newgrp snap_microk8s
 ```
 
 - `jq` installed on the machine running the Juju client. It is used for JSON
@@ -32,7 +32,7 @@ This tutorial assumes you have:
   Ubuntu image. Install it with:
 
 ```bash
-  sudo apt-get update && sudo apt-get install -y jq
+sudo apt-get update && sudo apt-get install -y jq
 ```
 
 ## Introduction
