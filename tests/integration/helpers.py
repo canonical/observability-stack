@@ -83,6 +83,13 @@ class TfDirManager:
         subprocess.run(shlex.split(cmd_str), check=True)
 
 
+def cos_assertions(temp_path: Path, ca_model: jubilant.Juju, cos_model: jubilant.Juju):
+    # generic assertions that are shared between products: cos, cos-lite
+    wait_for_active_idle_without_error([ca_model, cos_model], timeout=60 * 60)
+    tls_ctx = get_tls_context(temp_path, ca_model, "self-signed-certificates")
+    catalogue_apps_are_reachable(cos_model, tls_ctx)
+
+
 def wait_for_active_idle_without_error(
     jujus: List[jubilant.Juju], timeout: int = 60 * 45
 ):
