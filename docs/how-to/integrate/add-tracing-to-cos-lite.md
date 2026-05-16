@@ -15,7 +15,7 @@ In the same Juju model as you have COS Lite deployed, deploy the ``tempo-coordin
 using the following command: 
 
 ```bash
-$ juju deploy tempo-coordinator-k8s tempo \
+juju deploy tempo-coordinator-k8s tempo \
     --channel edge \
     --trust
 ```
@@ -28,7 +28,7 @@ with the worker nodes directly.
 ## Deploy the Tempo Worker
 
 ```bash    
-$ juju deploy tempo-worker-k8s tempo-worker \
+juju deploy tempo-worker-k8s tempo-worker \
     --channel edge \
     --trust
 ```
@@ -47,7 +47,7 @@ If you don't have an s3 bucket ready at hand, follow [this guide](https://discou
 Once you're done deploying ``minio`` and ``s3``, you can run:
 
 ```bash
-$ juju integrate tempo s3
+juju integrate tempo s3
 ```
 
 And wait for the `tempo` application to go to `active/idle`.
@@ -56,7 +56,7 @@ And wait for the `tempo` application to go to `active/idle`.
 ## Integrate coordinator and workers
 
 ```bash    
-$ juju integrate tempo tempo-worker
+juju integrate tempo tempo-worker
 ```
 
 At this point your `juju status` should look like this:
@@ -73,29 +73,29 @@ Coordinator is reporting 'degraded' because not all roles are assigned in the re
 You can enable self-monitoring for ``tempo`` by integrating it with the other COS Lite components.
  
 ```bash
-$ juju integrate loki:logging tempo:logging
-$ juju integrate s3:s3-credentials tempo:s3
-$ juju integrate tempo:grafana-dashboard grafana:grafana-dashboard
-$ juju integrate tempo:grafana-source grafana:grafana-source
-$ juju integrate tempo:metrics-endpoint prometheus:metrics-endpoint
-$ juju integrate tempo:tempo-cluster tempo-worker:tempo-cluster
-$ juju integrate traefik:traefik-route tempo:ingress
+juju integrate loki:logging tempo:logging
+juju integrate s3:s3-credentials tempo:s3
+juju integrate tempo:grafana-dashboard grafana:grafana-dashboard
+juju integrate tempo:grafana-source grafana:grafana-source
+juju integrate tempo:metrics-endpoint prometheus:metrics-endpoint
+juju integrate tempo:tempo-cluster tempo-worker:tempo-cluster
+juju integrate traefik:traefik-route tempo:ingress
 ```
 
 Similarly, you can enable tracing in COS Lite by integrating the COS Lite charms that support 
 it to `tempo` over the `tracing` relation:
 
 ```bash 
-$ juju integrate tempo:tracing alertmanager:tracing
-$ juju integrate tempo:tracing catalogue:tracing
-$ juju integrate tempo:tracing traefik:charm-tracing
-$ juju integrate tempo:tracing traefik:workload-tracing
-$ juju integrate tempo:tracing loki:charm-tracing
-$ juju integrate tempo:tracing loki:workload-tracing
-$ juju integrate tempo:tracing grafana:charm-tracing
-$ juju integrate tempo:tracing grafana:workload-tracing
-$ juju integrate tempo:tracing prometheus:charm-tracing
-$ juju integrate tempo:tracing prometheus:workload-tracing
+juju integrate tempo:tracing alertmanager:tracing
+juju integrate tempo:tracing catalogue:tracing
+juju integrate tempo:tracing traefik:charm-tracing
+juju integrate tempo:tracing traefik:workload-tracing
+juju integrate tempo:tracing loki:charm-tracing
+juju integrate tempo:tracing loki:workload-tracing
+juju integrate tempo:tracing grafana:charm-tracing
+juju integrate tempo:tracing grafana:workload-tracing
+juju integrate tempo:tracing prometheus:charm-tracing
+juju integrate tempo:tracing prometheus:workload-tracing
 ```
 
 ```{note}
@@ -107,7 +107,7 @@ You can also achieve the same by running ``jhack imatrix fill``.
 If you have a charm offering a `certificates` endpoint such as [`self-signed-certificates`](https://charmhub.io/self-signed-certificates), you can integrate it with `tempo`:
 
 ```bash
-$ juju integrate tempo:certificates ca:certificates 
+juju integrate tempo:certificates ca:certificates 
 ```
 
 to enable traces to be sent to `tempo` over HTTPS (or gRPCs).

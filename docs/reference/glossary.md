@@ -35,14 +35,14 @@ alerting pipeline has failed. See [Topology](/reference/topology).
 
 ## COS Configuration
 
-A [peripheral charm](#peripheral-charm) that clones a git repository (via a `git-sync`
+A peripheral charm that clones a git repository (via a `git-sync`
 workload) and provisions alert rules, dashboards, and scrape targets from it into COS.
 Enables git-ops–style configuration independently of any charmed operator.
 See [COS components](/reference/cos-components).
 
 ## COS Lite
 
-A resource-constrained flavour of COS that runs monolithic Loki and
+A resource-constrained flavor of COS that runs monolithic Loki and
 Prometheus, without Tempo. Recommended for near-edge and single-node deployments.
 See [What is COS?](/explanation/overview/what-is-cos).
 
@@ -67,7 +67,7 @@ The deployment pattern used by COS backends (Mimir, Loki, Tempo): each backend i
 into a **coordinator charm** + one or more **worker charms**, each assigned a specific
 role (e.g. `ingester`, `querier`, `compactor`). Enables independent scaling and
 pod anti-affinity across nodes. COS Lite uses a monolithic charm instead.
-See [What is COS?](/explanation/overview/what-is-cos).
+See [the coordinated workers explanation doc](/explanation/architecture/coordinated-workers) for more information.
 
 ## Cross-model relation (CMR)
 
@@ -76,7 +76,7 @@ CMRs are the primary mechanism by which workloads in other models — including 
 models — send telemetry to COS.
 See [Integration matrix](/reference/integration-matrix).
 
-## Flavour
+## Flavor
 
 Informal term for the two COS deployment variants: **COS** (scalable, HA) and
 **COS Lite** (monolithic, resource-constrained). Both share Grafana, Alertmanager,
@@ -90,10 +90,9 @@ per-charm host-health alerts. See [Generic alert rule groups](/explanation/alert
 
 ## Git-ops alert rules
 
-Alert rules (and dashboards or scrape targets) loaded from an external git repository via
-the [COS Configuration](#cos-configuration) charm. Allows version-controlled,
-operator-defined rules outside of any charmed operator.
-See [Alert rules](/explanation/alerting/alerting-overview).
+Alert rules (and dashboards or scrape targets) loaded from an external git repository via the COS
+Configuration charm. Allows version-controlled, operator-defined rules outside of any charmed
+operator. See [Alert rules](/explanation/alerting/alerting-overview).
 
 ## Juju topology labels
 

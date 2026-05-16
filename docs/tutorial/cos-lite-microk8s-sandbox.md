@@ -10,13 +10,36 @@ In this tutorial you deploy a single-node COS Lite appliance, backed by hostPath
 
 ## Prerequisites
 
-This tutorial assumes you have a Juju controller bootstrapped on a 
-MicroK8s cloud that is ready to use, on a 4cpu8gb node or better, with at least 40Gi disk space
-(see [Sizing guide](../reference/system-requirements) for production deployments).
-Typical setup using [snaps](https://snapcraft.io/) 
-can be found in the [Juju docs](https://documentation.ubuntu.com/juju/3.6/howto/manage-your-deployment/).
+This tutorial assumes you have:
 
-Follow the instructions there to install Juju and MicroK8s.
+- A Juju controller bootstrapped on a MicroK8s cloud, running on a node with
+  at least 4 CPU, 8 GB RAM, and 40 GB of disk space.
+
+  MicroK8s must be installed from a **strict** channel (not `--classic`): Juju
+  3.x is itself a strictly confined snap and cannot bootstrap a classic
+  MicroK8s installation. See the MicroK8s
+  [strict install guide](https://canonical.com/microk8s/docs/install-strict)
+  for channel selection, and the Juju
+  [MicroK8s cloud reference](https://documentation.ubuntu.com/juju/3.6/reference/cloud/list-of-supported-clouds/the-microk8s-cloud-and-juju/)
+  for how Juju integrates with it. Your user must also be a member of the
+  `snap_microk8s` group.
+
+```{dropdown} Add your user to the snap_microk8s group
+  Strict MicroK8s uses the `snap_microk8s` group rather than the `microk8s`
+  group used by the classic snap. To add your current user and pick up the new
+  membership in the current shell:
+
+    sudo usermod -a -G snap_microk8s $USER
+    newgrp snap_microk8s
+```
+
+- `jq` installed on the machine running the Juju client. It is used for JSON
+  parsing in the `metallb` step below and is not preinstalled on a fresh
+  Ubuntu image. Install it with:
+
+```bash
+sudo apt-get update && sudo apt-get install -y jq
+```
 
 ## Introduction
 
@@ -35,7 +58,7 @@ For the COS Lite bundle deployment to go smoothly, make sure the following Micro
 You can check this with `microk8s status`, and if any are missing, enable them with 
 
 ```bash
-$ microk8s enable dns 
+microk8s enable dns 
 ```
 
 ```{note}
@@ -44,23 +67,23 @@ consider deploying MicroCeph on MicroK8s using this [guide](https://canonical.co
 ```
 
 ```bash
-$ microk8s enable hostpath-storage
+microk8s enable hostpath-storage
 ```
 
 The bundle comes with Traefik to provide ingress, for which you'll need a load balancer controller.
 If you don't have one already, the `metallb` add-on should be enabled:
 
 ```bash 
-$ IPADDR=$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc')
-$ microk8s enable metallb:$IPADDR-$IPADDR
+IPADDR=$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc')
+microk8s enable metallb:$IPADDR-$IPADDR
 ```
 
 To wait for all the add-ons to be rolled out, then run:
 
 ```bash
-$ microk8s kubectl rollout status deployments/hostpath-provisioner -n kube-system -w
-$ microk8s kubectl rollout status deployments/coredns -n kube-system -w
-$ microk8s kubectl rollout status daemonset.apps/speaker -n metallb-system -w
+microk8s kubectl rollout status deployments/hostpath-provisioner -n kube-system -w
+microk8s kubectl rollout status deployments/coredns -n kube-system -w
+microk8s kubectl rollout status daemonset.apps/speaker -n metallb-system -w
 ```
 
 ```{note}
@@ -76,26 +99,26 @@ By default, MicroK8s will use `8.8.8.8` and `8.8.4.4` as DNS servers, which can 
 It is usually a good idea to create a dedicated model for the COS Lite bundle. So let's do just that and call the new model `cos`:
 
 ```bash
-$ juju add-model cos
-$ juju switch cos
+juju add-model cos
+juju switch cos
 ```
 
 Next, deploy the bundle with:
 
 ```bash
-$ juju deploy cos-lite --trust
+juju deploy cos-lite --trust
 ```
 
 Now you can sit back and watch the deployment take place:
 
 ```bash
-$ juju status --relations --watch=5s
+juju status --relations --watch=5s
 ```
 
 The status of your deployment should eventually be very similar to the following:
 
 ```
-$ juju status --relations
+juju status --relations
 Model  Controller  Cloud/Region        Version  SLA          Timestamp
 cos    microk8s    microk8s/localhost  3.6.4    unsupported  15:48:47+04:00
 
@@ -172,9 +195,9 @@ So, if you were following the previous steps you would first need to switch to a
 To use any of the overlays above, you need to include an `--overlay` argument per overlay (applied in order):
 
 ```bash
-$ curl -L https://raw.githubusercontent.com/canonical/cos-lite-bundle/main/overlays/offers-overlay.yaml -O
-$ curl -L https://raw.githubusercontent.com/canonical/cos-lite-bundle/main/overlays/storage-small-overlay.yaml -O
-$ juju deploy cos-lite \
+curl -L https://raw.githubusercontent.com/canonical/cos-lite-bundle/main/overlays/offers-overlay.yaml -O
+curl -L https://raw.githubusercontent.com/canonical/cos-lite-bundle/main/overlays/storage-small-overlay.yaml -O
+juju deploy cos-lite \
         --trust \
         --overlay ./offers-overlay.yaml \
         --overlay ./storage-small-overlay.yaml
@@ -182,18 +205,22 @@ $ juju deploy cos-lite \
 
 ## Deploy COS Lite using Terraform
 
-Create a `cos-lite-microk8s-sandbox.tf` file with the following Terraform module, or include it in your Terraform plan:
+To deploy the COS Lite solution, create this root module and set the `model` to `cos-lite`:
 
-```{literalinclude} /tutorial/cos-lite-microk8s-sandbox.tf
+```{literalinclude} ../../tests/integration/cos_lite/tls_internal/track-dev.tf
 ```
 
 <!-- if Field wants, allow setting `anti_affinity` by something other than `kubernetes/hostname` -->
 
-**Note**: You can customize further the revisions of each charm and other aspects of COS Lite: have a look at the [`variables.tf`](../../terraform/cos-lite/variables.tf) file of the COS Lite Terraform module for the complete documentation.
+```{dropdown} Customize COS Lite
+You can customize the deployment of COS Lite by overriding the defaults of these variables:
+
+```{literalinclude} ../../terraform/cos-lite/variables.tf
+```
 
 <!-- Once we allow enabling internal TLS and external TLS separately, add the explanation to this tutorial -->
 
-It is usually a good idea to create a dedicated model for COS Lite. This module creates one named `cos`, which you can override.
+It is usually a good idea to create a dedicated model for COS Lite. This module creates one named `cos-lite`.
 
 If there are multiple clouds registered in the controller or a default cloud is not setup, an explicit reference of the cloud in the base terraform file needs to exist. Look at [how to reference a K8s cloud](../how-to/configure-and-tune/reference-k8s-cloud-for-cos.md) section.
 
@@ -206,15 +233,15 @@ To use a custom storage class for container's persistent volume during deploymen
 Next, deploy COS Lite in the new model, run:
 
 ```bash
-$ terraform init
-$ terraform apply  # verify the changes you're applying before accepting!
+terraform init
+terraform apply -var="model=cos-lite"
 ```
 
 Now you can sit back and watch the deployment take place:
 
 ```bash
-$ juju switch cos
-$ juju status --relations --watch=5s
+juju switch cos
+juju status --relations --watch=5s
 ```
 
 ## Browse dashboards
@@ -226,7 +253,7 @@ Traefik action.
 For example:
 
 ```bash
-$ juju run traefik/0 show-proxied-endpoints --format=yaml \
+juju run traefik/0 show-proxied-endpoints --format=yaml \
         | yq '."traefik/0".results."proxied-endpoints"' \
         | jq
 ```
@@ -261,7 +288,7 @@ Note that Grafana does not appear in the list. Currently, to obtain Grafana's
 proxied endpoint you would need to look at catalogue's relation data directly - try running:
 
 ```bash
-$ juju show-unit catalogue/0 | grep url
+juju show-unit catalogue/0 | grep url
 ```
 
 ...which should return a list of the endpoints like this:
@@ -278,7 +305,7 @@ With ingress in place, you can still access the workloads via pod IPs, but you w
 to include the original port, as well as the ingress path. For example:
 
 ```
-$ curl 10.1.55.34:9093/cos-alertmanager/-/ready
+curl 10.1.55.34:9093/cos-alertmanager/-/ready
 ```
 
 The default password for Grafana is automatically generated for every installation. To 
@@ -286,7 +313,7 @@ access Grafana's web interface, use the username `admin`, and the password obtai
 from the [`get-admin-password`](https://charmhub.io/grafana-k8s/actions) action, e.g:
 
 ```bash
-$ juju run grafana/leader get-admin-password --model cos
+juju run grafana/leader get-admin-password --model cos
 ```
 
 Enjoy!
