@@ -649,7 +649,7 @@ resource "juju_integration" "ingress" {
         app_name = module.mimir_coordinator.app_name
         endpoint = "ingress"
       }
-    } : k => v if var.ingress[k] && !var.mesh_enabled
+    } : k => v if var.ingress[k] && var.reverse_proxy.enabled
   }
 
   model_uuid = var.model_uuid
@@ -666,7 +666,7 @@ resource "juju_integration" "ingress" {
 }
 
 resource "juju_integration" "grafana_ingress" {
-  count = var.ingress.grafana && !var.mesh_enabled ? 1 : 0
+  count = var.ingress.grafana && var.reverse_proxy.enabled ? 1 : 0
 
   model_uuid = var.model_uuid
 
@@ -694,7 +694,7 @@ resource "juju_integration" "traefik_route" {
         app_name = module.tempo_coordinator.app_name
         endpoint = module.tempo_coordinator.requires.ingress
       }
-    } : k => v if var.ingress[k] && !var.mesh_enabled
+    } : k => v if var.ingress[k] && var.reverse_proxy.enabled
   }
 
   model_uuid = var.model_uuid
@@ -729,7 +729,7 @@ resource "juju_integration" "istio_ingress" {
         app_name = module.mimir_coordinator.app_name
         endpoint = "ingress"
       }
-    } : k => v if var.ingress[k] && var.mesh_enabled
+    } : k => v if var.ingress[k] && var.mesh.enabled
   }
 
   model_uuid = var.model_uuid
@@ -746,7 +746,7 @@ resource "juju_integration" "istio_ingress" {
 }
 
 resource "juju_integration" "grafana_istio_ingress" {
-  count = var.ingress.grafana && var.mesh_enabled ? 1 : 0
+  count = var.ingress.grafana && var.mesh.enabled ? 1 : 0
 
   model_uuid = var.model_uuid
 
@@ -774,7 +774,7 @@ resource "juju_integration" "istio_ingress_route" {
         app_name = module.tempo_coordinator.app_name
         endpoint = module.tempo_coordinator.requires.ingress
       }
-    } : k => v if var.ingress[k] && var.mesh_enabled
+    } : k => v if var.ingress[k] && var.mesh.enabled
   }
 
   model_uuid = var.model_uuid
@@ -809,7 +809,7 @@ resource "juju_integration" "opentelemetry_collector_mimir_metrics" {
 # -------------- # Certificate Integrations --------------
 
 resource "juju_integration" "internal_certificates" {
-  for_each = var.internal_tls ? {
+  for_each = var.reverse_proxy.enabled ? {
     alertmanager = {
       app_name = module.alertmanager.app_name
       endpoint = module.alertmanager.requires.certificates
@@ -854,7 +854,7 @@ resource "juju_integration" "internal_certificates" {
 }
 
 resource "juju_integration" "traefik_receive_ca_certificate" {
-  count      = var.internal_tls ? 1 : 0
+  count      = var.reverse_proxy.enabled ? 1 : 0
   model_uuid = var.model_uuid
 
   application {
@@ -871,7 +871,7 @@ resource "juju_integration" "traefik_receive_ca_certificate" {
 # -------------- # Provided by an external CA --------------
 
 resource "juju_integration" "external_traefik_certificates" {
-  count      = local.tls_termination ? 1 : 0
+  count      = local.reverse_proxy_termination ? 1 : 0
   model_uuid = var.model_uuid
 
   application {
@@ -885,7 +885,7 @@ resource "juju_integration" "external_traefik_certificates" {
 }
 
 resource "juju_integration" "external_grafana_ca_cert" {
-  count      = local.tls_termination ? 1 : 0
+  count      = local.reverse_proxy_termination ? 1 : 0
   model_uuid = var.model_uuid
 
   application {
@@ -899,7 +899,7 @@ resource "juju_integration" "external_grafana_ca_cert" {
 }
 
 resource "juju_integration" "external_otelcol_ca_cert" {
-  count      = local.tls_termination ? 1 : 0
+  count      = local.reverse_proxy_termination ? 1 : 0
   model_uuid = var.model_uuid
 
   application {
@@ -945,7 +945,7 @@ resource "juju_integration" "traces_and_metrics_correlation" {
 # -------------- # Service Mesh ---------------------
 
 resource "juju_integration" "istio_beacon" {
-  for_each = var.mesh_enabled ? {
+  for_each = var.mesh.enabled ? {
     alertmanager = {
       app_name = module.alertmanager.app_name
       endpoint = module.alertmanager.requires.service_mesh
