@@ -52,15 +52,15 @@ variable "mesh" {
   description = "Configure the service mesh."
   type = object({
     enabled = optional(bool, false)
-    cmr_urls = optional(object, {
-      # TODO: Consider making these null?
-      alermanager = ""
-      catalogue   = ""
-      grafana     = ""
-      loki        = ""
-      mimir       = ""
-      tempo       = ""
-    })
+    cmr_urls = optional(object({
+      alermanager = optional(string, null)
+      catalogue   = optional(string, null)
+      grafana     = optional(string, null)
+      loki        = optional(string, null)
+      mimir       = optional(string, null)
+      tempo       = optional(string, null)
+      }), {}
+    )
   })
   default = {}
 
@@ -74,10 +74,11 @@ variable "reverse_proxy" {
   description = "Configure the reverse proxy."
   type = object({
     enabled = optional(bool, true)
-    cmr_urls = optional(object, {
-      certificates    = ""
-      receive_ca_cert = ""
-    })
+    cmr_urls = optional(object({
+      certificates    = optional(string, null)
+      receive_ca_cert = optional(string, null)
+      }), {}
+    )
   })
   default = {}
 

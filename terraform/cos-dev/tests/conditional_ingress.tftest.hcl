@@ -7,6 +7,7 @@ variables {
 # TODO: This feature also depends on the x2 Traefik story, maybe reverse proxy is not the right name
 # TODO: Do we need to remove offers / outputs TF conditionally?
 # TODO: We need to keep the COS API the same across products: feature in COS, COS Lite, and COS Dev
+# TODO: For the conditional ingress story, do we support the same components between mesh and reverse proxy? If yes, then they can share the ingress var. Otherwise not, e.g. COS Lite
 
 # --- reverse proxy: enabled - all ingress disabled ---
 
