@@ -46,44 +46,48 @@ variable "storage_backend" {
   }
 }
 
-# -------------- # Mesh configurations --------------
-variable "mesh_enabled" {
-  description = "Specify whether to enable the service mesh or not."
-  type        = bool
-  default     = false
+# -------------- # Network configurations --------------
+
+variable "mesh" {
+  description = "Configure the service mesh."
+  type = object({
+    enabled = optional(bool, false)
+    cmr_urls = optional(object, {
+      # TODO: Consider making these null?
+      alermanager = ""
+      catalogue   = ""
+      grafana     = ""
+      loki        = ""
+      mimir       = ""
+      tempo       = ""
+    })
+  })
+  default = {}
 
   validation {
-    condition     = !(var.mesh_enabled && var.internal_tls)
+    condition     = !(var.mesh.enabled && var.reverse_proxy.enabled)
     error_message = "mesh_enabled and internal_tls cannot both be enabled at the same time."
   }
 }
 
-# -------------- # TLS configurations --------------
-
-variable "internal_tls" {
-  description = "Specify whether to use TLS or not for internal COS communication. By default, TLS is enabled using self-signed-certificates"
-  type        = bool
-  default     = true
-}
-
-variable "external_certificates_offer_url" {
-  description = "A Juju offer URL of a CA providing the 'tls_certificates' integration for Traefik to supply it with server certificates"
-  type        = string
-  default     = null
+variable "reverse_proxy" {
+  description = "Configure the reverse proxy."
+  type = object({
+    enabled = optional(bool, true)
+    cmr_urls = optional(object, {
+      certificates    = ""
+      receive_ca_cert = ""
+    })
+  })
+  default = {}
 
   validation {
     condition = (
-      (var.external_certificates_offer_url == null && var.external_ca_cert_offer_url == null) ||
-      (var.external_certificates_offer_url != null && var.external_ca_cert_offer_url != null)
+      (var.reverse_proxy.cmr_urls.certificates == null && var.reverse_proxy.cmr_urls.receive_ca_cert == null) ||
+      (var.reverse_proxy.cmr_urls.certificates != null && var.reverse_proxy.cmr_urls.receive_ca_cert != null)
     )
-    error_message = "external_certificates_offer_url and external_ca_cert_offer_url must be supplied together (either both set or both null)."
+    error_message = "CMRs for certificates and receive_ca_cert must be supplied together (either both set or both null)."
   }
-}
-
-variable "external_ca_cert_offer_url" {
-  description = "A Juju offer URL (e.g. admin/external-ca.send-ca-cert) of a CA providing the 'certificate_transfer' integration for applications to trust ingress via Traefik."
-  type        = string
-  default     = null
 }
 
 # -------------- # Ingress configurations --------------
@@ -124,34 +128,18 @@ variable "s3_secret_key" {
   default     = null
 }
 
-variable "loki_bucket" {
-  description = "Loki S3 bucket name"
-  type        = string
-  default     = "loki"
-}
-
-variable "mimir_bucket" {
-  description = "Mimir S3 bucket name"
-  type        = string
-  default     = "mimir"
-}
-
-variable "tempo_bucket" {
-  description = "Tempo S3 bucket name"
-  type        = string
-  default     = "tempo"
-}
-
-variable "s3_integrator" {
+# TODO: Move the refactor efforts into a separate PR that the mesh team can branch from to get mesh merged:
+# 1. buckets, reverse_proxy
+# 2. I couldn't group s3_ because this has "sensitive" vars. Check if this is 100% not possible.
+# What if we made the whole s3 var sensitive?
+variable "s3_buckets" {
+  description = "S3 bucket names for components"
   type = object({
-    config             = optional(map(string), {})
-    constraints        = optional(string, "arch=amd64")
-    revision           = optional(number, null)
-    storage_directives = optional(map(string), {})
-    units              = optional(number, 1)
+    loki  = optional(string, "loki")
+    mimir = optional(string, "mimir")
+    tempo = optional(string, "tempo")
   })
-  default     = {}
-  description = "Application configuration shared by all S3-integrators (one deployed per coordinated worker). For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
+  default = {}
 }
 
 # -------------- # Application configurations --------------
@@ -332,6 +320,18 @@ variable "ssc" {
   })
   default     = {}
   description = "Application configuration for Self-signed-certificates. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
+}
+
+variable "s3_integrator" {
+  type = object({
+    config             = optional(map(string), {})
+    constraints        = optional(string, "arch=amd64")
+    revision           = optional(number, null)
+    storage_directives = optional(map(string), {})
+    units              = optional(number, 1)
+  })
+  default     = {}
+  description = "Application configuration shared by all S3-integrators (one deployed per coordinated worker). For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
 variable "tempo_coordinator" {

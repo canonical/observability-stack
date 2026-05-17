@@ -9,20 +9,20 @@ output "offers" {
     tempo_tracing                = juju_offer.tempo_tracing
 
     # CMR Mesh
-    alertmanager_provide_cmr_mesh            = juju_offer.alertmanager_provide_cmr_mesh
-    alertmanager_require_cmr_mesh            = juju_offer.alertmanager_require_cmr_mesh
-    catalogue_provide_cmr_mesh               = juju_offer.catalogue_provide_cmr_mesh
-    catalogue_require_cmr_mesh               = juju_offer.catalogue_require_cmr_mesh
-    grafana_provide_cmr_mesh                 = juju_offer.grafana_provide_cmr_mesh
-    grafana_require_cmr_mesh                 = juju_offer.grafana_require_cmr_mesh
-    loki_provide_cmr_mesh                    = juju_offer.loki_provide_cmr_mesh
-    loki_require_cmr_mesh                    = juju_offer.loki_require_cmr_mesh
-    mimir_provide_cmr_mesh                   = juju_offer.mimir_provide_cmr_mesh
-    mimir_require_cmr_mesh                   = juju_offer.mimir_require_cmr_mesh
-    opentelemetry_collector_provide_cmr_mesh  = juju_offer.opentelemetry_collector_provide_cmr_mesh
-    opentelemetry_collector_require_cmr_mesh  = juju_offer.opentelemetry_collector_require_cmr_mesh
-    tempo_provide_cmr_mesh                   = juju_offer.tempo_provide_cmr_mesh
-    tempo_require_cmr_mesh                   = juju_offer.tempo_require_cmr_mesh
+    alertmanager_provide_cmr_mesh            = try(juju_offer.alertmanager_provide_cmr_mesh[0], null)
+    alertmanager_require_cmr_mesh            = try(juju_offer.alertmanager_require_cmr_mesh[0], null)
+    catalogue_provide_cmr_mesh               = try(juju_offer.catalogue_provide_cmr_mesh[0], null)
+    catalogue_require_cmr_mesh               = try(juju_offer.catalogue_require_cmr_mesh[0], null)
+    grafana_provide_cmr_mesh                 = try(juju_offer.grafana_provide_cmr_mesh[0], null)
+    grafana_require_cmr_mesh                 = try(juju_offer.grafana_require_cmr_mesh[0], null)
+    loki_provide_cmr_mesh                    = try(juju_offer.loki_provide_cmr_mesh[0], null)
+    loki_require_cmr_mesh                    = try(juju_offer.loki_require_cmr_mesh[0], null)
+    mimir_provide_cmr_mesh                   = try(juju_offer.mimir_provide_cmr_mesh[0], null)
+    mimir_require_cmr_mesh                   = try(juju_offer.mimir_require_cmr_mesh[0], null)
+    opentelemetry_collector_provide_cmr_mesh = try(juju_offer.opentelemetry_collector_provide_cmr_mesh[0], null)
+    opentelemetry_collector_require_cmr_mesh = try(juju_offer.opentelemetry_collector_require_cmr_mesh[0], null)
+    tempo_provide_cmr_mesh                   = try(juju_offer.tempo_provide_cmr_mesh[0], null)
+    tempo_require_cmr_mesh                   = try(juju_offer.tempo_require_cmr_mesh[0], null)
   }
   description = "All Juju offers which are exposed by this product module"
 }
@@ -34,6 +34,8 @@ output "components" {
     alertmanager                   = module.alertmanager
     catalogue                      = module.catalogue
     grafana                        = module.grafana
+    grafana                        = try(module.istio_beacon[0], null)
+    grafana                        = try(module.istio_ingress[0], null)
     loki_coordinator               = module.loki_coordinator
     loki_worker                    = try(module.loki_worker[0], null)
     loki_worker_backend            = try(module.loki_worker_backend[0], null)
@@ -55,7 +57,7 @@ output "components" {
     tempo_worker_distributor       = try(module.tempo_worker_distributor[0], null)
     tempo_worker_compactor         = try(module.tempo_worker_compactor[0], null)
     tempo_worker_metrics_generator = try(module.tempo_worker_metrics_generator[0], null)
-    traefik                        = module.traefik
+    traefik                        = try(module.traefik[0], null)
   }
   description = "All Terraform charm modules which make up this product module"
 }

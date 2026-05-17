@@ -1,6 +1,6 @@
 locals {
-  tls_termination = var.external_certificates_offer_url != null ? true : false
-  traefik_base    = "ubuntu@20.04"
+  reverse_proxy_termination = var.reverse_proxy.enabled && var.reverse_proxy.cmr_urls.certificates != null ? true : false
+  traefik_base              = "ubuntu@20.04"
   tracks = {
     alertmanager = "dev"
     catalogue    = "dev"

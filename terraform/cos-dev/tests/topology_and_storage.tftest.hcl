@@ -214,9 +214,11 @@ run "monolithic_s3" {
     s3_endpoint     = "https://s3.example.com"
     s3_access_key   = "access-key"
     s3_secret_key   = "secret-key"
-    loki_bucket     = "loki"
-    mimir_bucket    = "mimir"
-    tempo_bucket    = "tempo"
+    s3_buckets = {
+      loki  = "loki"
+      mimir = "mimir"
+      tempo = "tempo"
+    }
   }
 
   assert {
@@ -290,9 +292,11 @@ run "distributed_s3" {
     s3_endpoint     = "https://s3.example.com"
     s3_access_key   = "access-key"
     s3_secret_key   = "secret-key"
-    loki_bucket     = "loki"
-    mimir_bucket    = "mimir"
-    tempo_bucket    = "tempo"
+    s3_buckets = {
+      loki  = "loki"
+      mimir = "mimir"
+      tempo = "tempo"
+    }
   }
 
   assert {
