@@ -10,7 +10,7 @@ run "reverse_proxy_enabled" {
   command = plan
   
   assert {
-    condition     = length(module.traefik) == 0
+    condition     = length(module.traefik) == 1
     error_message = "Expected traefik module when the reverse proxy is enabled"
   }
 

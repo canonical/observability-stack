@@ -10,7 +10,7 @@ run "mesh_and_reverse_proxy_enabled_fails" {
   command = plan
 
   variables {
-    mesh          = { enabled = false }
+    mesh          = { enabled = true }
     reverse_proxy = { enabled = true }
   }
 
@@ -34,13 +34,13 @@ run "mesh_disabled" {
   command = plan
 
   assert {
-    condition     = length(module.istio-beacon) == 0
-    error_message = "Expected no istio-beacon module when the mesh is disabled"
+    condition     = length(module.istio_beacon) == 0
+    error_message = "Expected no istio_beacon module when the mesh is disabled"
   }
 
   assert {
-    condition     = length(module.istio-ingress) == 0
-    error_message = "Expected no istio-ingress module when the mesh is disabled"
+    condition     = length(module.istio_ingress) == 0
+    error_message = "Expected no istio_ingress module when the mesh is disabled"
   }
 
   assert {
@@ -70,13 +70,13 @@ run "mesh_enabled" {
   }
 
   assert {
-    condition     = length(module.istio-beacon) == 1
-    error_message = "Expected istio-beacon module when the mesh is enabled"
+    condition     = length(module.istio_beacon) == 1
+    error_message = "Expected istio_beacon module when the mesh is enabled"
   }
 
   assert {
-    condition     = length(module.istio-ingress) == 1
-    error_message = "Expected istio-ingress module when the mesh is enabled"
+    condition     = length(module.istio_ingress) == 1
+    error_message = "Expected istio_ingress module when the mesh is enabled"
   }
 
   assert {
