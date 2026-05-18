@@ -655,8 +655,8 @@ resource "juju_integration" "ingress" {
   model_uuid = var.model_uuid
 
   application {
-    name     = module.traefik.app_name
-    endpoint = module.traefik.endpoints.ingress
+    name     = module.traefik[0].app_name
+    endpoint = module.traefik[0].endpoints.ingress
   }
 
   application {
@@ -676,8 +676,8 @@ resource "juju_integration" "grafana_ingress" {
   }
 
   application {
-    name     = module.traefik.app_name
-    endpoint = module.traefik.endpoints.ingress
+    name     = module.traefik[0].app_name
+    endpoint = module.traefik[0].endpoints.ingress
   }
 
   lifecycle { replace_triggered_by = [terraform_data.grafana_ingress_interface, terraform_data.grafana_litestream_resource] }
@@ -700,8 +700,8 @@ resource "juju_integration" "traefik_route" {
   model_uuid = var.model_uuid
 
   application {
-    name     = module.traefik.app_name
-    endpoint = module.traefik.endpoints.traefik_route
+    name     = module.traefik[0].app_name
+    endpoint = module.traefik[0].endpoints.traefik_route
   }
 
   application {
@@ -863,8 +863,8 @@ resource "juju_integration" "traefik_receive_ca_certificate" {
   }
 
   application {
-    name     = module.traefik.app_name
-    endpoint = module.traefik.endpoints.receive_ca_cert
+    name     = module.traefik[0].app_name
+    endpoint = module.traefik[0].endpoints.receive_ca_cert
   }
 }
 
@@ -875,12 +875,12 @@ resource "juju_integration" "external_traefik_certificates" {
   model_uuid = var.model_uuid
 
   application {
-    offer_url = var.external_certificates_offer_url
+    offer_url = var.reverse_proxy.cmr_urls.certificates
   }
 
   application {
-    name     = module.traefik.app_name
-    endpoint = module.traefik.endpoints.certificates
+    name     = module.traefik[0].app_name
+    endpoint = module.traefik[0].endpoints.certificates
   }
 }
 
@@ -889,7 +889,7 @@ resource "juju_integration" "external_grafana_ca_cert" {
   model_uuid = var.model_uuid
 
   application {
-    offer_url = var.external_ca_cert_offer_url
+    offer_url = var.reverse_proxy.cmr_urls.receive_ca_cert
   }
 
   application {
@@ -903,7 +903,7 @@ resource "juju_integration" "external_otelcol_ca_cert" {
   model_uuid = var.model_uuid
 
   application {
-    offer_url = var.external_ca_cert_offer_url
+    offer_url = var.reverse_proxy.cmr_urls.receive_ca_cert
   }
 
   application {

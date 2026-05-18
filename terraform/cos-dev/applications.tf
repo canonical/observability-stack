@@ -35,30 +35,30 @@ module "grafana" {
   replace_triggers   = [terraform_data.grafana_litestream_resource.id]
 }
 
-module "istio-ingress" {
+module "istio_ingress" {
   count              = var.mesh.enabled ? 1 : 0
   source             = "git::https://github.com/canonical/istio-ingress-k8s-operator//terraform"
-  app_name           = var.catalogue.app_name
-  channel            = local.channels.catalogue
-  config             = var.catalogue.config
-  constraints        = var.catalogue.constraints
+  app_name           = var.istio_ingress.app_name
+  channel            = local.channels.istio_ingress
+  config             = var.istio_ingress.config
+  constraints        = var.istio_ingress.constraints
   model_uuid         = var.model_uuid
-  revision           = local.revisions.catalogue
-  storage_directives = var.catalogue.storage_directives
-  units              = var.catalogue.units
+  revision           = local.revisions.istio_ingress
+  storage_directives = var.istio_ingress.storage_directives
+  units              = var.istio_ingress.units
 }
 
-module "istio-beacon" {
+module "istio_beacon" {
   count              = var.mesh.enabled ? 1 : 0
   source             = "git::https://github.com/canonical/istio-beacon-k8s-operator//terraform"
-  app_name           = var.catalogue.app_name
-  channel            = local.channels.catalogue
-  config             = var.catalogue.config
-  constraints        = var.catalogue.constraints
+  app_name           = var.istio_beacon.app_name
+  channel            = local.channels.istio_beacon
+  config             = var.istio_beacon.config
+  constraints        = var.istio_beacon.constraints
   model_uuid         = var.model_uuid
-  revision           = local.revisions.catalogue
-  storage_directives = var.catalogue.storage_directives
-  units              = var.catalogue.units
+  revision           = local.revisions.istio_beacon
+  storage_directives = var.istio_beacon.storage_directives
+  units              = var.istio_beacon.units
 }
 
 module "loki_coordinator" {

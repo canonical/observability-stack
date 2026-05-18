@@ -2,13 +2,15 @@ locals {
   reverse_proxy_termination = var.reverse_proxy.enabled && var.reverse_proxy.cmr_urls.certificates != null ? true : false
   traefik_base              = "ubuntu@20.04"
   tracks = {
-    alertmanager = "dev"
-    catalogue    = "dev"
-    grafana      = "dev"
-    loki         = "dev"
-    mimir        = "dev"
-    otelcol      = "dev"
-    tempo        = "dev"
+    alertmanager  = "dev"
+    catalogue     = "dev"
+    grafana       = "dev"
+    istio_beacon  = "dev"
+    istio_ingress = "dev"
+    loki          = "dev"
+    mimir         = "dev"
+    otelcol       = "dev"
+    tempo         = "dev"
 
     s3_integrator = "2"
     seaweedfs     = "latest"
@@ -19,6 +21,8 @@ locals {
     alertmanager  = "${local.tracks.alertmanager}/${var.risk}"
     catalogue     = "${local.tracks.catalogue}/${var.risk}"
     grafana       = "${local.tracks.grafana}/${var.risk}"
+    istio_beacon  = "${local.tracks.istio_beacon}/${var.risk}"
+    istio_ingress = "${local.tracks.istio_ingress}/${var.risk}"
     loki          = "${local.tracks.loki}/${var.risk}"
     mimir         = "${local.tracks.mimir}/${var.risk}"
     otelcol       = "${local.tracks.otelcol}/${var.risk}"
@@ -32,6 +36,8 @@ locals {
     alertmanager      = var.alertmanager.revision != null ? var.alertmanager.revision : data.juju_charm.alertmanager_info.revision
     catalogue         = var.catalogue.revision != null ? var.catalogue.revision : data.juju_charm.catalogue_info.revision
     grafana           = var.grafana.revision != null ? var.grafana.revision : data.juju_charm.grafana_info.revision
+    istio_beacon      = var.istio_beacon.revision != null ? var.istio_beacon.revision : data.juju_charm.istio_beacon_info.revision
+    istio_ingress     = var.istio_ingress.revision != null ? var.istio_ingress.revision : data.juju_charm.istio_ingress_info.revision
     loki_coordinator  = var.loki_coordinator.revision != null ? var.loki_coordinator.revision : data.juju_charm.loki_coordinator_info.revision
     loki_worker       = var.loki_worker.revision != null ? var.loki_worker.revision : data.juju_charm.loki_worker_info.revision
     mimir_coordinator = var.mimir_coordinator.revision != null ? var.mimir_coordinator.revision : data.juju_charm.mimir_coordinator_info.revision
