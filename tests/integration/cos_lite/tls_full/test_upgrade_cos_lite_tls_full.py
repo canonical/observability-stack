@@ -7,12 +7,7 @@ https://documentation.ubuntu.com/observability/latest/how-to/configure-tls-encry
 from pathlib import Path
 
 import jubilant
-from helpers import (
-    catalogue_apps_are_reachable,
-    cos_assertions,
-    get_tls_context,
-    wait_for_active_idle_without_error,
-)
+from helpers import generic_assertions
 
 TRACK_2_TF_FILE = Path(__file__).parent.resolve() / "track-2.tf"
 TRACK_DEV_TF_FILE = Path(__file__).parent.resolve() / "track-dev.tf"
@@ -24,7 +19,7 @@ def test_deploy_from_track_2(
     # GIVEN a module deployed from track 2
     tf_manager.init(TRACK_2_TF_FILE)
     tf_manager.apply(ca_model=ca_model.model, cos_model=cos_model.model)
-    cos_assertions(tmp_path, ca_model.model, cos_model.model)
+    generic_assertions(cos_model, ca_model, tmp_path)
 
 
 def test_deploy_to_track_dev(
@@ -38,6 +33,6 @@ def test_deploy_to_track_dev(
     # AND WHEN upgraded to track dev
     tf_manager.apply(**jubilant_args)
     # THEN the product passes generic assertions
-    cos_assertions(tmp_path, ca_model.model, cos_model.model)
+    generic_assertions(cos_model, ca_model, tmp_path)
     # AND a single apply is sufficient (no further changes pending)
     # TODO: assert not tf_manager.plan_has_changes(**jubilant_args)
