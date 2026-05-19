@@ -35,4 +35,5 @@ def test_deploy_to_track_dev(
     # THEN the product passes generic assertions
     generic_assertions(cos_model, ca_model, tmp_path)
     # AND a single apply is sufficient (no further changes pending)
+    # TODO: Maybe this is too much work?
     # TODO: assert not tf_manager.plan_has_changes(**jubilant_args)
