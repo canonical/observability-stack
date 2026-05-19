@@ -25,9 +25,12 @@ def test_deploy_from_track_2(
 def test_deploy_to_track_dev(
     tmp_path, tf_manager, ca_model: jubilant.Juju, cos_model: jubilant.Juju
 ):
-    # WHEN upgraded to track dev
+    jubilant_args = {"cos_model": cos_model.model, "ca_model": ca_model.model}
+    # WHEN planning to upgrade to track dev
     tf_manager.init(TRACK_DEV_TF_FILE)
-    tf_manager.apply(ca_model=ca_model.model, cos_model=cos_model.model)
-
+    # THEN only expected apps are replaced
+    tf_manager.apps_to_replace(["grafana"], **jubilant_args)
+    # AND WHEN upgraded to track dev
+    tf_manager.apply(**jubilant_args)
     # THEN the model is upgraded and is healthy
     generic_assertions(cos_model, ca_model, tmp_path)
