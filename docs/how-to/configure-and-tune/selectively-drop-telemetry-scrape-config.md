@@ -52,7 +52,7 @@ graph LR
 We can specify the `drop` action via a config option for the [scrape-config charm](https://charmhub.io/prometheus-scrape-config-k8s):
 
 ```shell
-$ juju config sc metric_relabel_configs="$(cat <<EOF
+juju config sc metric_relabel_configs="$(cat <<EOF
 - source_labels: ["__name__"]
   regex: "scrape_samples_.+"
   action: "drop"

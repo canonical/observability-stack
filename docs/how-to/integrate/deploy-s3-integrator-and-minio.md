@@ -18,12 +18,12 @@ single-node configuration, it is suitable for providing an S3 storage backend fo
 This is [a small python script](https://raw.githubusercontent.com/canonical/tempo-coordinator-k8s-operator/main/scripts/deploy_minio.py) that deploys `minio`, `s3-integrator`, configures them and provisions a bucket for you to use.
 
 ```bash
-$ juju switch cos  # select the model where you have COS-lite deployed
-$ sudo snap install astral-uv --classic  # this is how we recommend to run the script, but you're free to do it your way
-$ curl https://raw.githubusercontent.com/canonical/tempo-coordinator-k8s-operator/main/scripts/deploy_minio.py -o deploy_minio.py
+juju switch cos  # select the model where you have COS-lite deployed
+sudo snap install astral-uv --classic  # this is how we recommend to run the script, but you're free to do it your way
+curl https://raw.githubusercontent.com/canonical/tempo-coordinator-k8s-operator/main/scripts/deploy_minio.py -o deploy_minio.py
 
 # review the script prior to executing it, then:
-$ MINIO_BUCKET="tempo" uv run --with minio deploy_minio.py
+MINIO_BUCKET="tempo" uv run --with minio deploy_minio.py
 ```
 
 Once the command exits zero, your storage is ready and you can integrate with the `s3` app.
@@ -39,7 +39,7 @@ The `secret-key` must be at least 8 characters long. If not, Minio will crash.
 ```
 
 ```bash
-$ juju deploy minio \
+juju deploy minio \
     --channel edge \
     --trust \
     --config access-key=<access-key> \
@@ -51,7 +51,7 @@ And wait for it to go to `active/idle`.
 ### 2. Deploy the S3 Integrator
 
 ```bash
-$ juju deploy s3-integrator s3 \
+juju deploy s3-integrator s3 \
     --channel edge \
     --trust 
 ```
@@ -60,7 +60,7 @@ Wait for the `s3` app to go to `blocked/idle`.
 The `s3` app will go into `blocked` status until you run the `sync-s3-credentials` action to give it access to `minio`.
 
 ```bash
-$ juju run s3/leader sync-s3-credentials \
+juju run s3/leader sync-s3-credentials \
     access-key=<access-key> \
     secret-key=<secret-key>
 ```
@@ -83,7 +83,7 @@ From there you should be able to create a bucket with a few clicks. See [this gu
 Alternatively, you can use the Minio Python SDK.
 
 ```bash
-$ pip install minio
+pip install minio
 ```
 
 Then execute this script:
@@ -111,7 +111,7 @@ if not found:
 Now give the `s3` app access to the bucket.
 
 ```
-$ juju config s3 \
+juju config s3 \
     endpoint=minio-0.minio-endpoints.<Juju model name>.svc.cluster.local:9000 \
     bucket=<bucket name>
 ```

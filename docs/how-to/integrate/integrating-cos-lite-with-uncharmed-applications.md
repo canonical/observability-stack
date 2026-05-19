@@ -27,7 +27,7 @@ We recommend to host Opentelemetry Collector as close as possible to the workloa
 We recommend to install Opentelemetry Collector via a handy snap we maintain:
 
 ```bash
-$ sudo snap install opentelemetry-collector
+sudo snap install opentelemetry-collector
 ```
 
 ```{note}
@@ -53,7 +53,7 @@ In other words, Traefik's own URL needs to be stable.
 In the Juju model where COS Lite is deployed, run the command below to find out the URL to the proxied endpoint.
 
 ```
-$ juju run traefik/0 show-proxied-endpoints
+juju run traefik/0 show-proxied-endpoints
 ```
 
 Assuming you have [configured the Traefik charm](https://github.com/canonical/traefik-k8s-operator#configurations) to use an external host name, for example `"traefik.url"`, you will see something like:
@@ -75,7 +75,7 @@ At this point you will need to follow [the documentation on how to configure Ope
 Once you've written your finished configuration to `/etc/otelcol/config.d/otelcol_0.yaml `, you'll be able to restart the snap using the following command:
 
 ```bash
-$ sudo snap restart opentelemetry-collector
+sudo snap restart opentelemetry-collector
 ```
 
 And with that, you are done! Good job, you got this!

@@ -89,7 +89,7 @@ relations:
 this results in an auto-render Promtail config file with three scrape jobs, one for each "filename":
 
 ```bash
-$ juju ssh --container postgresql pgsql/0 cat /etc/promtail/promtail_config.yaml
+juju ssh --container postgresql pgsql/0 cat /etc/promtail/promtail_config.yaml
 ```
 
 ```yaml
@@ -163,7 +163,7 @@ relations:
 This results in an auto-generated `/etc/otelcol/config.d/otelcol_0.yaml` config file with juju topology labels and the default scrape jobs for `/var/log/**/*log` and `journalctl`:
 
 ```bash
-$ juju ssh otelcol/0 cat /etc/otelcol/config.d/otelcol_0.yaml
+juju ssh otelcol/0 cat /etc/otelcol/config.d/otelcol_0.yaml
 ```
 
 ```yaml
