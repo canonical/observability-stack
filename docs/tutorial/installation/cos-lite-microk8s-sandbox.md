@@ -24,7 +24,7 @@ This tutorial assumes you have:
   membership in the current shell:
 
     sudo usermod -a -G snap_microk8s $USER
-    newgrp snap_microk8s```
+    newgrp snap_microk8s
 :::
 
 - `jq` installed on the machine running the Juju client. It is used for JSON
