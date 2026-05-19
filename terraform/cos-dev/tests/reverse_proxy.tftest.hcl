@@ -8,7 +8,7 @@ variables {
 
 run "reverse_proxy_enabled" {
   command = plan
-  
+
   assert {
     condition     = length(module.traefik) == 1
     error_message = "Expected traefik module when the reverse proxy is enabled"
@@ -40,7 +40,7 @@ run "reverse_proxy_disabled" {
     mesh          = { enabled = false }
     reverse_proxy = { enabled = false }
   }
-  
+
   assert {
     condition     = length(module.traefik) == 0
     error_message = "Expected no traefik module when the reverse proxy is disabled"
