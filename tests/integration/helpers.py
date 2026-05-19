@@ -43,10 +43,18 @@ class TfDirManager:
         subprocess.run(shlex.split(cmd_str), check=True)
 
 
-def generic_assertions(cos_model: jubilant.Juju, ca_model: jubilant.Juju, temp_path: Path):
-    # generic assertions that are shared between all products e.g. cos, cos-lite, cos-deb
+def generic_assertions(
+    cos_model: jubilant.Juju,
+    ca_model: jubilant.Juju | None = None,
+    temp_path: Path | None = None,
+):
+    # generic assertions that are shared between products: cos, cos-lite
     wait_for_active_idle_without_error([ca_model, cos_model], timeout=60 * 60)
-    tls_ctx = get_tls_context(temp_path, ca_model, "self-signed-certificates")
+    if ca_model:
+        assert temp_path is not None, "temp_path is required when ca_model is provided"
+        tls_ctx = get_tls_context(temp_path, ca_model, "self-signed-certificates")
+    else:
+        tls_ctx = None
     catalogue_apps_are_reachable(cos_model, tls_ctx)
 
 
