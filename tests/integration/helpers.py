@@ -108,10 +108,12 @@ def no_errors_in_otelcol_logs(juju: jubilant.Juju):
 
 
 def _no_errors_in_otelcol_logs(stdout: str):
-    error_lines = [
-        line
+    matched_lines = [
+        (m.group(1) or m.group(2), line)
         for line in stdout.splitlines()
         if (m := _LOG_LEVEL_RE.match(line))
-        and (m.group(1) or m.group(2)) in ["warn", "error"]
     ]
+    info_lines = [line for level, line in matched_lines if level == "info"]
+    assert info_lines, "no 'info' level logs found in otelcol output"
+    error_lines = [line for level, line in matched_lines if level in ("warn", "error")]
     assert not error_lines, "otelcol error logs:\n" + "\n".join(error_lines)
