@@ -175,6 +175,21 @@ runs:
       run: |
         juju wait-for model ${{ inputs.cos-model }} --timeout 30m --query 'forEach(applications, app => app.status == "active")'
 
+    - name: Dump model status on failure
+      if: failure()
+      shell: bash
+      run: |
+        echo "===== juju status ====="
+        juju status --model ${{ inputs.cos-model }} --color=false
+
+        echo ""
+        echo "===== juju debug-log (last 200 lines) ====="
+        juju debug-log --model ${{ inputs.cos-model }} --limit 200 --no-tail
+
+        echo ""
+        echo "===== kubectl pods ====="
+        kubectl get pods --all-namespaces
+
     - name: Set output
       id: set-output
       shell: bash
