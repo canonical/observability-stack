@@ -7,7 +7,7 @@ https://documentation.ubuntu.com/observability/latest/how-to/configure-tls-encry
 from pathlib import Path
 
 import jubilant
-from helpers import catalogue_apps_are_reachable, wait_for_active_idle_without_error
+from helpers import generic_assertions
 
 TRACK_2_TF_FILE = Path(__file__).parent.resolve() / "track-2.tf"
 TRACK_DEV_TF_FILE = Path(__file__).parent.resolve() / "track-dev.tf"
@@ -17,8 +17,7 @@ def test_deploy_from_track_2(tf_manager, cos_model: jubilant.Juju):
     # GIVEN a module deployed from track 2
     tf_manager.init(TRACK_2_TF_FILE)
     tf_manager.apply(model=cos_model.model)
-    wait_for_active_idle_without_error([cos_model], timeout=60 * 60)
-    catalogue_apps_are_reachable(cos_model)
+    generic_assertions(cos_model)
 
 
 def test_deploy_to_track_dev(tf_manager, cos_model: jubilant.Juju):
@@ -27,5 +26,4 @@ def test_deploy_to_track_dev(tf_manager, cos_model: jubilant.Juju):
     tf_manager.apply(model=cos_model.model)
 
     # THEN the model is upgraded and is healthy
-    wait_for_active_idle_without_error([cos_model])
-    catalogue_apps_are_reachable(cos_model)
+    generic_assertions(cos_model)
