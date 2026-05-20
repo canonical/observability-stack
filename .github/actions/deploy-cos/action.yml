@@ -55,7 +55,6 @@ runs:
         sudo snap install terraform --classic
 
     - name: Configure microk8s Docker Hub mirror
-      timeout-minutes: 10
       if: ${{ runner.environment == 'self-hosted' }}
       shell: bash
       run: |
@@ -77,7 +76,6 @@ runs:
         sudo microk8s start
 
     - name: Set up microk8s
-      timeout-minutes: 15
       if: ${{ runner.environment == 'self-hosted' }}
       shell: bash
       run: |
@@ -100,7 +98,6 @@ runs:
         sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s config | sudo tee ~/.kube/config > /dev/null
 
     - name: Bootstrap Juju
-      timeout-minutes: 15
       if: ${{ runner.environment == 'self-hosted' }}
       shell: bash
       run: |
