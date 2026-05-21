@@ -45,7 +45,7 @@ run "mesh_disabled" {
     condition     = length(juju_integration.istio_beacon) == 0
     error_message = "Expected no istio_beacon integrations when the mesh is disabled"
   }
-  
+
   assert {
     condition     = length(juju_integration.istio_ingress) == 0
     error_message = "Expected no istio_ingress integrations when the mesh is disabled"
