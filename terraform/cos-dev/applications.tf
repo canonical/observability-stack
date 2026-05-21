@@ -195,8 +195,6 @@ module "opentelemetry_collector" {
   units              = var.opentelemetry_collector.units
 }
 
-# -------------- # SeaweedFS (storage_backend = "seaweedfs") --------------
-
 module "seaweedfs" {
   count              = var.storage_backend == "seaweedfs" ? 1 : 0
   source             = "git::https://github.com/canonical/observability-stack//terraform/seaweedfs"
@@ -208,126 +206,6 @@ module "seaweedfs" {
   revision           = local.revisions.seaweedfs
   storage_directives = var.seaweedfs.storage_directives
   units              = var.seaweedfs.units
-}
-
-# -------------- # S3-integrators (storage_backend = "s3") --------------
-
-resource "juju_secret" "loki_s3_credentials" {
-  count      = var.storage_backend == "s3" ? 1 : 0
-  model_uuid = var.model_uuid
-  name       = "loki-s3-credentials"
-  value = {
-    access-key = var.s3_access_key
-    secret-key = var.s3_secret_key
-  }
-  info = "S3 credentials for Loki"
-}
-
-resource "juju_access_secret" "loki_s3_credentials_access" {
-  count        = var.storage_backend == "s3" ? 1 : 0
-  model_uuid   = var.model_uuid
-  applications = [juju_application.s3_integrator_loki[0].name]
-  secret_id    = juju_secret.loki_s3_credentials[0].secret_id
-}
-
-# TODO: Replace with a remote terraform module once the s3-integrator charm exposes one.
-resource "juju_application" "s3_integrator_loki" {
-  count = var.storage_backend == "s3" ? 1 : 0
-  config = merge({
-    endpoint    = var.s3_endpoint
-    bucket      = var.loki_bucket
-    credentials = "secret:${juju_secret.loki_s3_credentials[0].secret_id}"
-  }, var.s3_integrator.config)
-  constraints        = var.s3_integrator.constraints
-  model_uuid         = var.model_uuid
-  name               = "${var.loki_coordinator.app_name}-s3-integrator"
-  storage_directives = var.s3_integrator.storage_directives
-  trust              = true
-  units              = var.s3_integrator.units
-
-  charm {
-    name     = "s3-integrator"
-    channel  = local.channels.s3_integrator
-    revision = local.revisions.s3_integrator
-  }
-}
-
-resource "juju_secret" "mimir_s3_credentials" {
-  count      = var.storage_backend == "s3" ? 1 : 0
-  model_uuid = var.model_uuid
-  name       = "mimir-s3-credentials"
-  value = {
-    access-key = var.s3_access_key
-    secret-key = var.s3_secret_key
-  }
-  info = "S3 credentials for Mimir"
-}
-
-resource "juju_access_secret" "mimir_s3_credentials_access" {
-  count        = var.storage_backend == "s3" ? 1 : 0
-  model_uuid   = var.model_uuid
-  applications = [juju_application.s3_integrator_mimir[0].name]
-  secret_id    = juju_secret.mimir_s3_credentials[0].secret_id
-}
-
-resource "juju_application" "s3_integrator_mimir" {
-  count = var.storage_backend == "s3" ? 1 : 0
-  config = merge({
-    endpoint    = var.s3_endpoint
-    bucket      = var.mimir_bucket
-    credentials = "secret:${juju_secret.mimir_s3_credentials[0].secret_id}"
-  }, var.s3_integrator.config)
-  constraints        = var.s3_integrator.constraints
-  model_uuid         = var.model_uuid
-  name               = "${var.mimir_coordinator.app_name}-s3-integrator"
-  storage_directives = var.s3_integrator.storage_directives
-  trust              = true
-  units              = var.s3_integrator.units
-
-  charm {
-    name     = "s3-integrator"
-    channel  = local.channels.s3_integrator
-    revision = local.revisions.s3_integrator
-  }
-}
-
-resource "juju_secret" "tempo_s3_credentials" {
-  count      = var.storage_backend == "s3" ? 1 : 0
-  model_uuid = var.model_uuid
-  name       = "tempo-s3-credentials"
-  value = {
-    access-key = var.s3_access_key
-    secret-key = var.s3_secret_key
-  }
-  info = "S3 credentials for Tempo"
-}
-
-resource "juju_access_secret" "tempo_s3_credentials_access" {
-  count        = var.storage_backend == "s3" ? 1 : 0
-  model_uuid   = var.model_uuid
-  applications = [juju_application.s3_integrator_tempo[0].name]
-  secret_id    = juju_secret.tempo_s3_credentials[0].secret_id
-}
-
-resource "juju_application" "s3_integrator_tempo" {
-  count = var.storage_backend == "s3" ? 1 : 0
-  config = merge({
-    endpoint    = var.s3_endpoint
-    bucket      = var.tempo_bucket
-    credentials = "secret:${juju_secret.tempo_s3_credentials[0].secret_id}"
-  }, var.s3_integrator.config)
-  constraints        = var.s3_integrator.constraints
-  model_uuid         = var.model_uuid
-  name               = "${var.tempo_coordinator.app_name}-s3-integrator"
-  storage_directives = var.s3_integrator.storage_directives
-  trust              = true
-  units              = var.s3_integrator.units
-
-  charm {
-    name     = "s3-integrator"
-    channel  = local.channels.s3_integrator
-    revision = local.revisions.s3_integrator
-  }
 }
 
 module "ssc" {
@@ -462,6 +340,7 @@ module "tempo_worker_metrics_generator" {
 }
 
 module "traefik" {
+  count              = local.traefik_enabled ? 1 : 0
   source             = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
   app_name           = var.traefik.app_name
   channel            = local.channels.traefik
@@ -471,4 +350,124 @@ module "traefik" {
   revision           = local.revisions.traefik
   storage_directives = var.traefik.storage_directives
   units              = var.traefik.units
+}
+
+# -------------- # S3-integrator resources (storage_backend = "s3") --------------
+
+resource "juju_secret" "loki_s3_credentials" {
+  count      = var.storage_backend == "s3" ? 1 : 0
+  model_uuid = var.model_uuid
+  name       = "loki-s3-credentials"
+  value = {
+    access-key = var.s3_access_key
+    secret-key = var.s3_secret_key
+  }
+  info = "S3 credentials for Loki"
+}
+
+resource "juju_access_secret" "loki_s3_credentials_access" {
+  count        = var.storage_backend == "s3" ? 1 : 0
+  model_uuid   = var.model_uuid
+  applications = [juju_application.s3_integrator_loki[0].name]
+  secret_id    = juju_secret.loki_s3_credentials[0].secret_id
+}
+
+# TODO: Replace with a remote terraform module once the s3-integrator charm exposes one.
+resource "juju_application" "s3_integrator_loki" {
+  count = var.storage_backend == "s3" ? 1 : 0
+  config = merge({
+    endpoint    = var.s3_endpoint
+    bucket      = var.loki_bucket
+    credentials = "secret:${juju_secret.loki_s3_credentials[0].secret_id}"
+  }, var.s3_integrator.config)
+  constraints        = var.s3_integrator.constraints
+  model_uuid         = var.model_uuid
+  name               = "${var.loki_coordinator.app_name}-s3-integrator"
+  storage_directives = var.s3_integrator.storage_directives
+  trust              = true
+  units              = var.s3_integrator.units
+
+  charm {
+    name     = "s3-integrator"
+    channel  = local.channels.s3_integrator
+    revision = local.revisions.s3_integrator
+  }
+}
+
+resource "juju_secret" "mimir_s3_credentials" {
+  count      = var.storage_backend == "s3" ? 1 : 0
+  model_uuid = var.model_uuid
+  name       = "mimir-s3-credentials"
+  value = {
+    access-key = var.s3_access_key
+    secret-key = var.s3_secret_key
+  }
+  info = "S3 credentials for Mimir"
+}
+
+resource "juju_access_secret" "mimir_s3_credentials_access" {
+  count        = var.storage_backend == "s3" ? 1 : 0
+  model_uuid   = var.model_uuid
+  applications = [juju_application.s3_integrator_mimir[0].name]
+  secret_id    = juju_secret.mimir_s3_credentials[0].secret_id
+}
+
+resource "juju_application" "s3_integrator_mimir" {
+  count = var.storage_backend == "s3" ? 1 : 0
+  config = merge({
+    endpoint    = var.s3_endpoint
+    bucket      = var.mimir_bucket
+    credentials = "secret:${juju_secret.mimir_s3_credentials[0].secret_id}"
+  }, var.s3_integrator.config)
+  constraints        = var.s3_integrator.constraints
+  model_uuid         = var.model_uuid
+  name               = "${var.mimir_coordinator.app_name}-s3-integrator"
+  storage_directives = var.s3_integrator.storage_directives
+  trust              = true
+  units              = var.s3_integrator.units
+
+  charm {
+    name     = "s3-integrator"
+    channel  = local.channels.s3_integrator
+    revision = local.revisions.s3_integrator
+  }
+}
+
+resource "juju_secret" "tempo_s3_credentials" {
+  count      = var.storage_backend == "s3" ? 1 : 0
+  model_uuid = var.model_uuid
+  name       = "tempo-s3-credentials"
+  value = {
+    access-key = var.s3_access_key
+    secret-key = var.s3_secret_key
+  }
+  info = "S3 credentials for Tempo"
+}
+
+resource "juju_access_secret" "tempo_s3_credentials_access" {
+  count        = var.storage_backend == "s3" ? 1 : 0
+  model_uuid   = var.model_uuid
+  applications = [juju_application.s3_integrator_tempo[0].name]
+  secret_id    = juju_secret.tempo_s3_credentials[0].secret_id
+}
+
+resource "juju_application" "s3_integrator_tempo" {
+  count = var.storage_backend == "s3" ? 1 : 0
+  config = merge({
+    endpoint    = var.s3_endpoint
+    bucket      = var.tempo_bucket
+    credentials = "secret:${juju_secret.tempo_s3_credentials[0].secret_id}"
+  }, var.s3_integrator.config)
+  constraints        = var.s3_integrator.constraints
+  model_uuid         = var.model_uuid
+  name               = "${var.tempo_coordinator.app_name}-s3-integrator"
+  storage_directives = var.s3_integrator.storage_directives
+  trust              = true
+  units              = var.s3_integrator.units
+
+  charm {
+    name     = "s3-integrator"
+    channel  = local.channels.s3_integrator
+    revision = local.revisions.s3_integrator
+  }
 }
