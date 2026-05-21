@@ -146,7 +146,9 @@ runs:
     # --- Create model and deploy COS ---
     - name: Create Juju model
       shell: bash
-      run: juju add-model ${{ inputs.cos-model }}
+      run: |
+        juju add-model ${{ inputs.cos-model }}
+        juju model-config --model ${{ inputs.cos-model }} update-status-hook-interval=2m
 
     - name: Deploy COS
       shell: bash
@@ -174,12 +176,12 @@ runs:
       shell: bash
       run: |
         model="${{ inputs.cos-model }}"
-        deadline=$(( $(date +%s) + 1800 ))
+        deadline=$(( $(date +%s) + 3600 ))
 
         while [ "$(date +%s)" -lt "$deadline" ]; do
           status_json=$(juju status --model "$model" --format json)
 
-          # Collect all unit workload statuses
+          # Collect all unit workload/agent statuses
           unit_statuses=$(echo "$status_json" | jq -r '
             [.applications | to_entries[] | .value.units // {} | to_entries[] | .value["workload-status"].current] | @json
           ')
@@ -190,6 +192,19 @@ runs:
             echo "All applications are active!"
             exit 0
           fi
+
+          # Log which units are not yet active/idle so we can track convergence
+          echo "--- $(date -u '+%H:%M:%S') not yet settled ---"
+          echo "$status_json" | jq -r '
+            .applications | to_entries[] |
+            .key as $app |
+            .value.units // {} | to_entries[] |
+            select(
+              .value["workload-status"].current != "active" or
+              .value["agent-status"].current != "idle"
+            ) |
+            "  \(.key)  workload=\(.value["workload-status"].current)  agent=\(.value["agent-status"].current)  msg=\(.value["workload-status"].message // "")"
+          '
 
           # Auto-resolve any errored units so Juju retries the failed hook.
           # This handles transient race conditions (e.g. ingress-relation-created firing
@@ -209,7 +224,7 @@ runs:
           sleep 30
         done
 
-        echo "Timeout: not all applications became active within 30 minutes"
+        echo "Timeout: not all applications became active within 1 hour"
         exit 1
 
     - name: Dump model status on failure
