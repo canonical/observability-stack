@@ -1,7 +1,7 @@
 name: Deploy COS
 description: >
   Deploy Canonical Observability Stack into a Juju model using Terraform.
-  Handles both github-hosted (via concierge) and self-hosted runner environments.
+  Uses concierge to set up microk8s and Juju on any runner type.
 
 inputs:
   scale:
@@ -41,69 +41,32 @@ runs:
 
     # --- Infrastructure setup ---
     - name: Concierge prepare
-      if: ${{ runner.environment == 'github-hosted' }}
       shell: bash
       run: |
-        sudo snap install concierge --classic
-        sudo concierge prepare --juju-channel ${{ inputs.juju-channel }} -p microk8s --extra-snaps terraform
-
-    - name: Install snaps
-      if: ${{ runner.environment == 'self-hosted' }}
-      shell: bash
-      run: |
-        sudo snap install juju --classic --channel=${{ inputs.juju-channel }}
-        sudo snap install terraform --classic
-
-    - name: Configure microk8s Docker Hub mirror
-      if: ${{ runner.environment == 'self-hosted' }}
-      shell: bash
-      run: |
-        sudo snap install microk8s --channel "1.34-strict/stable" --classic
-        sudo adduser "$USER" snap_microk8s
-
-        until sudo iptables --list | grep -q -i "microk8s"
-        do
-          echo "MicroK8s has not yet configured iptables."
-          sleep 10
-        done
-
-        sudo tee /var/snap/microk8s/current/args/certs.d/docker.io/hosts.toml << EOF
-        server = "$DOCKERHUB_MIRROR"
-        [host."${DOCKERHUB_MIRROR#'https://'}"]
-        capabilities = ["pull", "resolve"]
+        IPADDR=$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc')
+        cat > /tmp/concierge.yaml << EOF
+        juju:
+          model-defaults:
+            logging-config: '<root>=INFO; unit=DEBUG'
+        providers:
+          microk8s:
+            enable: true
+            bootstrap: true
+            addons:
+              - hostpath-storage
+              - dns
+              - rbac
+              - "metallb:${IPADDR}-${IPADDR}"
         EOF
-        sudo microk8s stop
-        sudo microk8s start
+        if [ -n "${DOCKERHUB_MIRROR:-}" ]; then
+          printf '    image-registry:\n      url: "%s"\n' "${DOCKERHUB_MIRROR}" >> /tmp/concierge.yaml
+        fi
 
-    - name: Set up microk8s
-      if: ${{ runner.environment == 'self-hosted' }}
-      shell: bash
-      run: |
-        sudo apt-get update
-        sudo apt-get install retry -y
-        sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
-        sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable dns
-        sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
-        sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s.kubectl rollout status --namespace kube-system --watch --timeout=5m deployments/coredns
-        sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable hostpath-storage
-        sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s.kubectl rollout status --namespace kube-system --watch --timeout=5m deployments/hostpath-provisioner
-
-        IPADDR=$(ip -4 -j route get 2.2.2.2 | sed -n -e 's/^.*prefsrc\":"\([^ "]*\).*/\1/p')
-        sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable "metallb:$IPADDR-$IPADDR"
-        sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
-        sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable rbac
-        sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
-
-        mkdir ~/.kube/
-        sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s config | sudo tee ~/.kube/config > /dev/null
-
-    - name: Bootstrap Juju
-      if: ${{ runner.environment == 'self-hosted' }}
-      shell: bash
-      run: |
-        mkdir -p ~/.local/share/juju
-        sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- juju bootstrap microk8s --config model-logs-size=10G microk8s
-        juju model-defaults logging-config='<root>=INFO; unit=DEBUG'
+        sudo snap install concierge --classic
+        sudo concierge prepare \
+          --config /tmp/concierge.yaml \
+          --juju-channel "${{ inputs.juju-channel }}" \
+          --extra-snaps terraform
 
     # --- S3 storage backend ---
     - name: Install and configure MicroCeph
