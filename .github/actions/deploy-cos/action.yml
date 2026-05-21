@@ -173,7 +173,44 @@ runs:
     - name: Wait for deployment
       shell: bash
       run: |
-        juju wait-for model ${{ inputs.cos-model }} --timeout 30m --query 'forEach(applications, app => app.status == "active")'
+        model="${{ inputs.cos-model }}"
+        deadline=$(( $(date +%s) + 1800 ))
+
+        while [ "$(date +%s)" -lt "$deadline" ]; do
+          status_json=$(juju status --model "$model" --format json)
+
+          # Collect all unit workload statuses
+          unit_statuses=$(echo "$status_json" | jq -r '
+            [.applications | to_entries[] | .value.units // {} | to_entries[] | .value["workload-status"].current] | @json
+          ')
+
+          # Exit successfully when every unit reports "active"
+          all_active=$(echo "$unit_statuses" | jq 'length > 0 and all(. == "active")')
+          if [ "$all_active" = "true" ]; then
+            echo "All applications are active!"
+            exit 0
+          fi
+
+          # Auto-resolve any errored units so Juju retries the failed hook.
+          # This handles transient race conditions (e.g. ingress-relation-created firing
+          # before Traefik is ready to accept the relation).
+          errored=$(echo "$status_json" | jq -r '
+            .applications | to_entries[] | .value.units // {} | to_entries[] |
+            select(.value["workload-status"].current == "error") | .key
+          ')
+          if [ -n "$errored" ]; then
+            echo "Auto-resolving errored units (hook retry):"
+            while IFS= read -r unit; do
+              echo "  - $unit"
+              juju resolve "$unit" --model "$model" || true
+            done <<< "$errored"
+          fi
+
+          sleep 30
+        done
+
+        echo "Timeout: not all applications became active within 30 minutes"
+        exit 1
 
     - name: Dump model status on failure
       if: failure()
