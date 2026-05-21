@@ -227,6 +227,26 @@ runs:
         echo "===== kubectl pods ====="
         kubectl get pods --all-namespaces
 
+        echo ""
+        echo "===== kubectl describe non-ready pods ====="
+        kubectl get pods -n ${{ inputs.cos-model }} --no-headers \
+          | awk '{ split($2, a, "/"); if (a[1] != a[2]) print $1 }' \
+          | while read -r pod; do
+              echo "--- $pod ---"
+              kubectl describe pod "$pod" -n ${{ inputs.cos-model }}
+              echo ""
+            done
+
+        echo ""
+        echo "===== kubectl logs for non-ready containers ====="
+        kubectl get pods -n ${{ inputs.cos-model }} -o json \
+          | jq -r '.items[] | .metadata.name as $pod | .status.containerStatuses[]? | select(.ready == false) | [$pod, .name] | @tsv' \
+          | while IFS=$'\t' read -r pod container; do
+              echo "--- $pod / $container ---"
+              kubectl logs "$pod" -c "$container" -n ${{ inputs.cos-model }} --tail=50 2>&1 || true
+              echo ""
+            done
+
     - name: Set output
       id: set-output
       shell: bash
