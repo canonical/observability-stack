@@ -72,7 +72,7 @@ module "ssc" {
 }
 
 module "traefik" {
-  count              = local.traefik_enabled ? 1 : 0
+  count = local.traefik_enabled ? 1 : 0
 
   source             = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
   app_name           = var.traefik.app_name

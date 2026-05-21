@@ -35,11 +35,11 @@ run "traefik_ingress_disabled" {
 
   variables {
     ingress = {
-      alertmanager            = false
-      catalogue               = false
-      grafana                 = false
-      loki                    = false
-      prometheus              = false
+      alertmanager = false
+      catalogue    = false
+      grafana      = false
+      loki         = false
+      prometheus   = false
     }
   }
 

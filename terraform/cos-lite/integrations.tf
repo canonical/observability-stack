@@ -308,7 +308,7 @@ resource "juju_integration" "ingress_per_unit" {
 
 resource "juju_integration" "traefik_self_monitoring_prometheus" {
   count = local.traefik_enabled ? 1 : 0
-  
+
   model_uuid = var.model_uuid
 
   application {
