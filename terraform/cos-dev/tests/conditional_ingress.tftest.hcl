@@ -2,9 +2,31 @@ mock_provider "juju" {}
 
 variables { model_uuid = "00000000-0000-0000-0000-000000000000" }
 
-# TODO: This feature also depends on the x2 Traefik story, maybe internal_tls is not the right name
-# TODO: Do we need to remove offers / outputs TF conditionally?
-# TODO: We need to keep the COS API the same across products: feature in COS, COS Lite, and COS Dev
+# --- traefik: all ingress enabled by default ---
+
+run "traefik_ingress_enabled" {
+  command = plan
+
+  assert {
+    condition     = length(module.traefik) == 1
+    error_message = "Expected a traefik module when ingress is enabled"
+  }
+
+  assert {
+    condition     = length(juju_integration.ingress) == 4
+    error_message = "Unexpected ingress integrations when ingress is enabled"
+  }
+
+  assert {
+    condition     = length(juju_integration.grafana_ingress) == 1
+    error_message = "Unexpected grafana_ingress integrations when ingress is enabled"
+  }
+
+  assert {
+    condition     = length(juju_integration.traefik_route) == 2
+    error_message = "Unexpected traefik_route integrations when ingress is enabled"
+  }
+}
 
 # --- traefik: all ingress disabled ---
 
@@ -41,43 +63,5 @@ run "traefik_ingress_disabled" {
   assert {
     condition     = length(juju_integration.traefik_route) == 0
     error_message = "Unexpected traefik_route integrations when ingress is disabled"
-  }
-}
-
-# --- traefik: some ingress enabled ---
-
-run "traefik_ingress_enabled" {
-  command = plan
-
-  variables {
-    ingress = {
-      alertmanager            = false
-      catalogue               = true
-      grafana                 = false
-      loki                    = true
-      mimir                   = false
-      opentelemetry_collector = true
-      tempo                   = false
-    }
-  }
-
-  assert {
-    condition     = length(module.traefik) == 1
-    error_message = "Expected a traefik module when ingress is enabled"
-  }
-
-  assert {
-    condition     = length(juju_integration.ingress) == 2
-    error_message = "Unexpected ingress integrations when ingress is enabled"
-  }
-
-  assert {
-    condition     = length(juju_integration.grafana_ingress) == 0
-    error_message = "Unexpected grafana_ingress integrations when ingress is enabled"
-  }
-
-  assert {
-    condition     = length(juju_integration.traefik_route) == 1
-    error_message = "Unexpected traefik_route integrations when ingress is enabled"
   }
 }
