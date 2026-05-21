@@ -245,7 +245,7 @@ resource "juju_integration" "ingress" {
         app_name = module.catalogue.app_name
         endpoint = module.catalogue.requires.ingress
       }
-    } : k => v if var.ingress[k]
+    } : k => v if local.traefik_enabled && var.ingress[k]
   }
 
   model_uuid = var.model_uuid
@@ -256,13 +256,13 @@ resource "juju_integration" "ingress" {
   }
 
   application {
-    name     = module.traefik.app_name
-    endpoint = module.traefik.endpoints.ingress
+    name     = module.traefik[0].app_name
+    endpoint = module.traefik[0].endpoints.ingress
   }
 }
 
 resource "juju_integration" "grafana_ingress" {
-  count = var.ingress.grafana ? 1 : 0
+  count = local.traefik_enabled && var.ingress.grafana ? 1 : 0
 
   model_uuid = var.model_uuid
 
@@ -272,8 +272,8 @@ resource "juju_integration" "grafana_ingress" {
   }
 
   application {
-    name     = module.traefik.app_name
-    endpoint = module.traefik.endpoints.ingress
+    name     = module.traefik[0].app_name
+    endpoint = module.traefik[0].endpoints.ingress
   }
 
   lifecycle { replace_triggered_by = [terraform_data.grafana_ingress_interface] }
@@ -290,7 +290,7 @@ resource "juju_integration" "ingress_per_unit" {
         app_name = module.prometheus.app_name
         endpoint = module.prometheus.requires.ingress
       }
-    } : k => v if var.ingress[k]
+    } : k => v if local.traefik_enabled && var.ingress[k]
   }
 
   model_uuid = var.model_uuid
@@ -301,12 +301,14 @@ resource "juju_integration" "ingress_per_unit" {
   }
 
   application {
-    name     = module.traefik.app_name
-    endpoint = module.traefik.endpoints.ingress_per_unit
+    name     = module.traefik[0].app_name
+    endpoint = module.traefik[0].endpoints.ingress_per_unit
   }
 }
 
 resource "juju_integration" "traefik_self_monitoring_prometheus" {
+  count = local.traefik_enabled ? 1 : 0
+  
   model_uuid = var.model_uuid
 
   application {
@@ -315,15 +317,37 @@ resource "juju_integration" "traefik_self_monitoring_prometheus" {
   }
 
   application {
-    name     = module.traefik.app_name
-    endpoint = module.traefik.endpoints.metrics_endpoint
+    name     = module.traefik[0].app_name
+    endpoint = module.traefik[0].endpoints.metrics_endpoint
   }
 }
 
 # -------------- # Provided by Self-Signed-Certificates --------------
 
-resource "juju_integration" "alertmanager_certificates" {
-  count      = var.internal_tls ? 1 : 0
+resource "juju_integration" "internal_certificates" {
+  for_each = var.internal_tls ? {
+    alertmanager = {
+      app_name = module.alertmanager.app_name
+      endpoint = module.alertmanager.requires.certificates
+    }
+    catalogue = {
+      app_name = module.catalogue.app_name
+      endpoint = module.catalogue.requires.certificates
+    }
+    grafana = {
+      app_name = module.grafana.app_name
+      endpoint = module.grafana.requires.certificates
+    }
+    loki = {
+      app_name = module.loki.app_name
+      endpoint = module.loki.requires.certificates
+    }
+    prometheus = {
+      app_name = module.prometheus.app_name
+      endpoint = module.prometheus.requires.certificates
+    }
+  } : {}
+
   model_uuid = var.model_uuid
 
   application {
@@ -332,73 +356,13 @@ resource "juju_integration" "alertmanager_certificates" {
   }
 
   application {
-    name     = module.alertmanager.app_name
-    endpoint = module.alertmanager.requires.certificates
-  }
-}
-
-resource "juju_integration" "catalogue_certificates" {
-  count      = var.internal_tls ? 1 : 0
-  model_uuid = var.model_uuid
-
-  application {
-    name     = module.ssc[0].app_name
-    endpoint = module.ssc[0].provides.certificates
-  }
-
-  application {
-    name     = module.catalogue.app_name
-    endpoint = module.catalogue.requires.certificates
-  }
-}
-
-resource "juju_integration" "grafana_certificates" {
-  count      = var.internal_tls ? 1 : 0
-  model_uuid = var.model_uuid
-
-  application {
-    name     = module.ssc[0].app_name
-    endpoint = module.ssc[0].provides.certificates
-  }
-
-  application {
-    name     = module.grafana.app_name
-    endpoint = module.grafana.requires.certificates
-  }
-}
-
-resource "juju_integration" "loki_certificates" {
-  count      = var.internal_tls ? 1 : 0
-  model_uuid = var.model_uuid
-
-  application {
-    name     = module.ssc[0].app_name
-    endpoint = module.ssc[0].provides.certificates
-  }
-
-  application {
-    name     = module.loki.app_name
-    endpoint = module.loki.requires.certificates
-  }
-}
-
-resource "juju_integration" "prometheus_certificates" {
-  count      = var.internal_tls ? 1 : 0
-  model_uuid = var.model_uuid
-
-  application {
-    name     = module.ssc[0].app_name
-    endpoint = module.ssc[0].provides.certificates
-  }
-
-  application {
-    name     = module.prometheus.app_name
-    endpoint = module.prometheus.requires.certificates
+    name     = each.value.app_name
+    endpoint = each.value.endpoint
   }
 }
 
 resource "juju_integration" "traefik_receive_ca_certificate" {
-  count      = var.internal_tls ? 1 : 0
+  count      = local.traefik_enabled && var.internal_tls ? 1 : 0
   model_uuid = var.model_uuid
 
   application {
@@ -407,24 +371,21 @@ resource "juju_integration" "traefik_receive_ca_certificate" {
   }
 
   application {
-    name     = module.traefik.app_name
-    endpoint = module.traefik.endpoints.receive_ca_cert
+    name     = module.traefik[0].app_name
+    endpoint = module.traefik[0].endpoints.receive_ca_cert
   }
 }
 
 # -------------- # Provided by an external CA --------------
 
 resource "juju_integration" "external_traefik_certificates" {
-  count      = local.tls_termination ? 1 : 0
+  count      = local.traefik_enabled && local.tls_termination ? 1 : 0
   model_uuid = var.model_uuid
 
+  application { offer_url = var.external_certificates_offer_url }
   application {
-    offer_url = var.external_certificates_offer_url
-  }
-
-  application {
-    name     = module.traefik.app_name
-    endpoint = module.traefik.endpoints.certificates
+    name     = module.traefik[0].app_name
+    endpoint = module.traefik[0].endpoints.certificates
   }
 }
 
@@ -432,10 +393,7 @@ resource "juju_integration" "external_grafana_ca_cert" {
   count      = local.tls_termination ? 1 : 0
   model_uuid = var.model_uuid
 
-  application {
-    offer_url = var.external_ca_cert_offer_url
-  }
-
+  application { offer_url = var.external_ca_cert_offer_url }
   application {
     name     = module.grafana.app_name
     endpoint = module.grafana.requires.receive_ca_cert
@@ -446,10 +404,7 @@ resource "juju_integration" "external_prom_ca_cert" {
   count      = local.tls_termination ? 1 : 0
   model_uuid = var.model_uuid
 
-  application {
-    offer_url = var.external_ca_cert_offer_url
-  }
-
+  application { offer_url = var.external_ca_cert_offer_url }
   application {
     name     = module.prometheus.app_name
     endpoint = module.prometheus.requires.receive_ca_cert
