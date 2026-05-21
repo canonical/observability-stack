@@ -38,7 +38,7 @@ variable "anti_affinity" {
   default     = true
 }
 
-# -------------- # TLS configurations --------------
+# -------------- # Network configurations --------------
 
 variable "internal_tls" {
   description = "Specify whether to use TLS or not for internal COS communication. By default, TLS is enabled using self-signed-certificates"
