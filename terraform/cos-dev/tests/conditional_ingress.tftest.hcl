@@ -1,17 +1,14 @@
 mock_provider "juju" {}
 
-variables {
-  model_uuid = "00000000-0000-0000-0000-000000000000"
-}
+variables { model_uuid = "00000000-0000-0000-0000-000000000000" }
 
-# TODO: This feature also depends on the x2 Traefik story, maybe reverse proxy is not the right name
+# TODO: This feature also depends on the x2 Traefik story, maybe internal_tls is not the right name
 # TODO: Do we need to remove offers / outputs TF conditionally?
 # TODO: We need to keep the COS API the same across products: feature in COS, COS Lite, and COS Dev
-# TODO: For the conditional ingress story, do we support the same components between mesh and reverse proxy? If yes, then they can share the ingress var. Otherwise not, e.g. COS Lite
 
-# --- reverse proxy: enabled - all ingress disabled ---
+# --- internal_tls: enabled - all ingress disabled ---
 
-run "reverse_proxy_ingress_disabled" {
+run "internal_tls_ingress_disabled" {
   command = plan
 
   variables {
@@ -48,8 +45,8 @@ run "mesh_ingress_disabled" {
   command = plan
 
   variables {
-    mesh          = { enabled = true }
-    reverse_proxy = { enabled = false }
+    mesh_enabled = true
+    internal_tls = false
     ingress = {
       alertmanager            = false
       catalogue               = false
