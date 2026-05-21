@@ -2,46 +2,50 @@ mock_provider "juju" {}
 
 variables { model_uuid = "00000000-0000-0000-0000-000000000000" }
 
-# --- default: internal_tls enabled ---
+# --- external cert URLs both null: no validation error ---
 
-run "internal_tls_enabled" {
+run "external_cert_urls_both_null" {
   command = plan
 
-  assert {
-    condition     = length(module.ssc) == 1
-    error_message = "Expected ssc module when internal_tls is enabled"
-  }
-
-  assert {
-    condition     = length(juju_integration.internal_certificates) == 7
-    error_message = "Unexpected internal_certificates integrations when internal_tls is enabled"
-  }
-
-  assert {
-    condition     = length(juju_integration.traefik_receive_ca_certificate) == 1
-    error_message = "Unexpected traefik_receive_ca_certificate integrations when internal_tls is enabled"
+  variables {
+    external_certificates_offer_url = null
+    external_ca_cert_offer_url      = null
   }
 }
 
-# --- internal_tls disabled: no ingress via traefik ---
+# --- external cert URLs both set: no validation error ---
 
-run "internal_tls_disabled" {
+run "external_cert_urls_both_set" {
   command = plan
 
-  variables { internal_tls = false }
+  variables {
+    external_certificates_offer_url = "admin/external-ca.tls-certificates"
+    external_ca_cert_offer_url      = "admin/external-ca.send-ca-cert"
+  }
+}
 
-  assert {
-    condition     = length(module.ssc) == 0
-    error_message = "Expected no self-signed-certificates module when internal_tls is disabled"
+# --- only external_certificates_offer_url set: validation error ---
+
+run "external_certificates_offer_url_only_fails" {
+  command = plan
+
+  variables {
+    external_certificates_offer_url = "admin/external-ca.tls-certificates"
+    external_ca_cert_offer_url      = null
   }
 
-  assert {
-    condition     = length(juju_integration.internal_certificates) == 0
-    error_message = "Unexpected internal_certificates integrations when internal_tls is disabled"
+  expect_failures = [var.external_certificates_offer_url]
+}
+
+# --- only external_ca_cert_offer_url set: validation error ---
+
+run "external_ca_cert_offer_url_only_fails" {
+  command = plan
+
+  variables {
+    external_certificates_offer_url = null
+    external_ca_cert_offer_url      = "admin/external-ca.send-ca-cert"
   }
 
-  assert {
-    condition     = length(juju_integration.traefik_receive_ca_certificate) == 0
-    error_message = "Unexpected traefik_receive_ca_certificate integrations when internal_tls is disabled"
-  }
+  expect_failures = [var.external_certificates_offer_url]
 }
