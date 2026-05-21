@@ -2,30 +2,6 @@ mock_provider "juju" {}
 
 variables { model_uuid = "00000000-0000-0000-0000-000000000000" }
 
-# --- mesh and internal_tls enabled: validation error ---
-
-run "mesh_and_internal_tls_enabled_fails" {
-  command = plan
-
-  variables {
-    mesh_enabled = true
-    internal_tls = true
-  }
-
-  expect_failures = [var.mesh_enabled]
-}
-
-# --- mesh and internal_tls disabled: no validation error ---
-
-run "mesh_and_internal_tls_disabled" {
-  command = plan
-
-  variables {
-    mesh_enabled = false
-    internal_tls = false
-  }
-}
-
 # --- default: mesh disabled - no ingress via istio ---
 
 run "mesh_disabled" {

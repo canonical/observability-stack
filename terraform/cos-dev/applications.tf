@@ -36,7 +36,7 @@ module "grafana" {
 }
 
 module "istio_ingress" {
-  count              = var.mesh_enabled ? 1 : 0
+  count              = local.istio_ingress_enabled ? 1 : 0
   source             = "git::https://github.com/canonical/istio-ingress-k8s-operator//terraform"
   app_name           = var.istio_ingress.app_name
   channel            = local.channels.istio_ingress
@@ -366,7 +366,7 @@ module "tempo_worker_metrics_generator" {
 }
 
 module "traefik" {
-  count              = var.internal_tls ? 1 : 0
+  count              = local.traefik_enabled ? 1 : 0
   source             = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
   app_name           = var.traefik.app_name
   channel            = local.channels.traefik

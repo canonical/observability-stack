@@ -6,9 +6,9 @@ variables { model_uuid = "00000000-0000-0000-0000-000000000000" }
 # TODO: Do we need to remove offers / outputs TF conditionally?
 # TODO: We need to keep the COS API the same across products: feature in COS, COS Lite, and COS Dev
 
-# --- internal_tls: enabled - all ingress disabled ---
+# --- traefik: all ingress disabled ---
 
-run "internal_tls_ingress_disabled" {
+run "traefik_ingress_disabled" {
   command = plan
 
   variables {
@@ -21,32 +21,37 @@ run "internal_tls_ingress_disabled" {
       opentelemetry_collector = false
       tempo                   = false
     }
+  }
+
+  assert {
+    condition     = length(module.traefik) == 0
+    error_message = "Expected no traefik module when ingress is disabled"
   }
 
   assert {
     condition     = length(juju_integration.ingress) == 0
-    error_message = "Expected 0 ingress integrations, got ${length(juju_integration.ingress)}"
+    error_message = "Unexpected ingress integrations when ingress is disabled"
   }
 
   assert {
     condition     = length(juju_integration.grafana_ingress) == 0
-    error_message = "Expected 0 grafana_ingress integrations, got ${length(juju_integration.grafana_ingress)}"
+    error_message = "Unexpected grafana_ingress integrations when ingress is disabled"
   }
 
   assert {
     condition     = length(juju_integration.traefik_route) == 0
-    error_message = "Expected 0 traefik_route integrations, got ${length(juju_integration.traefik_route)}"
+    error_message = "Unexpected traefik_route integrations when ingress is disabled"
   }
 }
 
-# --- mesh: enabled - all ingress disabled ---
+# --- istio: all ingress disabled ---
 
-run "mesh_ingress_disabled" {
+run "mesh_enabled_ingress_disabled" {
   command = plan
 
   variables {
-    mesh_enabled = true
     internal_tls = false
+    mesh_enabled = true
     ingress = {
       alertmanager            = false
       catalogue               = false
@@ -59,17 +64,100 @@ run "mesh_ingress_disabled" {
   }
 
   assert {
+    condition     = length(module.istio_ingress) == 0
+    error_message = "Expected no istio_ingress module when ingress is disabled"
+  }
+
+  assert {
     condition     = length(juju_integration.istio_ingress) == 0
-    error_message = "Expected 0 istio_ingress integrations, got ${length(juju_integration.istio_ingress)}"
+    error_message = "Unexpected istio_ingress integrations when ingress is disabled"
   }
 
   assert {
     condition     = length(juju_integration.grafana_istio_ingress) == 0
-    error_message = "Expected 0 grafana_istio_ingress integrations, got ${length(juju_integration.grafana_istio_ingress)}"
+    error_message = "Unexpected grafana_istio_ingress integrations when ingress is disabled"
   }
 
   assert {
     condition     = length(juju_integration.istio_ingress_route) == 0
-    error_message = "Expected 0 istio_ingress_route integrations, got ${length(juju_integration.istio_ingress_route)}"
+    error_message = "Unexpected istio_ingress_route integrations when ingress is disabled"
+  }
+}
+
+# --- traefik: some ingress enabled ---
+
+run "traefik_ingress_enabled" {
+  command = plan
+
+  variables {
+    ingress = {
+      alertmanager            = false
+      catalogue               = true
+      grafana                 = false
+      loki                    = true
+      mimir                   = false
+      opentelemetry_collector = true
+      tempo                   = false
+    }
+  }
+
+  assert {
+    condition     = length(module.traefik) == 1
+    error_message = "Expected a traefik module when ingress is enabled"
+  }
+
+  assert {
+    condition     = length(juju_integration.ingress) == 2
+    error_message = "Unexpected ingress integrations when ingress is enabled"
+  }
+
+  assert {
+    condition     = length(juju_integration.grafana_ingress) == 0
+    error_message = "Unexpected grafana_ingress integrations when ingress is enabled"
+  }
+
+  assert {
+    condition     = length(juju_integration.traefik_route) == 1
+    error_message = "Unexpected traefik_route integrations when ingress is enabled"
+  }
+}
+
+# --- istio: some ingress enabled ---
+
+run "mesh_enabled_ingress_enabled" {
+  command = plan
+
+  variables {
+    internal_tls = false
+    mesh_enabled = true
+    ingress = {
+      alertmanager            = false
+      catalogue               = true
+      grafana                 = false
+      loki                    = true
+      mimir                   = false
+      opentelemetry_collector = true
+      tempo                   = false
+    }
+  }
+
+  assert {
+    condition     = length(module.istio_ingress) == 1
+    error_message = "Expected an istio_ingress module when ingress is enabled"
+  }
+
+  assert {
+    condition     = length(juju_integration.istio_ingress) == 2
+    error_message = "Unexpected istio_ingress integrations when ingress is enabled"
+  }
+
+  assert {
+    condition     = length(juju_integration.grafana_istio_ingress) == 0
+    error_message = "Unexpected grafana_istio_ingress integrations when ingress is enabled"
+  }
+
+  assert {
+    condition     = length(juju_integration.istio_ingress_route) == 1
+    error_message = "Unexpected istio_ingress_route integrations when ingress is enabled"
   }
 }
