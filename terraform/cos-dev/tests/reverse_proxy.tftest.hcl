@@ -1,63 +1,67 @@
 mock_provider "juju" {}
 
-variables {
-  model_uuid = "00000000-0000-0000-0000-000000000000"
-}
+variables { model_uuid = "00000000-0000-0000-0000-000000000000" }
 
-# --- default: reverse proxy enabled - ingress via traefik ---
+# --- default: internal_tls enabled - ingress via traefik ---
 
-run "reverse_proxy_enabled" {
+run "internal_tls_enabled" {
   command = plan
 
   assert {
+    condition     = length(module.ssc) == 1
+    error_message = "Expected ssc module when internal_tls is enabled"
+  }
+
+  assert {
     condition     = length(module.traefik) == 1
-    error_message = "Expected traefik module when the reverse proxy is enabled"
+    error_message = "Expected traefik module when internal_tls is enabled"
   }
 
   assert {
     condition     = length(juju_integration.ingress) == 4
-    error_message = "Expected 4 ingress integrations (alertmanager, catalogue, loki, mimir), got ${length(juju_integration.ingress)}"
+    error_message = "Unexpected ingress integrations when internal_tls is enabled"
   }
 
-  # Grafana uses a separate count-based resource due to lifecycle replace_triggered_by
   assert {
     condition     = length(juju_integration.grafana_ingress) == 1
-    error_message = "Expected 1 grafana_ingress integration, got ${length(juju_integration.grafana_ingress)}"
+    error_message = "Unexpected grafana_ingress integrations when internal_tls is enabled"
   }
 
   assert {
     condition     = length(juju_integration.traefik_route) == 2
-    error_message = "Expected 2 traefik_route integrations (opentelemetry_collector, tempo), got ${length(juju_integration.traefik_route)}"
+    error_message = "Unexpected traefik_route integrations when internal_tls is enabled"
   }
 }
 
-# --- reverse proxy disabled: no ingress via traefik ---
+# --- internal_tls disabled: no ingress via traefik ---
 
-run "reverse_proxy_disabled" {
+run "internal_tls_disabled" {
   command = plan
 
-  variables {
-    mesh          = { enabled = false }
-    reverse_proxy = { enabled = false }
+  variables { internal_tls = false }
+
+  assert {
+    condition     = length(module.ssc) == 0
+    error_message = "Expected no self-signed-certificates module when internal_tls is disabled"
   }
 
   assert {
     condition     = length(module.traefik) == 0
-    error_message = "Expected no traefik module when the reverse proxy is disabled"
+    error_message = "Expected no traefik module when internal_tls is disabled"
   }
 
   assert {
-    condition     = length(juju_integration.istio_ingress) == 0
-    error_message = "Expected 0 istio_ingress integrations when the reverse proxy is disabled, got ${length(juju_integration.istio_ingress)}"
+    condition     = length(juju_integration.ingress) == 0
+    error_message = "Unexpected ingress integrations when internal_tls is disabled"
   }
 
   assert {
-    condition     = length(juju_integration.grafana_istio_ingress) == 0
-    error_message = "Expected 0 grafana_istio_ingress integrations when the reverse proxy is disabled"
+    condition     = length(juju_integration.grafana_ingress) == 0
+    error_message = "Unexpected grafana_ingress integrations when internal_tls is disabled"
   }
 
   assert {
-    condition     = length(juju_integration.istio_ingress_route) == 0
-    error_message = "Expected 0 istio_ingress_route integrations when the reverse proxy is disabled"
+    condition     = length(juju_integration.traefik_route) == 0
+    error_message = "Unexpected traefik_route integrations when internal_tls is disabled"
   }
 }

@@ -1,30 +1,28 @@
 mock_provider "juju" {}
 
-variables {
-  model_uuid = "00000000-0000-0000-0000-000000000000"
-}
+variables { model_uuid = "00000000-0000-0000-0000-000000000000" }
 
-# --- mesh and reverse_proxy enabled: validation error ---
+# --- mesh and internal_tls enabled: validation error ---
 
-run "mesh_and_reverse_proxy_enabled_fails" {
+run "mesh_and_internal_tls_enabled_fails" {
   command = plan
 
   variables {
-    mesh          = { enabled = true }
-    reverse_proxy = { enabled = true }
+    mesh_enabled = true
+    internal_tls = true
   }
 
-  expect_failures = [var.mesh.enabled]
+  expect_failures = [var.mesh_enabled]
 }
 
-# --- mesh and reverse_proxy disabled: no validation error ---
+# --- mesh and internal_tls disabled: no validation error ---
 
-run "mesh_and_reverse_proxy_disabled" {
+run "mesh_and_internal_tls_disabled" {
   command = plan
 
   variables {
-    mesh          = { enabled = false }
-    reverse_proxy = { enabled = false }
+    mesh_enabled = false
+    internal_tls = false
   }
 }
 
@@ -47,10 +45,15 @@ run "mesh_disabled" {
     condition     = length(juju_integration.istio_beacon) == 0
     error_message = "Expected no istio_beacon integrations when the mesh is disabled"
   }
+  
+  assert {
+    condition     = length(juju_integration.istio_ingress) == 0
+    error_message = "Expected no istio_ingress integrations when the mesh is disabled"
+  }
 
   assert {
     condition     = length(juju_integration.grafana_istio_ingress) == 0
-    error_message = "Expected no grafana_istio_beacon integrations when the mesh is disabled"
+    error_message = "Expected no grafana_istio_ingress integrations when the mesh is disabled"
   }
 
   assert {
@@ -65,8 +68,8 @@ run "mesh_enabled" {
   command = plan
 
   variables {
-    mesh          = { enabled = true }
-    reverse_proxy = { enabled = false }
+    mesh_enabled = true
+    internal_tls = false
   }
 
   assert {
@@ -80,18 +83,23 @@ run "mesh_enabled" {
   }
 
   assert {
-    condition     = length(juju_integration.istio_ingress) == 4
-    error_message = "Expected 4 istio_ingress integrations (alertmanager, catalogue, loki, mimir), got ${length(juju_integration.istio_ingress)}"
+    condition     = length(juju_integration.istio_beacon) == 7
+    error_message = "Unexpected istio_beacon integrations when the mesh is enabled"
   }
 
-  # Grafana uses a separate count-based resource due to lifecycle replace_triggered_by
+  assert {
+    condition     = length(juju_integration.istio_ingress) == 4
+    error_message = "Unexpected istio_ingress integrations when the mesh is enabled"
+  }
+
   assert {
     condition     = length(juju_integration.grafana_istio_ingress) == 1
-    error_message = "Expected 1 grafana_istio_ingress integration, got ${length(juju_integration.grafana_istio_ingress)}"
+    error_message = "Unexpected grafana_istio_ingress integrations when the mesh is enabled"
   }
 
   assert {
     condition     = length(juju_integration.istio_ingress_route) == 2
-    error_message = "Expected 2 istio_ingress_route integrations (opentelemetry_collector, tempo), got ${length(juju_integration.istio_ingress_route)}"
+    error_message = "Unexpected istio_ingress_route integrations when the mesh is enabled"
+
   }
 }

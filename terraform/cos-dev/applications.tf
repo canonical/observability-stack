@@ -36,7 +36,7 @@ module "grafana" {
 }
 
 module "istio_ingress" {
-  count              = var.mesh.enabled ? 1 : 0
+  count              = var.mesh_enabled ? 1 : 0
   source             = "git::https://github.com/canonical/istio-ingress-k8s-operator//terraform"
   app_name           = var.istio_ingress.app_name
   channel            = local.channels.istio_ingress
@@ -49,7 +49,7 @@ module "istio_ingress" {
 }
 
 module "istio_beacon" {
-  count              = var.mesh.enabled ? 1 : 0
+  count              = var.mesh_enabled ? 1 : 0
   source             = "git::https://github.com/canonical/istio-beacon-k8s-operator//terraform"
   app_name           = var.istio_beacon.app_name
   channel            = local.channels.istio_beacon
@@ -235,7 +235,7 @@ module "seaweedfs" {
 }
 
 module "ssc" {
-  count       = var.reverse_proxy.enabled ? 1 : 0
+  count       = var.internal_tls ? 1 : 0
   source      = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
   app_name    = var.ssc.app_name
   channel     = local.channels.ssc
@@ -366,7 +366,7 @@ module "tempo_worker_metrics_generator" {
 }
 
 module "traefik" {
-  count              = var.reverse_proxy.enabled ? 1 : 0
+  count              = var.internal_tls ? 1 : 0
   source             = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
   app_name           = var.traefik.app_name
   channel            = local.channels.traefik
@@ -403,7 +403,7 @@ resource "juju_application" "s3_integrator_loki" {
   count = var.storage_backend == "s3" ? 1 : 0
   config = merge({
     endpoint    = var.s3_endpoint
-    bucket      = var.s3_buckets.loki
+    bucket      = var.loki_bucket
     credentials = "secret:${juju_secret.loki_s3_credentials[0].secret_id}"
   }, var.s3_integrator.config)
   constraints        = var.s3_integrator.constraints
@@ -442,7 +442,7 @@ resource "juju_application" "s3_integrator_mimir" {
   count = var.storage_backend == "s3" ? 1 : 0
   config = merge({
     endpoint    = var.s3_endpoint
-    bucket      = var.s3_buckets.mimir
+    bucket      = var.mimir_bucket
     credentials = "secret:${juju_secret.mimir_s3_credentials[0].secret_id}"
   }, var.s3_integrator.config)
   constraints        = var.s3_integrator.constraints
@@ -481,7 +481,7 @@ resource "juju_application" "s3_integrator_tempo" {
   count = var.storage_backend == "s3" ? 1 : 0
   config = merge({
     endpoint    = var.s3_endpoint
-    bucket      = var.s3_buckets.tempo
+    bucket      = var.tempo_bucket
     credentials = "secret:${juju_secret.tempo_s3_credentials[0].secret_id}"
   }, var.s3_integrator.config)
   constraints        = var.s3_integrator.constraints
