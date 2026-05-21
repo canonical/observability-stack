@@ -15,7 +15,7 @@ We release every six months, same as Ubuntu, and our LTS releases coincide with 
 
 | Track   | Release date  | End of standard security maintenance | Ubuntu base                          | Min. Juju version |
 | ------- | ------------- | ------------------------------------ | ------------------------------------ | ----------------- |
-| `3`     | 2026-05       | 2031-04 (approx.)                    | 26.04 (rocks), 22.04+ (subordinates) | 3.6               |
+| `3`     | 2026-06       | 2031-04 (approx.)                    | 26.04 (rocks), 22.04+ (subordinates) | 3.6               |
 
 
 
