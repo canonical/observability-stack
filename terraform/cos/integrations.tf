@@ -455,6 +455,7 @@ resource "juju_integration" "internal_certificates" {
 
 resource "juju_integration" "traefik_receive_ca_certificate" {
   count      = local.traefik_enabled && var.internal_tls ? 1 : 0
+
   model_uuid = var.model_uuid
 
   application {
@@ -472,6 +473,7 @@ resource "juju_integration" "traefik_receive_ca_certificate" {
 
 resource "juju_integration" "external_traefik_certificates" {
   count      = local.traefik_enabled && local.tls_termination ? 1 : 0
+
   model_uuid = var.model_uuid
 
   application { offer_url = var.external_certificates_offer_url }
@@ -483,6 +485,7 @@ resource "juju_integration" "external_traefik_certificates" {
 
 resource "juju_integration" "external_grafana_ca_cert" {
   count      = local.tls_termination ? 1 : 0
+
   model_uuid = var.model_uuid
 
   application { offer_url = var.external_ca_cert_offer_url }
@@ -494,6 +497,7 @@ resource "juju_integration" "external_grafana_ca_cert" {
 
 resource "juju_integration" "external_otelcol_ca_cert" {
   count      = local.tls_termination ? 1 : 0
+
   model_uuid = var.model_uuid
 
   application { offer_url = var.external_ca_cert_offer_url }
