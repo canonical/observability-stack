@@ -7,22 +7,6 @@ output "offers" {
     loki_logging                 = juju_offer.loki_logging
     mimir_receive_remote_write   = juju_offer.mimir_receive_remote_write
     tempo_tracing                = juju_offer.tempo_tracing
-
-    # CMR Mesh
-    alertmanager_provide_cmr_mesh            = try(juju_offer.alertmanager_provide_cmr_mesh[0], null)
-    alertmanager_require_cmr_mesh            = try(juju_offer.alertmanager_require_cmr_mesh[0], null)
-    catalogue_provide_cmr_mesh               = try(juju_offer.catalogue_provide_cmr_mesh[0], null)
-    catalogue_require_cmr_mesh               = try(juju_offer.catalogue_require_cmr_mesh[0], null)
-    grafana_provide_cmr_mesh                 = try(juju_offer.grafana_provide_cmr_mesh[0], null)
-    grafana_require_cmr_mesh                 = try(juju_offer.grafana_require_cmr_mesh[0], null)
-    loki_provide_cmr_mesh                    = try(juju_offer.loki_provide_cmr_mesh[0], null)
-    loki_require_cmr_mesh                    = try(juju_offer.loki_require_cmr_mesh[0], null)
-    mimir_provide_cmr_mesh                   = try(juju_offer.mimir_provide_cmr_mesh[0], null)
-    mimir_require_cmr_mesh                   = try(juju_offer.mimir_require_cmr_mesh[0], null)
-    opentelemetry_collector_provide_cmr_mesh = try(juju_offer.opentelemetry_collector_provide_cmr_mesh[0], null)
-    opentelemetry_collector_require_cmr_mesh = try(juju_offer.opentelemetry_collector_require_cmr_mesh[0], null)
-    tempo_provide_cmr_mesh                   = try(juju_offer.tempo_provide_cmr_mesh[0], null)
-    tempo_require_cmr_mesh                   = try(juju_offer.tempo_require_cmr_mesh[0], null)
   }
   description = "All Juju offers which are exposed by this product module"
 }
