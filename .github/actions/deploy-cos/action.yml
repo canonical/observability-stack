@@ -173,21 +173,21 @@ runs:
             select(.value["workload-status"].current == "error") | .key
           ')
           if [ -n "$errored" ]; then
+            # Workaround for traefik-k8s charm bug (issue #684 / PR #685): the
+            # pebble-ready hook calls `find /opt/traefik/juju -name '*.yaml' -delete`
+            # before _setup_dynamic_config_folder() has created the directory on a
+            # freshly provisioned PVC, so find exits 1. Pre-create the directory
+            # *before* resolving so that the hook retry can proceed.
+            if echo "$errored" | grep -q "^traefik/"; then
+              echo "Applying workaround: mkdir /opt/traefik/juju in traefik container"
+              kubectl exec -n "$model" traefik-0 -c traefik -- mkdir -p /opt/traefik/juju 2>/dev/null || true
+            fi
+
             echo "Auto-resolving errored units (hook retry):"
             while IFS= read -r unit; do
               echo "  - $unit"
               juju resolve "$unit" --model "$model" || true
             done <<< "$errored"
-
-            # Workaround for traefik-k8s charm bug: the start hook calls
-            # `find /opt/traefik/juju -name '*.yaml' -delete` before the
-            # directory exists on a freshly provisioned PVC, causing find
-            # to exit 1. Pre-creating the directory lets the hook retry
-            # succeed without any charm changes.
-            if echo "$errored" | grep -q "^traefik/"; then
-              echo "Applying workaround: mkdir /opt/traefik/juju in traefik container"
-              kubectl exec -n "$model" traefik-0 -c traefik -- mkdir -p /opt/traefik/juju 2>/dev/null || true
-            fi
           fi
 
           sleep 30
