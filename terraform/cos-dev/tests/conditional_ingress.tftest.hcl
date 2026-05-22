@@ -73,7 +73,7 @@ run "istio_ingress_enabled" {
 
   variables {
     internal_tls = false
-    mesh_enabled = true
+    service_mesh = true
   }
 
   assert {
@@ -104,7 +104,7 @@ run "istio_ingress_disabled" {
 
   variables {
     internal_tls = false
-    mesh_enabled = true
+    service_mesh = true
     ingress = {
       alertmanager            = false
       catalogue               = false

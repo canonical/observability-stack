@@ -39,8 +39,9 @@ module "grafana" {
 }
 
 module "istio_ingress" {
-  count              = local.istio_ingress_enabled ? 1 : 0
   source             = "git::https://github.com/canonical/istio-ingress-k8s-operator//terraform"
+  count              = local.istio_ingress_enabled ? 1 : 0
+
   app_name           = var.istio_ingress.app_name
   channel            = local.channels.istio_ingress
   config             = var.istio_ingress.config
@@ -52,8 +53,9 @@ module "istio_ingress" {
 }
 
 module "istio_beacon" {
-  count              = var.mesh_enabled ? 1 : 0
   source             = "git::https://github.com/canonical/istio-beacon-k8s-operator//terraform"
+  count              = var.service_mesh ? 1 : 0
+
   app_name           = var.istio_beacon.app_name
   channel            = local.channels.istio_beacon
   config             = var.istio_beacon.config

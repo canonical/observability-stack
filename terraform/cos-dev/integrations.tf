@@ -961,7 +961,7 @@ resource "juju_integration" "traces_and_metrics_correlation" {
 # -------------- # Service Mesh ---------------------
 
 resource "juju_integration" "istio_beacon" {
-  for_each = var.mesh_enabled ? {
+  for_each = var.service_mesh ? {
     alertmanager = {
       app_name = module.alertmanager.app_name
       endpoint = module.alertmanager.requires.service_mesh

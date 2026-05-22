@@ -48,14 +48,14 @@ variable "storage_backend" {
 
 # -------------- # Network configurations --------------
 
-variable "mesh_enabled" {
+variable "service_mesh" {
   description = "Configure the service mesh."
   type        = bool
   default     = false
 
   validation {
-    condition     = !(var.internal_tls && var.mesh_enabled)
-    error_message = "mesh_enabled and internal_tls cannot both be enabled at the same time."
+    condition     = !(var.internal_tls && var.service_mesh)
+    error_message = "service_mesh and internal_tls cannot both be enabled at the same time."
   }
 }
 
