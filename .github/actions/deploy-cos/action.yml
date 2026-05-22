@@ -178,6 +178,16 @@ runs:
               echo "  - $unit"
               juju resolve "$unit" --model "$model" || true
             done <<< "$errored"
+
+            # Workaround for traefik-k8s charm bug: the start hook calls
+            # `find /opt/traefik/juju -name '*.yaml' -delete` before the
+            # directory exists on a freshly provisioned PVC, causing find
+            # to exit 1. Pre-creating the directory lets the hook retry
+            # succeed without any charm changes.
+            if echo "$errored" | grep -q "^traefik/"; then
+              echo "Applying workaround: mkdir /opt/traefik/juju in traefik container"
+              kubectl exec -n "$model" traefik-0 -c traefik -- mkdir -p /opt/traefik/juju 2>/dev/null || true
+            fi
           fi
 
           sleep 30
@@ -218,6 +228,18 @@ runs:
           | while IFS=$'\t' read -r pod container; do
               echo "--- $pod / $container ---"
               kubectl logs "$pod" -c "$container" -n ${{ inputs.cos-model }} --tail=50 2>&1 || true
+              echo ""
+            done
+
+        echo ""
+        echo "===== kubectl logs for Juju-blocked/error units ====="
+        juju status --model ${{ inputs.cos-model }} --format json \
+          | jq -r '.applications | to_entries[] | .value.units // {} | to_entries[] |
+              select(.value["workload-status"].current == "blocked" or .value["workload-status"].current == "error") |
+              .key | gsub("/"; "-")' \
+          | while read -r pod; do
+              echo "--- $pod (all containers) ---"
+              kubectl logs "$pod" -n ${{ inputs.cos-model }} --all-containers --tail=50 2>&1 || true
               echo ""
             done
 
