@@ -60,8 +60,9 @@ module "prometheus" {
 }
 
 module "ssc" {
-  count       = var.internal_tls ? 1 : 0
   source      = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
+  count       = var.internal_tls ? 1 : 0
+
   app_name    = var.ssc.app_name
   channel     = local.channels.ssc
   config      = var.ssc.config
@@ -72,9 +73,9 @@ module "ssc" {
 }
 
 module "traefik" {
+  source             = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
   count = local.traefik_enabled ? 1 : 0
 
-  source             = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
   app_name           = var.traefik.app_name
   channel            = local.channels.traefik
   config             = var.traefik.config
