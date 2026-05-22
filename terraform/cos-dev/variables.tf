@@ -48,7 +48,6 @@ variable "storage_backend" {
 
 # -------------- # Network configurations --------------
 
-# TODO: If we name this one _enabled then we should also rename to internal_ca_enabled
 variable "mesh_enabled" {
   description = "Configure the service mesh."
   type        = bool

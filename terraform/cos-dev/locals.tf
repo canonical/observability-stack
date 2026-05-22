@@ -1,9 +1,9 @@
 locals {
-  tls_termination = var.external_certificates_offer_url != null ? true : false
+  tls_termination       = var.external_certificates_offer_url != null ? true : false
   reverse_proxy_enabled = anytrue(values(var.ingress))
-  traefik_enabled = local.reverse_proxy_enabled && !var.mesh_enabled
+  traefik_enabled       = local.reverse_proxy_enabled && !var.mesh_enabled
   istio_ingress_enabled = local.reverse_proxy_enabled && var.mesh_enabled
-  traefik_base    = "ubuntu@20.04"
+  traefik_base          = "ubuntu@20.04"
   tracks = {
     alertmanager  = "dev"
     catalogue     = "dev"
