@@ -49,8 +49,8 @@ module "loki_coordinator" {
 
 # Monolithic: single all-in-one worker
 module "loki_worker" {
-  count      = var.topology == "monolithic" ? 1 : 0
   source     = "git::https://github.com/canonical/loki-operators//worker/terraform"
+  count      = var.topology == "monolithic" ? 1 : 0
   depends_on = [module.loki_coordinator]
 
   app_name           = var.loki_worker.app_name
@@ -65,8 +65,8 @@ module "loki_worker" {
 
 # Distributed: separate backend, read, and write workers
 module "loki_worker_backend" {
-  count      = var.topology == "distributed" ? 1 : 0
   source     = "git::https://github.com/canonical/loki-operators//worker/terraform"
+  count      = var.topology == "distributed" ? 1 : 0
   depends_on = [module.loki_coordinator]
 
   app_name           = "${var.loki_worker.app_name}-backend"
@@ -80,8 +80,8 @@ module "loki_worker_backend" {
 }
 
 module "loki_worker_read" {
-  count      = var.topology == "distributed" ? 1 : 0
   source     = "git::https://github.com/canonical/loki-operators//worker/terraform"
+  count      = var.topology == "distributed" ? 1 : 0
   depends_on = [module.loki_coordinator]
 
   app_name           = "${var.loki_worker.app_name}-read"
@@ -95,8 +95,8 @@ module "loki_worker_read" {
 }
 
 module "loki_worker_write" {
-  count      = var.topology == "distributed" ? 1 : 0
   source     = "git::https://github.com/canonical/loki-operators//worker/terraform"
+  count      = var.topology == "distributed" ? 1 : 0
   depends_on = [module.loki_coordinator]
 
   app_name           = "${var.loki_worker.app_name}-write"
@@ -110,7 +110,8 @@ module "loki_worker_write" {
 }
 
 module "mimir_coordinator" {
-  source             = "git::https://github.com/canonical/mimir-operators//coordinator/terraform"
+  source = "git::https://github.com/canonical/mimir-operators//coordinator/terraform"
+
   app_name           = var.mimir_coordinator.app_name
   channel            = local.channels.mimir
   config             = var.mimir_coordinator.config
@@ -123,8 +124,8 @@ module "mimir_coordinator" {
 
 # Monolithic: single all-in-one worker
 module "mimir_worker" {
-  count      = var.topology == "monolithic" ? 1 : 0
   source     = "git::https://github.com/canonical/mimir-operators//worker/terraform"
+  count      = var.topology == "monolithic" ? 1 : 0
   depends_on = [module.mimir_coordinator]
 
   app_name           = var.mimir_worker.app_name
@@ -139,8 +140,8 @@ module "mimir_worker" {
 
 # Distributed: separate backend, read, and write workers
 module "mimir_worker_backend" {
-  count      = var.topology == "distributed" ? 1 : 0
   source     = "git::https://github.com/canonical/mimir-operators//worker/terraform"
+  count      = var.topology == "distributed" ? 1 : 0
   depends_on = [module.mimir_coordinator]
 
   app_name           = "${var.mimir_worker.app_name}-backend"
@@ -154,8 +155,8 @@ module "mimir_worker_backend" {
 }
 
 module "mimir_worker_read" {
-  count      = var.topology == "distributed" ? 1 : 0
   source     = "git::https://github.com/canonical/mimir-operators//worker/terraform"
+  count      = var.topology == "distributed" ? 1 : 0
   depends_on = [module.mimir_coordinator]
 
   app_name           = "${var.mimir_worker.app_name}-read"
@@ -169,8 +170,8 @@ module "mimir_worker_read" {
 }
 
 module "mimir_worker_write" {
-  count      = var.topology == "distributed" ? 1 : 0
   source     = "git::https://github.com/canonical/mimir-operators//worker/terraform"
+  count      = var.topology == "distributed" ? 1 : 0
   depends_on = [module.mimir_coordinator]
 
   app_name           = "${var.mimir_worker.app_name}-write"
@@ -184,7 +185,8 @@ module "mimir_worker_write" {
 }
 
 module "opentelemetry_collector" {
-  source             = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform"
+
   app_name           = var.opentelemetry_collector.app_name
   channel            = local.channels.otelcol
   config             = var.opentelemetry_collector.config
@@ -196,8 +198,9 @@ module "opentelemetry_collector" {
 }
 
 module "seaweedfs" {
-  count              = var.storage_backend == "seaweedfs" ? 1 : 0
-  source             = "git::https://github.com/canonical/observability-stack//terraform/seaweedfs"
+  source = "git::https://github.com/canonical/observability-stack//terraform/seaweedfs"
+  count  = var.storage_backend == "seaweedfs" ? 1 : 0
+
   app_name           = var.seaweedfs.app_name
   channel            = local.channels.seaweedfs
   config             = var.seaweedfs.config
@@ -209,8 +212,9 @@ module "seaweedfs" {
 }
 
 module "ssc" {
-  count       = var.internal_tls ? 1 : 0
-  source      = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
+  source = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
+  count  = var.internal_tls ? 1 : 0
+
   app_name    = var.ssc.app_name
   channel     = local.channels.ssc
   config      = var.ssc.config
@@ -221,7 +225,8 @@ module "ssc" {
 }
 
 module "tempo_coordinator" {
-  source             = "git::https://github.com/canonical/tempo-operators//coordinator/terraform"
+  source = "git::https://github.com/canonical/tempo-operators//coordinator/terraform"
+
   app_name           = var.tempo_coordinator.app_name
   channel            = local.channels.tempo
   config             = var.tempo_coordinator.config
@@ -234,8 +239,8 @@ module "tempo_coordinator" {
 
 # Monolithic: single all-in-one worker
 module "tempo_worker" {
-  count      = var.topology == "monolithic" ? 1 : 0
   source     = "git::https://github.com/canonical/tempo-operators//worker/terraform"
+  count      = var.topology == "monolithic" ? 1 : 0
   depends_on = [module.tempo_coordinator]
 
   app_name           = var.tempo_worker.app_name
@@ -250,8 +255,8 @@ module "tempo_worker" {
 
 # Distributed: separate workers per role
 module "tempo_worker_querier" {
-  count      = var.topology == "distributed" ? 1 : 0
   source     = "git::https://github.com/canonical/tempo-operators//worker/terraform"
+  count      = var.topology == "distributed" ? 1 : 0
   depends_on = [module.tempo_coordinator]
 
   app_name           = "${var.tempo_worker.app_name}-querier"
@@ -265,8 +270,8 @@ module "tempo_worker_querier" {
 }
 
 module "tempo_worker_query_frontend" {
-  count      = var.topology == "distributed" ? 1 : 0
   source     = "git::https://github.com/canonical/tempo-operators//worker/terraform"
+  count      = var.topology == "distributed" ? 1 : 0
   depends_on = [module.tempo_coordinator]
 
   app_name           = "${var.tempo_worker.app_name}-query-frontend"
@@ -280,8 +285,8 @@ module "tempo_worker_query_frontend" {
 }
 
 module "tempo_worker_ingester" {
-  count      = var.topology == "distributed" ? 1 : 0
   source     = "git::https://github.com/canonical/tempo-operators//worker/terraform"
+  count      = var.topology == "distributed" ? 1 : 0
   depends_on = [module.tempo_coordinator]
 
   app_name           = "${var.tempo_worker.app_name}-ingester"
@@ -295,8 +300,8 @@ module "tempo_worker_ingester" {
 }
 
 module "tempo_worker_distributor" {
-  count      = var.topology == "distributed" ? 1 : 0
   source     = "git::https://github.com/canonical/tempo-operators//worker/terraform"
+  count      = var.topology == "distributed" ? 1 : 0
   depends_on = [module.tempo_coordinator]
 
   app_name           = "${var.tempo_worker.app_name}-distributor"
@@ -310,8 +315,8 @@ module "tempo_worker_distributor" {
 }
 
 module "tempo_worker_compactor" {
-  count      = var.topology == "distributed" ? 1 : 0
   source     = "git::https://github.com/canonical/tempo-operators//worker/terraform"
+  count      = var.topology == "distributed" ? 1 : 0
   depends_on = [module.tempo_coordinator]
 
   app_name           = "${var.tempo_worker.app_name}-compactor"
@@ -325,8 +330,8 @@ module "tempo_worker_compactor" {
 }
 
 module "tempo_worker_metrics_generator" {
-  count      = var.topology == "distributed" ? 1 : 0
   source     = "git::https://github.com/canonical/tempo-operators//worker/terraform"
+  count      = var.topology == "distributed" ? 1 : 0
   depends_on = [module.tempo_coordinator]
 
   app_name           = "${var.tempo_worker.app_name}-metrics-generator"
@@ -340,8 +345,9 @@ module "tempo_worker_metrics_generator" {
 }
 
 module "traefik" {
-  count              = local.traefik_enabled ? 1 : 0
-  source             = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
+  count  = local.traefik_enabled ? 1 : 0
+
   app_name           = var.traefik.app_name
   channel            = local.channels.traefik
   config             = var.traefik.config
@@ -356,6 +362,7 @@ module "traefik" {
 
 resource "juju_secret" "loki_s3_credentials" {
   count      = var.storage_backend == "s3" ? 1 : 0
+
   model_uuid = var.model_uuid
   name       = "loki-s3-credentials"
   value = {
@@ -367,6 +374,7 @@ resource "juju_secret" "loki_s3_credentials" {
 
 resource "juju_access_secret" "loki_s3_credentials_access" {
   count        = var.storage_backend == "s3" ? 1 : 0
+
   model_uuid   = var.model_uuid
   applications = [juju_application.s3_integrator_loki[0].name]
   secret_id    = juju_secret.loki_s3_credentials[0].secret_id
@@ -375,6 +383,7 @@ resource "juju_access_secret" "loki_s3_credentials_access" {
 # TODO: Replace with a remote terraform module once the s3-integrator charm exposes one.
 resource "juju_application" "s3_integrator_loki" {
   count = var.storage_backend == "s3" ? 1 : 0
+
   config = merge({
     endpoint    = var.s3_endpoint
     bucket      = var.loki_bucket
@@ -396,6 +405,7 @@ resource "juju_application" "s3_integrator_loki" {
 
 resource "juju_secret" "mimir_s3_credentials" {
   count      = var.storage_backend == "s3" ? 1 : 0
+
   model_uuid = var.model_uuid
   name       = "mimir-s3-credentials"
   value = {
@@ -407,6 +417,7 @@ resource "juju_secret" "mimir_s3_credentials" {
 
 resource "juju_access_secret" "mimir_s3_credentials_access" {
   count        = var.storage_backend == "s3" ? 1 : 0
+
   model_uuid   = var.model_uuid
   applications = [juju_application.s3_integrator_mimir[0].name]
   secret_id    = juju_secret.mimir_s3_credentials[0].secret_id
@@ -414,6 +425,7 @@ resource "juju_access_secret" "mimir_s3_credentials_access" {
 
 resource "juju_application" "s3_integrator_mimir" {
   count = var.storage_backend == "s3" ? 1 : 0
+
   config = merge({
     endpoint    = var.s3_endpoint
     bucket      = var.mimir_bucket
@@ -435,6 +447,7 @@ resource "juju_application" "s3_integrator_mimir" {
 
 resource "juju_secret" "tempo_s3_credentials" {
   count      = var.storage_backend == "s3" ? 1 : 0
+
   model_uuid = var.model_uuid
   name       = "tempo-s3-credentials"
   value = {
@@ -446,6 +459,7 @@ resource "juju_secret" "tempo_s3_credentials" {
 
 resource "juju_access_secret" "tempo_s3_credentials_access" {
   count        = var.storage_backend == "s3" ? 1 : 0
+
   model_uuid   = var.model_uuid
   applications = [juju_application.s3_integrator_tempo[0].name]
   secret_id    = juju_secret.tempo_s3_credentials[0].secret_id
@@ -453,6 +467,7 @@ resource "juju_access_secret" "tempo_s3_credentials_access" {
 
 resource "juju_application" "s3_integrator_tempo" {
   count = var.storage_backend == "s3" ? 1 : 0
+
   config = merge({
     endpoint    = var.s3_endpoint
     bucket      = var.tempo_bucket
