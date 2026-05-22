@@ -156,17 +156,13 @@ runs:
             exit 0
           fi
 
-          # Log which units are not yet active/idle so we can track convergence
+          # Log which units are not yet active so we can track convergence
           echo "--- $(date -u '+%H:%M:%S') not yet settled ---"
           echo "$status_json" | jq -r '
             .applications | to_entries[] |
-            .key as $app |
             .value.units // {} | to_entries[] |
-            select(
-              .value["workload-status"].current != "active" or
-              .value["agent-status"].current != "idle"
-            ) |
-            "  \(.key)  workload=\(.value["workload-status"].current)  agent=\(.value["agent-status"].current)  msg=\(.value["workload-status"].message // "")"
+            select(.value["workload-status"].current != "active") |
+            "  \(.key)  workload=\(.value["workload-status"].current)  msg=\(.value["workload-status"].message // "")"
           '
 
           # Auto-resolve any errored units so Juju retries the failed hook.
