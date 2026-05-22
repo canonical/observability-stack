@@ -1,5 +1,5 @@
 module "alertmanager" {
-  source             = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform"
 
   app_name           = var.alertmanager.app_name
   channel            = local.channels.alertmanager
@@ -12,7 +12,7 @@ module "alertmanager" {
 }
 
 module "catalogue" {
-  source             = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
 
   app_name           = var.catalogue.app_name
   channel            = local.channels.catalogue
@@ -25,7 +25,7 @@ module "catalogue" {
 }
 
 module "grafana" {
-  source             = "git::https://github.com/canonical/grafana-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/grafana-k8s-operator//terraform"
 
   app_name           = var.grafana.app_name
   channel            = local.channels.grafana
@@ -39,7 +39,7 @@ module "grafana" {
 }
 
 module "loki" {
-  source             = "git::https://github.com/canonical/loki-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/loki-k8s-operator//terraform"
 
   app_name           = var.loki.app_name
   channel            = local.channels.loki
@@ -52,7 +52,7 @@ module "loki" {
 }
 
 module "prometheus" {
-  source             = "git::https://github.com/canonical/prometheus-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/prometheus-k8s-operator//terraform"
 
   app_name           = var.prometheus.app_name
   channel            = local.channels.prometheus
@@ -65,8 +65,8 @@ module "prometheus" {
 }
 
 module "ssc" {
-  source      = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
-  count       = var.internal_tls ? 1 : 0
+  source = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
+  count  = var.internal_tls ? 1 : 0
 
   app_name    = var.ssc.app_name
   channel     = local.channels.ssc
@@ -78,8 +78,8 @@ module "ssc" {
 }
 
 module "traefik" {
-  source             = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
-  count = local.traefik_enabled ? 1 : 0
+  source = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
+  count  = local.traefik_enabled ? 1 : 0
 
   app_name           = var.traefik.app_name
   channel            = local.channels.traefik
