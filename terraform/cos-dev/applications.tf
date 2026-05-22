@@ -1,5 +1,6 @@
 module "alertmanager" {
   source             = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform"
+
   app_name           = var.alertmanager.app_name
   channel            = local.channels.alertmanager
   config             = var.alertmanager.config
@@ -12,6 +13,7 @@ module "alertmanager" {
 
 module "catalogue" {
   source             = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
+
   app_name           = var.catalogue.app_name
   channel            = local.channels.catalogue
   config             = var.catalogue.config
@@ -24,6 +26,7 @@ module "catalogue" {
 
 module "grafana" {
   source             = "git::https://github.com/canonical/grafana-k8s-operator//terraform"
+
   app_name           = var.grafana.app_name
   channel            = local.channels.grafana
   config             = var.grafana.config
@@ -63,6 +66,7 @@ module "istio_beacon" {
 
 module "loki_coordinator" {
   source             = "git::https://github.com/canonical/loki-operators//coordinator/terraform"
+
   app_name           = var.loki_coordinator.app_name
   channel            = local.channels.loki
   config             = var.loki_coordinator.config
