@@ -48,13 +48,12 @@ def generic_assertions(
     ca_model: jubilant.Juju | None = None,
     temp_path: Path | None = None,
 ):
-    # generic assertions that are shared between products: cos, cos-lite
-    wait_for_active_idle_without_error([ca_model, cos_model], timeout=60 * 60)
-    if ca_model:
-        assert temp_path is not None, "temp_path is required when ca_model is provided"
-        tls_ctx = get_tls_context(temp_path, ca_model, "self-signed-certificates")
-    else:
-        tls_ctx = None
+    """Generic assertions that are shared between products: cos, cos-lite"""
+    if ca_model is not None and temp_path is None:
+        raise ValueError("temp_path is required when ca_model is provided")
+    models = [ca_model, cos_model] if ca_model is not None else [cos_model]
+    wait_for_active_idle_without_error(models, timeout=60 * 60)
+    tls_ctx = get_tls_context(temp_path, ca_model, "self-signed-certificates") if ca_model is not None else None
     catalogue_apps_are_reachable(cos_model, tls_ctx)
 
 
