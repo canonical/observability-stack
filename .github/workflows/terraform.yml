@@ -46,6 +46,7 @@ jobs:
         run: just validate-terraform
   test-unit:
     name: Terraform unit tests
+    needs: [lint-terraform, lint-terraform-docs, validate-terraform]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -58,18 +59,21 @@ jobs:
         run: just unit
   test-integration-cos-lite:
     name: COS Lite Terraform integration
+    needs: [test-unit]
     uses: canonical/observability-stack/.github/workflows/_integration.yml@main
     with:
       product: cos_lite
       runner: self-hosted-linux-amd64-noble-large
   test-integration-cos:
     name: COS Terraform integration
+    needs: [test-unit]
     uses: canonical/observability-stack/.github/workflows/_integration.yml@main
     with:
       product: cos
       runner: self-hosted-linux-amd64-noble-xlarge
   test-integration-cos-dev:
     name: COS Dev Terraform integration
+    needs: [test-unit]
     uses: canonical/observability-stack/.github/workflows/_integration.yml@main
     with:
       product: cos_dev
