@@ -1,6 +1,11 @@
 mock_provider "juju" {}
 
-variables { model_uuid = "00000000-0000-0000-0000-000000000000" }
+variables {
+  model_uuid    = "00000000-0000-0000-0000-000000000000"
+  s3_endpoint   = "foo"
+  s3_access_key = "foo"
+  s3_secret_key = "foo"
+}
 
 # --- default: internal_tls enabled ---
 
