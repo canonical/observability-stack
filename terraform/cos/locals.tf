@@ -1,4 +1,3 @@
-# TODO: Remove this when done testing
 locals {
   clouds          = ["aws", "self-managed"] # list of k8s clouds where this COS module can be deployed.
   tls_termination = var.external_certificates_offer_url != null ? true : false
