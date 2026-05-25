@@ -1,3 +1,9 @@
+---
+myst:
+ html_meta:
+  description: "COS Lite Juju integration matrix: logs, metrics, traces, dashboards, and alerts across K8s charms and machine charms."
+---
+
 # Integration matrix
 
 

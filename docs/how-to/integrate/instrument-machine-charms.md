@@ -1,0 +1,408 @@
+---
+myst:
+ html_meta:
+  description: "Instrument machine charms with Canonical Observability Stack on Kubernetes using the Opentelemetry Collector subordinate charm for metrics, logs, and dashboards."
+---
+
+# How to instrument machine charms
+
+This guide shows you how to integrate a charm deployed on a machine substrate with the Canonical Observability Stack running on Kubernetes.
+
+The Opentelemetry Collector machine charm handles installation, configuration, and Day 2 operations specific to the [Opentelemetry Collector](https://opentelemetry.io/docs/collector/), using [Juju](https://canonical.com/juju). The charm is designed to run in virtual machines as a [subordinate](https://discourse.charmhub.io/t/subordinate-applications/1053).
+
+This how-to guide uses COS Lite as the example, but either COS Lite or COS (HA) deployments can be used.
+
+## Prerequisites
+
+- A charmed application that is running in a virtual (or physical) machine.
+- The Canonical Observability Stack, running on Kubernetes.
+
+```{note}
+Application units are typically run in an isolated container on a machine with no knowledge or access to other applications deployed onto the same machine.
+
+When you relate a subordinate charm to a principal one, the subordinate will be deployed on the same machine on which the principal is running.
+
+Subordinate units scale together with their principal.
+```
+
+## Ensure COS Lite is up and running
+
+Ensure the Observability Stack is up and running in your `cos` model (see [getting started with COS Lite](/tutorial/cos-lite-microk8s-sandbox)) in a Kubernetes controller:
+
+```bash
+juju status --relations
+```
+
+Your output should show all applications active:
+
+```
+Model     Controller  Cloud/Region  Version  SLA          Timestamp
+cos-lite  ck8s        k8s           3.6.19   unsupported  18:07:14-03:00
+
+App           Version  Status  Scale  Charm             Channel        Rev  Address         Exposed  Message
+alertmanager  0.28.0   active      1  alertmanager-k8s  2/stable       191  10.152.183.36   no
+catalogue              active      1  catalogue-k8s     2/stable       113  10.152.183.195  no
+grafana       12.0.2   active      1  grafana-k8s       2/stable       180  10.152.183.90   no
+loki          2.9.15   active      1  loki-k8s          2/stable       217  10.152.183.57   no
+prometheus    2.53.3   active      1  prometheus-k8s    2/stable       287  10.152.183.172  no
+traefik       2.11.0   active      1  traefik-k8s       latest/stable  281  10.152.183.221  no       Serving at http://192.168.1.200
+
+Unit             Workload  Agent  Address     Ports  Message
+alertmanager/0*  active    idle   10.1.0.87
+catalogue/0*     active    idle   10.1.0.33
+grafana/0*       active    idle   10.1.0.214
+loki/0*          active    idle   10.1.0.178
+prometheus/0*    active    idle   10.1.0.90
+traefik/0*       active    idle   10.1.0.35          Serving at http://192.168.1.200
+
+Offer                            Application   Charm             Rev  Connected  Endpoint              Interface                Role
+alertmanager-karma-dashboard     alertmanager  alertmanager-k8s  191  0/0        karma-dashboard       karma_dashboard          provider
+grafana-dashboards               grafana       grafana-k8s       180  2/2        grafana-dashboard     grafana_dashboard        requirer
+loki-logging                     loki          loki-k8s          217  2/2        logging               loki_push_api            provider
+prometheus-metrics-endpoint      prometheus    prometheus-k8s    287  0/0        metrics-endpoint      prometheus_scrape        requirer
+prometheus-receive-remote-write  prometheus    prometheus-k8s    287  2/2        receive-remote-write  prometheus_remote_write  provider
+
+Integration provider                Requirer                     Interface              Type     Message
+alertmanager:alerting               loki:alertmanager            alertmanager_dispatch  regular
+alertmanager:alerting               prometheus:alertmanager      alertmanager_dispatch  regular
+alertmanager:grafana-dashboard      grafana:grafana-dashboard    grafana_dashboard      regular
+alertmanager:grafana-source         grafana:grafana-source       grafana_datasource     regular
+alertmanager:replicas               alertmanager:replicas        alertmanager_replica   peer
+alertmanager:self-metrics-endpoint  prometheus:metrics-endpoint  prometheus_scrape      regular
+catalogue:catalogue                 alertmanager:catalogue       catalogue              regular
+catalogue:catalogue                 grafana:catalogue            catalogue              regular
+catalogue:catalogue                 prometheus:catalogue         catalogue              regular
+catalogue:replicas                  catalogue:replicas           catalogue_replica      peer
+grafana:grafana                     grafana:grafana              grafana_peers          peer
+grafana:metrics-endpoint            prometheus:metrics-endpoint  prometheus_scrape      regular
+grafana:replicas                    grafana:replicas             grafana_replicas       peer
+loki:grafana-dashboard              grafana:grafana-dashboard    grafana_dashboard      regular
+loki:grafana-source                 grafana:grafana-source       grafana_datasource     regular
+loki:metrics-endpoint               prometheus:metrics-endpoint  prometheus_scrape      regular
+loki:replicas                       loki:replicas                loki_replica           peer
+prometheus:grafana-dashboard        grafana:grafana-dashboard    grafana_dashboard      regular
+prometheus:grafana-source           grafana:grafana-source       grafana_datasource     regular
+prometheus:prometheus-peers         prometheus:prometheus-peers  prometheus_peers       peer
+traefik:ingress                     alertmanager:ingress         ingress                regular
+traefik:ingress                     catalogue:ingress            ingress                regular
+traefik:ingress-per-unit            loki:ingress                 ingress_per_unit       regular
+traefik:ingress-per-unit            prometheus:ingress           ingress_per_unit       regular
+traefik:metrics-endpoint            prometheus:metrics-endpoint  prometheus_scrape      regular
+traefik:peers                       traefik:peers                traefik_peers          peer
+traefik:traefik-route               grafana:ingress              traefik_route          regular
+```
+
+## Add the required integrations to the charm
+
+This example uses [Zookeeper](https://github.com/canonical/zookeeper-operator) as the machine charm to integrate with COS Lite.
+
+### Obtain the `cos_agent` library
+
+Execute the following command to have Charmcraft fetch the required library from Charmhub.
+
+```bash
+charmcraft fetch-lib charms.grafana_agent.v0.cos_agent
+```
+
+### Add the needed `provider`
+
+In the `metadata.yaml` of the Zookeeper charm, add the `cos-agent` relation to the `provides` section.
+
+```diff
+[...]
+provides:
+  zookeeper:
+    interface: zookeeper
++  cos-agent:
++    interface: cos_agent
++    limit: 1
+[...]
+```
+
+### Integrate the library in the charm code
+
+In `src/charm.py`, import the library.
+
+```python
+from charms.grafana_agent.v0.cos_agent import COSAgentProvider
+```
+
+Instantiate the `COSAgentProvider` object in the charm's `__init__` method.
+
+```python
+        # ...
+        self._grafana_agent = COSAgentProvider(
+            self,
+            metrics_endpoints=[
+                {"path": "/metrics", "port": NODE_EXPORTER_PORT},
+                {"path": "/metrics", "port": JMX_PORT},
+                {"path": "/metrics", "port": METRICS_PROVIDER_PORT},
+            ],
+            metrics_rules_dir="./src/alert_rules/prometheus",
+            logs_rules_dir="./src/alert_rules/loki",
+            dashboard_dirs=["./src/grafana_dashboards"],
+            log_slots=["charmed-zookeeper:logs"],
+        )
+        # ...
+```
+
+As part of this constructor call, you may change the paths where metrics alert rules, log alert rules, and Grafana dashboard files are stored.
+
+```{note}
+To learn how to craft alert rules and dashboards, check [these examples](https://github.com/canonical/cos-configuration-k8s-operator/tree/main/tests/samples).
+```
+
+### Pack the charm
+
+Pack the charm using Charmcraft:
+
+```bash
+charmcraft pack
+```
+
+## Refresh the Zookeeper charm
+
+Switch to the machine model and refresh the Zookeeper charm with the newly built charm file:
+
+```bash
+juju switch lxd:admin/zoo # or wherever your zookeeper charm is deployed
+juju refresh zookeeper --path ./*.charm
+```
+
+Juju will do an in-place upgrade of the charm, adding the `cos-agent` relation. To check Zookeeper's status:
+
+```bash
+juju status zoo
+```
+
+The status for Zookeeper should be `active`:
+
+```
+Model  Controller  Cloud/Region         Version  SLA          Timestamp
+zoo    lxd         localhost/localhost  3.6.19   unsupported  18:24:39-03:00
+
+App        Version  Status  Scale  Charm      Channel   Rev  Exposed  Message
+zookeeper  3.9.2    active      1  zookeeper  3/stable  163  no
+
+Unit          Workload  Agent  Machine  Public address  Ports  Message
+zookeeper/0*  active    idle   1        10.72.158.122
+
+Machine  State    Address        Inst id        Base          AZ            Message
+1        started  10.72.158.122  juju-50c528-1  ubuntu@22.04  charm-dev-36  Running
+```
+
+## Deploy the Opentelemetry Collector machine charm
+
+Deploy the Opentelemetry Collector machine charm:
+
+```bash
+juju deploy opentelemetry-collector otelcol --channel 2/stable --base=ubuntu@22.04
+```
+
+Check the status to verify the deployment:
+
+```bash
+juju status
+```
+
+The `otelcol` charm should now be listed:
+
+```
+Model  Controller  Cloud/Region         Version  SLA          Timestamp
+zoo    lxd         localhost/localhost  3.6.19   unsupported  18:25:34-03:00
+
+App        Version  Status   Scale  Charm                    Channel   Rev  Exposed  Message
+otelcol             unknown      0  opentelemetry-collector  2/stable  248  no
+zookeeper  3.9.2    active       1  zookeeper                3/stable  163  no
+
+Unit          Workload  Agent  Machine  Public address  Ports  Message
+zookeeper/0*  active    idle   1        10.72.158.122
+
+Machine  State    Address        Inst id        Base          AZ            Message
+1        started  10.72.158.122  juju-50c528-1  ubuntu@22.04  charm-dev-36  Running
+```
+
+At this point, there's one `zookeeper` unit in `active` state, and an `opentelemetry-collector` in `unknown` state with no units. This is because `opentelemetry-collector` is a [subordinate charm](https://discourse.charmhub.io/t/subordinate-applications/1053).
+
+## Integrate the charms
+
+Integrate `zookeeper` with `opentelemetry-collector` over the `cos-agent` relation:
+
+```bash
+juju integrate zookeeper otelcol:cos-agent
+```
+
+Once the relation has been established, `otelcol` will be deployed together with the `zookeeper` unit, in the same machine. To check the model status:
+
+```bash
+juju status
+```
+
+Your output should show the `otelcol` unit deployed alongside `zookeeper`, in a `blocked` state:
+
+```
+Model  Controller  Cloud/Region         Version  SLA          Timestamp
+zoo    lxd         localhost/localhost  3.6.19   unsupported  18:28:50-03:00
+
+App        Version  Status   Scale  Charm                    Channel   Rev  Exposed  Message
+otelcol    0.130.0  blocked      1  opentelemetry-collector  2/stable  248  no       ['cloud-config']|['grafana-dashboards-provider']|['send-loki-logs']|['send-remote-write'] for cos-agent
+zookeeper  3.9.2    active       1  zookeeper                3/stable  163  no
+
+Unit          Workload  Agent  Machine  Public address  Ports  Message
+zookeeper/0*  active    idle   1        10.72.158.122
+  otelcol/1*  blocked   idle            10.72.158.122          ['cloud-config']|['grafana-dashboards-provider']|['send-loki-logs']|['send-remote-write'] for cos-agent
+
+Machine  State    Address        Inst id        Base          AZ            Message
+1        started  10.72.158.122  juju-50c528-1  ubuntu@22.04  charm-dev-36  Running
+```
+
+Note that despite `otelcol` being deployed and collecting telemetry, it hasn't forwarded telemetry anywhere due to the lack of relations to the corresponding components in the Observability stack.
+
+## Relate Opentelemetry Collector to COS Lite
+
+Relate Opentelemetry Collector to the following COS Lite components:
+
+* Prometheus for the metrics,
+* Loki for the logs, and
+* Grafana for the dashboards.
+
+From the application model, verify the [`offers`](https://documentation.ubuntu.com/juju/3.6/howto/manage-relations/#manage-relations) COS Lite is exposing:
+
+```bash
+juju find-offers -m ck8s:admin/cos-lite
+```
+
+The output lists the available offers:
+
+```
+Store  URL                                             Access  Interfaces
+ck8s   admin/cos-lite.prometheus-metrics-endpoint      admin   prometheus_scrape:metrics-endpoint
+ck8s   admin/cos-lite.prometheus-receive-remote-write  admin   prometheus_remote_write:receive-remote-write
+ck8s   admin/cos-lite.alertmanager-karma-dashboard     admin   karma_dashboard:karma-dashboard
+ck8s   admin/cos-lite.grafana-dashboards               admin   grafana_dashboard:grafana-dashboard
+ck8s   admin/cos-lite.loki-logging                     admin   loki_push_api:logging
+```
+
+Consume the offers:
+
+```bash
+juju consume ck8s:admin/cos-lite.prometheus-receive-remote-write
+juju consume ck8s:admin/cos-lite.loki-logging
+juju consume ck8s:admin/cos-lite.grafana-dashboards
+```
+
+Verify the model status:
+
+```bash
+juju status
+```
+
+The model status now shows a `SAAS` section:
+
+```
+Model  Controller  Cloud/Region         Version  SLA          Timestamp
+zoo    lxd         localhost/localhost  3.6.19   unsupported  18:31:41-03:00
+
+SAAS                             Status  Store  URL
+grafana-dashboards               active  ck8s   admin/cos-lite.grafana-dashboards
+loki-logging                     active  ck8s   admin/cos-lite.loki-logging
+prometheus-receive-remote-write  active  ck8s   admin/cos-lite.prometheus-receive-remote-write
+
+App        Version  Status   Scale  Charm                    Channel   Rev  Exposed  Message
+otelcol    0.130.0  blocked      1  opentelemetry-collector  2/stable  248  no       ['cloud-config']|['grafana-dashboards-provider']|['send-loki-logs']|['send-remote-write'] for cos-agent
+zookeeper  3.9.2    active       1  zookeeper                3/stable  163  no
+
+Unit          Workload  Agent  Machine  Public address  Ports  Message
+zookeeper/0*  active    idle   1        10.72.158.122
+  otelcol/1*  blocked   idle            10.72.158.122          ['cloud-config']|['grafana-dashboards-provider']|['send-loki-logs']|['send-remote-write'] for cos-agent
+
+Machine  State    Address        Inst id        Base          AZ            Message
+1        started  10.72.158.122  juju-50c528-1  ubuntu@22.04  charm-dev-36  Running
+```
+
+The `SAAS` section lists all the interfaces offered by other applications running in other models. Relate Opentelemetry Collector to these 3 applications:
+
+```bash
+juju integrate otelcol prometheus-receive-remote-write
+juju integrate otelcol loki-logging
+juju integrate otelcol grafana-dashboards
+```
+
+Verify the three new integrations in the model status:
+
+```bash
+juju status --relations
+```
+
+All three should appear in the `Integration provider` section:
+
+```
+Model  Controller  Cloud/Region         Version  SLA          Timestamp
+zoo    lxd         localhost/localhost  3.6.19   unsupported  18:33:53-03:00
+
+SAAS                             Status  Store  URL
+grafana-dashboards               active  ck8s   admin/cos-lite.grafana-dashboards
+loki-logging                     active  ck8s   admin/cos-lite.loki-logging
+prometheus-receive-remote-write  active  ck8s   admin/cos-lite.prometheus-receive-remote-write
+
+App        Version  Status  Scale  Charm                    Channel   Rev  Exposed  Message
+otelcol    0.130.0  active      1  opentelemetry-collector  2/stable  248  no
+zookeeper  3.9.2    active      1  zookeeper                3/stable  163  no
+
+Unit          Workload  Agent  Machine  Public address  Ports  Message
+zookeeper/0*  active    idle   1        10.72.158.122
+  otelcol/1*  active    idle            10.72.158.122
+
+Machine  State    Address        Inst id        Base          AZ            Message
+1        started  10.72.158.122  juju-50c528-1  ubuntu@22.04  charm-dev-36  Running
+
+Integration provider                                  Requirer                              Interface                Type         Message
+loki-logging:logging                                  otelcol:send-loki-logs                loki_push_api            regular
+otelcol:grafana-dashboards-provider                   grafana-dashboards:grafana-dashboard  grafana_dashboard        regular
+otelcol:peers                                         otelcol:peers                         otelcol_replica          peer
+prometheus-receive-remote-write:receive-remote-write  otelcol:send-remote-write             prometheus_remote_write  regular
+zookeeper:cluster                                     zookeeper:cluster                     cluster                  peer
+zookeeper:cos-agent                                   otelcol:cos-agent                     cos_agent                subordinate
+zookeeper:restart                                     zookeeper:restart                     rolling_op               peer
+zookeeper:upgrade                                     zookeeper:upgrade                     upgrade                  peer
+```
+
+## Verify that metrics and logs reach Prometheus and Loki
+
+With the Cross Model Relations established, verify that the metrics `zookeeper` exposes are reaching Prometheus:
+
+```bash
+curl -s http://192.168.1.200/cos-lite-prometheus-0/api/v1/query\?query\=zookeeper_DataDirSize | jq
+```
+
+The output should confirm that Zookeeper metrics are being received:
+
+```
+{
+  "status": "success",
+  "data": {
+    "resultType": "vector",
+    "result": [
+      {
+        "metric": {
+          "__name__": "zookeeper_DataDirSize",
+          "instance": "localhost:9998",
+          "job": "zookeeper_0",
+          "juju_application": "zookeeper",
+          "juju_model": "zoo",
+          "juju_model_uuid": "8bc6571a-11d5-4c14-84a7-7c7c8e50c528",
+          "juju_unit": "zookeeper/0",
+          "memberType": "Leader",
+          "replicaId": "1"
+        },
+        "value": [
+          1776288972.212,
+          "551"
+        ]
+      }
+    ]
+  }
+}
+```
+
+Log into Grafana and use the Explore tab to verify logs, or check the list of dashboards for the ZooKeeper dashboards.

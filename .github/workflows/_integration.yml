@@ -12,6 +12,7 @@ on:
         options:
         - cos
         - cos_lite
+        - cos_dev
       runner:
         description: 'The runner label to use for the job.'
         type: choice
@@ -37,15 +38,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        juju-channel: ["3.6/stable", "4/beta"]
+        juju-channel: ["3.6/stable"]
         scenario: ["tls_full", "tls_external", "tls_internal", "tls_none"]
-        exclude:
-          - juju-channel: "4/beta"
-            scenario: "tls_external"
-          - juju-channel: "4/beta"
-            scenario: "tls_internal"
-          - juju-channel: "4/beta"
-            scenario: "tls_none"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -155,8 +149,10 @@ jobs:
 
       - name: Test deployment
         run: |
-          S3_ENDPOINT=http://$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc'):8080
-          export S3_ENDPOINT
-          export S3_ACCESS_KEY=access-key
-          export S3_SECRET_KEY=secret-key
+          if [[ "${{ inputs.product }}" == "cos" ]]; then
+            S3_ENDPOINT=http://$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc'):8080
+            export S3_ENDPOINT
+            export S3_ACCESS_KEY=access-key
+            export S3_SECRET_KEY=secret-key
+          fi
           just integration ${{ inputs.product }}/${{ matrix.scenario }}
