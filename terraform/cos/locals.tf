@@ -1,7 +1,9 @@
 locals {
-  clouds          = ["aws", "self-managed"] # list of k8s clouds where this COS module can be deployed.
-  tls_termination = var.external_certificates_offer_url != null ? true : false
-  traefik_base    = "ubuntu@20.04"
+  clouds                = ["aws", "self-managed"] # list of k8s clouds where this COS module can be deployed.
+  tls_termination       = var.external_certificates_offer_url != null ? true : false
+  reverse_proxy_enabled = anytrue(values(var.ingress))
+  traefik_enabled       = local.reverse_proxy_enabled
+  traefik_base          = "ubuntu@20.04"
   tracks = {
     alertmanager = "dev"
     catalogue    = "dev"

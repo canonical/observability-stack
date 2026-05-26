@@ -46,7 +46,7 @@ variable "storage_backend" {
   }
 }
 
-# -------------- # TLS configurations --------------
+# -------------- # Network configurations --------------
 
 variable "internal_tls" {
   description = "Specify whether to use TLS or not for internal COS communication. By default, TLS is enabled using self-signed-certificates"
@@ -128,19 +128,6 @@ variable "tempo_bucket" {
   description = "Tempo S3 bucket name"
   type        = string
   default     = "tempo"
-}
-
-variable "s3_integrator" {
-  type = object({
-    config             = optional(map(string), {})
-    constraints        = optional(string, "arch=amd64")
-    resources          = optional(map(string), {})
-    revision           = optional(number, null)
-    storage_directives = optional(map(string), {})
-    units              = optional(number, 1)
-  })
-  default     = {}
-  description = "Application configuration shared by all S3-integrators (one deployed per coordinated worker). For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
 # -------------- # Application configurations --------------
@@ -303,6 +290,18 @@ variable "ssc" {
   })
   default     = {}
   description = "Application configuration for Self-signed-certificates. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
+}
+
+variable "s3_integrator" {
+  type = object({
+    config             = optional(map(string), {})
+    constraints        = optional(string, "arch=amd64")
+    revision           = optional(number, null)
+    storage_directives = optional(map(string), {})
+    units              = optional(number, 1)
+  })
+  default     = {}
+  description = "Application configuration shared by all S3-integrators (one deployed per coordinated worker). For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
 variable "tempo_coordinator" {

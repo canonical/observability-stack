@@ -1,5 +1,6 @@
 module "alertmanager" {
-  source             = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform"
+
   app_name           = var.alertmanager.app_name
   channel            = local.channels.alertmanager
   config             = var.alertmanager.config
@@ -12,7 +13,8 @@ module "alertmanager" {
 }
 
 module "catalogue" {
-  source             = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
+
   app_name           = var.catalogue.app_name
   channel            = local.channels.catalogue
   config             = var.catalogue.config
@@ -25,7 +27,8 @@ module "catalogue" {
 }
 
 module "grafana" {
-  source             = "git::https://github.com/canonical/grafana-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/grafana-k8s-operator//terraform"
+
   app_name           = var.grafana.app_name
   channel            = local.channels.grafana
   config             = var.grafana.config
@@ -39,7 +42,8 @@ module "grafana" {
 }
 
 module "loki" {
-  source                            = "git::https://github.com/canonical/loki-operators//terraform"
+  source = "git::https://github.com/canonical/loki-operators//terraform"
+
   anti_affinity                     = var.anti_affinity
   channel                           = local.channels.loki
   model_uuid                        = var.model_uuid
@@ -74,7 +78,8 @@ module "loki" {
 }
 
 module "mimir" {
-  source                            = "git::https://github.com/canonical/mimir-operators//terraform"
+  source = "git::https://github.com/canonical/mimir-operators//terraform"
+
   anti_affinity                     = var.anti_affinity
   channel                           = local.channels.mimir
   model_uuid                        = var.model_uuid
@@ -109,7 +114,8 @@ module "mimir" {
 }
 
 module "opentelemetry_collector" {
-  source             = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform"
+
   app_name           = var.opentelemetry_collector.app_name
   channel            = local.channels.otelcol
   config             = var.opentelemetry_collector.config
@@ -122,8 +128,9 @@ module "opentelemetry_collector" {
 }
 
 module "ssc" {
-  count       = var.internal_tls ? 1 : 0
-  source      = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
+  source = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
+  count  = var.internal_tls ? 1 : 0
+
   app_name    = var.ssc.app_name
   channel     = local.channels.ssc
   config      = var.ssc.config
@@ -134,7 +141,8 @@ module "ssc" {
 }
 
 module "tempo" {
-  source                                      = "git::https://github.com/canonical/tempo-operators//terraform"
+  source = "git::https://github.com/canonical/tempo-operators//terraform"
+
   anti_affinity                               = var.anti_affinity
   channel                                     = local.channels.tempo
   model_uuid                                  = var.model_uuid
@@ -178,7 +186,9 @@ module "tempo" {
 }
 
 module "traefik" {
-  source             = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
+  count  = local.traefik_enabled ? 1 : 0
+
   app_name           = var.traefik.app_name
   channel            = local.channels.traefik
   config             = var.cloud == "aws" ? { "loadbalancer_annotations" = "service.beta.kubernetes.io/aws-load-balancer-scheme=internet-facing" } : var.traefik.config
