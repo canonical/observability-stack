@@ -30,7 +30,7 @@ output "components" {
     mimir_worker_write             = try(module.mimir_worker_write[0], null)
     opentelemetry_collector        = module.opentelemetry_collector
     seaweedfs                      = try(module.seaweedfs[0], null)
-    ssc                            = module.ssc
+    ssc                            = try(module.ssc[0], null)
     tempo_coordinator              = module.tempo_coordinator
     tempo_worker                   = try(module.tempo_worker[0], null)
     tempo_worker_querier           = try(module.tempo_worker_querier[0], null)
@@ -39,7 +39,7 @@ output "components" {
     tempo_worker_distributor       = try(module.tempo_worker_distributor[0], null)
     tempo_worker_compactor         = try(module.tempo_worker_compactor[0], null)
     tempo_worker_metrics_generator = try(module.tempo_worker_metrics_generator[0], null)
-    traefik                        = module.traefik
+    traefik                        = try(module.traefik[0], null)
   }
   description = "All Terraform charm modules which make up this product module"
 }

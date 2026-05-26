@@ -2,7 +2,8 @@
 
 # Monolithic: coordinator ↔ single all-in-one worker
 resource "juju_integration" "loki_cluster" {
-  count      = var.topology == "monolithic" ? 1 : 0
+  count = var.topology == "monolithic" ? 1 : 0
+
   model_uuid = var.model_uuid
 
   application {
@@ -18,7 +19,8 @@ resource "juju_integration" "loki_cluster" {
 
 # Distributed: coordinator ↔ separate backend, read, write workers
 resource "juju_integration" "loki_cluster_backend" {
-  count      = var.topology == "distributed" ? 1 : 0
+  count = var.topology == "distributed" ? 1 : 0
+
   model_uuid = var.model_uuid
 
   application {
@@ -33,7 +35,8 @@ resource "juju_integration" "loki_cluster_backend" {
 }
 
 resource "juju_integration" "loki_cluster_read" {
-  count      = var.topology == "distributed" ? 1 : 0
+  count = var.topology == "distributed" ? 1 : 0
+
   model_uuid = var.model_uuid
 
   application {
@@ -48,7 +51,8 @@ resource "juju_integration" "loki_cluster_read" {
 }
 
 resource "juju_integration" "loki_cluster_write" {
-  count      = var.topology == "distributed" ? 1 : 0
+  count = var.topology == "distributed" ? 1 : 0
+
   model_uuid = var.model_uuid
 
   application {
@@ -63,7 +67,8 @@ resource "juju_integration" "loki_cluster_write" {
 }
 
 resource "juju_integration" "mimir_cluster" {
-  count      = var.topology == "monolithic" ? 1 : 0
+  count = var.topology == "monolithic" ? 1 : 0
+
   model_uuid = var.model_uuid
 
   application {
@@ -78,7 +83,8 @@ resource "juju_integration" "mimir_cluster" {
 }
 
 resource "juju_integration" "mimir_cluster_backend" {
-  count      = var.topology == "distributed" ? 1 : 0
+  count = var.topology == "distributed" ? 1 : 0
+
   model_uuid = var.model_uuid
 
   application {
@@ -93,7 +99,8 @@ resource "juju_integration" "mimir_cluster_backend" {
 }
 
 resource "juju_integration" "mimir_cluster_read" {
-  count      = var.topology == "distributed" ? 1 : 0
+  count = var.topology == "distributed" ? 1 : 0
+
   model_uuid = var.model_uuid
 
   application {
@@ -108,7 +115,8 @@ resource "juju_integration" "mimir_cluster_read" {
 }
 
 resource "juju_integration" "mimir_cluster_write" {
-  count      = var.topology == "distributed" ? 1 : 0
+  count = var.topology == "distributed" ? 1 : 0
+
   model_uuid = var.model_uuid
 
   application {
@@ -123,7 +131,8 @@ resource "juju_integration" "mimir_cluster_write" {
 }
 
 resource "juju_integration" "tempo_cluster" {
-  count      = var.topology == "monolithic" ? 1 : 0
+  count = var.topology == "monolithic" ? 1 : 0
+
   model_uuid = var.model_uuid
 
   application {
@@ -138,7 +147,8 @@ resource "juju_integration" "tempo_cluster" {
 }
 
 resource "juju_integration" "tempo_cluster_querier" {
-  count      = var.topology == "distributed" ? 1 : 0
+  count = var.topology == "distributed" ? 1 : 0
+
   model_uuid = var.model_uuid
 
   application {
@@ -153,7 +163,8 @@ resource "juju_integration" "tempo_cluster_querier" {
 }
 
 resource "juju_integration" "tempo_cluster_query_frontend" {
-  count      = var.topology == "distributed" ? 1 : 0
+  count = var.topology == "distributed" ? 1 : 0
+
   model_uuid = var.model_uuid
 
   application {
@@ -168,7 +179,8 @@ resource "juju_integration" "tempo_cluster_query_frontend" {
 }
 
 resource "juju_integration" "tempo_cluster_ingester" {
-  count      = var.topology == "distributed" ? 1 : 0
+  count = var.topology == "distributed" ? 1 : 0
+
   model_uuid = var.model_uuid
 
   application {
@@ -183,7 +195,8 @@ resource "juju_integration" "tempo_cluster_ingester" {
 }
 
 resource "juju_integration" "tempo_cluster_distributor" {
-  count      = var.topology == "distributed" ? 1 : 0
+  count = var.topology == "distributed" ? 1 : 0
+
   model_uuid = var.model_uuid
 
   application {
@@ -198,7 +211,8 @@ resource "juju_integration" "tempo_cluster_distributor" {
 }
 
 resource "juju_integration" "tempo_cluster_compactor" {
-  count      = var.topology == "distributed" ? 1 : 0
+  count = var.topology == "distributed" ? 1 : 0
+
   model_uuid = var.model_uuid
 
   application {
@@ -213,7 +227,8 @@ resource "juju_integration" "tempo_cluster_compactor" {
 }
 
 resource "juju_integration" "tempo_cluster_metrics_generator" {
-  count      = var.topology == "distributed" ? 1 : 0
+  count = var.topology == "distributed" ? 1 : 0
+
   model_uuid = var.model_uuid
 
   application {
@@ -230,7 +245,8 @@ resource "juju_integration" "tempo_cluster_metrics_generator" {
 # -------------- # SeaweedFS S3 storage -------------------
 
 resource "juju_integration" "seaweedfs_loki" {
-  count      = var.storage_backend == "seaweedfs" ? 1 : 0
+  count = var.storage_backend == "seaweedfs" ? 1 : 0
+
   model_uuid = var.model_uuid
 
   application {
@@ -245,7 +261,8 @@ resource "juju_integration" "seaweedfs_loki" {
 }
 
 resource "juju_integration" "seaweedfs_mimir" {
-  count      = var.storage_backend == "seaweedfs" ? 1 : 0
+  count = var.storage_backend == "seaweedfs" ? 1 : 0
+
   model_uuid = var.model_uuid
 
   application {
@@ -260,7 +277,8 @@ resource "juju_integration" "seaweedfs_mimir" {
 }
 
 resource "juju_integration" "seaweedfs_tempo" {
-  count      = var.storage_backend == "seaweedfs" ? 1 : 0
+  count = var.storage_backend == "seaweedfs" ? 1 : 0
+
   model_uuid = var.model_uuid
 
   application {
@@ -277,7 +295,8 @@ resource "juju_integration" "seaweedfs_tempo" {
 # -------------- # S3-integrator storage -------------------
 
 resource "juju_integration" "s3_integrator_loki" {
-  count      = var.storage_backend == "s3" ? 1 : 0
+  count = var.storage_backend == "s3" ? 1 : 0
+
   model_uuid = var.model_uuid
 
   application {
@@ -292,7 +311,8 @@ resource "juju_integration" "s3_integrator_loki" {
 }
 
 resource "juju_integration" "s3_integrator_mimir" {
-  count      = var.storage_backend == "s3" ? 1 : 0
+  count = var.storage_backend == "s3" ? 1 : 0
+
   model_uuid = var.model_uuid
 
   application {
@@ -307,7 +327,8 @@ resource "juju_integration" "s3_integrator_mimir" {
 }
 
 resource "juju_integration" "s3_integrator_tempo" {
-  count      = var.storage_backend == "s3" ? 1 : 0
+  count = var.storage_backend == "s3" ? 1 : 0
+
   model_uuid = var.model_uuid
 
   application {
@@ -649,14 +670,14 @@ resource "juju_integration" "ingress" {
         app_name = module.mimir_coordinator.app_name
         endpoint = "ingress"
       }
-    } : k => v if var.ingress[k]
+    } : k => v if local.traefik_enabled && var.ingress[k]
   }
 
   model_uuid = var.model_uuid
 
   application {
-    name     = module.traefik.app_name
-    endpoint = module.traefik.endpoints.ingress
+    name     = module.traefik[0].app_name
+    endpoint = module.traefik[0].endpoints.ingress
   }
 
   application {
@@ -666,7 +687,7 @@ resource "juju_integration" "ingress" {
 }
 
 resource "juju_integration" "grafana_ingress" {
-  count = var.ingress.grafana ? 1 : 0
+  count = local.traefik_enabled && var.ingress.grafana ? 1 : 0
 
   model_uuid = var.model_uuid
 
@@ -676,8 +697,8 @@ resource "juju_integration" "grafana_ingress" {
   }
 
   application {
-    name     = module.traefik.app_name
-    endpoint = module.traefik.endpoints.ingress
+    name     = module.traefik[0].app_name
+    endpoint = module.traefik[0].endpoints.ingress
   }
 
   lifecycle { replace_triggered_by = [terraform_data.grafana_ingress_interface, terraform_data.grafana_litestream_resource] }
@@ -694,14 +715,14 @@ resource "juju_integration" "traefik_route" {
         app_name = module.tempo_coordinator.app_name
         endpoint = module.tempo_coordinator.requires.ingress
       }
-    } : k => v if var.ingress[k]
+    } : k => v if local.traefik_enabled && var.ingress[k]
   }
 
   model_uuid = var.model_uuid
 
   application {
-    name     = module.traefik.app_name
-    endpoint = module.traefik.endpoints.traefik_route
+    name     = module.traefik[0].app_name
+    endpoint = module.traefik[0].endpoints.traefik_route
   }
 
   application {
@@ -774,7 +795,8 @@ resource "juju_integration" "internal_certificates" {
 }
 
 resource "juju_integration" "traefik_receive_ca_certificate" {
-  count      = var.internal_tls ? 1 : 0
+  count = local.traefik_enabled && var.internal_tls ? 1 : 0
+
   model_uuid = var.model_uuid
 
   application {
@@ -783,35 +805,31 @@ resource "juju_integration" "traefik_receive_ca_certificate" {
   }
 
   application {
-    name     = module.traefik.app_name
-    endpoint = module.traefik.endpoints.receive_ca_cert
+    name     = module.traefik[0].app_name
+    endpoint = module.traefik[0].endpoints.receive_ca_cert
   }
 }
 
 # -------------- # Provided by an external CA --------------
 
 resource "juju_integration" "external_traefik_certificates" {
-  count      = local.tls_termination ? 1 : 0
+  count = local.traefik_enabled && local.tls_termination ? 1 : 0
+
   model_uuid = var.model_uuid
 
+  application { offer_url = var.external_certificates_offer_url }
   application {
-    offer_url = var.external_certificates_offer_url
-  }
-
-  application {
-    name     = module.traefik.app_name
-    endpoint = module.traefik.endpoints.certificates
+    name     = module.traefik[0].app_name
+    endpoint = module.traefik[0].endpoints.certificates
   }
 }
 
 resource "juju_integration" "external_grafana_ca_cert" {
-  count      = local.tls_termination ? 1 : 0
+  count = local.tls_termination ? 1 : 0
+
   model_uuid = var.model_uuid
 
-  application {
-    offer_url = var.external_ca_cert_offer_url
-  }
-
+  application { offer_url = var.external_ca_cert_offer_url }
   application {
     name     = module.grafana.app_name
     endpoint = module.grafana.requires.receive_ca_cert
@@ -819,13 +837,11 @@ resource "juju_integration" "external_grafana_ca_cert" {
 }
 
 resource "juju_integration" "external_otelcol_ca_cert" {
-  count      = local.tls_termination ? 1 : 0
+  count = local.tls_termination ? 1 : 0
+
   model_uuid = var.model_uuid
 
-  application {
-    offer_url = var.external_ca_cert_offer_url
-  }
-
+  application { offer_url = var.external_ca_cert_offer_url }
   application {
     name     = module.opentelemetry_collector.app_name
     endpoint = module.opentelemetry_collector.requires.receive_ca_cert
@@ -861,4 +877,3 @@ resource "juju_integration" "traces_and_metrics_correlation" {
     endpoint = "send-datasource"
   }
 }
-
