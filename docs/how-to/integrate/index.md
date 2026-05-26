@@ -15,6 +15,7 @@ Integrate COS Lite with uncharmed applications <integrating-cos-lite-with-unchar
 Expose a metrics endpoint <exposing-a-metrics-endpoint>
 Configure scrape jobs <configure-scrape-jobs>
 Instrument machine charms <instrument-machine-charms>
+Send metrics to Mimir <send-metrics-to-mimir>
 ```
 
 ## Extend the pipeline
@@ -33,10 +34,11 @@ Add alert rules <adding-alert-rules>
 
 ## Test & validate integrations
 
-Verify your object-storage integration with a local Minio instance.
+Validate local object-storage integrations or wire existing storage into Mimir.
 
 ```{toctree}
 :maxdepth: 1
 
 Testing with Minio <deploy-s3-integrator-and-minio>
+Configure object storage for Mimir <configure-object-storage-for-mimir>
 ```
