@@ -20,9 +20,9 @@ output "components" {
     opentelemetry_collector = module.opentelemetry_collector
     loki                    = module.loki
     mimir                   = module.mimir
-    ssc                     = module.ssc
+    ssc                     = try(module.ssc[0], null)
     tempo                   = module.tempo
-    traefik                 = module.traefik
+    traefik                 = try(module.traefik[0], null)
   }
   description = "All Terraform charm modules which make up this product module"
 }
