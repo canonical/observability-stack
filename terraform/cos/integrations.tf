@@ -38,6 +38,7 @@ resource "juju_integration" "grafana_dashboards" {
 
   lifecycle { replace_triggered_by = [terraform_data.grafana_litestream_resource] }
 }
+
 # -------------- # Charm Tracing ------------------------
 
 resource "juju_integration" "charm_tracing" {
@@ -81,6 +82,7 @@ resource "juju_integration" "charm_tracing_grafana" {
 }
 
 # -------------- # Metrics Endpoint ----------------------
+
 resource "juju_integration" "otelcol_metrics_endpoint" {
   for_each = {
     alertmanager = {
@@ -262,9 +264,8 @@ resource "juju_integration" "tempo_send_remote_write_mimir_receive_remote_write"
   }
 }
 
-# -------------- # Provided by Catalogue --------------
-
 # -------------- # Catalogue Integrations --------------
+
 resource "juju_integration" "catalogue_integrations" {
   for_each = {
     alertmanager = {
@@ -310,9 +311,8 @@ resource "juju_integration" "catalogue_integration_grafana" {
   lifecycle { replace_triggered_by = [terraform_data.grafana_litestream_resource] }
 }
 
-# -------------- # Provided by Traefik --------------
-
 # -------------- # Ingress --------------------------
+
 resource "juju_integration" "ingress" {
   for_each = {
     for k, v in {
@@ -324,21 +324,21 @@ resource "juju_integration" "ingress" {
         app_name = module.catalogue.app_name
         endpoint = module.catalogue.requires.ingress
       }
-      mimir = {
-        app_name = module.mimir.app_names.mimir_coordinator
-        endpoint = module.mimir.requires.ingress
-      }
       loki = {
         app_name = module.loki.app_names.loki_coordinator
         endpoint = module.loki.requires.ingress
       }
-    } : k => v if var.ingress[k]
+      mimir = {
+        app_name = module.mimir.app_names.mimir_coordinator
+        endpoint = module.mimir.requires.ingress
+      }
+    } : k => v if local.traefik_enabled && var.ingress[k]
   }
   model_uuid = var.model_uuid
 
   application {
-    name     = module.traefik.app_name
-    endpoint = module.traefik.endpoints.ingress
+    name     = module.traefik[0].app_name
+    endpoint = module.traefik[0].endpoints.ingress
   }
 
   application {
@@ -348,7 +348,7 @@ resource "juju_integration" "ingress" {
 }
 
 resource "juju_integration" "grafana_ingress" {
-  count = var.ingress.grafana ? 1 : 0
+  count = local.traefik_enabled && var.ingress.grafana ? 1 : 0
 
   model_uuid = var.model_uuid
 
@@ -358,8 +358,8 @@ resource "juju_integration" "grafana_ingress" {
   }
 
   application {
-    name     = module.traefik.app_name
-    endpoint = module.traefik.endpoints.ingress
+    name     = module.traefik[0].app_name
+    endpoint = module.traefik[0].endpoints.ingress
   }
 
   lifecycle { replace_triggered_by = [terraform_data.grafana_ingress_interface, terraform_data.grafana_litestream_resource] }
@@ -376,13 +376,13 @@ resource "juju_integration" "traefik_route" {
         app_name = module.tempo.app_names.tempo_coordinator
         endpoint = module.tempo.requires.ingress
       }
-    } : k => v if var.ingress[k]
+    } : k => v if local.traefik_enabled && var.ingress[k]
   }
   model_uuid = var.model_uuid
 
   application {
-    name     = module.traefik.app_name
-    endpoint = module.traefik.endpoints.traefik_route
+    name     = module.traefik[0].app_name
+    endpoint = module.traefik[0].endpoints.traefik_route
   }
 
   application {
@@ -390,6 +390,7 @@ resource "juju_integration" "traefik_route" {
     endpoint = each.value.endpoint
   }
 }
+
 # -------------- # Provided by OpenTelemetry Collector --------------
 
 resource "juju_integration" "opentelemetry_collector_mimir_metrics" {
@@ -405,8 +406,6 @@ resource "juju_integration" "opentelemetry_collector_mimir_metrics" {
     endpoint = module.opentelemetry_collector.requires.send_remote_write
   }
 }
-
-# -------------- # Provided by Self-Signed-Certificates --------------
 
 # -------------- # Certificate Integrations --------------
 resource "juju_integration" "internal_certificates" {
@@ -455,7 +454,8 @@ resource "juju_integration" "internal_certificates" {
 }
 
 resource "juju_integration" "traefik_receive_ca_certificate" {
-  count      = var.internal_tls ? 1 : 0
+  count = local.traefik_enabled && var.internal_tls ? 1 : 0
+
   model_uuid = var.model_uuid
 
   application {
@@ -464,35 +464,31 @@ resource "juju_integration" "traefik_receive_ca_certificate" {
   }
 
   application {
-    name     = module.traefik.app_name
-    endpoint = module.traefik.endpoints.receive_ca_cert
+    name     = module.traefik[0].app_name
+    endpoint = module.traefik[0].endpoints.receive_ca_cert
   }
 }
 
 # -------------- # Provided by an external CA --------------
 
 resource "juju_integration" "external_traefik_certificates" {
-  count      = local.tls_termination ? 1 : 0
+  count = local.traefik_enabled && local.tls_termination ? 1 : 0
+
   model_uuid = var.model_uuid
 
+  application { offer_url = var.external_certificates_offer_url }
   application {
-    offer_url = var.external_certificates_offer_url
-  }
-
-  application {
-    name     = module.traefik.app_name
-    endpoint = module.traefik.endpoints.certificates
+    name     = module.traefik[0].app_name
+    endpoint = module.traefik[0].endpoints.certificates
   }
 }
 
 resource "juju_integration" "external_grafana_ca_cert" {
-  count      = local.tls_termination ? 1 : 0
+  count = local.tls_termination ? 1 : 0
+
   model_uuid = var.model_uuid
 
-  application {
-    offer_url = var.external_ca_cert_offer_url
-  }
-
+  application { offer_url = var.external_ca_cert_offer_url }
   application {
     name     = module.grafana.app_name
     endpoint = module.grafana.requires.receive_ca_cert
@@ -500,13 +496,11 @@ resource "juju_integration" "external_grafana_ca_cert" {
 }
 
 resource "juju_integration" "external_otelcol_ca_cert" {
-  count      = local.tls_termination ? 1 : 0
+  count = local.tls_termination ? 1 : 0
+
   model_uuid = var.model_uuid
 
-  application {
-    offer_url = var.external_ca_cert_offer_url
-  }
-
+  application { offer_url = var.external_ca_cert_offer_url }
   application {
     name     = module.opentelemetry_collector.app_name
     endpoint = module.opentelemetry_collector.requires.receive_ca_cert
