@@ -83,7 +83,7 @@ module "loki_worker_backend" {
   config             = merge({ "role-backend" = "true" }, var.loki_worker.backend_config)
   constraints        = var.loki_worker.constraints
   model_uuid         = var.model_uuid
-  resources          = var.loki_worker.backend_resources
+  resources          = var.loki_worker.resources
   revision           = local.revisions.loki_worker
   storage_directives = var.loki_worker.backend_storage_directives
   units              = var.loki_worker.backend_units
@@ -99,7 +99,7 @@ module "loki_worker_read" {
   config             = merge({ "role-read" = "true" }, var.loki_worker.read_config)
   constraints        = var.loki_worker.constraints
   model_uuid         = var.model_uuid
-  resources          = var.loki_worker.read_resources
+  resources          = var.loki_worker.resources
   revision           = local.revisions.loki_worker
   storage_directives = var.loki_worker.read_storage_directives
   units              = var.loki_worker.read_units
@@ -115,7 +115,7 @@ module "loki_worker_write" {
   config             = merge({ "role-write" = "true" }, var.loki_worker.write_config)
   constraints        = var.loki_worker.constraints
   model_uuid         = var.model_uuid
-  resources          = var.loki_worker.write_resources
+  resources          = var.loki_worker.resources
   revision           = local.revisions.loki_worker
   storage_directives = var.loki_worker.write_storage_directives
   units              = var.loki_worker.write_units
@@ -163,7 +163,7 @@ module "mimir_worker_backend" {
   config             = merge({ "role-backend" = "true" }, var.mimir_worker.backend_config)
   constraints        = var.mimir_worker.constraints
   model_uuid         = var.model_uuid
-  resources          = var.mimir_worker.backend_resources
+  resources          = var.mimir_worker.resources
   revision           = local.revisions.mimir_worker
   storage_directives = var.mimir_worker.backend_storage_directives
   units              = var.mimir_worker.backend_units
@@ -179,7 +179,7 @@ module "mimir_worker_read" {
   config             = merge({ "role-read" = "true" }, var.mimir_worker.read_config)
   constraints        = var.mimir_worker.constraints
   model_uuid         = var.model_uuid
-  resources          = var.mimir_worker.read_resources
+  resources          = var.mimir_worker.resources
   revision           = local.revisions.mimir_worker
   storage_directives = var.mimir_worker.read_storage_directives
   units              = var.mimir_worker.read_units
@@ -195,7 +195,7 @@ module "mimir_worker_write" {
   config             = merge({ "role-write" = "true" }, var.mimir_worker.write_config)
   constraints        = var.mimir_worker.constraints
   model_uuid         = var.model_uuid
-  resources          = var.mimir_worker.write_resources
+  resources          = var.mimir_worker.resources
   revision           = local.revisions.mimir_worker
   storage_directives = var.mimir_worker.write_storage_directives
   units              = var.mimir_worker.write_units
@@ -250,6 +250,7 @@ module "tempo_coordinator" {
   config             = var.tempo_coordinator.config
   constraints        = var.tempo_coordinator.constraints
   model_uuid         = var.model_uuid
+  resources          = var.tempo_coordinator.resources
   revision           = local.revisions.tempo_coordinator
   storage_directives = var.tempo_coordinator.storage_directives
   units              = var.tempo_coordinator.units
@@ -266,6 +267,7 @@ module "tempo_worker" {
   config             = merge({ "role-all" = "true" }, var.tempo_worker.config)
   constraints        = var.tempo_worker.constraints
   model_uuid         = var.model_uuid
+  resources          = var.tempo_worker.resources
   revision           = local.revisions.tempo_worker
   storage_directives = var.tempo_worker.storage_directives
   units              = var.tempo_worker.units
@@ -282,6 +284,7 @@ module "tempo_worker_querier" {
   config             = merge({ "role-all" = "false", "role-querier" = "true" }, var.tempo_worker.querier_config)
   constraints        = var.tempo_worker.constraints
   model_uuid         = var.model_uuid
+  resources          = var.tempo_worker.resources
   revision           = local.revisions.tempo_worker
   storage_directives = var.tempo_worker.querier_storage_directives
   units              = var.tempo_worker.querier_units
@@ -297,6 +300,7 @@ module "tempo_worker_query_frontend" {
   config             = merge({ "role-all" = "false", "role-query-frontend" = "true" }, var.tempo_worker.query_frontend_config)
   constraints        = var.tempo_worker.constraints
   model_uuid         = var.model_uuid
+  resources          = var.tempo_worker.resources
   revision           = local.revisions.tempo_worker
   storage_directives = var.tempo_worker.query_frontend_storage_directives
   units              = var.tempo_worker.query_frontend_units
@@ -312,6 +316,7 @@ module "tempo_worker_ingester" {
   config             = merge({ "role-all" = "false", "role-ingester" = "true" }, var.tempo_worker.ingester_config)
   constraints        = var.tempo_worker.constraints
   model_uuid         = var.model_uuid
+  resources          = var.tempo_worker.resources
   revision           = local.revisions.tempo_worker
   storage_directives = var.tempo_worker.ingester_storage_directives
   units              = var.tempo_worker.ingester_units
@@ -327,6 +332,7 @@ module "tempo_worker_distributor" {
   config             = merge({ "role-all" = "false", "role-distributor" = "true" }, var.tempo_worker.distributor_config)
   constraints        = var.tempo_worker.constraints
   model_uuid         = var.model_uuid
+  resources          = var.tempo_worker.resources
   revision           = local.revisions.tempo_worker
   storage_directives = var.tempo_worker.distributor_storage_directives
   units              = var.tempo_worker.distributor_units
@@ -342,6 +348,7 @@ module "tempo_worker_compactor" {
   config             = merge({ "role-all" = "false", "role-compactor" = "true" }, var.tempo_worker.compactor_config)
   constraints        = var.tempo_worker.constraints
   model_uuid         = var.model_uuid
+  resources          = var.tempo_worker.resources
   revision           = local.revisions.tempo_worker
   storage_directives = var.tempo_worker.compactor_storage_directives
   units              = var.tempo_worker.compactor_units
@@ -357,6 +364,7 @@ module "tempo_worker_metrics_generator" {
   config             = merge({ "role-all" = "false", "role-metrics-generator" = "true" }, var.tempo_worker.metrics_generator_config)
   constraints        = var.tempo_worker.constraints
   model_uuid         = var.model_uuid
+  resources          = var.tempo_worker.resources
   revision           = local.revisions.tempo_worker
   storage_directives = var.tempo_worker.metrics_generator_storage_directives
   units              = var.tempo_worker.metrics_generator_units
@@ -371,6 +379,7 @@ module "traefik" {
   config             = var.traefik.config
   constraints        = var.traefik.constraints
   model_uuid         = var.model_uuid
+  resources          = var.traefik.resources
   revision           = local.revisions.traefik
   storage_directives = var.traefik.storage_directives
   units              = var.traefik.units
@@ -410,7 +419,6 @@ resource "juju_application" "s3_integrator_loki" {
   constraints        = var.s3_integrator.constraints
   model_uuid         = var.model_uuid
   name               = "${var.loki_coordinator.app_name}-s3-integrator"
-  resources          = var.s3_integrator.resources
   storage_directives = var.s3_integrator.storage_directives
   trust              = true
   units              = var.s3_integrator.units
@@ -453,7 +461,6 @@ resource "juju_application" "s3_integrator_mimir" {
   constraints        = var.s3_integrator.constraints
   model_uuid         = var.model_uuid
   name               = "${var.mimir_coordinator.app_name}-s3-integrator"
-  resources          = var.s3_integrator.resources
   storage_directives = var.s3_integrator.storage_directives
   trust              = true
   units              = var.s3_integrator.units
@@ -496,7 +503,6 @@ resource "juju_application" "s3_integrator_tempo" {
   constraints        = var.s3_integrator.constraints
   model_uuid         = var.model_uuid
   name               = "${var.tempo_coordinator.app_name}-s3-integrator"
-  resources          = var.s3_integrator.resources
   storage_directives = var.s3_integrator.storage_directives
   trust              = true
   units              = var.s3_integrator.units
