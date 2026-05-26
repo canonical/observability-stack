@@ -20,8 +20,8 @@ output "components" {
     grafana      = module.grafana
     loki         = module.loki
     prometheus   = module.prometheus
-    ssc          = module.ssc
-    traefik      = module.traefik
+    ssc          = try(module.ssc[0], null)
+    traefik      = try(module.traefik[0], null)
   }
   description = "All Terraform charm modules which make up this product module"
 }
