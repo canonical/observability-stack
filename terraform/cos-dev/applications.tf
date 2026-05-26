@@ -1,5 +1,5 @@
 module "alertmanager" {
-  source             = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform"
 
   app_name           = var.alertmanager.app_name
   channel            = local.channels.alertmanager
@@ -12,7 +12,7 @@ module "alertmanager" {
 }
 
 module "catalogue" {
-  source             = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
 
   app_name           = var.catalogue.app_name
   channel            = local.channels.catalogue
@@ -25,7 +25,7 @@ module "catalogue" {
 }
 
 module "grafana" {
-  source             = "git::https://github.com/canonical/grafana-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/grafana-k8s-operator//terraform"
 
   app_name           = var.grafana.app_name
   channel            = local.channels.grafana
@@ -67,7 +67,7 @@ module "istio_beacon" {
 }
 
 module "loki_coordinator" {
-  source             = "git::https://github.com/canonical/loki-operators//coordinator/terraform"
+  source = "git::https://github.com/canonical/loki-operators//coordinator/terraform"
 
   app_name           = var.loki_coordinator.app_name
   channel            = local.channels.loki
@@ -393,7 +393,7 @@ module "traefik" {
 # -------------- # S3-integrator resources (storage_backend = "s3") --------------
 
 resource "juju_secret" "loki_s3_credentials" {
-  count      = var.storage_backend == "s3" ? 1 : 0
+  count = var.storage_backend == "s3" ? 1 : 0
 
   model_uuid = var.model_uuid
   name       = "loki-s3-credentials"
@@ -405,7 +405,7 @@ resource "juju_secret" "loki_s3_credentials" {
 }
 
 resource "juju_access_secret" "loki_s3_credentials_access" {
-  count        = var.storage_backend == "s3" ? 1 : 0
+  count = var.storage_backend == "s3" ? 1 : 0
 
   model_uuid   = var.model_uuid
   applications = [juju_application.s3_integrator_loki[0].name]
@@ -436,7 +436,7 @@ resource "juju_application" "s3_integrator_loki" {
 }
 
 resource "juju_secret" "mimir_s3_credentials" {
-  count      = var.storage_backend == "s3" ? 1 : 0
+  count = var.storage_backend == "s3" ? 1 : 0
 
   model_uuid = var.model_uuid
   name       = "mimir-s3-credentials"
@@ -448,7 +448,7 @@ resource "juju_secret" "mimir_s3_credentials" {
 }
 
 resource "juju_access_secret" "mimir_s3_credentials_access" {
-  count        = var.storage_backend == "s3" ? 1 : 0
+  count = var.storage_backend == "s3" ? 1 : 0
 
   model_uuid   = var.model_uuid
   applications = [juju_application.s3_integrator_mimir[0].name]
@@ -478,7 +478,7 @@ resource "juju_application" "s3_integrator_mimir" {
 }
 
 resource "juju_secret" "tempo_s3_credentials" {
-  count      = var.storage_backend == "s3" ? 1 : 0
+  count = var.storage_backend == "s3" ? 1 : 0
 
   model_uuid = var.model_uuid
   name       = "tempo-s3-credentials"
@@ -490,7 +490,7 @@ resource "juju_secret" "tempo_s3_credentials" {
 }
 
 resource "juju_access_secret" "tempo_s3_credentials_access" {
-  count        = var.storage_backend == "s3" ? 1 : 0
+  count = var.storage_backend == "s3" ? 1 : 0
 
   model_uuid   = var.model_uuid
   applications = [juju_application.s3_integrator_tempo[0].name]
