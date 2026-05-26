@@ -90,7 +90,7 @@ The S3-integrator charm exposes a [tls-ca-chain option](https://charmhub.io/s3-i
 
 ## Deployment
 
-Using the following Terraform root module, you can control `external` and `internal` TLS. 
+Using the following Terraform root module, you can control `external` and `internal` TLS.
 
 To enable `internal` TLS, set the `internal_tls` value to `true`. To enable `external` TLS, supply the `external_certificates_offer_url` value with a `certificates` provider's Juju offer URL, from the `ssc` module in this example. The combination of these settings enables full encryption.
 
@@ -103,3 +103,6 @@ The [COS Lite bundle](https://charmhub.io/cos-lite) is now deprecated in favor o
 ```{literalinclude} /how-to/deploy-and-manage/cos-tls.tf
 ```
 
+The `internal_tls` variable determines if a COS-internal `self-signed-certificates` application is deployed and integrated with COS components for TLS.
+
+Ensure that you have provided any required variables (update the `... other inputs ...` placeholder) for the respective COS module before applying the configuration, by running `terraform apply`.
