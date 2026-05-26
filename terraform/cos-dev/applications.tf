@@ -219,7 +219,6 @@ module "seaweedfs" {
   config             = var.seaweedfs.config
   constraints        = var.seaweedfs.constraints
   model_uuid         = var.model_uuid
-  resources          = var.seaweedfs.resources
   revision           = local.revisions.seaweedfs
   storage_directives = var.seaweedfs.storage_directives
   units              = var.seaweedfs.units
@@ -356,7 +355,6 @@ module "ssc" {
   config      = var.ssc.config
   constraints = var.ssc.constraints
   model_uuid  = var.model_uuid
-  resources   = var.ssc.resources
   revision    = local.revisions.ssc
   units       = var.ssc.units
 }

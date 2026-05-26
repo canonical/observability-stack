@@ -129,7 +129,6 @@ module "ssc" {
   config      = var.ssc.config
   constraints = var.ssc.constraints
   model_uuid  = var.model_uuid
-  resources   = var.ssc.resources
   revision    = local.revisions.ssc
   units       = var.ssc.units
 }

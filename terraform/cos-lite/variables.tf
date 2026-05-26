@@ -141,7 +141,6 @@ variable "ssc" {
     app_name           = optional(string, "ca")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
-    resources          = optional(map(string), {})
     revision           = optional(number, null)
     storage_directives = optional(map(string), {})
     units              = optional(number, 1)

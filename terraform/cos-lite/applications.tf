@@ -78,21 +78,20 @@ module "ssc" {
   config      = var.ssc.config
   constraints = var.ssc.constraints
   model_uuid  = var.model_uuid
-  resources  = var.ssc.resources
-  revision = local.revisions.ssc
-  units    = var.ssc.units
+  revision    = local.revisions.ssc
+  units       = var.ssc.units
 }
 
 module "traefik" {
   source = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
   count  = local.traefik_enabled ? 1 : 0
 
-  app_name    = var.traefik.app_name
-  channel     = local.channels.traefik
-  config      = var.traefik.config
-  constraints = var.traefik.constraints
-  model_uuid  = var.model_uuid
-  resources = var.traefik.resources
+  app_name           = var.traefik.app_name
+  channel            = local.channels.traefik
+  config             = var.traefik.config
+  constraints        = var.traefik.constraints
+  model_uuid         = var.model_uuid
+  resources          = var.traefik.resources
   revision           = local.revisions.traefik
   storage_directives = var.traefik.storage_directives
   units              = var.traefik.units
