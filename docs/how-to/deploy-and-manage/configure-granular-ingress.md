@@ -52,4 +52,6 @@ Using the following Terraform module, set your ingress options to enable or disa
 ```{literalinclude} /how-to/deploy-and-manage/cos-ingress.tf
 ```
 
+The `ingress` variable determines if a COS-internal `traefik` application is deployed and integrated with COS components for ingress. If at least one application is configured for ingress, then `traefik` will exist internally, otherwise not.
+
 Ensure that you have provided any required variables (update the `... other inputs ...` placeholder) for the respective COS module before applying the configuration, by running `terraform apply`.
