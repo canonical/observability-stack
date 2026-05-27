@@ -155,6 +155,7 @@ resource "juju_integration" "grafana_sources" {
 # -------------- # Receive Loki Logs ---------------------
 
 resource "juju_integration" "otelcol_logging_provider" {
+  depends_on = [ juju_integration.internal_certificates ]
   for_each = {
     alertmanager = {
       app_name = module.alertmanager.app_name
