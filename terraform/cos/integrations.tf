@@ -133,6 +133,7 @@ resource "juju_integration" "grafana_sources" {
 # -------------- # Receive Loki Logs ---------------------
 
 resource "juju_integration" "otelcol_logging_provider" {
+  depends_on = [ juju_integration.internal_certificates ]
   for_each = {
     mimir = {
       app_name = module.mimir.app_names.mimir_coordinator
