@@ -118,6 +118,7 @@ _LOG_LEVEL_RE = re.compile(
 def no_errors_in_otelcol_logs(juju: jubilant.Juju):
     stdout = juju.ssh("otelcol/0", "pebble logs", container="otelcol")
     assert stdout, "no logs found for otelcol"
+    kill_pebble_to_refesh_tls_context(juju)
     _no_errors_in_otelcol_logs(stdout)
 
 
@@ -131,3 +132,14 @@ def _no_errors_in_otelcol_logs(stdout: str):
     assert info_lines, "no 'info' level logs found in otelcol output"
     error_lines = [line for level, line in matched_lines if level in ("warn", "error")]
     assert not error_lines, "otelcol error logs:\n" + "\n".join(error_lines)
+
+def kill_pebble_to_refesh_tls_context(juju: jubilant.Juju):
+    """Temporary workaround for the issue:
+
+    FIXME: https://github.com/canonical/pebble/issues/780
+    """
+    for app in juju.status().apps:
+        # TODO: If it has a logging relation. Maybe if related to otelcol or Loki for logging?
+        breakpoint()
+        # TODO: juju.wait ...
+        stdout = juju.ssh(f"{app}/0", "kill 1", container="otelcol")
