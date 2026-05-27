@@ -1,5 +1,5 @@
 module "alertmanager" {
-  source = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform?ref=feat/tf-provider-v2"
 
   app_name           = var.alertmanager.app_name
   channel            = local.channels.alertmanager
@@ -12,7 +12,7 @@ module "alertmanager" {
 }
 
 module "catalogue" {
-  source = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/catalogue-k8s-operator//terraform?ref=feat/tf-provider-v2"
 
   app_name           = var.catalogue.app_name
   channel            = local.channels.catalogue
@@ -25,7 +25,7 @@ module "catalogue" {
 }
 
 module "grafana" {
-  source = "git::https://github.com/canonical/grafana-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/grafana-k8s-operator//terraform?ref=feat/tf-provider-v2"
 
   app_name           = var.grafana.app_name
   channel            = local.channels.grafana
@@ -39,7 +39,7 @@ module "grafana" {
 }
 
 module "loki" {
-  source = "git::https://github.com/canonical/loki-operators//terraform"
+  source = "git::https://github.com/canonical/loki-operators//terraform?ref=feat/tf-provider-v2"
 
   anti_affinity                     = var.anti_affinity
   channel                           = local.channels.loki
@@ -73,7 +73,7 @@ module "loki" {
 }
 
 module "mimir" {
-  source = "git::https://github.com/canonical/mimir-operators//terraform"
+  source = "git::https://github.com/canonical/mimir-operators//terraform?ref=feat/tf-provider-v2"
 
   anti_affinity                     = var.anti_affinity
   channel                           = local.channels.mimir
@@ -107,7 +107,7 @@ module "mimir" {
 }
 
 module "opentelemetry_collector" {
-  source = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform?ref=feat/tf-provider-v2"
 
   app_name           = var.opentelemetry_collector.app_name
   channel            = local.channels.otelcol
@@ -133,7 +133,7 @@ module "ssc" {
 }
 
 module "tempo" {
-  source = "git::https://github.com/canonical/tempo-operators//terraform"
+  source = "git::https://github.com/canonical/tempo-operators//terraform?ref=feat/tf-provider-v2"
 
   anti_affinity                               = var.anti_affinity
   channel                                     = local.channels.tempo

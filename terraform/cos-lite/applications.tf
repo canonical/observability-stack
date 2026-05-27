@@ -1,5 +1,5 @@
 module "alertmanager" {
-  source = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform?ref=feat/tf-provider-v2"
 
   app_name           = var.alertmanager.app_name
   channel            = local.channels.alertmanager
@@ -12,7 +12,7 @@ module "alertmanager" {
 }
 
 module "catalogue" {
-  source = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/catalogue-k8s-operator//terraform?ref=feat/tf-provider-v2"
 
   app_name           = var.catalogue.app_name
   channel            = local.channels.catalogue
@@ -25,7 +25,7 @@ module "catalogue" {
 }
 
 module "grafana" {
-  source = "git::https://github.com/canonical/grafana-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/grafana-k8s-operator//terraform?ref=feat/tf-provider-v2"
 
   app_name           = var.grafana.app_name
   channel            = local.channels.grafana
@@ -39,7 +39,7 @@ module "grafana" {
 }
 
 module "loki" {
-  source = "git::https://github.com/canonical/loki-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/loki-k8s-operator//terraform?ref=feat/tf-provider-v2"
 
   app_name           = var.loki.app_name
   channel            = local.channels.loki
@@ -52,7 +52,7 @@ module "loki" {
 }
 
 module "prometheus" {
-  source = "git::https://github.com/canonical/prometheus-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/prometheus-k8s-operator//terraform?ref=feat/tf-provider-v2"
 
   app_name           = var.prometheus.app_name
   channel            = local.channels.prometheus
