@@ -30,6 +30,7 @@ def test_deploy_from_track_2(tf_manager, cos_model: jubilant.Juju):
     tf_manager.init(TRACK_2_TF_FILE)
     tf_manager.apply(model=cos_model.model, **S3_ENDPOINT)
     generic_assertions(cos_model)
+    breakpoint()
     no_errors_in_otelcol_logs(cos_model)
 
 
