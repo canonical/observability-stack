@@ -236,7 +236,7 @@ variable "ssc" {
 
 variable "s3_integrator" {
   type = object({
-    channel            = optional(string, "2/edge")
+    channel            = optional(string, "2/stable")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
     revision           = optional(number, null)
