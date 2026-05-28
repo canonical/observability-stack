@@ -65,38 +65,7 @@ data "juju_charm" "traefik_info" {
 # -------------- # State migrations -------------- #
 
 # refactor(cos-lite): Traefik and SSC are conditional (#353)
-
 moved {
   from = module.traefik
   to   = module.traefik[0]
-}
-
-moved {
-  from = juju_integration.traefik_self_monitoring_prometheus
-  to   = juju_integration.traefik_self_monitoring_prometheus[0]
-}
-
-moved {
-  from = juju_integration.alertmanager_certificates[0]
-  to   = juju_integration.internal_certificates["alertmanager"]
-}
-
-moved {
-  from = juju_integration.catalogue_certificates[0]
-  to   = juju_integration.internal_certificates["catalogue"]
-}
-
-moved {
-  from = juju_integration.grafana_certificates[0]
-  to   = juju_integration.internal_certificates["grafana"]
-}
-
-moved {
-  from = juju_integration.loki_certificates[0]
-  to   = juju_integration.internal_certificates["loki"]
-}
-
-moved {
-  from = juju_integration.prometheus_certificates[0]
-  to   = juju_integration.internal_certificates["prometheus"]
 }
