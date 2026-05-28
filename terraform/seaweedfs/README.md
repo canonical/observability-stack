@@ -7,7 +7,7 @@ This is a Terraform module facilitating the deployment of the [seaweedfs-k8s](ht
 
 | Name | Version |
 |------|---------|
-| <a name="provider_juju"></a> [juju](#provider\_juju) | ~> 1.0 |
+| <a name="provider_juju"></a> [juju](#provider\_juju) | >= 1.0 |
 
 ## Modules
 
