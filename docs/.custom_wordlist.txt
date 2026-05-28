@@ -143,6 +143,7 @@ PromQL
 Promtail
 provisioner
 proxied
+psql
 PVC
 PVCs
 PVs

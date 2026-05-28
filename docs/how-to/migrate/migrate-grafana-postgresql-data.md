@@ -40,7 +40,7 @@ Use a short maintenance window for this procedure.
 
 ### 1. Create a verification resource
 
-Log into your current Grafana UI and create a distinct dummy resource—such as a specific alert rule named `migration-check` or a test dashboard. After the migration, you will look for this resource to instantly verify that your data successfully carried over without needing to manually inspect the database tables.
+Log into your current Grafana UI and create a distinct test resource—such as a specific alert rule named `migration-check` or a test dashboard. After the migration, you will look for this resource to instantly verify that your data successfully carried over without needing to manually inspect the database tables.
 
 ### 2. Example Environment Bundle
 
