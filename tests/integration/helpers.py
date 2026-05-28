@@ -133,13 +133,35 @@ def _no_errors_in_otelcol_logs(stdout: str):
     error_lines = [line for level, line in matched_lines if level in ("warn", "error")]
     assert not error_lines, "otelcol error logs:\n" + "\n".join(error_lines)
 
+# Mapping of charm name to its primary workload container name.
+# Used to target `kill 1` (pebble restart) on the correct container.
+CHARM_CONTAINER_MAP = {
+    "alertmanager-k8s": "alertmanager",
+    "catalogue-k8s": "catalogue",
+    "grafana-k8s": "grafana",
+    "loki-k8s": "loki",
+    "loki-coordinator-k8s": "nginx",
+    "loki-worker-k8s": "loki",
+    "mimir-coordinator-k8s": "nginx",
+    "mimir-worker-k8s": "mimir",
+    "opentelemetry-collector-k8s": "otelcol",
+    "prometheus-k8s": "prometheus",
+    "tempo-coordinator-k8s": "nginx",
+    "tempo-worker-k8s": "tempo",
+    "traefik-k8s": "traefik",
+}
+
+
 def kill_pebble_to_refesh_tls_context(juju: jubilant.Juju):
     """Temporary workaround for the issue:
 
     FIXME: https://github.com/canonical/pebble/issues/780
     """
-    breakpoint()
     for app in juju.status().apps:
         # TODO: If it has a logging relation. Maybe if related to otelcol or Loki for logging?
-        # TODO: juju.wait ...
-        stdout = juju.ssh(f"{app}/0", "kill 1", container="otelcol")
+        container = CHARM_CONTAINER_MAP.get(app)
+        if not container:
+            continue
+        juju.ssh(f"{app}/0", "kill 1", container=container)
+    # TODO: juju.wait ...
+    # TODO: It seems that sometimes there are no otelcol error logs.
