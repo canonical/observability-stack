@@ -1,5 +1,5 @@
 module "alertmanager" {
-  source = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform?ref=feat/tf-provider-v2"
+  source = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform"
 
   app_name           = var.alertmanager.app_name
   channel            = local.channels.alertmanager
@@ -12,7 +12,7 @@ module "alertmanager" {
 }
 
 module "catalogue" {
-  source = "git::https://github.com/canonical/catalogue-k8s-operator//terraform?ref=feat/tf-provider-v2"
+  source = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
 
   app_name           = var.catalogue.app_name
   channel            = local.channels.catalogue
@@ -25,7 +25,7 @@ module "catalogue" {
 }
 
 module "grafana" {
-  source = "git::https://github.com/canonical/grafana-k8s-operator//terraform?ref=feat/tf-provider-v2"
+  source = "git::https://github.com/canonical/grafana-k8s-operator//terraform"
 
   app_name           = var.grafana.app_name
   channel            = local.channels.grafana
@@ -39,7 +39,7 @@ module "grafana" {
 }
 
 module "loki_coordinator" {
-  source = "git::https://github.com/canonical/loki-operators//coordinator/terraform?ref=feat/tf-provider-v2"
+  source = "git::https://github.com/canonical/loki-operators//coordinator/terraform"
 
   app_name           = var.loki_coordinator.app_name
   channel            = local.channels.loki
@@ -53,7 +53,7 @@ module "loki_coordinator" {
 
 # Monolithic: single all-in-one worker
 module "loki_worker" {
-  source     = "git::https://github.com/canonical/loki-operators//worker/terraform?ref=feat/tf-provider-v2"
+  source     = "git::https://github.com/canonical/loki-operators//worker/terraform"
   count      = var.topology == "monolithic" ? 1 : 0
   depends_on = [module.loki_coordinator]
 
@@ -69,7 +69,7 @@ module "loki_worker" {
 
 # Distributed: separate backend, read, and write workers
 module "loki_worker_backend" {
-  source     = "git::https://github.com/canonical/loki-operators//worker/terraform?ref=feat/tf-provider-v2"
+  source     = "git::https://github.com/canonical/loki-operators//worker/terraform"
   count      = var.topology == "distributed" ? 1 : 0
   depends_on = [module.loki_coordinator]
 
@@ -84,7 +84,7 @@ module "loki_worker_backend" {
 }
 
 module "loki_worker_read" {
-  source     = "git::https://github.com/canonical/loki-operators//worker/terraform?ref=feat/tf-provider-v2"
+  source     = "git::https://github.com/canonical/loki-operators//worker/terraform"
   count      = var.topology == "distributed" ? 1 : 0
   depends_on = [module.loki_coordinator]
 
@@ -99,7 +99,7 @@ module "loki_worker_read" {
 }
 
 module "loki_worker_write" {
-  source     = "git::https://github.com/canonical/loki-operators//worker/terraform?ref=feat/tf-provider-v2"
+  source     = "git::https://github.com/canonical/loki-operators//worker/terraform"
   count      = var.topology == "distributed" ? 1 : 0
   depends_on = [module.loki_coordinator]
 
@@ -114,7 +114,7 @@ module "loki_worker_write" {
 }
 
 module "mimir_coordinator" {
-  source = "git::https://github.com/canonical/mimir-operators//coordinator/terraform?ref=feat/tf-provider-v2"
+  source = "git::https://github.com/canonical/mimir-operators//coordinator/terraform"
 
   app_name           = var.mimir_coordinator.app_name
   channel            = local.channels.mimir
@@ -128,7 +128,7 @@ module "mimir_coordinator" {
 
 # Monolithic: single all-in-one worker
 module "mimir_worker" {
-  source     = "git::https://github.com/canonical/mimir-operators//worker/terraform?ref=feat/tf-provider-v2"
+  source     = "git::https://github.com/canonical/mimir-operators//worker/terraform"
   count      = var.topology == "monolithic" ? 1 : 0
   depends_on = [module.mimir_coordinator]
 
@@ -144,7 +144,7 @@ module "mimir_worker" {
 
 # Distributed: separate backend, read, and write workers
 module "mimir_worker_backend" {
-  source     = "git::https://github.com/canonical/mimir-operators//worker/terraform?ref=feat/tf-provider-v2"
+  source     = "git::https://github.com/canonical/mimir-operators//worker/terraform"
   count      = var.topology == "distributed" ? 1 : 0
   depends_on = [module.mimir_coordinator]
 
@@ -159,7 +159,7 @@ module "mimir_worker_backend" {
 }
 
 module "mimir_worker_read" {
-  source     = "git::https://github.com/canonical/mimir-operators//worker/terraform?ref=feat/tf-provider-v2"
+  source     = "git::https://github.com/canonical/mimir-operators//worker/terraform"
   count      = var.topology == "distributed" ? 1 : 0
   depends_on = [module.mimir_coordinator]
 
@@ -174,7 +174,7 @@ module "mimir_worker_read" {
 }
 
 module "mimir_worker_write" {
-  source     = "git::https://github.com/canonical/mimir-operators//worker/terraform?ref=feat/tf-provider-v2"
+  source     = "git::https://github.com/canonical/mimir-operators//worker/terraform"
   count      = var.topology == "distributed" ? 1 : 0
   depends_on = [module.mimir_coordinator]
 
@@ -189,7 +189,7 @@ module "mimir_worker_write" {
 }
 
 module "opentelemetry_collector" {
-  source = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform?ref=feat/tf-provider-v2"
+  source = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform"
 
   app_name           = var.opentelemetry_collector.app_name
   channel            = local.channels.otelcol
@@ -229,7 +229,7 @@ module "ssc" {
 }
 
 module "tempo_coordinator" {
-  source = "git::https://github.com/canonical/tempo-operators//coordinator/terraform?ref=feat/tf-provider-v2"
+  source = "git::https://github.com/canonical/tempo-operators//coordinator/terraform"
 
   app_name           = var.tempo_coordinator.app_name
   channel            = local.channels.tempo
@@ -243,7 +243,7 @@ module "tempo_coordinator" {
 
 # Monolithic: single all-in-one worker
 module "tempo_worker" {
-  source     = "git::https://github.com/canonical/tempo-operators//worker/terraform?ref=feat/tf-provider-v2"
+  source     = "git::https://github.com/canonical/tempo-operators//worker/terraform"
   count      = var.topology == "monolithic" ? 1 : 0
   depends_on = [module.tempo_coordinator]
 
@@ -259,7 +259,7 @@ module "tempo_worker" {
 
 # Distributed: separate workers per role
 module "tempo_worker_querier" {
-  source     = "git::https://github.com/canonical/tempo-operators//worker/terraform?ref=feat/tf-provider-v2"
+  source     = "git::https://github.com/canonical/tempo-operators//worker/terraform"
   count      = var.topology == "distributed" ? 1 : 0
   depends_on = [module.tempo_coordinator]
 
@@ -274,7 +274,7 @@ module "tempo_worker_querier" {
 }
 
 module "tempo_worker_query_frontend" {
-  source     = "git::https://github.com/canonical/tempo-operators//worker/terraform?ref=feat/tf-provider-v2"
+  source     = "git::https://github.com/canonical/tempo-operators//worker/terraform"
   count      = var.topology == "distributed" ? 1 : 0
   depends_on = [module.tempo_coordinator]
 
@@ -289,7 +289,7 @@ module "tempo_worker_query_frontend" {
 }
 
 module "tempo_worker_ingester" {
-  source     = "git::https://github.com/canonical/tempo-operators//worker/terraform?ref=feat/tf-provider-v2"
+  source     = "git::https://github.com/canonical/tempo-operators//worker/terraform"
   count      = var.topology == "distributed" ? 1 : 0
   depends_on = [module.tempo_coordinator]
 
@@ -304,7 +304,7 @@ module "tempo_worker_ingester" {
 }
 
 module "tempo_worker_distributor" {
-  source     = "git::https://github.com/canonical/tempo-operators//worker/terraform?ref=feat/tf-provider-v2"
+  source     = "git::https://github.com/canonical/tempo-operators//worker/terraform"
   count      = var.topology == "distributed" ? 1 : 0
   depends_on = [module.tempo_coordinator]
 
@@ -319,7 +319,7 @@ module "tempo_worker_distributor" {
 }
 
 module "tempo_worker_compactor" {
-  source     = "git::https://github.com/canonical/tempo-operators//worker/terraform?ref=feat/tf-provider-v2"
+  source     = "git::https://github.com/canonical/tempo-operators//worker/terraform"
   count      = var.topology == "distributed" ? 1 : 0
   depends_on = [module.tempo_coordinator]
 
@@ -334,7 +334,7 @@ module "tempo_worker_compactor" {
 }
 
 module "tempo_worker_metrics_generator" {
-  source     = "git::https://github.com/canonical/tempo-operators//worker/terraform?ref=feat/tf-provider-v2"
+  source     = "git::https://github.com/canonical/tempo-operators//worker/terraform"
   count      = var.topology == "distributed" ? 1 : 0
   depends_on = [module.tempo_coordinator]
 
