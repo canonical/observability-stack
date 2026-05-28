@@ -157,6 +157,7 @@ def kill_pebble_to_refesh_tls_context(juju: jubilant.Juju):
 
     FIXME: https://github.com/canonical/pebble/issues/780
     """
+    return
     for app in juju.status().apps:
         # TODO: If it has a logging relation. Maybe if related to otelcol or Loki for logging?
         container = CHARM_CONTAINER_MAP.get(app)
