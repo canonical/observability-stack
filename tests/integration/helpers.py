@@ -130,6 +130,7 @@ def _no_errors_in_otelcol_logs(stdout: str):
         if (m := _LOG_LEVEL_RE.match(line))
     ]
     info_lines = [line for level, line in matched_lines if level == "info"]
+    breakpoint()
     assert info_lines, "no 'info' level logs found in otelcol output"
     error_lines = [line for level, line in matched_lines if level in ("warn", "error")]
     assert not error_lines, "otelcol error logs:\n" + "\n".join(error_lines)
