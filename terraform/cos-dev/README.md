@@ -9,7 +9,7 @@ This module is intended for development and testing environments where full HA i
 
 | Name | Version |
 |------|---------|
-| <a name="provider_juju"></a> [juju](#provider\_juju) | ~> 1.0 |
+| <a name="provider_juju"></a> [juju](#provider\_juju) | >= 1.0 |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 
 ## Modules
