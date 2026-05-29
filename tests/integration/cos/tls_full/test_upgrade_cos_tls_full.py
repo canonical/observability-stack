@@ -32,7 +32,7 @@ def test_deploy_from_track_2(
     tf_manager.init(TRACK_2_TF_FILE)
     tf_manager.apply(ca_model=ca_model.model, cos_model=cos_model.model, **S3_ENDPOINT)
     generic_assertions(cos_model, ca_model, tmp_path)
-    no_errors_in_otelcol_logs(cos_model)
+    no_errors_in_otelcol_logs(cos_model, pkill_pebble=True)
 
 
 def test_deploy_to_track_dev(
@@ -44,4 +44,4 @@ def test_deploy_to_track_dev(
 
     # THEN the model is upgraded and is healthy
     generic_assertions(cos_model, ca_model, tmp_path)
-    no_errors_in_otelcol_logs(cos_model)
+    no_errors_in_otelcol_logs(cos_model, pkill_pebble=True)
