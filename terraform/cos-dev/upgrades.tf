@@ -38,6 +38,18 @@ data "juju_charm" "grafana_info" {
   base    = var.base
 }
 
+data "juju_charm" "istio_beacon_info" {
+  charm   = "istio-beacon-k8s"
+  channel = local.channels.istio_beacon
+  base    = var.base
+}
+
+data "juju_charm" "istio_ingress_info" {
+  charm   = "istio-ingress-k8s"
+  channel = local.channels.istio_ingress
+  base    = var.base
+}
+
 data "juju_charm" "loki_coordinator_info" {
   charm   = "loki-coordinator-k8s"
   channel = local.channels.loki
