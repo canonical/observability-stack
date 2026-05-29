@@ -22,5 +22,6 @@ protocol support.
 ```{toctree}
 :maxdepth: 1
 
+Migrate Grafana PostgreSQL data before refresh <migrate-grafana-postgresql-data>
 Migrate from Grafana Agent to OpenTelemetry Collector <migrate-grafana-agent-to-otelcol>
 ```
