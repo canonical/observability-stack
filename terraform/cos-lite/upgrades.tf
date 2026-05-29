@@ -61,3 +61,11 @@ data "juju_charm" "traefik_info" {
   channel = local.channels.traefik
   base    = local.traefik_base
 }
+
+# -------------- # State migrations -------------- #
+
+# refactor(cos-lite): Traefik and SSC are conditional (#353)
+moved {
+  from = module.traefik
+  to   = module.traefik[0]
+}
