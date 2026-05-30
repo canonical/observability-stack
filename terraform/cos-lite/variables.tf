@@ -18,8 +18,29 @@ variable "base" {
 }
 
 variable "model_uuid" {
-  description = "Reference to an existing model resource or data source for the model to deploy to"
+  description = "DEPRECATED: Use var.model instead. UUID of an existing model to deploy to. Mutually exclusive with var.model."
   type        = string
+  default     = null
+}
+
+variable "model" {
+  description = "Model configuration. When model.uuid is set, looks up the existing model. When null (and model_uuid is also null), creates a new model with the given name/cloud/config."
+  type = object({
+    uuid = optional(string)
+    name = optional(string, "cos-lite")
+    cloud = optional(object({
+      name   = string
+      region = optional(string)
+    }))
+    config         = optional(map(string), {})
+    create_timeout = optional(string, "30m")
+  })
+  default = {}
+
+  validation {
+    condition     = !(var.model_uuid != null && var.model.uuid != null)
+    error_message = "Cannot set both var.model_uuid and var.model.uuid. Use one or the other."
+  }
 }
 
 # -------------- # Network configurations --------------

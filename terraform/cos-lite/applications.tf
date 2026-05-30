@@ -5,7 +5,7 @@ module "alertmanager" {
   channel            = local.channels.alertmanager
   config             = var.alertmanager.config
   constraints        = var.alertmanager.constraints
-  model_uuid         = var.model_uuid
+  model_uuid         = local.model_uuid
   revision           = local.revisions.alertmanager
   storage_directives = var.alertmanager.storage_directives
   units              = var.alertmanager.units
@@ -18,7 +18,7 @@ module "catalogue" {
   channel            = local.channels.catalogue
   config             = var.catalogue.config
   constraints        = var.catalogue.constraints
-  model_uuid         = var.model_uuid
+  model_uuid         = local.model_uuid
   revision           = local.revisions.catalogue
   storage_directives = var.catalogue.storage_directives
   units              = var.catalogue.units
@@ -31,7 +31,7 @@ module "grafana" {
   channel            = local.channels.grafana
   config             = var.grafana.config
   constraints        = var.grafana.constraints
-  model_uuid         = var.model_uuid
+  model_uuid         = local.model_uuid
   revision           = local.revisions.grafana
   storage_directives = var.grafana.storage_directives
   units              = var.grafana.units
@@ -45,7 +45,7 @@ module "loki" {
   channel            = local.channels.loki
   config             = var.loki.config
   constraints        = var.loki.constraints
-  model_uuid         = var.model_uuid
+  model_uuid         = local.model_uuid
   storage_directives = var.loki.storage_directives
   revision           = local.revisions.loki
   units              = var.loki.units
@@ -58,7 +58,7 @@ module "prometheus" {
   channel            = local.channels.prometheus
   config             = var.prometheus.config
   constraints        = var.prometheus.constraints
-  model_uuid         = var.model_uuid
+  model_uuid         = local.model_uuid
   storage_directives = var.prometheus.storage_directives
   revision           = local.revisions.prometheus
   units              = var.prometheus.units
@@ -73,7 +73,7 @@ module "ssc" {
   channel     = local.channels.ssc
   config      = var.ssc.config
   constraints = var.ssc.constraints
-  model_uuid  = var.model_uuid
+  model_uuid  = local.model_uuid
   revision    = local.revisions.ssc
   units       = var.ssc.units
 }
@@ -86,7 +86,7 @@ module "traefik" {
   channel            = local.channels.traefik
   config             = var.traefik.config
   constraints        = var.traefik.constraints
-  model_uuid         = var.model_uuid
+  model_uuid         = local.model_uuid
   revision           = local.revisions.traefik
   storage_directives = var.traefik.storage_directives
   units              = var.traefik.units
