@@ -24,6 +24,5 @@ resource "juju_model" "cos" {
 data "juju_model" "cos" {
   count = local.create_model ? 0 : 1
 
-  owner = "admin"
   uuid = local.provided_model_uuid
 }
