@@ -130,6 +130,7 @@ PagerDuty
 PDF
 persistency
 PII
+Pivotto
 plantuml
 PNG
 postgresql
@@ -189,9 +190,11 @@ SVG
 tanmay
 Terraform
 tex
+textfile
 texlive
 tiering
 Tiering
+timeseries
 TLS
 tls
 TOC
