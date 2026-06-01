@@ -14,15 +14,10 @@ resource "juju_model" "cos" {
   }
 
   config = var.model.config
-
-  # TODO: add timeouts when supported by the provider.
-  # timeouts {
-  #   create = var.model.create_timeout
-  # }
 }
 
 data "juju_model" "cos" {
   count = local.create_model ? 0 : 1
 
-  uuid = local.provided_model_uuid
+  uuid = var.model.uuid
 }

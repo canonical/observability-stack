@@ -1,7 +1,5 @@
 locals {
-  # Model resolution: prefer legacy var.model_uuid, then var.model.uuid, else create.
-  provided_model_uuid = try(coalesce(var.model_uuid, var.model.uuid), null)
-  create_model        = local.provided_model_uuid == null
+  create_model        = var.model.uuid == null
   model_uuid          = local.create_model ? juju_model.cos[0].uuid : data.juju_model.cos[0].uuid
 
   tls_termination       = var.external_certificates_offer_url != null ? true : false

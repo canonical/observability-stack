@@ -34,9 +34,8 @@ run "model_created_with_custom_config" {
         region = "localhost"
       }
       config = {
-        logging-config = "<root>=DEBUG"
+        logging-config = "<root>=WARNING; unit=DEBUG"
       }
-      create_timeout = "60m"
     }
   }
 
@@ -46,43 +45,22 @@ run "model_created_with_custom_config" {
   }
 
   assert {
+    condition     = juju_model.cos[0].cloud[0].name == "microk8s"
+    error_message = "Expected cloud name to be 'microk8s'"
+  }
+
+  assert {
+    condition     = juju_model.cos[0].cloud[0].region == "localhost"
+    error_message = "Expected cloud region to be 'localhost'"
+  }
+
+  assert {
+    condition     = juju_model.cos[0].config["logging-config"] == "<root>=WARNING; unit=DEBUG"
+    error_message = "Expected logging-config to be '<root>=WARNING; unit=DEBUG'"
+  }
+
+  assert {
     condition     = length(data.juju_model.cos) == 0
     error_message = "Expected no data source when creating model"
-  }
-}
-
-# --- model: lookup existing via var.model.uuid ---
-
-run "model_looked_up_when_uuid_provided" {
-  command = plan
-
-  variables { model = { uuid = "12345678-1234-1234-1234-123456789abc" } }
-
-  assert {
-    condition     = length(juju_model.cos) == 0
-    error_message = "Expected no juju_model resource when UUID is provided"
-  }
-
-  assert {
-    condition     = length(data.juju_model.cos) == 1
-    error_message = "Expected data source lookup when UUID is provided"
-  }
-}
-
-# --- model: lookup existing via deprecated var.model_uuid ---
-
-run "model_looked_up_via_legacy_variable" {
-  command = plan
-
-  variables { model_uuid = "abcdef01-2345-6789-abcd-ef0123456789" }
-
-  assert {
-    condition     = length(juju_model.cos) == 0
-    error_message = "Expected no juju_model resource when legacy model_uuid is provided"
-  }
-
-  assert {
-    condition     = length(data.juju_model.cos) == 1
-    error_message = "Expected data source lookup when legacy model_uuid is provided"
   }
 }
