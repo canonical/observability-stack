@@ -46,5 +46,5 @@ juju show-model <model-name> --format=json | jq '.[].model-uuid'
 ```
 
 ```{warning}
-There is no guarantee that Juju will achieve the Terraform state when deploying COS on a pre-made Juju model, then switching to the default model. Similarly, switching from the default to pre-made models can lead to unexpected results.
+The Juju Terraform provider translates state changes into Juju API calls. There is no guarantee that arbitrary state transitions, such as switching between a module-managed model and a pre-existing one, will converge without manual intervention.
 ```
