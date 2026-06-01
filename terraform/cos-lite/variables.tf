@@ -18,7 +18,7 @@ variable "base" {
 }
 
 variable "model" {
-  description = "Model configuration. When model.uuid is set, looks up the existing model. When null (and model_uuid is also null), creates a new model with the given name/cloud/config."
+  description = "Model configuration. When model.uuid is set, looks up an existing model by UUID. Otherwise, creates a new model with the given name, cloud, and config. Note: the Juju Terraform provider translates state changes into Juju API calls; there is no guarantee that arbitrary state transitions (e.g. switching from a created model to a looked-up one) will converge without manual intervention."
   type = object({
     uuid = optional(string)
     name = optional(string, "cos-lite")
