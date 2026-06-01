@@ -40,11 +40,11 @@ Use a short maintenance window for this procedure.
 
 ### 1. Create a verification resource
 
-Log into your current Grafana UI and create a distinct test resource—such as a specific alert rule named `migration-check` or a test dashboard. After the migration, you will look for this resource to instantly verify that your data successfully carried over without needing to manually inspect the database tables.
+Log into your current Grafana UI and create a distinct test resource. This can an alert rule named `migration-check` or a test dashboard. After the migration, you will look for this resource to instantly verify that your data successfully carried over without needing to manually inspect the database tables.
 
 ### 2. Example Environment Bundle
 
-For reference, this guide assumes an environment deployed via a Juju bundle similar to the example below. Note that `grafana` is targeted at revision `187` (or later) which includes the naming change:
+For reference, this guide assumes an environment deployed via a Juju bundle similar to the example below. Note that all revisions more recent than revision 187 on track `12.4` will contain the DB naming change. Since revision 187 was the last revision of track `12.4` to not contain this change, this guide begins with Grafana revision 187 as a starting point and later refreshes it to a more recent revision.
 
 ```yaml
 bundle: kubernetes
@@ -122,7 +122,6 @@ NEW_DB="${NEW_DB:0:54}"
 
 echo "Old Database: $OLD_DB"
 echo "New Database: $NEW_DB"
-
 ```
 
 If your Grafana application is not named `grafana`, replace `APP_NAME` with your deployed application name.
@@ -147,35 +146,30 @@ First, find the PostgreSQL primary unit address (using the application name from
 
 ```bash
 juju status pg
-
 ```
 
 Retrieve the `operator` password:
 
 ```bash
 juju run pg/leader get-password
-
 ```
 
 Enter the PostgreSQL container shell:
 
 ```bash
 juju ssh --container postgresql pg/leader bash
-
 ```
 
 From inside the container shell, open a psql session using the primary IP address you found earlier. For more structured details on interacting with the database CLI or working with internal user roles, consult the [Charmed PostgreSQL K8s Tutorial](https://documentation.ubuntu.com/charmed-postgresql-k8s/14/tutorial/).
 
 ```bash
 psql --host=<postgresql-primary-ip> --username=operator --password postgres
-
 ```
 
 Inside the `psql` session, rename the database directly to its new expected name using the strings you computed in Step 1:
 
 ```sql
 ALTER DATABASE "<old-db-name>" RENAME TO "<new-db-name>";
-
 ```
 
 Type `\q` to exit `psql`, then type `exit` to leave the container container shell.
@@ -186,17 +180,12 @@ Apply your updated bundle configuration to deploy the new revision of Grafana an
 
 ```bash
 juju refresh grafana
-
 ```
 
-Wait for the deployment process to complete and ensure all units return to an active, idle state:
+Wait for the deployment process to complete and ensure all units return to an active, idle state.
 
 ## 5. Verify the migration
 
-Open the Grafana UI in your browser and log in.
+The change should now be in effect. Open the Grafana UI in your browser and log in.
 
 Navigate to your resource dashboards or alert lists. Confirm that the test resource (e.g., the `migration-check` alert rule) you created before the migration exists and is intact. If the resource is visible, your historical data has migrated to the new database configuration successfully.
-
-```
-
-```
