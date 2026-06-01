@@ -15,9 +15,10 @@ resource "juju_model" "cos" {
 
   config = var.model.config
 
-  timeouts {
-    create = var.model.create_timeout
-  }
+  # TODO: add timeouts when supported by the provider.
+  # timeouts {
+  #   create = var.model.create_timeout
+  # }
 }
 
 data "juju_model" "cos" {
