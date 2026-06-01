@@ -271,6 +271,15 @@ extensions = [
     "sphinxcontrib.mermaid",
 ]
 
+# Configure sphinx-copybutton (auto-enabled by canonical_sphinx) to strip
+# the "$ " shell prompt from copied content. In code blocks that contain
+# prompts, only the prompted lines (commands) are copied; output lines are
+# skipped. Code blocks without any prompts (e.g. JSON output) are unaffected
+# and copy verbatim.
+copybutton_prompt_text = r"\$ "
+copybutton_prompt_is_regexp = True
+copybutton_line_continuation_character = "\\"
+
 # Excludes files or directories from processing
 
 exclude_patterns = [
