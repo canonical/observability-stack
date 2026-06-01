@@ -1,25 +1,25 @@
 ---
 myst:
  html_meta:
-  description: "Read COS 3 release notes to track new features, review requirements and compatibility, peripheral-charm changes, and breaking and deprecated changes."
+  description: "Read COS 3.0 release notes to track new features, review requirements and compatibility, peripheral-charm changes, and breaking and deprecated changes."
 ---
 
 # Release notes
 
-## COS 3
+## COS 3.0
 May 2026
 
-These release notes cover new features and changes in COS 3.
+These release notes cover new features and changes in COS 3.0.
 
-COS 3 newer versions of all underlying charms, as well as new features around charmed opentelemetry-collector.
+COS 3.0 newer versions of all underlying charms, as well as new features around charmed opentelemetry-collector.
 
-COS 3 is designated as a long-term support (LTS) release. This means it will continue to receive security updates and critical bug fixes for 15 years.
+COS 3.0 is designated as a long-term support (LTS) release. This means it will continue to receive security updates and critical bug fixes for 15 years.
 
 ```{note}
 COS track `3` is a release track for the COS bundle and does not correspond to any individual charm track on Charmhub. The individual charms retain their own versioning.
 ```
 
-If you have COS 2 installed, make plans to upgrade to COS 3 before July 2026.
+If you have COS 2 installed, make plans to upgrade to COS 3.0 before July 2026.
 
 See our [release policy](reference/release-policy) and [upgrade instructions](how-to/deploy-and-manage/upgrade).
 
@@ -28,13 +28,48 @@ To report bugs or security issues, refer to the index of [COS components](../ref
 ## Requirements and compatibility
 See [system requirements](reference/system-requirements).
 
-COS 3 is compatible with Juju v3.6+.
+COS 3.0 is compatible with Juju v3.6+.
 
+## What's new in COS 3.0
 
-## What's new in COS 3
-
+- [Strict reproducibility with Terraform tags](explanation/operations/tagging-a-terraform-deployment.md)
+- [Granular Traefik ingress](how-to/deploy-and-manage/configure-granular-ingress.md). Previously all components were ingressed. New in COS 3.0, you can be selective, or remove ingress entirely.
+  - Opentelemetry-collector can be (conditionally) integrated with Traefik for ingress to send telemetry via cross-model relations.
+- [Smooth cross-track upgrades via lifecycled resources](how-to/deploy-and-manage/upgrade.md#Migrate-from-COS-2-to-COS-3). Previously, a Juju admin had to manually refresh all components to the new track. New in COS 3.0, you can upgrade to the next track with a single `terraform apply`, since the upgrade path is product-managed via Terraform lifecycle definitions.
 - **Opentelemetry collector**. Charmed opentelemetry-collector's workload is pinned to version 0.130 because the upstream `opentelemetry-collector-contrib` [project](https://github.com/open-telemetry/opentelemetry-collector-contrib) dropped support for Loki exporter in [release v0.131.0](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.131.0), stating that users can migrate to the OTLP exporters instead.
   - The logging integrations for the `opentelemetry-collector` charms rely on `lokiexporter` to send logs to Loki push API endpoints. Loki only recently received upstream support for an OTLP endpoint, and migrating to an OTLP-first ecosystem in COS began in 26.04. The objective is to have support for OTLP ecosystem-wide by the end of 26.10 and to deprecate the Loki Push API feature (`logging` endpoint). Support will then be fully dropped in 27.04, and the `opentelemetry-collector` charms will no longer be pinned to `v0.130`.
+
+## Terraform product changes
+
+### Breaking changes in COS 3.0 (from COS 2)
+
+#### Inputs
+
+| Change | Scope | Details |
+|--------|-------|---------|
+| **`channel` removed** | COS, COS Lite | Replaced by a new `risk` variable. The old `channel` had a default of `"2/stable"` and validated a `2/` prefix. Track is no longer user-facing: only risk is configurable. |
+| **`loki_worker.storage_directives` split** | COS, COS Lite | Single `storage_directives` replaced by three: `backend_storage_directives`, `read_storage_directives`, `write_storage_directives`. |
+| **`mimir_worker.storage_directives` split** | COS, COS Lite | Same as above: split into (3) per-role storage directives. |
+| **`tempo_worker.storage_directives` split** | COS, COS Lite | Same as above: split into (6) per-role storage directives. |
+| **`ssc.channel` removed** | COS, COS Lite | No longer configurable per-component; controlled by `risk`. |
+| **`s3_integrator.channel` removed** | COS, COS Lite | Same. |
+| **`traefik.channel` removed** | COS, COS Lite | Same. |
+
+#### Outputs
+
+| Change | Scope | Details |
+|--------|-------|---------|
+| **`components.ssc`** | COS, COS Lite | Now `try(module.ssc[0], null)` — SSC became conditional (count-based), so this output may be `null`. |
+| **`components.traefik`** | COS, COS Lite | Now `try(module.traefik[0], null)` — Traefik became conditional, so this output may be `null`. |
+
+### Non-breaking changes
+
+#### Inputs
+
+| Change | Scope | Details |
+|--------|-------|---------|
+| **`base` added** | COS, COS Lite | New variable for the component bases. |
+| **`ingress` added** | COS, COS Lite | New structured object to toggle ingress per component (alertmanager, catalogue, grafana, loki, mimir, opentelemetry_collector, tempo). |
 
 ### COS components
 
@@ -68,7 +103,7 @@ COS 3 is compatible with Juju v3.6+.
 ### Promtail is no longer maintained by Grafana Labs
 LogProxyConsumer is relying on promtail for scraping log lines from files, and sending them to Loki.
 Since March 2026, [promtail](https://grafana.com/docs/loki/latest/send-data/promtail/) is no longer under active development by Grafana Labs.
-Starting COS 3, it is recommended to use [pebble for forwarding logs](https://documentation.ubuntu.com/pebble/reference/log-forwarding/) from kubernetes workloads.
+Starting COS 3.0, it is recommended to use [pebble for forwarding logs](https://documentation.ubuntu.com/pebble/reference/log-forwarding/) from kubernetes workloads.
 You can use the `LogForwarder` object from the [`loki_push_api` charm library](https://charmhub.io/loki-k8s/libraries/loki_push_api)  to automatically set up pebble for log forwarding.
 
 Note that for this to work, the workload needs to emit logs to stdout (this is standard practice in kubernetes).

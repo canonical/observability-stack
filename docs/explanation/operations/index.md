@@ -12,4 +12,5 @@ myst:
 :maxdepth: 1
 
 Data integrity <data-integrity>
+Tagging a Terraform module <tagging-a-terraform-deployment>
 ```
