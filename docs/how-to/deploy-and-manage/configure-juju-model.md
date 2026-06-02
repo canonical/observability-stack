@@ -6,18 +6,18 @@ myst:
 
 # How to configure the Juju model of COS
 
-The COS Lite Terraform module creates a Juju model named `cos-lite` by default. Use the `model` variable to customize the configuration of the module-managed model, or target an existing model with a UUID.
+The COS Terraform module creates a Juju model named `cos` by default. Use the `model` variable to customize the configuration of the module-managed model, or target an existing model with a UUID.
 
 ## Set a custom model name and configuration
 
 Set the `model` variable with the desired name and any [Juju model configuration](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/model), for example:
 
 ```hcl
-module "cos_lite" {
-  source = "git::https://github.com/canonical/observability-stack.git//terraform/cos-lite"
+module "cos" {
+  source = "git::https://github.com/canonical/observability-stack.git//terraform/cos"
 
   model = {
-    name = "cos-lite-production"
+    name = "cos-production"
     config = {
       logging-config = "<root>=WARNING; unit=DEBUG"
     }
@@ -32,8 +32,8 @@ After deploying COS, you may want to update the module-managed model's configura
 To deploy COS into a model that already exists, provide its UUID via `model.uuid`:
 
 ```hcl
-module "cos_lite" {
-  source = "git::https://github.com/canonical/observability-stack.git//terraform/cos-lite"
+module "cos" {
+  source = "git::https://github.com/canonical/observability-stack.git//terraform/cos"
 
   model = {
     uuid = "82d8c989-3087-416b-8ff2-d94ede266035"
@@ -58,7 +58,7 @@ module.cos.juju_model.cos[0]: Creating...
 │ Error: Client Error
 │ 
 │   with module.cos.juju_model.cos[0],
-│   on .terraform/modules/cos/terraform/cos-lite/model.tf line 3, in resource "juju_model" "cos":
+│   on .terraform/modules/cos/terraform/cos/model.tf line 3, in resource "juju_model" "cos":
 │    3: resource "juju_model" "cos" {
 │ 
 │ Unable to create model "\"my-cos-model\"", got error: failed to open kubernetes client: annotations map[controller.juju.is/id:7c1aed20-86bf-4853-8609-62a08f25bca6 model.juju.is/id:82d8c989-3087-416b-8ff2-d94ede266035] for namespace "my-cos-model"
