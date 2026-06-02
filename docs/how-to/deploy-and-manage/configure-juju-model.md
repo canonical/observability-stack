@@ -70,8 +70,8 @@ Choose a new model name or remove the existing one to proceed.
 ### Switching Juju models post-deployment
 
 The Juju Terraform provider translates state changes into Juju API calls. There is no guarantee that arbitrary state transitions, such as:
-1. switching between a module-managed model and a pre-existing one
-2. changing the name of the module-managed model
-3. updating the `model.uuid`
+- switching between a module-managed model and a pre-existing one
+- changing the name of the module-managed model
+- updating the `model.uuid`
 
 will converge without manual intervention. Think of it as "would I do this with the Juju CLI?" if not, then doing this with Terraform should be conducted in a staging or dev environment and not attempted in a production-like environment.
