@@ -6,10 +6,6 @@ myst:
 
 # How to configure granular ingress in COS
 
-```{Note}
-This feature is not available in track/2, only later versions have this ability
-```
-
 Both COS and COS Lite allow you to configure Traefik ingress for certain internal components. This configuration determines which applications are integrated with Traefik via an ingress interface; routing their traffic through Traefik.
 
 ```{mermaid}
