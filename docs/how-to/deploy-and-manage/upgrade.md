@@ -14,7 +14,8 @@ Using Terraform:
 
 1. Update the channel input to track 2/stable and then:
     ```bash
-    terraform init -upgrade; terraform apply
+    terraform init -upgrade
+    terraform apply
     ```
 2. Manually refresh all charms to the latest revision in 2/stable 
     ```bash
@@ -22,7 +23,8 @@ Using Terraform:
     ```
 3. Update the Terraform module source ref to tf-cos-3.0.0 and then:
     ```bash
-    terraform init -upgrade; terraform apply
+    terraform init -upgrade
+    terraform apply
     ```
 4. Once Terraform has applied all resources, apply again until no new resources are applied:
     ```bash
@@ -34,7 +36,8 @@ Using Terraform:
 
 1. Update the channel input to track 2/stable and then:
     ```bash
-    terraform init -upgrade; terraform apply
+    terraform init -upgrade
+    terraform apply
     ```
 2. Manually refresh all charms to the latest revision in 2/stable 
     ```bash
@@ -42,7 +45,8 @@ Using Terraform:
     ```
 3. Update the Terraform module source ref to tf-cos-lite-3.0.0 and then:
     ```bash
-    terraform init -upgrade; terraform apply
+    terraform init -upgrade
+    terraform apply
     ```
 4. Once Terraform has applied all resources, apply again until no new resources are applied:
     ```bash
