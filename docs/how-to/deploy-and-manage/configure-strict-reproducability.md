@@ -6,7 +6,7 @@ myst:
 
 # How to configure COS for strict reproducibility
 
-In production environments, users usually want to limit the variance of a deployment as much as possible. To reduce variance in COS deployments, users can pin the component's charm revision and resource images. This ensures that between applies, the components remain unchanged, unless it was explicitly targeted for upgrades.
+In production environments, users usually want to limit the variance of a deployment. To reduce variance in COS deployments, users can pin the component's charm revision and resource images. This ensures that between applies, the components remain unchanged, unless it was explicitly targeted for upgrades.
 
 ## Pin a component's charm revision and resource image
 
@@ -22,6 +22,8 @@ It is your responsibility as the user of the product to determine the correct co
 ### Pin a component
 
 To pin the Alertmanager component, the charm `revision` is set to `212` and the `alertmanager-image` to [image 0.28.0-24.04_stable](https://hub.docker.com/layers/ubuntu/alertmanager/0.28.0-24.04_stable/images/sha256-c87440d8da4f693a15de287cf49368904dfdfb59ecb2a60c6dada294fb931158) according to:
+
+TODO: update to image tags instead of hashes, and link to the TF tagging guide. Also, update the revision in the second HCL block and mention different scenarios of compatibility: just revision bump, just image bump, both ...
 
 ```hcl
 module "cos" {
@@ -51,7 +53,7 @@ kubectl describe pod -n cos alertmanager-0 | grep -A 50 "Containers" | grep -A 3
     Image ID:      docker.io/ubuntu/alertmanager@sha256:c87440d8da4f693a15de287cf49368904dfdfb59ecb2a60c6dada294fb931158
 ```
 
-### Update an already-pinned component
+### Update a pinned component
 
 To upgrade the Alertmanager component, update the charm `revision` and the `alertmanager-image` accordingly. For example, to [0.31-24.04_stable image](https://hub.docker.com/layers/ubuntu/alertmanager/0.31-24.04_stable/images/sha256-c7bb054a27fdad7412fcb401b1fde27598e4e65f1671d080f07b5fddfbe7d986) according to:
 
