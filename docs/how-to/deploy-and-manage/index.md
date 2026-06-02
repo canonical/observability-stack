@@ -18,6 +18,7 @@ See our [tutorials](/tutorial/index) for guidance on deploying COS.
 :maxdepth: 1
 
 Install <install>
+Configure strict reproducibility <configure-strict-reproducability>
 ```
 
 ## Secure access
