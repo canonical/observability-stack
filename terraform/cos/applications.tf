@@ -6,6 +6,7 @@ module "alertmanager" {
   config             = var.alertmanager.config
   constraints        = var.alertmanager.constraints
   model_uuid         = var.model_uuid
+  resources          = var.alertmanager.resources
   revision           = local.revisions.alertmanager
   storage_directives = var.alertmanager.storage_directives
   units              = var.alertmanager.units
@@ -19,6 +20,7 @@ module "catalogue" {
   config             = var.catalogue.config
   constraints        = var.catalogue.constraints
   model_uuid         = var.model_uuid
+  resources          = var.catalogue.resources
   revision           = local.revisions.catalogue
   storage_directives = var.catalogue.storage_directives
   units              = var.catalogue.units
@@ -32,6 +34,7 @@ module "grafana" {
   config             = var.grafana.config
   constraints        = var.grafana.constraints
   model_uuid         = var.model_uuid
+  resources          = var.grafana.resources
   revision           = local.revisions.grafana
   storage_directives = var.grafana.storage_directives
   units              = var.grafana.units
@@ -56,6 +59,7 @@ module "loki" {
   s3_integrator_units               = var.s3_integrator.units
   coordinator_config                = var.loki_coordinator.config
   coordinator_constraints           = var.loki_coordinator.constraints
+  coordinator_resources             = var.loki_coordinator.resources
   coordinator_revision              = local.revisions.loki_coordinator
   coordinator_storage_directives    = var.loki_coordinator.storage_directives
   coordinator_units                 = var.loki_coordinator.units
@@ -63,6 +67,7 @@ module "loki" {
   read_config                       = var.loki_worker.read_config
   write_config                      = var.loki_worker.write_config
   worker_constraints                = var.loki_worker.constraints
+  worker_resources                  = var.loki_worker.resources
   worker_revision                   = local.revisions.loki_worker
   backend_worker_storage_directives = var.loki_worker.backend_storage_directives
   read_worker_storage_directives    = var.loki_worker.read_storage_directives
@@ -90,6 +95,7 @@ module "mimir" {
   s3_integrator_units               = var.s3_integrator.units
   coordinator_config                = { "max_global_exemplars_per_user" = "100000" }
   coordinator_constraints           = var.mimir_coordinator.constraints
+  coordinator_resources             = var.mimir_coordinator.resources
   coordinator_revision              = local.revisions.mimir_coordinator
   coordinator_storage_directives    = var.mimir_coordinator.storage_directives
   coordinator_units                 = var.mimir_coordinator.units
@@ -98,6 +104,7 @@ module "mimir" {
   write_config                      = var.mimir_worker.write_config
   worker_constraints                = var.mimir_worker.constraints
   worker_revision                   = local.revisions.mimir_worker
+  worker_resources                  = var.mimir_worker.resources
   backend_worker_storage_directives = var.mimir_worker.backend_storage_directives
   read_worker_storage_directives    = var.mimir_worker.read_storage_directives
   write_worker_storage_directives   = var.mimir_worker.write_storage_directives
@@ -114,6 +121,7 @@ module "opentelemetry_collector" {
   config             = var.opentelemetry_collector.config
   constraints        = var.opentelemetry_collector.constraints
   model_uuid         = var.model_uuid
+  resources          = var.opentelemetry_collector.resources
   revision           = local.revisions.otelcol
   storage_directives = var.opentelemetry_collector.storage_directives
   units              = var.opentelemetry_collector.units
@@ -151,6 +159,7 @@ module "tempo" {
   s3_integrator_units                         = var.s3_integrator.units
   coordinator_config                          = var.tempo_coordinator.config
   coordinator_constraints                     = var.tempo_coordinator.constraints
+  coordinator_resources                       = var.tempo_coordinator.resources
   coordinator_revision                        = local.revisions.tempo_coordinator
   coordinator_storage_directives              = var.tempo_coordinator.storage_directives
   coordinator_units                           = var.tempo_coordinator.units
@@ -161,6 +170,7 @@ module "tempo" {
   compactor_config                            = var.tempo_worker.compactor_config
   metrics_generator_config                    = var.tempo_worker.metrics_generator_config
   worker_constraints                          = var.tempo_worker.constraints
+  worker_resources                            = var.tempo_worker.resources
   worker_revision                             = local.revisions.tempo_worker
   compactor_worker_storage_directives         = var.tempo_worker.compactor_worker_storage_directives
   distributor_worker_storage_directives       = var.tempo_worker.distributor_worker_storage_directives
@@ -185,6 +195,7 @@ module "traefik" {
   config             = var.cloud == "aws" ? { "loadbalancer_annotations" = "service.beta.kubernetes.io/aws-load-balancer-scheme=internet-facing" } : var.traefik.config
   constraints        = var.traefik.constraints
   model_uuid         = var.model_uuid
+  resources          = var.traefik.resources
   revision           = local.revisions.traefik
   storage_directives = var.traefik.storage_directives
   units              = var.traefik.units
