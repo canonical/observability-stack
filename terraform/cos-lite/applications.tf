@@ -27,8 +27,8 @@ module "catalogue" {
 }
 
 module "grafana" {
-  source = "git::https://github.com/canonical/grafana-k8s-operator//terraform"
-  replace_triggers   = [terraform_data.grafana_litestream_resource.id]
+  source           = "git::https://github.com/canonical/grafana-k8s-operator//terraform"
+  replace_triggers = [terraform_data.grafana_litestream_resource.id]
 
   app_name           = var.grafana.app_name
   channel            = local.channels.grafana
