@@ -93,13 +93,11 @@ module "cos" {
 }
 ```
 
-### Revision pins
-Revision pinning is optional. With revision pins, subsequent `terraform apply` invocation will not refresh charms. Without revision pins, each `terraform apply` would refresh to the latest revision in track, if a new one released.
 where `.n` in `tf-cos-3.0.n` is the latest available patch version in the [COS tags](https://github.com/canonical/observability-stack/tags) list.
 
 ### Revision pins
 
-Deploying COS without revision pins, per component, will deploy the latest charms revisions in-track. Any subsequent Terraform plans will experience the same behaviour i.e., keeping COS up-to-date. However, if you require more stability, it is advised to pin the charm revisions of all components.
+Revision pinning is optional. With revision pins, subsequent `terraform apply` invocation will not refresh charms. Without revision pins, each `terraform apply` would refresh to the latest revision in track, if a new one released.
 
 ## Deploy COS Alerter
 
