@@ -32,7 +32,7 @@ COS 3.0 is compatible with Juju v3.6+.
 
 ## What's new in COS 3.0
 
-- [Strict reproducibility with Terraform tags](explanation/operations/tagging-a-terraform-deployment.md): previously all modules were sourced with branches. New in COS 3.0, you can reference the module with a tag. For example `?ref=tf-cos-3.0.0`.
+- [Strict reproducibility with Terraform tags](explanation/operations/terraform-module-versioning.md): previously all modules were sourced with branches. New in COS 3.0, you can reference the module with a tag. For example `?ref=tf-cos-3.0.0`.
 - [Granular Traefik ingress](how-to/deploy-and-manage/configure-granular-ingress.md): previously all components were ingressed. New in COS 3.0, you can be selective, or remove ingress entirely.
 - [Smooth cross-track upgrades via lifecycle-managed resources](how-to/deploy-and-manage/upgrade.md#migrate-from-cos-2-to-cos-30): previously, a Juju admin had to manually refresh all components to the new track. New in COS 3.0, you can upgrade to the next track with a single `terraform apply`, since the upgrade path is product-managed via Terraform lifecycle definitions.
 - **Opentelemetry collector**. Charmed opentelemetry-collector's workload is pinned to version 0.130 because the upstream `opentelemetry-collector-contrib` [project](https://github.com/open-telemetry/opentelemetry-collector-contrib) dropped support for Loki exporter in [release v0.131.0](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.131.0), stating that users can migrate to the OTLP exporters instead.
