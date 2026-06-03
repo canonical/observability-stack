@@ -13,7 +13,7 @@ This guide shows how to upgrade an existing COS deployment to a newer track.
 Before you begin, review [How to configure COS for strict reproducibility](configure-strict-reproducibility.md) to understand the implications of upgrading COS.
 
 ### Migrate from COS 2 to COS 3.0
-Using Terraform without revision/image pins:
+Using Terraform:
 
 1. Update the channel input to track 2/stable and then:
     ```bash
@@ -35,7 +35,7 @@ Using Terraform without revision/image pins:
     ```
 
 ### Migrate from COS Lite 2 to COS Lite 3.0
-Using Terraform without revision/image pins:
+Using Terraform:
 
 1. Update the channel input to track 2/stable and then:
     ```bash
@@ -67,6 +67,9 @@ Without Terraform:
     juju refresh <charm-name> --channel major.minor/stable
     ```
 
+```{warning}
+There is a known issue with manually refreshing Grafana from track 2 to a later track, which can cause the application to enter an error state. Without Terraform, the only workaround is to redeploy the Grafana application and re-add its previous relations.
+```
 
 ## COS 2
 

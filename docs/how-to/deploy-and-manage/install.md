@@ -74,6 +74,10 @@ To expose Grafana publicly, deploy two Traefik charms: one for internal connecti
 
 You should bootstrap a dedicated Juju controller and model just for COS.
 
+### Strict reproducibility
+
+Review [How to configure COS for strict reproducibility](how-to/deploy-and-manage/configure-strict-reproducibility.md) guide if you have production-like requirements.
+
 ## Terraform plan
 
 Create a `main.tf` file like this one:
