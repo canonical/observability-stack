@@ -8,8 +8,8 @@ myst:
 
 This guide shows how to upgrade an existing COS deployment to a newer track.
 
-## COS 3
-### Migrate from COS 2 to COS 3
+## COS 3.0
+### Migrate from COS 2 to COS 3.0
 Using Terraform:
 
 1. Update the channel input to track 2/stable and then:
