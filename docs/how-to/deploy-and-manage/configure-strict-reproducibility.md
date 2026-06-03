@@ -14,7 +14,7 @@ To restrict variance in the Terraform layer, the COS Terraform module source can
 
 ## Pinning charm revisions and resource images
 
-To restrict variance in the Juju deployment, the COS Terraform module offers per-component `revision` and `resources` configuration. Pinning the values of these fields ensures that the deployed Juju applications remain unchanged, until they are explicitly targeted for an upgrade.
+To restrict variance in the Juju layer of the deployment, the COS Terraform module offers per-component `revision` and `resources` configuration. Pinning the values of these fields ensures that the deployed Juju applications remain unchanged, until they are explicitly targeted for an upgrade.
 
 ### Pin a component
 
