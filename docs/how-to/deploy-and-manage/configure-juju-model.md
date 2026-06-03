@@ -6,7 +6,7 @@ myst:
 
 # How to configure the Juju model of COS
 
-The COS Terraform module creates a Juju model named `cos` by default. Use the `model` variable to customize the configuration of the module-managed model, or target an existing model with a UUID.
+The COS Terraform module creates a Juju model named `cos` by default. Use the `model` variable to customize the configuration of the module-managed model, or target an existing model with a UUID. Think of model configuration as "would I do this with the Juju CLI?" if not, then doing this with Terraform should be conducted in a staging or dev environment and not attempted in a production-like environment.
 
 ## Set a custom model name and configuration
 
@@ -74,4 +74,4 @@ The Juju Terraform provider translates state changes into Juju API calls. There 
 - changing the name of the module-managed model
 - updating the `model.uuid`
 
-will converge without manual intervention. Think of it as "would I do this with the Juju CLI?" if not, then doing this with Terraform should be conducted in a staging or dev environment and not attempted in a production-like environment.
+will converge without manual intervention.
