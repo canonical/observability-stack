@@ -17,15 +17,15 @@ This is a Terraform module facilitating the deployment of the COS solution, usin
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alertmanager"></a> [alertmanager](#module\_alertmanager) | git::https://github.com/canonical/alertmanager-k8s-operator//terraform | n/a |
-| <a name="module_catalogue"></a> [catalogue](#module\_catalogue) | git::https://github.com/canonical/catalogue-k8s-operator//terraform | n/a |
-| <a name="module_grafana"></a> [grafana](#module\_grafana) | git::https://github.com/canonical/grafana-k8s-operator//terraform | n/a |
-| <a name="module_loki"></a> [loki](#module\_loki) | git::https://github.com/canonical/loki-operators//terraform | n/a |
-| <a name="module_mimir"></a> [mimir](#module\_mimir) | git::https://github.com/canonical/mimir-operators//terraform | n/a |
-| <a name="module_opentelemetry_collector"></a> [opentelemetry\_collector](#module\_opentelemetry\_collector) | git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform | n/a |
-| <a name="module_ssc"></a> [ssc](#module\_ssc) | git::https://github.com/canonical/self-signed-certificates-operator//terraform | 0216698683a757a44d02e98c003a19aa7ffcfb63 |
-| <a name="module_tempo"></a> [tempo](#module\_tempo) | git::https://github.com/canonical/tempo-operators//terraform | n/a |
-| <a name="module_traefik"></a> [traefik](#module\_traefik) | git::https://github.com/canonical/traefik-k8s-operator//terraform | n/a |
+| <a name="module_alertmanager"></a> [alertmanager](#module\_alertmanager) | git::https://github.com/canonical/alertmanager-k8s-operator//terraform | tf-0.31.0 |
+| <a name="module_catalogue"></a> [catalogue](#module\_catalogue) | git::https://github.com/canonical/catalogue-k8s-operator//terraform | tf-3.0.0 |
+| <a name="module_grafana"></a> [grafana](#module\_grafana) | git::https://github.com/canonical/grafana-k8s-operator//terraform | tf-12.4.0 |
+| <a name="module_loki"></a> [loki](#module\_loki) | git::https://github.com/canonical/loki-operators//terraform | tf-3.7.0 |
+| <a name="module_mimir"></a> [mimir](#module\_mimir) | git::https://github.com/canonical/mimir-operators//terraform | tf-2.17.0 |
+| <a name="module_opentelemetry_collector"></a> [opentelemetry\_collector](#module\_opentelemetry\_collector) | git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform | tf-0.130.0 |
+| <a name="module_ssc"></a> [ssc](#module\_ssc) | git::https://github.com/canonical/self-signed-certificates-operator//terraform | rev653 |
+| <a name="module_tempo"></a> [tempo](#module\_tempo) | git::https://github.com/canonical/tempo-operators//terraform | tf-2.10.0 |
+| <a name="module_traefik"></a> [traefik](#module\_traefik) | git::https://github.com/canonical/traefik-k8s-operator//terraform | rev301 |
 
 ## Inputs
 
@@ -33,7 +33,7 @@ This is a Terraform module facilitating the deployment of the COS solution, usin
 |------|-------------|------|---------|:--------:|
 | <a name="input_alertmanager"></a> [alertmanager](#input\_alertmanager) | Application configuration for Alertmanager. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    app_name           = optional(string, "alertmanager")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
 | <a name="input_anti_affinity"></a> [anti\_affinity](#input\_anti\_affinity) | Enable anti-affinity constraints across all HA modules (Mimir, Loki, Tempo) | `bool` | `true` | no |
-| <a name="input_base"></a> [base](#input\_base) | The operating system on which to deploy. E.g. ubuntu@24.04. Check Charmhub for per-charm base support. | `string` | `"ubuntu@24.04"` | no |
+| <a name="input_base"></a> [base](#input\_base) | The operating system on which to deploy. E.g. ubuntu@24.04. Check Charmhub for per-charm base support. | `string` | `"ubuntu@26.04"` | no |
 | <a name="input_catalogue"></a> [catalogue](#input\_catalogue) | Application configuration for Catalogue. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    app_name           = optional(string, "catalogue")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
 | <a name="input_cloud"></a> [cloud](#input\_cloud) | Kubernetes cloud or environment where this COS module will be deployed (e.g self-managed, aws) | `string` | `"self-managed"` | no |
 | <a name="input_external_ca_cert_offer_url"></a> [external\_ca\_cert\_offer\_url](#input\_external\_ca\_cert\_offer\_url) | A Juju offer URL (e.g. admin/external-ca.send-ca-cert) of a CA providing the 'certificate\_transfer' integration for applications to trust ingress via Traefik. | `string` | `null` | no |

@@ -4,13 +4,12 @@ locals {
   traefik_enabled       = local.reverse_proxy_enabled
   traefik_base          = "ubuntu@20.04"
   tracks = {
-    alertmanager = "dev"
-    catalogue    = "dev"
-    grafana      = "dev"
-    loki         = "dev"
-    prometheus   = "dev"
-
-    ssc     = "1"
+    alertmanager  = "0.31"
+    catalogue     = "3.0"
+    grafana       = "12.4"
+    loki          = "3.7"
+    prometheus   = "3.11"
+    ssc           = "1"
     traefik = "latest"
   }
   channels = {

@@ -5,23 +5,15 @@ locals {
   traefik_enabled       = local.reverse_proxy_enabled
   traefik_base          = "ubuntu@20.04"
   tracks = {
-    alertmanager = "dev"
-    catalogue    = "dev"
-    grafana      = "dev"
-    loki         = "dev"
-    mimir        = "dev"
-    otelcol      = "dev"
-    tempo        = "dev"
-
-    # alertmanager  = "0.31"
-    # catalogue     = "3.0"
-    # grafana       = "12.4"
-    # loki          = "3.7"
-    # mimir         = "3.0"
-    # otelcol       = "0.130"
+    alertmanager  = "0.31"
+    catalogue     = "3.0"
+    grafana       = "12.4"
+    loki          = "3.7"
+    mimir         = "2.17"
+    otelcol       = "0.130"
     s3_integrator = "2"
     ssc           = "1"
-    # tempo         = "2.10"
+    tempo         = "2.10"
     traefik = "latest"
   }
   channels = {
