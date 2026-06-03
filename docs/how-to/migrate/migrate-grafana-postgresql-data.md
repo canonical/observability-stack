@@ -1,4 +1,3 @@
-```markdown
 ---
 myst:
   html_meta:
