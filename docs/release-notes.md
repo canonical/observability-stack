@@ -75,7 +75,7 @@ COS 3.0 is compatible with Juju v3.6+.
 | Component                | Version |
 |--------------------------|---------|
 | alertmanager             | 0.31    |
-| catalogue                |         |
+| catalogue                | 3.0     |
 | grafana                  | 12.4    |
 | loki                     | 3.7     |
 | mimir                    | 2.17    |
@@ -91,7 +91,7 @@ COS 3.0 is compatible with Juju v3.6+.
 | Component                | Version |
 |--------------------------|---------|
 | alertmanager             | 0.31    |
-| catalogue                |         |
+| catalogue                | 3.0     |
 | grafana                  | 12.4    |
 | loki                     | 3.7     |
 | prometheus               | 3.11    |
