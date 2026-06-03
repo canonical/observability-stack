@@ -4,7 +4,7 @@ myst:
   description: "Understand versioning Terraform modules and tagging for strict reproducibility. This applies to product, component, and charm modules."
 ---
 
-# Terraform Module Versioning
+# Terraform module versioning
 
 This document describes how the Observability Terraform modules are versioned and tagged.
 

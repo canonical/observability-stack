@@ -10,15 +10,15 @@ To limit variance in COS deployments, the COS Terraform module can be pinned in 
 
 ## Pinning the Terraform module
 
-To restrict variance in the Terraform layer, the COS Terraform module source can be pinned to a tag. Consult the [Terraform Module Versioning](../../explanation/operations/terraform-module-versioning.md) documentation for specifics.
+To restrict variance in the Terraform layer, the COS Terraform module source can be pinned to a tag. Consult the [Terraform module versioning](../../explanation/operations/terraform-module-versioning.md) documentation for specifics.
 
 ## Pinning charm revisions and resource images
 
-To restrict variance in the Juju layer, the COS Terraform module offers per-component `revision` and `resources` configuration. See the [available COS Terraform configuration](../../../terraform/cos/variables.tf) for details. Pinning the values of these fields ensures that the deployed Juju applications remain unchanged, until they are explicitly targeted for an upgrade.
+To restrict variance in the Juju layer, the COS Terraform module offers per-component `revision` and `resources` configuration. Pinning the values of these fields ensures that the deployed Juju applications remain unchanged, until they are explicitly targeted for an upgrade.
 
 ### Pin a component
 
-To pin the `alertmanager` component, the charm `revision` and `resources.alertmanager-image` are specified according to:
+To pin the `alertmanager` component, the charm `revision` and `resources.alertmanager-image` can be specified:
 
 ```hcl
 module "cos" {
@@ -27,19 +27,19 @@ module "cos" {
     resources = {
       alertmanager-image = "ubuntu/alertmanager:0.28.0-24.04_stable"
     }
-    revision = 212
+    revision = 211
   }
 }
 ```
 
-The deployed charm revision:
+and the charm is deployed accordingly:
 ```shell
 juju status --format=json | jq -r '.applications["alertmanager"]["charm-rev"]'
 
-212
+211
 ```
 
-The hash of the specified image: [0.28.0-24.04_stable](https://hub.docker.com/layers/ubuntu/alertmanager/0.28.0-24.04_stable/images/sha256-c87440d8da4f693a15de287cf49368904dfdfb59ecb2a60c6dada294fb931158) can be seen in the pod's container:
+with the hash of the specified image: [0.28.0-24.04_stable](https://hub.docker.com/layers/ubuntu/alertmanager/0.28.0-24.04_stable/images/sha256-c87440d8da4f693a15de287cf49368904dfdfb59ecb2a60c6dada294fb931158) reflected in the charm's `alertmanager` container:
 ```shell
 kubectl describe pod -n cos alertmanager-0 | grep -A 50 "Containers" | grep -A 3 "alertmanager:"
 
@@ -51,7 +51,7 @@ kubectl describe pod -n cos alertmanager-0 | grep -A 50 "Containers" | grep -A 3
 
 ### Update a pinned component
 
-To upgrade the Alertmanager component, update the charm `revision` and the `alertmanager-image` accordingly. For example, to [0.31-24.04_stable image](https://hub.docker.com/layers/ubuntu/alertmanager/0.31-24.04_stable/images/sha256-c7bb054a27fdad7412fcb401b1fde27598e4e65f1671d080f07b5fddfbe7d986) according to:
+To upgrade the Alertmanager component, update the charm `revision` and `resources.alertmanager-image`:
 
 ```hcl
 module "cos" {
@@ -65,6 +65,14 @@ module "cos" {
 }
 ```
 
+and the charm is updated accordingly:
+```shell
+juju status --format=json | jq -r '.applications["alertmanager"]["charm-rev"]'
+
+212
+```
+
+with the hash of the specified image: [0.31-24.04_stable image](https://hub.docker.com/layers/ubuntu/alertmanager/0.31-24.04_stable/images/sha256-c7bb054a27fdad7412fcb401b1fde27598e4e65f1671d080f07b5fddfbe7d986)reflected in the charm's `alertmanager` container:
 ```shell
 kubectl describe pod -n cos alertmanager-0 | grep -A 50 "Containers" | grep -A 3 "alertmanager:"
 
@@ -73,3 +81,17 @@ kubectl describe pod -n cos alertmanager-0 | grep -A 50 "Containers" | grep -A 3
     Image:         ubuntu/alertmanager@sha256:c7bb054a27fdad7412fcb401b1fde27598e4e65f1671d080f07b5fddfbe7d986
     Image ID:      docker.io/ubuntu/alertmanager@sha256:c7bb054a27fdad7412fcb401b1fde27598e4e65f1671d080f07b5fddfbe7d986
 ```
+
+### Unpinning a component
+
+If you decide that the `alertmanager` component should no longer be pinned, simply remove its configuration:
+
+```hcl
+module "cos" {
+  source     = "git::https://github.com/canonical/observability-stack.git//terraform/cos"
+}
+```
+
+and the next `terraform apply` will deploy `alertmanager` with:
+- the latest revision in the current track
+- the associated image (uploaded in the CharmHub store) for that revision
