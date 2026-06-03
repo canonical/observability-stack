@@ -14,8 +14,8 @@ There are three types of Terraform modules:
 
 | Type | Description | Example |
 |------|-------------|---------|
-| **Charm** | Deploys a single charm | Grafana, Alertmanager |
-| **Component** | Deploys multiple related charms | Mimir, Loki, Tempo, Pyroscope |
+| **Charm** | Deploys a single charm | Alertmanager, Grafana |
+| **Component** | Deploys multiple related charms | Mimir, Loki, Tempo |
 | **Product** | Deploys a full observability stack | COS, COS Lite |
 
 ## Lifecycle of the Terraform modules
@@ -45,7 +45,7 @@ The Observability Terraform modules are tagged in GitHub following a consistent 
 
 | Module Type | Tag Format | Example |
 |-------------|------------|---------|
-| Charm (standalone repo) | `tf-{major}.{minor}.{patch}` | `tf-3.0.0` |
+| Charm (standalone repository) | `tf-{major}.{minor}.{patch}` | `tf-3.0.0` |
 | Charm (monorepo) | `tf-{component}-{major}.{minor}.{patch}` | `tf-worker-3.0.0` |
 | Component | `tf-{component}-{major}.{minor}.{patch}` | `tf-mimir-3.0.0` |
 | Product | `tf-{product}-{major}.{minor}.{patch}` | `tf-cos-lite-3.0.0` |
