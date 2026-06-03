@@ -28,6 +28,7 @@ module "catalogue" {
 
 module "grafana" {
   source = "git::https://github.com/canonical/grafana-k8s-operator//terraform"
+  replace_triggers   = [terraform_data.grafana_litestream_resource.id]
 
   app_name           = var.grafana.app_name
   channel            = local.channels.grafana
@@ -38,7 +39,6 @@ module "grafana" {
   revision           = local.revisions.grafana
   storage_directives = var.grafana.storage_directives
   units              = var.grafana.units
-  replace_triggers   = [terraform_data.grafana_litestream_resource.id]
 }
 
 module "loki" {
@@ -49,9 +49,9 @@ module "loki" {
   config             = var.loki.config
   constraints        = var.loki.constraints
   model_uuid         = local.model_uuid
-  storage_directives = var.loki.storage_directives
   resources          = var.loki.resources
   revision           = local.revisions.loki
+  storage_directives = var.loki.storage_directives
   units              = var.loki.units
 }
 
@@ -63,9 +63,9 @@ module "prometheus" {
   config             = var.prometheus.config
   constraints        = var.prometheus.constraints
   model_uuid         = local.model_uuid
-  storage_directives = var.prometheus.storage_directives
   resources          = var.prometheus.resources
   revision           = local.revisions.prometheus
+  storage_directives = var.prometheus.storage_directives
   units              = var.prometheus.units
 }
 

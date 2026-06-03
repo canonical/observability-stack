@@ -1,5 +1,11 @@
 mock_provider "juju" {}
 
+variables {
+  s3_endpoint   = "foo"
+  s3_access_key = "foo"
+  s3_secret_key = "foo"
+}
+
 # --- model: create when no uuid provided ---
 
 run "model_created_when_no_uuid" {
@@ -16,8 +22,8 @@ run "model_created_when_no_uuid" {
   }
 
   assert {
-    condition     = juju_model.cos[0].name == "cos-lite"
-    error_message = "Expected default model name to be 'cos-lite'"
+    condition     = juju_model.cos[0].name == "cos"
+    error_message = "Expected default model name to be 'cos'"
   }
 }
 

@@ -5,7 +5,7 @@ module "alertmanager" {
   channel            = local.channels.alertmanager
   config             = var.alertmanager.config
   constraints        = var.alertmanager.constraints
-  model_uuid         = var.model_uuid
+  model_uuid         = local.model_uuid
   resources          = var.alertmanager.resources
   revision           = local.revisions.alertmanager
   storage_directives = var.alertmanager.storage_directives
@@ -19,7 +19,7 @@ module "catalogue" {
   channel            = local.channels.catalogue
   config             = var.catalogue.config
   constraints        = var.catalogue.constraints
-  model_uuid         = var.model_uuid
+  model_uuid         = local.model_uuid
   resources          = var.catalogue.resources
   revision           = local.revisions.catalogue
   storage_directives = var.catalogue.storage_directives
@@ -33,7 +33,7 @@ module "grafana" {
   channel            = local.channels.grafana
   config             = var.grafana.config
   constraints        = var.grafana.constraints
-  model_uuid         = var.model_uuid
+  model_uuid         = local.model_uuid
   resources          = var.grafana.resources
   revision           = local.revisions.grafana
   storage_directives = var.grafana.storage_directives
@@ -46,7 +46,7 @@ module "loki" {
 
   anti_affinity                     = var.anti_affinity
   channel                           = local.channels.loki
-  model_uuid                        = var.model_uuid
+  model_uuid                        = local.model_uuid
   s3_endpoint                       = var.s3_endpoint
   s3_secret_key                     = var.s3_secret_key
   s3_access_key                     = var.s3_access_key
@@ -82,7 +82,7 @@ module "mimir" {
 
   anti_affinity                     = var.anti_affinity
   channel                           = local.channels.mimir
-  model_uuid                        = var.model_uuid
+  model_uuid                        = local.model_uuid
   s3_endpoint                       = var.s3_endpoint
   s3_secret_key                     = var.s3_secret_key
   s3_access_key                     = var.s3_access_key
@@ -120,7 +120,7 @@ module "opentelemetry_collector" {
   channel            = local.channels.otelcol
   config             = var.opentelemetry_collector.config
   constraints        = var.opentelemetry_collector.constraints
-  model_uuid         = var.model_uuid
+  model_uuid         = local.model_uuid
   resources          = var.opentelemetry_collector.resources
   revision           = local.revisions.otelcol
   storage_directives = var.opentelemetry_collector.storage_directives
@@ -136,7 +136,7 @@ module "ssc" {
   channel     = local.channels.ssc
   config      = var.ssc.config
   constraints = var.ssc.constraints
-  model_uuid  = var.model_uuid
+  model_uuid  = local.model_uuid
   revision    = local.revisions.ssc
   units       = var.ssc.units
 }
@@ -146,7 +146,7 @@ module "tempo" {
 
   anti_affinity                               = var.anti_affinity
   channel                                     = local.channels.tempo
-  model_uuid                                  = var.model_uuid
+  model_uuid                                  = local.model_uuid
   s3_endpoint                                 = var.s3_endpoint
   s3_access_key                               = var.s3_access_key
   s3_secret_key                               = var.s3_secret_key
@@ -194,7 +194,7 @@ module "traefik" {
   channel            = local.channels.traefik
   config             = var.cloud == "aws" ? { "loadbalancer_annotations" = "service.beta.kubernetes.io/aws-load-balancer-scheme=internet-facing" } : var.traefik.config
   constraints        = var.traefik.constraints
-  model_uuid         = var.model_uuid
+  model_uuid         = local.model_uuid
   resources          = var.traefik.resources
   revision           = local.revisions.traefik
   storage_directives = var.traefik.storage_directives
