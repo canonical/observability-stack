@@ -12,5 +12,5 @@ myst:
 :maxdepth: 1
 
 Data integrity <data-integrity>
-Terraform Module Versioning <terraform-module-versioning>
+Terraform module versioning <terraform-module-versioning>
 ```
