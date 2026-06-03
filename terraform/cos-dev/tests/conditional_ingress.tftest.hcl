@@ -65,3 +65,74 @@ run "traefik_ingress_disabled" {
     error_message = "Unexpected traefik_route integrations when ingress is disabled"
   }
 }
+
+# --- istio: all ingress enabled ---
+
+run "istio_ingress_enabled" {
+  command = plan
+
+  variables {
+    internal_tls = false
+    service_mesh = true
+  }
+
+  assert {
+    condition     = length(module.istio_ingress) == 1
+    error_message = "Expected an istio_ingress module when ingress is enabled"
+  }
+
+  assert {
+    condition     = length(juju_integration.istio_ingress) == 4
+    error_message = "Unexpected istio_ingress integrations when ingress is enabled"
+  }
+
+  assert {
+    condition     = length(juju_integration.grafana_istio_ingress) == 1
+    error_message = "Unexpected grafana_istio_ingress integrations when ingress is enabled"
+  }
+
+  assert {
+    condition     = length(juju_integration.istio_ingress_route) == 2
+    error_message = "Unexpected istio_ingress_route integrations when ingress is enabled"
+  }
+}
+
+# --- istio: all ingress disabled ---
+
+run "istio_ingress_disabled" {
+  command = plan
+
+  variables {
+    internal_tls = false
+    service_mesh = true
+    ingress = {
+      alertmanager            = false
+      catalogue               = false
+      grafana                 = false
+      loki                    = false
+      mimir                   = false
+      opentelemetry_collector = false
+      tempo                   = false
+    }
+  }
+
+  assert {
+    condition     = length(module.istio_ingress) == 0
+    error_message = "Expected no istio_ingress module when ingress is disabled"
+  }
+
+  assert {
+    condition     = length(juju_integration.istio_ingress) == 0
+    error_message = "Unexpected istio_ingress integrations when ingress is disabled"
+  }
+
+  assert {
+    condition     = length(juju_integration.grafana_istio_ingress) == 0
+    error_message = "Unexpected grafana_istio_ingress integrations when ingress is disabled"
+  }
+
+  assert {
+    condition     = length(juju_integration.istio_ingress_route) == 0
+    error_message = "Unexpected istio_ingress_route integrations when ingress is disabled"
+  }
+}

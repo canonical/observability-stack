@@ -18,6 +18,8 @@ output "components" {
     alertmanager                   = module.alertmanager
     catalogue                      = module.catalogue
     grafana                        = module.grafana
+    istio_beacon                   = try(module.istio_beacon[0], null)
+    istio_ingress                  = try(module.istio_ingress[0], null)
     loki_coordinator               = module.loki_coordinator
     loki_worker                    = try(module.loki_worker[0], null)
     loki_worker_backend            = try(module.loki_worker_backend[0], null)
