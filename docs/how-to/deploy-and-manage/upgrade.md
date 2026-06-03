@@ -10,15 +10,10 @@ This guide shows how to upgrade an existing COS deployment to a newer track.
 
 ## COS 3.0
 
-### Using Terraform with charm revision and image pinning
-
-For COS and COS Lite:
-1. Review the [Configure strict reproducibility](configure-strict-reproducibility.md) doc to understand revision and image pinning implications.
-2. Update the charm revision and image pins per component according to your risk tolerance and needs.
-3. `terraform apply`
+Before you begin, review [How to configure COS for strict reproducibility](configure-strict-reproducibility.md) to understand the implications of upgrading COS.
 
 ### Migrate from COS 2 to COS 3.0
-Using Terraform (without revision/image pins):
+Using Terraform without revision/image pins:
 
 1. Update the channel input to track 2/stable and then:
     ```bash
@@ -29,7 +24,7 @@ Using Terraform (without revision/image pins):
     ```bash
     juju refresh <charm-name> --channel 2/stable
     ```
-3. Update the Terraform module source ref to tf-cos-3.0.0 and then:
+3. Update the Terraform module source ref to a `tf-cos-3.0.n` tag and apply:
     ```bash
     terraform init -upgrade
     terraform apply
@@ -40,7 +35,7 @@ Using Terraform (without revision/image pins):
     ```
 
 ### Migrate from COS Lite 2 to COS Lite 3.0
-Using Terraform (without revision/image pins):
+Using Terraform without revision/image pins:
 
 1. Update the channel input to track 2/stable and then:
     ```bash
