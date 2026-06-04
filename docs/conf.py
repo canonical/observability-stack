@@ -242,6 +242,7 @@ linkcheck_ignore = [
     r"https://.*\.sourceforge\.(net|io)/.*",
     "troubleshooting/",
     "https://github.com/canonical/observability-stack//terraform/cos-lite",
+    r"https://charmhub\.io/.*",
     ]
 
 
