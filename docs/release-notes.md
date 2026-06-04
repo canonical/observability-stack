@@ -51,6 +51,7 @@ COS 3.0 is compatible with Juju v3.6+.
 | **`ssc.channel` removed** | `cos`, `cos-lite` | No longer configurable per-component; controlled by `risk`. |
 | **`s3_integrator.channel` removed** | `cos`, `cos-lite` | No longer configurable per-component; controlled by `risk`. |
 | **`traefik.channel` removed** | `cos`, `cos-lite` | No longer configurable per-component; controlled by `risk`. |
+| **`model_uuid` removed** | `cos`, `cos-lite` | Replaced by the `model` structured object. Pass the UUID as `model = { uuid = "<uuid>" }` instead. If omitted, the module manages its own Juju model. |
 | **`loki_worker.storage_directives` split** | `cos` | Single `storage_directives` replaced by three: `backend_storage_directives`, `read_storage_directives`, `write_storage_directives`. |
 | **`mimir_worker.storage_directives` split** | `cos` | Same as above: split into (3) per-role storage directives. |
 | **`tempo_worker.storage_directives` split** | `cos` | Same as above: split into (6) per-role storage directives. |
@@ -70,6 +71,7 @@ COS 3.0 is compatible with Juju v3.6+.
 |--------|-------|---------|
 | **`base` added** | `cos`, `cos-lite` | New variable for the component bases. |
 | **`ingress` added** | `cos`, `cos-lite` | New structured object to toggle ingress per component. |
+| **`model` added** | `cos`, `cos-lite` | New structured object to configure the Juju model. |
 
 ### COS components
 
