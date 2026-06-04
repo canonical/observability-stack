@@ -52,13 +52,13 @@ def generic_assertions(
     if ca_model is not None and temp_path is None:
         raise ValueError("temp_path is required when ca_model is provided")
     models = [ca_model, cos_model] if ca_model is not None else [cos_model]
-    wait_for_active_idle_without_error(models, timeout=60 * 60)
+    wait_for_active_idle(models, timeout=60 * 60, errors_ok=False)
     tls_ctx = get_tls_context(temp_path, ca_model, "self-signed-certificates") if ca_model is not None else None
     catalogue_apps_are_reachable(cos_model, tls_ctx)
 
 
-def wait_for_active_idle_without_error(
-    jujus: List[jubilant.Juju], timeout: int = 60 * 45
+def wait_for_active_idle(
+    jujus: List[jubilant.Juju], timeout: int = 60 * 45, errors_ok: bool = True
 ):
     for juju in jujus:
         print(f"\nwaiting for the model ({juju.model}) to settle ...\n")
@@ -68,7 +68,7 @@ def wait_for_active_idle_without_error(
             jubilant.all_agents_idle,
             delay=10,
             timeout=timeout,
-            error=jubilant.any_error,
+            error=jubilant.any_error if not errors_ok else None,
         )
 
 
@@ -115,9 +115,11 @@ _LOG_LEVEL_RE = re.compile(
 )
 
 
-def no_errors_in_otelcol_logs(juju: jubilant.Juju):
+def no_errors_in_otelcol_logs(juju: jubilant.Juju, pkill_pebble: bool = False):
     stdout = juju.ssh("otelcol/0", "pebble logs", container="otelcol")
     assert stdout, "no logs found for otelcol"
+    if pkill_pebble:
+        pkill_pebble_to_refesh_tls_context(juju)
     _no_errors_in_otelcol_logs(stdout)
 
 
@@ -128,6 +130,38 @@ def _no_errors_in_otelcol_logs(stdout: str):
         if (m := _LOG_LEVEL_RE.match(line))
     ]
     info_lines = [line for level, line in matched_lines if level == "info"]
+    breakpoint()
     assert info_lines, "no 'info' level logs found in otelcol output"
     error_lines = [line for level, line in matched_lines if level in ("warn", "error")]
     assert not error_lines, "otelcol error logs:\n" + "\n".join(error_lines)
+
+
+def pkill_pebble_to_refesh_tls_context(juju: jubilant.Juju):
+    """Temporary workaround for the issue:
+
+    FIXME: https://github.com/canonical/pebble/issues/780
+    """
+    CHARM_CONTAINER_MAP = {
+        "alertmanager-k8s": "alertmanager",
+        "catalogue-k8s": "catalogue",
+        "grafana-k8s": "grafana",
+        "loki-k8s": "loki",
+        "loki-coordinator-k8s": "nginx",
+        "loki-worker-k8s": "loki",
+        "mimir-coordinator-k8s": "nginx",
+        "mimir-worker-k8s": "mimir",
+        "opentelemetry-collector-k8s": "otelcol",
+        "prometheus-k8s": "prometheus",
+        "tempo-coordinator-k8s": "nginx",
+        "tempo-worker-k8s": "tempo",
+        "traefik-k8s": "traefik",
+    }
+
+    breakpoint()
+    apps = {k: v.charm_name for k,v in juju.status().apps.items()}
+    for app, charm in apps.items():
+        container = CHARM_CONTAINER_MAP.get(charm)
+        if not container:
+            continue
+        juju.ssh(f"{app}/0", "kill 1", container=container)
+    wait_for_active_idle([juju], timeout=60 * 5, errors_ok=True)
