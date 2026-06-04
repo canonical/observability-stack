@@ -172,6 +172,7 @@ scalable
 SCons
 SDK
 sequenceDiagram
+severities
 SHA
 sitemapindex
 SLAs
