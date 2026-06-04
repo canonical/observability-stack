@@ -27,7 +27,7 @@ data "juju_model" "cos-model" {
 }
 
 module "ssc" {
-  source     = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
+  source     = "git::https://github.com/canonical/self-signed-certificates-operator//terraform?ref=rev653"
   model_uuid = data.juju_model.ca-model.uuid
 }
 
@@ -35,9 +35,7 @@ module "cos-lite" {
   source                          = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=track/2"
   model_uuid                      = data.juju_model.cos-model.uuid
   channel                         = "2/stable"
-  internal_tls                    = "false"
+  internal_tls                    = false
   external_certificates_offer_url = "admin/${var.ca_model}.certificates"
   external_ca_cert_offer_url      = "admin/${var.ca_model}.send-ca-cert"
-
-  traefik           = { channel = "latest/edge" }  # TODO: Switch to latest/stable when rev257 hits stable
 }
