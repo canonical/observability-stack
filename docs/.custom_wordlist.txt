@@ -144,6 +144,7 @@ PromLens
 promlens
 PromQL
 Promtail
+protobuf
 provisioner
 proxied
 PVC
@@ -188,6 +189,7 @@ storages
 subproject
 subprojects
 SVG
+systemd
 tanmay
 Terraform
 tex
