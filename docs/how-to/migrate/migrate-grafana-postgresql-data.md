@@ -41,66 +41,23 @@ Use a short maintenance window for this procedure.
 
 Log into your current Grafana UI and create a distinct test resource. This can an alert rule named `migration-check` or a test dashboard. After the migration, you will look for this resource to instantly verify that your data successfully carried over without needing to manually inspect the database tables.
 
-### 2. Example Environment Bundle
+### 2. Example environment topology
 
-For reference, this guide assumes an environment deployed via a Juju bundle similar to the example below. Note that all revisions more recent than revision 187 on track `12.4` will contain the DB naming change. Since revision 187 was the last revision of track `12.4` to not contain this change, this guide begins with Grafana revision 187 as a starting point and later refreshes it to a more recent revision.
+For reference, this guide assumes an environment similar to the topology below. Note that all revisions more recent than revision 187 on track `12.4` will contain the DB naming change. Since revision 187 was the last revision of track `12.4` to not contain this change, this guide begins with Grafana revision 187 as a starting point and later refreshes it to a more recent revision.
 
-```yaml
-bundle: kubernetes
-applications:
-  grafana:
-    charm: grafana-k8s
-    channel: dev/edge
-    revision: 187
-    resources:
-      grafana-image: 78
-    scale: 3
-    constraints: arch=amd64
-    storage:
-      database: kubernetes,1,1024M
-    trust: true
-  pg:
-    charm: postgresql-k8s
-    channel: 14/stable
-    revision: 774
-    base: ubuntu@22.04/stable
-    resources:
-      postgresql-image: 184
-    scale: 1
-    constraints: arch=amd64
-    storage:
-      pgdata: kubernetes,1,1024M
-    trust: true
-  pgbouncer:
-    charm: pgbouncer-k8s
-    channel: 1/stable
-    revision: 520
-    base: ubuntu@22.04/stable
-    resources:
-      pgbouncer-image: 88
-    scale: 1
-    constraints: arch=amd64
-    trust: true
-  trfk:
-    charm: traefik-k8s
-    channel: latest/edge
-    revision: 295
-    base: ubuntu@20.04/stable
-    resources:
-      traefik-image: 162
-    scale: 1
-    constraints: arch=amd64
-    storage:
-      configurations: kubernetes,1,1024M
-    trust: true
-relations:
-- - pg:database
-  - pgbouncer:backend-database
-- - grafana:pgsql
-  - pgbouncer:database
-- - grafana:ingress
-  - trfk:ingress
+```{mermaid}
+graph LR
 
+subgraph model["Juju model"]
+  grafana["grafana<br/>grafana-k8s<br/>revision 187"]
+  pgbouncer["pgbouncer-k8s"]
+  postgresql["postgresql-k8s"]
+  traefik["traefik-k8s"]
+
+  grafana --- |pgsql to database| pgbouncer
+  pgbouncer --- |backend-database to database| postgresql
+  grafana --- |ingress| traefik
+end
 ```
 
 ---
