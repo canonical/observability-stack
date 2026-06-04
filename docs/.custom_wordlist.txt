@@ -75,6 +75,7 @@ https
 HTTP
 HTTPS
 ingester
+ingressed
 instantiation
 integrations
 Intersphinx
@@ -107,6 +108,7 @@ microservices
 Mimir
 Minio
 misconfiguration
+monorepo
 Multipass
 MyST
 Nginx
@@ -130,6 +132,7 @@ PagerDuty
 PDF
 persistency
 PII
+Pivotto
 plantuml
 PNG
 postgresql
@@ -143,6 +146,7 @@ PromQL
 Promtail
 provisioner
 proxied
+psql
 PVC
 PVCs
 PVs
@@ -168,6 +172,7 @@ scalable
 SCons
 SDK
 sequenceDiagram
+severities
 SHA
 sitemapindex
 SLAs
@@ -188,9 +193,11 @@ SVG
 tanmay
 Terraform
 tex
+textfile
 texlive
 tiering
 Tiering
+timeseries
 TLS
 tls
 TOC

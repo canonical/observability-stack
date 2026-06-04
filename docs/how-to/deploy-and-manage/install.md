@@ -80,6 +80,10 @@ To expose Grafana publicly, deploy two Traefik charms: one for internal connecti
 
 You should bootstrap a dedicated Juju controller and model just for COS.
 
+### Strict reproducibility
+
+Review [How to configure COS for strict reproducibility](configure-strict-reproducibility.md) guide if you have production-like requirements.
+
 ## Terraform plan
 
 Create a `main.tf` file like this one:
@@ -99,13 +103,7 @@ module "cos" {
 }
 ```
 
-### Revision pins
-Revision pinning is optional. With revision pins, subsequent `terraform apply` invocation will not refresh charms. Without revision pins, each `terraform apply` would refresh to the latest revision in track, if a new one released.
 where `.n` in `tf-cos-3.0.n` is the latest available patch version in the [COS tags](https://github.com/canonical/observability-stack/tags) list.
-
-### Revision pins
-
-Deploying COS without revision pins, per component, will deploy the latest charms revisions in-track. Any subsequent Terraform plans will experience the same behaviour i.e., keeping COS up-to-date. However, if you require more stability, it is advised to pin the charm revisions of all components.
 
 ## Deploy COS Alerter
 
