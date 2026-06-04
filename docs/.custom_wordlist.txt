@@ -75,6 +75,7 @@ https
 HTTP
 HTTPS
 ingester
+ingressed
 instantiation
 integrations
 Intersphinx
@@ -107,6 +108,7 @@ microservices
 Mimir
 Minio
 misconfiguration
+monorepo
 Multipass
 MyST
 Nginx
