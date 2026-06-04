@@ -15,6 +15,7 @@ Integrate COS Lite with uncharmed applications <integrating-cos-lite-with-unchar
 Expose a metrics endpoint <exposing-a-metrics-endpoint>
 Configure scrape jobs <configure-scrape-jobs>
 Instrument machine charms <instrument-machine-charms>
+Use Catalogue <use-catalogue>
 ```
 
 ## Extend the pipeline
