@@ -25,6 +25,7 @@ Production deployment configuration may differ from the setup showcased here.
 ```{toctree}
 :maxdepth: 1
 
+Standalone Mimir on Juju <mimir-on-juju>
 COS on Canonical K8s <cos-canonical-k8s-sandbox>
 ```
 
@@ -36,4 +37,3 @@ COS on Canonical K8s <cos-canonical-k8s-sandbox>
 COS Lite on Canonical K8s <cos-lite-canonical-k8s-sandbox>
 COS Lite on MicroK8s <cos-lite-microk8s-sandbox>
 ```
-
