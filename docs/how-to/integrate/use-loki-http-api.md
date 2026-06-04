@@ -70,7 +70,7 @@ Promtail primarily:
 
 Promtail can tail logs from local log files and the systemd journal.
 
-To configure a Promtail instance to send logs to Charmed Loki, refer to the [Promtail configuration documentation](https://grafana.com/docs/loki/latest/send-data/promtail/configuration/). The important part is the `clients` section:
+You can define a `clients` section:
 
 ```yaml
 clients:
