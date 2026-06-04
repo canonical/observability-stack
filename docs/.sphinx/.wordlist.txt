@@ -2,9 +2,11 @@ ACME
 ACME's
 addons
 AGPLv
+Alertmanager
 API
 APIs
 balancer
+BotFather
 Charmhub
 CLI
 DCO
@@ -44,8 +46,10 @@ Numbat
 observability
 OEM
 OLM
+PagerDuty
 Permalink
 pre
+Pushover
 Quickstart
 ReadMe
 reST
@@ -55,6 +59,7 @@ RTD
 subdirectories
 subfolders
 subtree
+Telegram
 TODO
 Ubuntu
 UI
