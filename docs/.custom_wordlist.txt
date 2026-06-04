@@ -74,6 +74,7 @@ http
 https
 HTTP
 HTTPS
+Iconify
 ingester
 ingressed
 instantiation
@@ -144,8 +145,10 @@ PromLens
 promlens
 PromQL
 Promtail
+protobuf
 provisioner
 proxied
+psql
 PVC
 PVCs
 PVs
@@ -171,6 +174,7 @@ scalable
 SCons
 SDK
 sequenceDiagram
+severities
 SHA
 sitemapindex
 SLAs
@@ -188,6 +192,7 @@ storages
 subproject
 subprojects
 SVG
+systemd
 tanmay
 Terraform
 tex

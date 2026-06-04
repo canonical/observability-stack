@@ -15,6 +15,8 @@ Integrate COS Lite with uncharmed applications <integrating-cos-lite-with-unchar
 Expose a metrics endpoint <exposing-a-metrics-endpoint>
 Configure scrape jobs <configure-scrape-jobs>
 Instrument machine charms <instrument-machine-charms>
+Use the Loki HTTP API <use-loki-http-api>
+Use Catalogue <use-catalogue>
 ```
 
 ## Extend the pipeline
@@ -30,6 +32,7 @@ Tier OpenTelemetry Collector with different pipelines per data stream <tiered-ot
 Correlate node-exporter metrics with multiple co-located VM charms <correlate-colocated>
 Add tracing to COS Lite <add-tracing-to-cos-lite>
 Add alert rules <adding-alert-rules>
+Integrate Alertmanager with external receivers <integrate-alertmanager-receivers>
 ```
 
 ## Test & validate integrations
