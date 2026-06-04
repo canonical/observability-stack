@@ -16,6 +16,7 @@ Expose a metrics endpoint <exposing-a-metrics-endpoint>
 Configure scrape jobs <configure-scrape-jobs>
 Instrument machine charms <instrument-machine-charms>
 Use the Loki HTTP API <use-loki-http-api>
+Use Catalogue <use-catalogue>
 ```
 
 ## Extend the pipeline
