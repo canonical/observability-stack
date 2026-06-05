@@ -1,7 +1,7 @@
 ---
 myst:
  html_meta:
-   description: "Selectively drop telemetry using OpenTelemetry Collector in COS. Reduce data volume by filtering metrics before ingestion."
+   description: "Selectively drop or sample telemetry using OpenTelemetry Collector in COS. Reduce data volume by filtering or probabilistically sampling traces, metrics, and logs."
 ---
 
 # How to selectively drop telemetry using opentelemetry-collector
@@ -139,7 +139,121 @@ processors:
         - IsMatch(resource.attributes["juju_unit"], "graf/0")
 ```
 
+## Tail sampling processor
+
+While the filter processor drops telemetry based on exact matches, the [tail sampling processor](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/tailsamplingprocessor) enables **probabilistic sampling**: keeping only a percentage of traces to reduce storage and processing costs while maintaining statistical representativeness.
+
+Tail sampling makes decisions after the entire trace is collected, allowing policies based on trace duration, error status, or specific attributes.
+
+### Basic probabilistic sampling
+
+To sample 10% of all traces:
+
+```yaml
+processors:
+  tail_sampling:
+    decision_wait: 10s
+    policies:
+      - name: probabilistic-policy
+        type: probabilistic
+        probabilistic:
+          sampling_percentage: 10
+```
+
+The `decision_wait` parameter specifies how long to wait for a trace to complete before making a sampling decision.
+
+### Differentiate charm and workload traces
+
+In a Juju environment, you may want different sampling rates for charm traces (infrastructure telemetry) versus workload traces (application telemetry). Charm services follow the naming convention `*-charm`, which allows filtering by service name.
+
+This configuration samples 100% of charm traces but only 1% of workload traces:
+
+```yaml
+processors:
+  tail_sampling:
+    decision_wait: 10s
+    policies:
+      - name: charm-traces-policy
+        type: and
+        and:
+          and_sub_policy:
+            - name: service-name-policy
+              type: string_attribute
+              string_attribute:
+                key: service.name
+                values:
+                  - ".+-charm"
+                enabled_regex_matching: true
+            - name: probabilistic-policy
+              type: probabilistic
+              probabilistic:
+                sampling_percentage: 100
+      - name: workload-traces-policy
+        type: and
+        and:
+          and_sub_policy:
+            - name: service-name-policy
+              type: string_attribute
+              string_attribute:
+                key: service.name
+                values:
+                  - ".+-charm"
+                enabled_regex_matching: true
+                invert_match: true
+            - name: probabilistic-policy
+              type: probabilistic
+              probabilistic:
+                sampling_percentage: 1
+```
+
+### Preserve error traces
+
+Error traces are often the most valuable for debugging. Use a compound policy to always keep error traces while sampling normal traces:
+
+```yaml
+processors:
+  tail_sampling:
+    decision_wait: 10s
+    policies:
+      - name: error-traces-policy
+        type: and
+        and:
+          and_sub_policy:
+            - name: status-code-policy
+              type: status_code
+              status_code:
+                status_codes:
+                  - ERROR
+            - name: probabilistic-policy
+              type: probabilistic
+              probabilistic:
+                sampling_percentage: 100
+      - name: normal-traces-policy
+        type: probabilistic
+        probabilistic:
+          sampling_percentage: 5
+```
+
+### Add to your pipeline
+
+After defining the processor, add it to your traces pipeline:
+
+```yaml
+service:
+  pipelines:
+    traces:
+      receivers:
+        - otlp
+      processors:
+        - tail_sampling
+      exporters:
+        - otlp
+```
+
+**Order matters**: place `tail_sampling` before exporters but after any processors that enrich trace data with attributes you need for sampling decisions.
+
 ## References
 
 - Official docs: [collector configuration](https://opentelemetry.io/docs/collector/configuration/)
 - The [OTLP data model](https://betterstack.com/community/guides/observability/otlp/#the-otlp-data-model)
+- [Tail sampling processor](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/tailsamplingprocessor)
