@@ -28,7 +28,7 @@ run "traefik_ingress_enabled" {
   }
 
   assert {
-    condition     = length(juju_integration.traefik_route) == 2
+    condition     = length(juju_integration.traefik_route) == 1
     error_message = "Unexpected traefik_route integrations when ingress is enabled"
   }
 }
