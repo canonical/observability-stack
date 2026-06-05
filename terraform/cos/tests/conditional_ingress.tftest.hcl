@@ -7,6 +7,22 @@ variables {
   s3_secret_key = "foo"
 }
 
+# --- traefik: tempo and otelcol ingress enabled raises validation errror ---
+
+run "traefik_ingress_validates_conflicting_ingress" {
+  command = plan
+
+  variables {
+    ingress = {
+      opentelemetry_collector = true
+      tempo                   = true
+    }
+  }
+
+  # https://github.com/canonical/observability-stack/issues/382
+  expect_failures = [var.ingress]
+}
+
 # --- traefik: all ingress enabled by default ---
 
 run "traefik_ingress_enabled" {
@@ -28,7 +44,7 @@ run "traefik_ingress_enabled" {
   }
 
   assert {
-    condition     = length(juju_integration.traefik_route) == 2
+    condition     = length(juju_integration.traefik_route) == 1
     error_message = "Unexpected traefik_route integrations when ingress is enabled"
   }
 }
