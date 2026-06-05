@@ -32,9 +32,10 @@ COS 3.0 is compatible with Juju v3.6+.
 
 ## What's new in COS 3.0
 
-- [Strict reproducibility](how-to/deploy-and-manage/configure-strict-reproducibility.md): previously only charm revisions could be pinned. New in COS 3.0, you can also pin the Terraform module source to a specific tag, reducing variance across both the Terraform and Juju layers of your deployment.
+- [Strict reproducibility](how-to/deploy-and-manage/configure-strict-reproducibility.md): previously only charm revisions could be pinned. New in COS 3.0, you can limit deployment variance of the Terraform and Juju layers.
 - [Granular Traefik ingress](how-to/deploy-and-manage/configure-granular-ingress.md): previously all components were ingressed. New in COS 3.0, you can be selective, or remove ingress entirely.
 - [Smooth cross-track upgrades via lifecycle-managed resources](how-to/deploy-and-manage/upgrade.md#migrate-from-cos-2-to-cos-30): previously, a Juju admin had to manually refresh all components to the new track. New in COS 3.0, you can upgrade to the next track with a single `terraform apply`, since the upgrade path is product-managed via Terraform lifecycle definitions.
+- [A module-managed Juju model](how-to/deploy-and-manage/configure-juju-model.md): previously, an existing Juju model and its `model_uuid` was required to deploy COS into. New in COS 3.0, a model's UUID is now an optional input, defaulting to a module-managed Juju model with the option to target an existing model via its UUID.
 - **Opentelemetry collector**. Charmed opentelemetry-collector's workload is pinned to version 0.130 because the upstream `opentelemetry-collector-contrib` [project](https://github.com/open-telemetry/opentelemetry-collector-contrib) dropped support for Loki exporter in [release v0.131.0](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.131.0), stating that users can migrate to the OTLP exporters instead.
   - The logging integrations for the `opentelemetry-collector` charms rely on `lokiexporter` to send logs to Loki push API endpoints. Loki only recently received upstream support for an OTLP endpoint, and migrating to an OTLP-first ecosystem in COS began in 26.04. The objective is to have support for OTLP ecosystem-wide by the end of 26.10 and to deprecate the Loki Push API feature (`logging` endpoint). Support will then be fully dropped in 27.04, and the `opentelemetry-collector` charms will no longer be pinned to `v0.130`.
 
@@ -50,6 +51,7 @@ COS 3.0 is compatible with Juju v3.6+.
 | **`ssc.channel` removed** | `cos`, `cos-lite` | No longer configurable per-component; controlled by `risk`. |
 | **`s3_integrator.channel` removed** | `cos`, `cos-lite` | No longer configurable per-component; controlled by `risk`. |
 | **`traefik.channel` removed** | `cos`, `cos-lite` | No longer configurable per-component; controlled by `risk`. |
+| **`model_uuid` removed** | `cos`, `cos-lite` | Replaced by the `model` structured object. Pass the UUID as `model = { uuid = "<uuid>" }` instead. If omitted, the module manages its own Juju model. |
 | **`loki_worker.storage_directives` split** | `cos` | Single `storage_directives` replaced by three: `backend_storage_directives`, `read_storage_directives`, `write_storage_directives`. |
 | **`mimir_worker.storage_directives` split** | `cos` | Same as above: split into (3) per-role storage directives. |
 | **`tempo_worker.storage_directives` split** | `cos` | Same as above: split into (6) per-role storage directives. |
@@ -69,6 +71,7 @@ COS 3.0 is compatible with Juju v3.6+.
 |--------|-------|---------|
 | **`base` added** | `cos`, `cos-lite` | New variable for the component bases. |
 | **`ingress` added** | `cos`, `cos-lite` | New structured object to toggle ingress per component. |
+| **`model` added** | `cos`, `cos-lite` | New structured object to configure the Juju model. |
 
 ### COS components
 

@@ -27,7 +27,7 @@ resource in the base file with a `workload-storage` config:
 
 ```diff
 resource "juju_model" "cos" {                             
-  name   = "cos"                                          
+  name   = "cos"
   config = { logging-config = "<root>=WARNING; unit=DEBUG"
   
 + workload-storage = "ceph-xfs"      
@@ -49,8 +49,9 @@ Add a `storage_directive` for each storage container in your terraform file. For
 ```diff
 module "cos-lite" {
   source     = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=main" 
-  model_uuid = juju_model.cos.uuid
-  risk       = "edge"
+  model = {
+    uuid = juju_model.cos.uuid
+  }
 
 + # Adding storage for Prometheus
 + prometheus = {
