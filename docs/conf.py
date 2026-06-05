@@ -241,7 +241,7 @@ linkcheck_retries = 3
 # NOTE: By default, the following MyST extensions are enabled:
 #       substitution, deflist, linkify
 
-# myst_enable_extensions = set()
+myst_enable_extensions = {"colon_fence"}
 
 
 # Custom Sphinx extensions; see
@@ -285,6 +285,8 @@ copybutton_line_continuation_character = "\\"
 exclude_patterns = [
     "doc-cheat-sheet*",
 ]
+
+suppress_warnings = ["misc.copy_overwrite"]
 
 # Adds custom CSS files, located under 'html_static_path'
 
