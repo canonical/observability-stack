@@ -24,7 +24,7 @@ resource "juju_integration" "grafana_dashboards" {
     }
   }
 
-  model_uuid = var.model_uuid
+  model_uuid = local.model_uuid
 
   application {
     name     = each.value.app_name
@@ -52,7 +52,7 @@ resource "juju_integration" "charm_tracing" {
       endpoint = module.loki.requires.charm_tracing
     }
   }
-  model_uuid = var.model_uuid
+  model_uuid = local.model_uuid
 
   application {
     name     = each.value.app_name
@@ -66,7 +66,7 @@ resource "juju_integration" "charm_tracing" {
 }
 
 resource "juju_integration" "charm_tracing_grafana" {
-  model_uuid = var.model_uuid
+  model_uuid = local.model_uuid
 
   application {
     name     = module.grafana.app_name
@@ -102,7 +102,7 @@ resource "juju_integration" "otelcol_metrics_endpoint" {
       endpoint = module.tempo.provides.metrics_endpoint
     }
   }
-  model_uuid = var.model_uuid
+  model_uuid = local.model_uuid
 
   application {
     name     = each.value.app_name
@@ -137,7 +137,7 @@ resource "juju_integration" "grafana_sources" {
     }
   }
 
-  model_uuid = var.model_uuid
+  model_uuid = local.model_uuid
 
   application {
     name     = each.value.app_name
@@ -177,7 +177,7 @@ resource "juju_integration" "otelcol_logging_provider" {
       endpoint = module.tempo.requires.logging
     }
   }
-  model_uuid = var.model_uuid
+  model_uuid = local.model_uuid
 
   application {
     name     = each.value.app_name
@@ -203,7 +203,7 @@ resource "juju_integration" "alerting" {
       endpoint = module.loki.requires.alertmanager
     }
   }
-  model_uuid = var.model_uuid
+  model_uuid = local.model_uuid
 
   application {
     name     = each.value.app_name
@@ -220,7 +220,7 @@ resource "juju_integration" "alerting" {
 # -------------- # Provided by Loki --------------
 
 resource "juju_integration" "loki_logging_otelcol_logging_consumer" {
-  model_uuid = var.model_uuid
+  model_uuid = local.model_uuid
 
   application {
     name     = module.loki.app_names.loki_coordinator
@@ -237,7 +237,7 @@ resource "juju_integration" "loki_logging_otelcol_logging_consumer" {
 # -------------- # Provided by Tempo --------------
 
 resource "juju_integration" "tempo_tracing_otelcol_tracing" {
-  model_uuid = var.model_uuid
+  model_uuid = local.model_uuid
 
   application {
     name     = module.tempo.app_names.tempo_coordinator
@@ -251,7 +251,7 @@ resource "juju_integration" "tempo_tracing_otelcol_tracing" {
 }
 
 resource "juju_integration" "tempo_send_remote_write_mimir_receive_remote_write" {
-  model_uuid = var.model_uuid
+  model_uuid = local.model_uuid
 
   application {
     name     = module.tempo.app_names.tempo_coordinator
@@ -282,7 +282,7 @@ resource "juju_integration" "catalogue_integrations" {
     }
   }
 
-  model_uuid = var.model_uuid
+  model_uuid = local.model_uuid
 
   application {
     name     = module.catalogue.app_name
@@ -296,7 +296,7 @@ resource "juju_integration" "catalogue_integrations" {
 }
 
 resource "juju_integration" "catalogue_integration_grafana" {
-  model_uuid = var.model_uuid
+  model_uuid = local.model_uuid
 
   application {
     name     = module.catalogue.app_name
@@ -334,7 +334,7 @@ resource "juju_integration" "ingress" {
       }
     } : k => v if local.traefik_enabled && var.ingress[k]
   }
-  model_uuid = var.model_uuid
+  model_uuid = local.model_uuid
 
   application {
     name     = module.traefik[0].app_name
@@ -350,7 +350,7 @@ resource "juju_integration" "ingress" {
 resource "juju_integration" "grafana_ingress" {
   count = local.traefik_enabled && var.ingress.grafana ? 1 : 0
 
-  model_uuid = var.model_uuid
+  model_uuid = local.model_uuid
 
   application {
     name     = module.grafana.app_name
@@ -378,7 +378,7 @@ resource "juju_integration" "traefik_route" {
       }
     } : k => v if local.traefik_enabled && var.ingress[k]
   }
-  model_uuid = var.model_uuid
+  model_uuid = local.model_uuid
 
   application {
     name     = module.traefik[0].app_name
@@ -394,7 +394,7 @@ resource "juju_integration" "traefik_route" {
 # -------------- # Provided by OpenTelemetry Collector --------------
 
 resource "juju_integration" "opentelemetry_collector_mimir_metrics" {
-  model_uuid = var.model_uuid
+  model_uuid = local.model_uuid
 
   application {
     name     = module.mimir.app_names.mimir_coordinator
@@ -440,7 +440,7 @@ resource "juju_integration" "internal_certificates" {
     }
   } : {}
 
-  model_uuid = var.model_uuid
+  model_uuid = local.model_uuid
 
   application {
     name     = module.ssc[0].app_name
@@ -456,7 +456,7 @@ resource "juju_integration" "internal_certificates" {
 resource "juju_integration" "traefik_receive_ca_certificate" {
   count = local.traefik_enabled && var.internal_tls ? 1 : 0
 
-  model_uuid = var.model_uuid
+  model_uuid = local.model_uuid
 
   application {
     name     = module.ssc[0].app_name
@@ -474,7 +474,7 @@ resource "juju_integration" "traefik_receive_ca_certificate" {
 resource "juju_integration" "external_traefik_certificates" {
   count = local.traefik_enabled && local.tls_termination ? 1 : 0
 
-  model_uuid = var.model_uuid
+  model_uuid = local.model_uuid
 
   application { offer_url = var.external_certificates_offer_url }
   application {
@@ -486,7 +486,7 @@ resource "juju_integration" "external_traefik_certificates" {
 resource "juju_integration" "external_grafana_ca_cert" {
   count = local.tls_termination ? 1 : 0
 
-  model_uuid = var.model_uuid
+  model_uuid = local.model_uuid
 
   application { offer_url = var.external_ca_cert_offer_url }
   application {
@@ -498,7 +498,7 @@ resource "juju_integration" "external_grafana_ca_cert" {
 resource "juju_integration" "external_otelcol_ca_cert" {
   count = local.tls_termination ? 1 : 0
 
-  model_uuid = var.model_uuid
+  model_uuid = local.model_uuid
 
   application { offer_url = var.external_ca_cert_offer_url }
   application {
@@ -510,7 +510,7 @@ resource "juju_integration" "external_otelcol_ca_cert" {
 # -------------- # Telemetry correlations ---------------------
 
 resource "juju_integration" "traces_and_logs_correlation" {
-  model_uuid = var.model_uuid
+  model_uuid = local.model_uuid
 
   application {
     name     = module.tempo.app_names.tempo_coordinator
@@ -524,7 +524,7 @@ resource "juju_integration" "traces_and_logs_correlation" {
 }
 
 resource "juju_integration" "traces_and_metrics_correlation" {
-  model_uuid = var.model_uuid
+  model_uuid = local.model_uuid
 
   application {
     name     = module.tempo.app_names.tempo_coordinator

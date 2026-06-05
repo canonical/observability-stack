@@ -1,5 +1,10 @@
 # -------------- # Integration offers -------------- #
 
+output "model_uuid" {
+  value       = local.model_uuid
+  description = "The UUID of the model (created or looked up)"
+}
+
 output "offers" {
   value = {
     alertmanager_karma_dashboard    = juju_offer.alertmanager_karma_dashboard

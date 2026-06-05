@@ -19,7 +19,7 @@ data "juju_model" "model" {
 
 module "cos-lite" {
   source       = "git::https://github.com/canonical/observability-stack//terraform/cos-lite"
-  model_uuid   = data.juju_model.model.uuid
+  model        = { uuid = data.juju_model.model.uuid }
   risk         = "edge"
   internal_tls = true
 }

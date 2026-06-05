@@ -72,7 +72,11 @@ To expose Grafana publicly, deploy two Traefik charms: one for internal connecti
 
 ### Dedicated Juju controller and model
 
-You should bootstrap a dedicated Juju controller and model just for COS.
+You should bootstrap a dedicated Juju controller and model just for COS. See [How to configure the Juju model of COS](configure-juju-model.md) to determine if you want a module-managed or target an existing Juju model.
+
+### Strict reproducibility
+
+Review [How to configure COS for strict reproducibility](configure-strict-reproducibility.md) guide if you have production-like requirements.
 
 ### Strict reproducibility
 
@@ -83,14 +87,9 @@ Review [How to configure COS for strict reproducibility](configure-strict-reprod
 Create a `main.tf` file like this one:
 
 ```hcl
-resource "juju_model" "cos" {
-  name = "cos"
-}
-
 module "cos" {
   source = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=tf-cos-3.0.n"
   risk         = "stable"
-  model_uuid   = juju_model.cos.uuid
   s3_endpoint   = "http://IP_ADDRESS:PORT"
   s3_secret_key = "REPLACE_ME"
   s3_access_key = "REPLACE_ME"
