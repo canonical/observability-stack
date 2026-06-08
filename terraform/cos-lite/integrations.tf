@@ -174,6 +174,10 @@ resource "juju_integration" "loki_logging" {
       app_name = module.prometheus.app_name
       endpoint = module.prometheus.requires.logging
     }
+    pgbouncer = {
+      app_name = juju_application.pgbouncer.name
+      endpoint = "logging"
+    }
   }
   model_uuid = local.model_uuid
 
@@ -342,6 +346,10 @@ resource "juju_integration" "internal_certificates" {
       app_name = module.loki.app_name
       endpoint = module.loki.requires.certificates
     }
+    pgbouncer = {
+      app_name = juju_application.pgbouncer.name
+      endpoint = "certificates"
+    }
     prometheus = {
       app_name = module.prometheus.app_name
       endpoint = module.prometheus.requires.certificates
@@ -412,5 +420,49 @@ resource "juju_integration" "external_prom_ca_cert" {
   application {
     name     = module.prometheus.app_name
     endpoint = module.prometheus.requires.receive_ca_cert
+  }
+}
+
+# -------------- # Provided by PGBouncer --------------
+
+resource "juju_integration" "pgbouncer_metrics" {
+  model_uuid = var.model_uuid
+
+  application {
+    name     = juju_application.pgbouncer.name
+    endpoint = "metrics-endpoint"
+  }
+
+  application {
+    name     = module.otel_collector.app_name
+    endpoint = module.otel_collector.endpoints.metrics_endpoint
+  }
+}
+
+resource "juju_integration" "pgbouncer_grafana_dashboards" {
+  model_uuid = var.model_uuid
+
+  application {
+    name     = juju_application.pgbouncer.name
+    endpoint = "grafana-dashboard"
+  }
+
+  application {
+    name     = module.grafana.app_name
+    endpoint = module.grafana.endpoints.grafana_dashboard
+  }
+}
+
+resource "juju_integration" "pgbouncer_grafana" {
+  model_uuid = var.model_uuid
+
+  application {
+    name     = juju_application.pgbouncer.name
+    endpoint = "database"
+  }
+
+  application {
+    name     = juju_application.grafana.name
+    endpoint = module.grafana.endpoints.database
   }
 }
