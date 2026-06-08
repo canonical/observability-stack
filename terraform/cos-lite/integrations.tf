@@ -1,25 +1,81 @@
+# -------------- # Grafana Dashboard ---------------------
+
+resource "juju_integration" "grafana_dashboards" {
+  for_each = {
+    alertmanager = {
+      app_name = module.alertmanager.app_name
+      endpoint = module.alertmanager.provides.grafana_dashboard
+    }
+    prometheus = {
+      app_name = module.prometheus.app_name
+      endpoint = module.prometheus.provides.grafana_dashboard
+    }
+    loki = {
+      app_name = module.loki.app_name
+      endpoint = module.loki.provides.grafana_dashboard
+    }
+  }
+  model_uuid = local.model_uuid
+
+  application {
+    name     = each.value.app_name
+    endpoint = each.value.endpoint
+  }
+
+  application {
+    name     = module.grafana.app_name
+    endpoint = module.grafana.requires.grafana_dashboard
+  }
+}
+
+# -------------- # Grafana Source Integrations --------------
+
+resource "juju_integration" "grafana_sources" {
+  for_each = {
+    alertmanager = {
+      app_name = module.alertmanager.app_name
+      endpoint = module.alertmanager.provides.grafana_source
+    }
+    prometheus = {
+      app_name = module.prometheus.app_name
+      endpoint = module.prometheus.provides.grafana_source
+    }
+    loki = {
+      app_name = module.loki.app_name
+      endpoint = module.loki.provides.grafana_source
+    }
+  }
+  model_uuid = local.model_uuid
+
+  application {
+    name     = each.value.app_name
+    endpoint = each.value.endpoint
+  }
+
+  application {
+    name     = module.grafana.app_name
+    endpoint = module.grafana.requires.grafana_source
+  }
+}
+
 # -------------- # Provided by Alertmanager --------------
 
-resource "juju_integration" "alertmanager_grafana_dashboards" {
+resource "juju_integration" "alerting" {
+  for_each = {
+    prometheus = {
+      app_name = module.prometheus.app_name
+      endpoint = module.prometheus.requires.alertmanager
+    }
+    loki = {
+      app_name = module.loki.app_name
+      endpoint = module.loki.requires.alertmanager
+    }
+  }
   model_uuid = local.model_uuid
 
   application {
-    name     = module.alertmanager.app_name
-    endpoint = module.alertmanager.provides.grafana_dashboard
-  }
-
-  application {
-    name     = module.grafana.app_name
-    endpoint = module.grafana.requires.grafana_dashboard
-  }
-}
-
-resource "juju_integration" "alertmanager_prometheus" {
-  model_uuid = local.model_uuid
-
-  application {
-    name     = module.prometheus.app_name
-    endpoint = module.prometheus.requires.alertmanager
+    name     = each.value.app_name
+    endpoint = each.value.endpoint
   }
 
   application {
@@ -28,7 +84,23 @@ resource "juju_integration" "alertmanager_prometheus" {
   }
 }
 
-resource "juju_integration" "alertmanager_self_monitoring_prometheus" {
+# -------------- # Metrics Endpoint ----------------------
+
+resource "juju_integration" "metrics_endpoint" {
+  for_each = {
+    alertmanager = {
+      app_name = module.alertmanager.app_name
+      endpoint = module.alertmanager.provides.self_metrics_endpoint
+    }
+    grafana = {
+      app_name = module.grafana.app_name
+      endpoint = module.grafana.provides.metrics_endpoint
+    }
+    loki = {
+      app_name = module.loki.app_name
+      endpoint = module.loki.provides.metrics_endpoint
+    }
+  }
   model_uuid = local.model_uuid
 
   application {
@@ -37,42 +109,14 @@ resource "juju_integration" "alertmanager_self_monitoring_prometheus" {
   }
 
   application {
-    name     = module.alertmanager.app_name
-    endpoint = module.alertmanager.provides.self_metrics_endpoint
+    name     = each.value.app_name
+    endpoint = each.value.endpoint
   }
 }
 
-resource "juju_integration" "alertmanager_loki" {
-  model_uuid = local.model_uuid
+resource "juju_integration" "traefik_self_monitoring_prometheus" {
+  count = local.traefik_enabled ? 1 : 0
 
-  application {
-    name     = module.loki.app_name
-    endpoint = module.loki.requires.alertmanager
-  }
-
-  application {
-    name     = module.alertmanager.app_name
-    endpoint = module.alertmanager.provides.alerting
-  }
-}
-
-resource "juju_integration" "grafana_source_alertmanager" {
-  model_uuid = local.model_uuid
-
-  application {
-    name     = module.alertmanager.app_name
-    endpoint = module.alertmanager.provides.grafana_source
-  }
-
-  application {
-    name     = module.grafana.app_name
-    endpoint = module.grafana.requires.grafana_source
-  }
-}
-
-# -------------- # Provided by Grafana --------------
-
-resource "juju_integration" "grafana_self_monitoring_prometheus" {
   model_uuid = local.model_uuid
 
   application {
@@ -81,82 +125,8 @@ resource "juju_integration" "grafana_self_monitoring_prometheus" {
   }
 
   application {
-    name     = module.grafana.app_name
-    endpoint = module.grafana.provides.metrics_endpoint
-  }
-}
-
-# -------------- # Provided by Prometheus --------------
-
-resource "juju_integration" "prometheus_grafana_dashboards_provider" {
-  model_uuid = local.model_uuid
-
-  application {
-    name     = module.prometheus.app_name
-    endpoint = module.prometheus.provides.grafana_dashboard
-  }
-
-  application {
-    name     = module.grafana.app_name
-    endpoint = module.grafana.requires.grafana_dashboard
-  }
-}
-
-resource "juju_integration" "prometheus_grafana_source" {
-  model_uuid = local.model_uuid
-
-  application {
-    name     = module.prometheus.app_name
-    endpoint = module.prometheus.provides.grafana_source
-  }
-
-  application {
-    name     = module.grafana.app_name
-    endpoint = module.grafana.requires.grafana_source
-  }
-}
-
-# -------------- # Provided by Loki --------------
-
-resource "juju_integration" "loki_grafana_dashboards_provider" {
-  model_uuid = local.model_uuid
-
-  application {
-    name     = module.loki.app_name
-    endpoint = module.loki.provides.grafana_dashboard
-  }
-
-  application {
-    name     = module.grafana.app_name
-    endpoint = module.grafana.requires.grafana_dashboard
-  }
-}
-
-resource "juju_integration" "loki_grafana_source" {
-  model_uuid = local.model_uuid
-
-  application {
-    name     = module.loki.app_name
-    endpoint = module.loki.provides.grafana_source
-  }
-
-  application {
-    name     = module.grafana.app_name
-    endpoint = module.grafana.requires.grafana_source
-  }
-}
-
-resource "juju_integration" "loki_self_monitoring_prometheus" {
-  model_uuid = local.model_uuid
-
-  application {
-    name     = module.prometheus.app_name
-    endpoint = module.prometheus.requires.metrics_endpoint
-  }
-
-  application {
-    name     = module.loki.app_name
-    endpoint = module.loki.provides.metrics_endpoint
+    name     = module.traefik[0].app_name
+    endpoint = module.traefik[0].endpoints.metrics_endpoint
   }
 }
 
@@ -188,9 +158,19 @@ resource "juju_integration" "loki_logging" {
   }
 }
 
-# -------------- # Provided by Catalogue --------------
+# -------------- # Catalogue Integrations --------------
 
-resource "juju_integration" "catalogue_alertmanager" {
+resource "juju_integration" "catalogue_integrations" {
+  for_each = {
+    alertmanager = {
+      app_name = module.alertmanager.app_name
+      endpoint = module.alertmanager.requires.catalogue
+    }
+    prometheus = {
+      app_name = module.prometheus.app_name
+      endpoint = module.prometheus.requires.catalogue
+    }
+  }
   model_uuid = local.model_uuid
 
   application {
@@ -199,12 +179,12 @@ resource "juju_integration" "catalogue_alertmanager" {
   }
 
   application {
-    name     = module.alertmanager.app_name
-    endpoint = module.alertmanager.requires.catalogue
+    name     = each.value.app_name
+    endpoint = each.value.endpoint
   }
 }
 
-resource "juju_integration" "catalogue_grafana" {
+resource "juju_integration" "catalogue_integration_grafana" {
   model_uuid = local.model_uuid
 
   application {
@@ -215,20 +195,6 @@ resource "juju_integration" "catalogue_grafana" {
   application {
     name     = module.grafana.app_name
     endpoint = module.grafana.requires.catalogue
-  }
-}
-
-resource "juju_integration" "catalogue_prometheus" {
-  model_uuid = local.model_uuid
-
-  application {
-    name     = module.catalogue.app_name
-    endpoint = module.catalogue.provides.catalogue
-  }
-
-  application {
-    name     = module.prometheus.app_name
-    endpoint = module.prometheus.requires.catalogue
   }
 }
 
@@ -303,22 +269,6 @@ resource "juju_integration" "ingress_per_unit" {
   application {
     name     = module.traefik[0].app_name
     endpoint = module.traefik[0].endpoints.ingress_per_unit
-  }
-}
-
-resource "juju_integration" "traefik_self_monitoring_prometheus" {
-  count = local.traefik_enabled ? 1 : 0
-
-  model_uuid = local.model_uuid
-
-  application {
-    name     = module.prometheus.app_name
-    endpoint = module.prometheus.requires.metrics_endpoint
-  }
-
-  application {
-    name     = module.traefik[0].app_name
-    endpoint = module.traefik[0].endpoints.metrics_endpoint
   }
 }
 

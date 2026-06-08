@@ -100,8 +100,14 @@ data "juju_charm" "traefik_info" {
 
 # -------------- # State migrations -------------- #
 
-# refactor(cos): Traefik and SSC are conditional (#354)
+# refactor: Traefik and SSC are conditional (#354)
 moved {
   from = module.traefik
   to   = module.traefik[0]
+}
+
+# refactor: align metrics-endpoint loop name with cos-lite
+moved {
+  from = juju_integration.otelcol_metrics_endpoint
+  to   = juju_integration.metrics_endpoint
 }

@@ -83,7 +83,7 @@ resource "juju_integration" "charm_tracing_grafana" {
 
 # -------------- # Metrics Endpoint ----------------------
 
-resource "juju_integration" "otelcol_metrics_endpoint" {
+resource "juju_integration" "metrics_endpoint" {
   for_each = {
     alertmanager = {
       app_name = module.alertmanager.app_name
