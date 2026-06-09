@@ -150,3 +150,50 @@ moved {
   from = juju_integration.external_prom_ca_cert[0]
   to   = juju_integration.external_ca_cert["prometheus"]
 }
+
+# refactor: move integrations after for_each loop implementation
+moved {
+  from = juju_integration.alertmanager_certificates[0]
+  to   = juju_integration.internal_certificates["alertmanager"]
+}
+
+moved {
+  from = juju_integration.catalogue_certificates[0]
+  to   = juju_integration.internal_certificates["catalogue"]
+}
+
+moved {
+  from = juju_integration.grafana_certificates[0]
+  to   = juju_integration.internal_certificates["grafana"]
+}
+
+moved {
+  from = juju_integration.loki_certificates[0]
+  to   = juju_integration.internal_certificates["loki"]
+}
+
+moved {
+  from = juju_integration.prometheus_certificates[0]
+  to   = juju_integration.internal_certificates["prometheus"]
+}
+
+# refactor: collapse per-app ingress into the ingress/ingress_per_unit for_each loops
+moved {
+  from = juju_integration.alertmanager_ingress
+  to   = juju_integration.ingress["alertmanager"]
+}
+
+moved {
+  from = juju_integration.catalogue_ingress
+  to   = juju_integration.ingress["catalogue"]
+}
+
+moved {
+  from = juju_integration.loki_ingress
+  to   = juju_integration.ingress_per_unit["loki"]
+}
+
+moved {
+  from = juju_integration.prometheus_ingress
+  to   = juju_integration.ingress_per_unit["prometheus"]
+}
