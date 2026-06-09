@@ -237,5 +237,7 @@ YouTube
 ZooKeeper
 rsyslog
 syslog
+SLIs
+SLOs
 URIs
 

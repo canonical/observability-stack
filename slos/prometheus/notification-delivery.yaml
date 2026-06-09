@@ -1,0 +1,24 @@
+version: "prometheus/v1"
+service: "prometheus"
+labels:
+  team: observability
+slos:
+  - name: "notification-delivery"
+    objective: 99.9
+    description: "99.9% of alert notifications are delivered to Alertmanager"
+    sli:
+      events:
+        error_query: |
+          sum(increase(prometheus_notifications_dropped_total[{{.window}}]))
+          +
+          sum(increase(prometheus_notifications_errors_total[{{.window}}]))
+        total_query: |
+          sum(increase(prometheus_notifications_sent_total[{{.window}}]))
+          +
+          sum(increase(prometheus_notifications_dropped_total[{{.window}}]))
+    alerting:
+      name: PrometheusNotificationDeliveryBudgetBurn
+      labels:
+        severity: critical
+      annotations:
+        summary: "Prometheus alert notification delivery SLO error budget burn rate is high"

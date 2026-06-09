@@ -38,7 +38,7 @@ alerting pipeline has failed. See [Topology](/reference/topology).
 A peripheral charm that clones a git repository (via a `git-sync`
 workload) and provisions alert rules, dashboards, and scrape targets from it into COS.
 Enables git-ops–style configuration independently of any charmed operator.
-See [COS components](/reference/cos-components).
+See [COS components](/reference/cos-components/index).
 
 ## COS Lite
 
@@ -119,7 +119,7 @@ See [Telemetry collection](/explanation/telemetry/telemetry-collection).
 
 A charm that integrates with COS but is not part of its core stack — e.g. COS
 Configuration, COS Proxy, Blackbox Exporter, Prometheus Scrape Config.
-See [COS components](/reference/cos-components).
+See [COS components](/reference/cos-components/index).
 
 ## Self-monitoring
 

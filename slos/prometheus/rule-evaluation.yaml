@@ -1,0 +1,20 @@
+version: "prometheus/v1"
+service: "prometheus"
+labels:
+  team: observability
+slos:
+  - name: "rule-evaluation-success"
+    objective: 99.9
+    description: "99.9% of rule evaluations succeed"
+    sli:
+      events:
+        error_query: |
+          sum(increase(prometheus_rule_evaluation_failures_total[{{.window}}]))
+        total_query: |
+          sum(increase(prometheus_rule_evaluations_total[{{.window}}]))
+    alerting:
+      name: PrometheusRuleEvaluationBudgetBurn
+      labels:
+        severity: warning
+      annotations:
+        summary: "Prometheus rule evaluation SLO error budget burn rate is high"
