@@ -83,8 +83,8 @@ module "cos" {
 
 Otherwise, you can deploy from main (without `?ref`) which supports the v1 Terraform Juju provider. See the [v1 migration documentation](https://documentation.ubuntu.com/terraform-provider-juju/v1/howto/manage-provider/upgrade-provider-to-v1/) if you need to upgrade your modules.
 
-#### Provider <= v1.4.0
-If you require the Terraform Juju provider `< 1.4.0`, then deploy the COS module from the `75f5e0bedde913a3f1c918be44716db8ef2c69a1` commit hash:
+#### Provider >= 1.0.0, < 1.4.0
+If you require the Terraform Juju provider `< 1.4.0`, then deploy the COS module from the [75f5e0b](https://github.com/canonical/observability-stack/commit/75f5e0bedde913a3f1c918be44716db8ef2c69a1) commit hash:
 
 ```hcl
 module "cos" {
@@ -108,15 +108,8 @@ terraform {
   }
 }
 
-resource "juju_model" "cos" {
-  name = "cos"
-}
-
 module "cos" {
-  source     = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=track/2"
-  model_uuid = juju_model.cos.uuid
-  channel    = "2/stable"
-
+  source     = "git::https://github.com/canonical/observability-stack//terraform/cos"
   s3_endpoint   = "http://S3_HOST_IP:8080"
   s3_secret_key = "secret-key"
   s3_access_key = "access-key"

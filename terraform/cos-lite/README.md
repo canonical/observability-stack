@@ -70,7 +70,7 @@ If you require the Terraform Juju provider `< 1.4.0`, then deploy the COS module
 
 ```hcl
 module "cos" {
-  source     = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=75f5e0bedde913a3f1c918be44716db8ef2c69a1"
+  source     = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=37b62b863e1f288d760232bab634f41b8597d6bf"
 }
 ```
 
