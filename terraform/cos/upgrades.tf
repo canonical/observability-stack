@@ -111,3 +111,36 @@ moved {
   from = juju_integration.otelcol_metrics_endpoint
   to   = juju_integration.metrics_endpoint
 }
+
+# refactor: collapse mimir receive-remote-write integrations into a for_each loop
+moved {
+  from = juju_integration.opentelemetry_collector_mimir_metrics
+  to   = juju_integration.receive_remote_write["opentelemetry_collector"]
+}
+
+moved {
+  from = juju_integration.tempo_send_remote_write_mimir_receive_remote_write
+  to   = juju_integration.receive_remote_write["tempo"]
+}
+
+# refactor: collapse datasource-exchange correlations into a for_each loop
+moved {
+  from = juju_integration.traces_and_logs_correlation
+  to   = juju_integration.receive_datasource["loki"]
+}
+
+moved {
+  from = juju_integration.traces_and_metrics_correlation
+  to   = juju_integration.receive_datasource["mimir"]
+}
+
+# refactor: collapse external CA-cert integrations into a for_each loop
+moved {
+  from = juju_integration.external_grafana_ca_cert[0]
+  to   = juju_integration.external_ca_cert["grafana"]
+}
+
+moved {
+  from = juju_integration.external_otelcol_ca_cert[0]
+  to   = juju_integration.external_ca_cert["opentelemetry_collector"]
+}

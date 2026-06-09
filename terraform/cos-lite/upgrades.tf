@@ -138,5 +138,15 @@ moved {
 
 moved {
   from = juju_integration.catalogue_grafana
-  to   = juju_integration.catalogue_integration_grafana
+  to   = juju_integration.catalogue_integrations["grafana"]
+}
+
+moved {
+  from = juju_integration.external_grafana_ca_cert[0]
+  to   = juju_integration.external_ca_cert["grafana"]
+}
+
+moved {
+  from = juju_integration.external_prom_ca_cert[0]
+  to   = juju_integration.external_ca_cert["prometheus"]
 }
