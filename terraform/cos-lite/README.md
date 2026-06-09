@@ -58,8 +58,9 @@ This is a Terraform module facilitating the deployment of the COS Lite solution,
 If you require the Terraform Juju provider `< 1.0.0`, then deploy the COS module with the `tf-provider-v0` tag:
 
 ```hcl
-module "cos" {
-  source     = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=tf-provider-v0"
+module "cos-lite" {
+  source = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=tf-provider-v0"
+  # ... and other required variables ...
 }
 ```
 
@@ -69,8 +70,9 @@ Otherwise, you can deploy from main (without `?ref`) which supports the v1 Terra
 If you require the Terraform Juju provider `< 1.4.0`, then deploy the COS module from the [37b62b8](https://github.com/canonical/observability-stack/commit/37b62b863e1f288d760232bab634f41b8597d6bf) commit hash:
 
 ```hcl
-module "cos" {
-  source     = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=37b62b863e1f288d760232bab634f41b8597d6bf"
+module "cos-lite" {
+  source = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=37b62b863e1f288d760232bab634f41b8597d6bf"
+  # ... and other required variables ...
 }
 ```
 
@@ -91,7 +93,7 @@ terraform {
 }
 
 module "cos-lite" {
-  source     = "git::https://github.com/canonical/observability-stack//terraform/cos-lite"
+  source = "git::https://github.com/canonical/observability-stack//terraform/cos-lite"
 }
 ```
 

@@ -78,6 +78,7 @@ If you require the Terraform Juju provider `< 1.0.0`, then deploy the COS module
 ```hcl
 module "cos" {
   source     = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=tf-provider-v0"
+  # ... and other required variables ...
 }
 ```
 
@@ -89,6 +90,7 @@ If you require the Terraform Juju provider `< 1.4.0`, then deploy the COS module
 ```hcl
 module "cos" {
   source     = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=75f5e0bedde913a3f1c918be44716db8ef2c69a1"
+  # ... and other required variables ...
 }
 ```
 
@@ -153,11 +155,8 @@ In order to deploy COS on AWS, update the `cloud` input of the `cos` module to `
 
 ```hcl
 module "cos" {
-  source     = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=track/2"
-  model_uuid = juju_model.cos.uuid
-  channel    = "2/stable"
-  cloud      = "aws"
-
+  source        = "git::https://github.com/canonical/observability-stack//terraform/cos"
+  cloud         = "aws"
   s3_endpoint   = "http://S3_HOST_IP:8080"
   s3_secret_key = "secret-key"
   s3_access_key = "access-key"
