@@ -38,15 +38,13 @@ Create a directory structure in your git repository:
 ```text
 your-repo/
 └── slos/
-    ├── prometheus/
-    │   ├── query-latency.yaml
-    │   └── scrape-success.yaml
-    └── grafana/
-        └── dashboard-load.yaml
+    ├── prometheus-query-latency.yaml
+    ├── prometheus-scrape-success.yaml
+    └── grafana-dashboard-load.yaml
 ```
 
-Each YAML file should contain one SLO specification. Organising by service
-makes it easier to manage SLOs as your deployment grows.
+Each YAML file should contain one SLO specification. Prefixing filenames with
+the service name makes it easier to manage SLOs as your deployment grows.
 
 ## Deploy cos-configuration-k8s
 
