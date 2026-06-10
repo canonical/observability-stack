@@ -76,20 +76,38 @@ These metrics are recommended as Service Level Indicators for Prometheus.
 
 These are pre-defined SLO specifications for Prometheus, ready to use with Sloth.
 
-### Query latency
+### Query performance
 
-```{literalinclude} /../slos/prometheus/query-latency.yaml
+```{literalinclude} /../slos/prometheus/query-performance.yaml
 :language: yaml
 ```
 
-### Rule evaluation success
+### HTTP API
+
+```{literalinclude} /../slos/prometheus/http-api.yaml
+:language: yaml
+```
+
+### Scrape health
+
+```{literalinclude} /../slos/prometheus/scrape-health.yaml
+:language: yaml
+```
+
+### Rule evaluation
 
 ```{literalinclude} /../slos/prometheus/rule-evaluation.yaml
 :language: yaml
 ```
 
-### Alert notification delivery
+### Alert notifications
 
-```{literalinclude} /../slos/prometheus/notification-delivery.yaml
+```{literalinclude} /../slos/prometheus/alert-notifications.yaml
+:language: yaml
+```
+
+### Storage (TSDB)
+
+```{literalinclude} /../slos/prometheus/storage.yaml
 :language: yaml
 ```

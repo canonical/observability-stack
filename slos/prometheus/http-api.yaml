@@ -1,0 +1,20 @@
+version: "prometheus/v1"
+service: "prometheus"
+labels:
+  team: observability
+slos:
+  - name: "http-api"
+    objective: 99.9
+    description: "99.9% of HTTP API requests succeed"
+    sli:
+      events:
+        error_query: |
+          sum(increase(prometheus_http_requests_total{code=~"5.."}[{{.window}}]))
+        total_query: |
+          sum(increase(prometheus_http_requests_total[{{.window}}]))
+    alerting:
+      name: PrometheusHTTPAPIBudgetBurn
+      labels:
+        severity: warning
+      annotations:
+        summary: "Prometheus HTTP API SLO error budget burn rate is high"

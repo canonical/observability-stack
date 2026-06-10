@@ -3,7 +3,7 @@ service: "prometheus"
 labels:
   team: observability
 slos:
-  - name: "query-latency"
+  - name: "query-performance"
     objective: 99
     description: "99% of PromQL queries complete within 10 seconds"
     sli:

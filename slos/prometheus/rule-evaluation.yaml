@@ -3,7 +3,7 @@ service: "prometheus"
 labels:
   team: observability
 slos:
-  - name: "rule-evaluation-success"
+  - name: "rule-evaluation"
     objective: 99.9
     description: "99.9% of rule evaluations succeed"
     sli:

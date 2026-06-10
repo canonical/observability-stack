@@ -1,0 +1,20 @@
+version: "prometheus/v1"
+service: "prometheus"
+labels:
+  team: observability
+slos:
+  - name: "scrape-health"
+    objective: 99
+    description: "99% of scrape targets are reachable"
+    sli:
+      events:
+        error_query: |
+          count(up == 0)
+        total_query: |
+          count(up)
+    alerting:
+      name: PrometheusScrapeHealthBudgetBurn
+      labels:
+        severity: warning
+      annotations:
+        summary: "Prometheus scrape health SLO error budget burn rate is high"

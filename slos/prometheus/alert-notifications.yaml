@@ -3,7 +3,7 @@ service: "prometheus"
 labels:
   team: observability
 slos:
-  - name: "notification-delivery"
+  - name: "alert-notifications"
     objective: 99.9
     description: "99.9% of alert notifications are delivered to Alertmanager"
     sli:
