@@ -128,8 +128,7 @@ module "opentelemetry_collector" {
 }
 
 module "ssc" {
-  # The TF module bumped the Juju provider to v2 after this commit, pin for compatibility with provider v1 
-  source = "git::https://github.com/canonical/self-signed-certificates-operator//terraform?ref=0216698683a757a44d02e98c003a19aa7ffcfb63"
+  source = "git::https://github.com/canonical/self-signed-certificates-operator//terraform?ref=rev653"
   count  = var.internal_tls ? 1 : 0
 
   app_name    = var.ssc.app_name
