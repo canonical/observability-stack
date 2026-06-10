@@ -23,7 +23,7 @@ This is a Terraform module facilitating the deployment of the COS solution, usin
 | <a name="module_loki"></a> [loki](#module\_loki) | git::https://github.com/canonical/loki-operators//terraform | n/a |
 | <a name="module_mimir"></a> [mimir](#module\_mimir) | git::https://github.com/canonical/mimir-operators//terraform | n/a |
 | <a name="module_opentelemetry_collector"></a> [opentelemetry\_collector](#module\_opentelemetry\_collector) | git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform | n/a |
-| <a name="module_ssc"></a> [ssc](#module\_ssc) | git::https://github.com/canonical/self-signed-certificates-operator//terraform | 0216698683a757a44d02e98c003a19aa7ffcfb63 |
+| <a name="module_ssc"></a> [ssc](#module\_ssc) | git::https://github.com/canonical/self-signed-certificates-operator//terraform | rev653 |
 | <a name="module_tempo"></a> [tempo](#module\_tempo) | git::https://github.com/canonical/tempo-operators//terraform | n/a |
 | <a name="module_traefik"></a> [traefik](#module\_traefik) | git::https://github.com/canonical/traefik-k8s-operator//terraform | n/a |
 
