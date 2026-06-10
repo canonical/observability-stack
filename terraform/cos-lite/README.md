@@ -7,7 +7,7 @@ This is a Terraform module facilitating the deployment of the COS Lite solution,
 
 | Name | Version |
 |------|---------|
-| <a name="provider_juju"></a> [juju](#provider\_juju) | ~> 1.0 |
+| <a name="provider_juju"></a> [juju](#provider\_juju) | >= 1.4.0 |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 
 ## Modules
@@ -50,15 +50,28 @@ This is a Terraform module facilitating the deployment of the COS Lite solution,
 ## Usage
 
 ### Using different Terraform Juju provider versions
-If you require the Terraform Juju provider `< 1.0.0`, then deploy the COS Lite module with the `tf-provider-v0` tag:
+
+#### Provider v0
+If you require the Terraform Juju provider `< 1.0.0`, then deploy the COS module with the `tf-provider-v0` tag:
 
 ```hcl
 module "cos-lite" {
-  source     = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=tf-provider-v0"
+  source = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=tf-provider-v0"
+  # ... and other required variables ...
 }
 ```
 
-Otherwise, you can deploy from main (without `?ref`) which uses the Terraform Juju provider `~> 1.0`. See the [v1 migration documentation](https://documentation.ubuntu.com/terraform-provider-juju/v1/howto/manage-provider/upgrade-provider-to-v1/) if you need to upgrade your modules.
+Otherwise, you can deploy from main (without `?ref`) which supports the v1 Terraform Juju provider. See the [v1 migration documentation](https://documentation.ubuntu.com/terraform-provider-juju/v1/howto/manage-provider/upgrade-provider-to-v1/) if you need to upgrade your modules.
+
+#### Provider >= 1.0.0, < 1.4.0
+If you require the Terraform Juju provider `< 1.4.0`, then deploy the COS module from the [7448dad](https://github.com/canonical/observability-stack/commit/7448dadb996835c1c0ae1d79d2f435992652d410) commit hash:
+
+```hcl
+module "cos-lite" {
+  source = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=7448dadb996835c1c0ae1d79d2f435992652d410"
+  # ... and other required variables ...
+}
+```
 
 ### Basic usage
 
