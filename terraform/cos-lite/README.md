@@ -7,7 +7,7 @@ This is a Terraform module facilitating the deployment of the COS Lite solution,
 
 | Name | Version |
 |------|---------|
-| <a name="provider_juju"></a> [juju](#provider\_juju) | >= 1.0 |
+| <a name="provider_juju"></a> [juju](#provider\_juju) | >= 1.4.0 |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 
 ## Modules
@@ -52,6 +52,32 @@ This is a Terraform module facilitating the deployment of the COS Lite solution,
 
 ## Usage
 
+### Using different Terraform Juju provider versions
+
+#### Provider v0
+If you require the Terraform Juju provider `< 1.0.0`, then deploy the COS module with the `tf-provider-v0` tag:
+
+```hcl
+module "cos-lite" {
+  source = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=tf-provider-v0"
+  # ... and other required variables ...
+}
+```
+
+Otherwise, you can deploy from main (without `?ref`) which supports the v1 Terraform Juju provider. See the [v1 migration documentation](https://documentation.ubuntu.com/terraform-provider-juju/v1/howto/manage-provider/upgrade-provider-to-v1/) if you need to upgrade your modules.
+
+#### Provider >= 1.0.0, < 1.4.0
+If you require the Terraform Juju provider `< 1.4.0`, then deploy the COS module from the [c1c8bd9](https://github.com/canonical/observability-stack/commit/c1c8bd9a17abe079242eb9535c6b7a4fa8832a02) commit hash:
+
+```hcl
+module "cos-lite" {
+  source = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=c1c8bd9a17abe079242eb9535c6b7a4fa8832a02"
+  # ... and other required variables ...
+}
+```
+
+### Basic usage
+
 The minimum version of Terraform Juju provider required is `1.5`.
 
 To deploy the COS Lite solution in a model named `cos-lite`, create this root module:
@@ -66,14 +92,8 @@ terraform {
   }
 }
 
-resource "juju_model" "cos_lite" {
-  name = "cos-lite"
-}
-
 module "cos-lite" {
-  source     = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=main"
-  model_uuid = juju_model.cos_lite.uuid
-  risk    = "edge"
+  source = "git::https://github.com/canonical/observability-stack//terraform/cos-lite"
 }
 ```
 

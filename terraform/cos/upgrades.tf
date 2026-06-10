@@ -100,8 +100,55 @@ data "juju_charm" "traefik_info" {
 
 # -------------- # State migrations -------------- #
 
-# refactor(cos): Traefik and SSC are conditional (#354)
+# refactor: Traefik and SSC are conditional (#354)
 moved {
   from = module.traefik
   to   = module.traefik[0]
+}
+
+# refactor: align metrics-endpoint loop name with cos-lite
+moved {
+  from = juju_integration.otelcol_metrics_endpoint
+  to   = juju_integration.metrics_endpoint
+}
+
+# refactor: move integrations after for_each loop implementation
+moved {
+  from = juju_integration.opentelemetry_collector_mimir_metrics
+  to   = juju_integration.receive_remote_write["opentelemetry_collector"]
+}
+
+moved {
+  from = juju_integration.tempo_send_remote_write_mimir_receive_remote_write
+  to   = juju_integration.receive_remote_write["tempo"]
+}
+
+moved {
+  from = juju_integration.traces_and_logs_correlation
+  to   = juju_integration.receive_datasource["loki"]
+}
+
+moved {
+  from = juju_integration.traces_and_metrics_correlation
+  to   = juju_integration.receive_datasource["mimir"]
+}
+
+moved {
+  from = juju_integration.external_grafana_ca_cert[0]
+  to   = juju_integration.external_ca_cert["grafana"]
+}
+
+moved {
+  from = juju_integration.external_otelcol_ca_cert[0]
+  to   = juju_integration.external_ca_cert["opentelemetry_collector"]
+}
+
+moved {
+  from = juju_integration.catalogue_integrations["grafana"]
+  to   = juju_integration.catalogue_integration_grafana
+}
+
+moved {
+  from = juju_integration.charm_tracing["grafana"]
+  to   = juju_integration.charm_tracing_grafana
 }

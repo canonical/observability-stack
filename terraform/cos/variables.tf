@@ -111,10 +111,15 @@ variable "ingress" {
     grafana                 = optional(bool, true)
     loki                    = optional(bool, true)
     mimir                   = optional(bool, true)
-    opentelemetry_collector = optional(bool, true)
+    opentelemetry_collector = optional(bool, false)
     tempo                   = optional(bool, true)
   })
   default = {}
+
+  validation {
+    condition     = !(var.ingress.opentelemetry_collector == true && var.ingress.tempo == true)
+    error_message = "opentelemetry_collector and tempo cannot both be enabled. See https://github.com/canonical/observability-stack/issues/382"
+  }
 }
 
 # -------------- # S3 storage configuration --------------

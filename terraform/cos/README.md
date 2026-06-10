@@ -10,7 +10,7 @@ This is a Terraform module facilitating the deployment of the COS solution, usin
 
 | Name | Version |
 |------|---------|
-| <a name="provider_juju"></a> [juju](#provider\_juju) | >= 1.0 |
+| <a name="provider_juju"></a> [juju](#provider\_juju) | >= 1.4.0 |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 
 ## Modules
@@ -39,7 +39,7 @@ This is a Terraform module facilitating the deployment of the COS solution, usin
 | <a name="input_external_ca_cert_offer_url"></a> [external\_ca\_cert\_offer\_url](#input\_external\_ca\_cert\_offer\_url) | A Juju offer URL (e.g. admin/external-ca.send-ca-cert) of a CA providing the 'certificate\_transfer' integration for applications to trust ingress via Traefik. | `string` | `null` | no |
 | <a name="input_external_certificates_offer_url"></a> [external\_certificates\_offer\_url](#input\_external\_certificates\_offer\_url) | A Juju offer URL of a CA providing the 'tls\_certificates' integration for Traefik to supply it with server certificates | `string` | `null` | no |
 | <a name="input_grafana"></a> [grafana](#input\_grafana) | Application configuration for Grafana. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    app_name           = optional(string, "grafana")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    resources          = optional(map(string), {})<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
-| <a name="input_ingress"></a> [ingress](#input\_ingress) | Per-component toggle for ingress integrations | <pre>object({<br/>    alertmanager            = optional(bool, true)<br/>    catalogue               = optional(bool, true)<br/>    grafana                 = optional(bool, true)<br/>    loki                    = optional(bool, true)<br/>    mimir                   = optional(bool, true)<br/>    opentelemetry_collector = optional(bool, true)<br/>    tempo                   = optional(bool, true)<br/>  })</pre> | `{}` | no |
+| <a name="input_ingress"></a> [ingress](#input\_ingress) | Per-component toggle for ingress integrations | <pre>object({<br/>    alertmanager            = optional(bool, true)<br/>    catalogue               = optional(bool, true)<br/>    grafana                 = optional(bool, true)<br/>    loki                    = optional(bool, true)<br/>    mimir                   = optional(bool, true)<br/>    opentelemetry_collector = optional(bool, false)<br/>    tempo                   = optional(bool, true)<br/>  })</pre> | `{}` | no |
 | <a name="input_internal_tls"></a> [internal\_tls](#input\_internal\_tls) | Specify whether to use TLS or not for internal COS communication. By default, TLS is enabled using self-signed-certificates | `bool` | `true` | no |
 | <a name="input_loki_bucket"></a> [loki\_bucket](#input\_loki\_bucket) | Loki bucket name | `string` | `"loki"` | no |
 | <a name="input_loki_coordinator"></a> [loki\_coordinator](#input\_loki\_coordinator) | Application configuration for Loki Coordinator. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    resources          = optional(map(string), {})<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 3)<br/>  })</pre> | `{}` | no |
@@ -71,15 +71,28 @@ This is a Terraform module facilitating the deployment of the COS solution, usin
 ## Usage
 
 ### Using different Terraform Juju provider versions
+
+#### Provider v0
 If you require the Terraform Juju provider `< 1.0.0`, then deploy the COS module with the `tf-provider-v0` tag:
 
 ```hcl
 module "cos" {
   source     = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=tf-provider-v0"
+  # ... and other required variables ...
 }
 ```
 
-Otherwise, you can deploy from main (without `?ref`) which uses the Terraform Juju provider `~> 1.0`. See the [v1 migration documentation](https://documentation.ubuntu.com/terraform-provider-juju/v1/howto/manage-provider/upgrade-provider-to-v1/) if you need to upgrade your modules.
+Otherwise, you can deploy from main (without `?ref`) which supports the v1 Terraform Juju provider. See the [v1 migration documentation](https://documentation.ubuntu.com/terraform-provider-juju/v1/howto/manage-provider/upgrade-provider-to-v1/) if you need to upgrade your modules.
+
+#### Provider >= 1.0.0, < 1.4.0
+If you require the Terraform Juju provider `< 1.4.0`, then deploy the COS module from the [c1c8bd9](https://github.com/canonical/observability-stack/commit/c1c8bd9a17abe079242eb9535c6b7a4fa8832a02) commit hash:
+
+```hcl
+module "cos" {
+  source     = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=c1c8bd9a17abe079242eb9535c6b7a4fa8832a02"
+  # ... and other required variables ...
+}
+```
 
 ### Basic usage
 
@@ -97,15 +110,8 @@ terraform {
   }
 }
 
-resource "juju_model" "cos" {
-  name = "cos"
-}
-
 module "cos" {
-  source     = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=track/2"
-  model_uuid = juju_model.cos.uuid
-  channel    = "2/stable"
-
+  source     = "git::https://github.com/canonical/observability-stack//terraform/cos"
   s3_endpoint   = "http://S3_HOST_IP:8080"
   s3_secret_key = "secret-key"
   s3_access_key = "access-key"
@@ -149,11 +155,8 @@ In order to deploy COS on AWS, update the `cloud` input of the `cos` module to `
 
 ```hcl
 module "cos" {
-  source     = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=track/2"
-  model_uuid = juju_model.cos.uuid
-  channel    = "2/stable"
-  cloud      = "aws"
-
+  source        = "git::https://github.com/canonical/observability-stack//terraform/cos"
+  cloud         = "aws"
   s3_endpoint   = "http://S3_HOST_IP:8080"
   s3_secret_key = "secret-key"
   s3_access_key = "access-key"
