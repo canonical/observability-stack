@@ -7,10 +7,12 @@ myst:
 # Prometheus SLIs and SLOs
 
 This page documents Service Level Indicators (SLIs) and Service Level
-Objectives (SLOs) for monitoring the health of Prometheus. To deploy these
+Objectives (SLOs) for monitoring the health of Prometheus. To set up these
 SLOs, see [Set up SLOs with Sloth](/how-to/integrate/set-up-slos-with-sloth).
 
 ## SLIs
+
+These metrics are recommended as Service Level Indicators for Prometheus.
 
 ### Query performance
 
@@ -71,6 +73,8 @@ SLOs, see [Set up SLOs with Sloth](/how-to/integrate/set-up-slos-with-sloth).
 | `prometheus_tsdb_head_chunks_storage_size_bytes` | Gauge | Storage used by head block |
 
 ## SLOs
+
+These are pre-defined SLO specifications for Prometheus, ready to use with Sloth.
 
 ### Query latency
 

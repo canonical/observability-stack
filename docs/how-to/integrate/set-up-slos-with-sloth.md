@@ -1,13 +1,13 @@
 ---
 myst:
   html_meta:
-    description: "Learn how to define and deploy Service Level Objectives using Sloth and cos-configuration-k8s in the Canonical Observability Stack."
+    description: "Learn how to define and set up Service Level Objectives using Sloth and cos-configuration-k8s in the Canonical Observability Stack."
 ---
 
 # Set up SLOs with Sloth
 
-This guide shows how to define Service Level Objectives (SLOs) and deploy them
-to COS using [Sloth](https://charmhub.io/sloth-k8s) and
+This guide shows how to define Service Level Objectives (SLOs) and set them up
+in COS using [Sloth](https://charmhub.io/sloth-k8s) and
 [cos-configuration-k8s](https://charmhub.io/cos-configuration-k8s).
 
 Sloth generates Prometheus recording and alerting rules from SLO specifications.
@@ -27,37 +27,9 @@ SLO specifications use the
 [Sloth Prometheus/v1 format](https://pkg.go.dev/github.com/slok/sloth/pkg/prometheus/api/v1).
 Create a YAML file with the following structure:
 
-```yaml
-version: "prometheus/v1"
-service: "my-service"
-labels:
-  team: my-team
-slos:
-  - name: "availability"
-    objective: 99.9
-    description: "99.9% of requests succeed"
-    sli:
-      events:
-        error_query: 'sum(rate(http_requests_total{status=~"5.."}[{{.window}}]))'
-        total_query: 'sum(rate(http_requests_total[{{.window}}]))'
-    alerting:
-      name: MyServiceHighErrorRate
-      labels:
-        severity: warning
-      annotations:
-        summary: "Error budget burn rate is high"
+```{literalinclude} /../slos/prometheus/notification-delivery.yaml
+:language: yaml
 ```
-
-Key fields:
-
-| Field | Description |
-|-------|-------------|
-| `version` | Must be `"prometheus/v1"` |
-| `service` | Name of the service being monitored |
-| `objective` | Target percentage (e.g., 99.9 for 99.9%) |
-| `error_query` | PromQL query returning error count |
-| `total_query` | PromQL query returning total count |
-| `{{.window}}` | Template variable replaced by Sloth with the evaluation window |
 
 ## Organise SLO files in a git repository
 
