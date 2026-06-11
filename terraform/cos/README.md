@@ -10,7 +10,7 @@ This is a Terraform module facilitating the deployment of the COS solution, usin
 
 | Name | Version |
 |------|---------|
-| <a name="provider_juju"></a> [juju](#provider\_juju) | >= 1.0 |
+| <a name="provider_juju"></a> [juju](#provider\_juju) | >= 1.4.0 |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 
 ## Modules
@@ -23,7 +23,7 @@ This is a Terraform module facilitating the deployment of the COS solution, usin
 | <a name="module_loki"></a> [loki](#module\_loki) | git::https://github.com/canonical/loki-operators//terraform | n/a |
 | <a name="module_mimir"></a> [mimir](#module\_mimir) | git::https://github.com/canonical/mimir-operators//terraform | n/a |
 | <a name="module_opentelemetry_collector"></a> [opentelemetry\_collector](#module\_opentelemetry\_collector) | git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform | n/a |
-| <a name="module_ssc"></a> [ssc](#module\_ssc) | git::https://github.com/canonical/self-signed-certificates-operator//terraform | 0216698683a757a44d02e98c003a19aa7ffcfb63 |
+| <a name="module_ssc"></a> [ssc](#module\_ssc) | git::https://github.com/canonical/self-signed-certificates-operator//terraform | n/a |
 | <a name="module_tempo"></a> [tempo](#module\_tempo) | git::https://github.com/canonical/tempo-operators//terraform | n/a |
 | <a name="module_traefik"></a> [traefik](#module\_traefik) | git::https://github.com/canonical/traefik-k8s-operator//terraform | n/a |
 
@@ -72,15 +72,28 @@ This is a Terraform module facilitating the deployment of the COS solution, usin
 ## Usage
 
 ### Using different Terraform Juju provider versions
+
+#### Provider v0
 If you require the Terraform Juju provider `< 1.0.0`, then deploy the COS module with the `tf-provider-v0` tag:
 
 ```hcl
 module "cos" {
   source     = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=tf-provider-v0"
+  # ... and other required variables ...
 }
 ```
 
-Otherwise, you can deploy from main (without `?ref`) which uses the Terraform Juju provider `~> 1.0`. See the [v1 migration documentation](https://documentation.ubuntu.com/terraform-provider-juju/v1/howto/manage-provider/upgrade-provider-to-v1/) if you need to upgrade your modules.
+Otherwise, you can deploy from main (without `?ref`) which supports the v1 Terraform Juju provider. See the [v1 migration documentation](https://documentation.ubuntu.com/terraform-provider-juju/v1/howto/manage-provider/upgrade-provider-to-v1/) if you need to upgrade your modules.
+
+#### Provider >= 1.0.0, < 1.4.0
+If you require the Terraform Juju provider `< 1.4.0`, then deploy the COS module from the [c1c8bd9](https://github.com/canonical/observability-stack/commit/c1c8bd9a17abe079242eb9535c6b7a4fa8832a02) commit hash:
+
+```hcl
+module "cos" {
+  source     = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=c1c8bd9a17abe079242eb9535c6b7a4fa8832a02"
+  # ... and other required variables ...
+}
+```
 
 ### Basic usage
 
@@ -98,15 +111,8 @@ terraform {
   }
 }
 
-resource "juju_model" "cos" {
-  name = "cos"
-}
-
 module "cos" {
-  source     = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=track/2"
-  model_uuid = juju_model.cos.uuid
-  channel    = "2/stable"
-
+  source     = "git::https://github.com/canonical/observability-stack//terraform/cos"
   s3_endpoint   = "http://S3_HOST_IP:8080"
   s3_secret_key = "secret-key"
   s3_access_key = "access-key"
@@ -150,11 +156,8 @@ In order to deploy COS on AWS, update the `cloud` input of the `cos` module to `
 
 ```hcl
 module "cos" {
-  source     = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=track/2"
-  model_uuid = juju_model.cos.uuid
-  channel    = "2/stable"
-  cloud      = "aws"
-
+  source        = "git::https://github.com/canonical/observability-stack//terraform/cos"
+  cloud         = "aws"
   s3_endpoint   = "http://S3_HOST_IP:8080"
   s3_secret_key = "secret-key"
   s3_access_key = "access-key"
