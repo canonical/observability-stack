@@ -7,8 +7,7 @@ myst:
 # Prometheus
 
 Reference material specific to Prometheus deployments within COS. Use these
-pages for SLI definitions, ready-to-use SLO specifications, and
-Prometheus-specific operational guidance.
+pages for SLI definitions, and Prometheus-specific operational guidance.
 
 ## Service levels
 
@@ -18,5 +17,5 @@ Indicators and Objectives.
 ```{toctree}
 :maxdepth: 1
 
-SLIs and SLOs <sli-slo>
+SLIs <sli>
 ```

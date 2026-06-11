@@ -27,8 +27,87 @@ SLO specifications use the
 [Sloth Prometheus/v1 format](https://pkg.go.dev/github.com/slok/sloth/pkg/prometheus/api/v1).
 Create a YAML file with the following structure:
 
-```{literalinclude} /../slos/prometheus/alert-notifications.yaml
+```{literalinclude} /how-to/integrate/alert-notifications.yaml
 :language: yaml
+```
+
+## Translate SLI metrics to SLO queries
+
+The SLI reference pages (such as
+[Prometheus SLIs](/reference/cos-components/prometheus/sli))
+list the metrics available for each component. To write the `error_query` and
+`total_query` for your SLO:
+
+1. Pick metrics from the SLI reference that represent the events you care about.
+   In case the SLI reference doesn't exist for the charm / application you want to
+   instrument, analyze the metrics and industry practices to find good SLI candidates.
+2. Decide which events are "bad" (errors, failures, slow requests) and which form
+   the total population.
+3. Use `{{.window}}` as the range interval — Sloth replaces it with time
+   windows when generating multi-window, multi-burn-rate alert rules.
+
+For example, the SLO spec above is built from the **Alert notifications** SLI
+group:
+
+| SLI metric | Role in the SLO |
+|---|---|
+| `prometheus_notifications_dropped_total` | Bad event — dropped before sending |
+| `prometheus_notifications_errors_total` | Bad event — error during sending |
+| `prometheus_notifications_sent_total` | Total event — notification attempted |
+
+The `error_query` sums both failure counters; the `total_query` sums
+sent and dropped notifications to cover all attempts.
+
+Two query patterns cover most SLOs:
+
+**Availability — counter metrics**
+
+Filter the total counter by an error label (e.g., HTTP 5xx status codes) to get
+the error count:
+
+```yaml
+sli:
+  events:
+    error_query: |
+      sum(rate(prometheus_http_requests_total{code=~"5.."}[{{.window}}]))
+      or vector(0)
+    total_query: |
+      sum(rate(prometheus_http_requests_total[{{.window}}]))
+```
+
+**Latency — histogram metrics**
+
+Subtract the bucket at your threshold from the total request count to get the
+number of "slow" (bad) requests:
+
+```yaml
+sli:
+  events:
+    error_query: |
+      sum(rate(prometheus_http_request_duration_seconds_count{handler="/api/v1/query"}[{{.window}}]))
+      - sum(rate(prometheus_http_request_duration_seconds_bucket{handler="/api/v1/query",le="1"}[{{.window}}]))
+    total_query: |
+      sum(rate(prometheus_http_request_duration_seconds_count{handler="/api/v1/query"}[{{.window}}]))
+      or vector(1)
+```
+
+The `or vector(1)` guard in the `total_query` prevents a divide-by-zero when no
+requests have been observed (e.g., a quiet service).
+
+### Adding Juju topology labels
+
+In a COS deployment every metric is labelled with `juju_model`,
+`juju_model_uuid`, and `juju_application`. Add these to your queries to target
+a specific deployed application and avoid mixing data from multiple deployments:
+
+```yaml
+error_query: |
+  sum(rate(prometheus_http_requests_total{
+    juju_model="<model>",
+    juju_model_uuid="<uuid>",
+    juju_application="<app>",
+    code=~"5.."
+  }[{{.window}}])) or vector(0)
 ```
 
 ## Organise SLO files in a git repository
@@ -43,7 +122,7 @@ your-repo/
     └── grafana-dashboard-load.yaml
 ```
 
-Each YAML file should contain one SLO specification. Prefixing filenames with
+YAML files can contain multiple SLO specifications. Prefixing filenames with
 the service name makes it easier to manage SLOs as your deployment grows.
 
 ## Deploy cos-configuration-k8s
@@ -79,4 +158,7 @@ juju ssh prometheus/0 curl -s http://localhost:9090/api/v1/rules | jq '.data.gro
 ```
 
 You should see rule groups named with the pattern:
-`<model>_<hash>_sloth_slo_<service>_<slo-name>`
+`<model>_<uuid>_<sloth-app>_sloth_slo_<type>_<service>_<slo-name>_alerts`
+
+Each SLO generates three rule groups, one for each `<type>`: `sli_recordings`,
+`meta_recordings`, and `alerts`.

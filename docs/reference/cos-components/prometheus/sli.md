@@ -1,30 +1,27 @@
 ---
 myst:
   html_meta:
-    description: "SLI metrics and SLO specifications for monitoring Prometheus health using Sloth in the Canonical Observability Stack."
+    description: "SLI metrics for monitoring Prometheus health using Sloth in the Canonical Observability Stack."
 ---
 
-# Prometheus SLIs and SLOs
+# Prometheus SLIs
 
 This page documents Service Level Indicators (SLIs) and Service Level
 Objectives (SLOs) for monitoring the health of Prometheus. To set up these
 SLOs, see [Set up SLOs with Sloth](/how-to/integrate/set-up-slos-with-sloth).
 
-## SLIs
-
 These metrics are recommended as Service Level Indicators for Prometheus.
 
-### Query performance
+## Query performance
 
 | Metric | Type | Description |
 |--------|------|-------------|
 | `prometheus_engine_query_duration_seconds` | Summary | Query execution time by slice (inner_eval, prepare_time, queue_time, result_sort) |
-| `prometheus_engine_query_duration_histogram_seconds` | Histogram | Query execution duration histogram by slice |
 | `prometheus_engine_queries` | Gauge | Number of currently executing or waiting queries |
 | `prometheus_engine_queries_concurrent_max` | Gauge | Maximum concurrent queries allowed |
 | `prometheus_engine_query_samples_total` | Counter | Total samples loaded by all queries |
 
-### HTTP API
+## HTTP API
 
 | Metric | Type | Description |
 |--------|------|-------------|
@@ -32,7 +29,7 @@ These metrics are recommended as Service Level Indicators for Prometheus.
 | `prometheus_http_requests_total` | Counter | HTTP requests by handler and status code |
 | `prometheus_http_response_size_bytes` | Histogram | HTTP response size by handler |
 
-### Scrape health
+## Scrape health
 
 | Metric | Type | Description |
 |--------|------|-------------|
@@ -41,7 +38,7 @@ These metrics are recommended as Service Level Indicators for Prometheus.
 | `scrape_samples_scraped` | Gauge | Number of samples scraped per target |
 | `prometheus_target_interval_length_seconds` | Summary | Actual interval between scrapes |
 
-### Rule evaluation
+## Rule evaluation
 
 | Metric | Type | Description |
 |--------|------|-------------|
@@ -52,7 +49,7 @@ These metrics are recommended as Service Level Indicators for Prometheus.
 | `prometheus_rule_group_iterations_missed_total` | Counter | Missed rule group evaluations due to slow evaluation |
 | `prometheus_rule_group_duration_seconds` | Summary | Rule group evaluation duration |
 
-### Alert notifications
+## Alert notifications
 
 | Metric | Type | Description |
 |--------|------|-------------|
@@ -62,7 +59,7 @@ These metrics are recommended as Service Level Indicators for Prometheus.
 | `prometheus_notifications_queue_length` | Gauge | Alerts in queue per Alertmanager |
 | `prometheus_notifications_latency_seconds` | Summary | Alert notification send latency |
 
-### Storage (TSDB)
+## Storage (TSDB)
 
 | Metric | Type | Description |
 |--------|------|-------------|
@@ -71,43 +68,3 @@ These metrics are recommended as Service Level Indicators for Prometheus.
 | `prometheus_tsdb_compaction_duration_seconds` | Histogram | Time spent in compactions |
 | `prometheus_tsdb_wal_corruptions_total` | Counter | WAL corruption events (should be 0) |
 | `prometheus_tsdb_head_chunks_storage_size_bytes` | Gauge | Storage used by head block |
-
-## SLOs
-
-These are pre-defined SLO specifications for Prometheus, ready to use with Sloth.
-
-### Query performance
-
-```{literalinclude} /../slos/prometheus/query-performance.yaml
-:language: yaml
-```
-
-### HTTP API
-
-```{literalinclude} /../slos/prometheus/http-api.yaml
-:language: yaml
-```
-
-### Scrape health
-
-```{literalinclude} /../slos/prometheus/scrape-health.yaml
-:language: yaml
-```
-
-### Rule evaluation
-
-```{literalinclude} /../slos/prometheus/rule-evaluation.yaml
-:language: yaml
-```
-
-### Alert notifications
-
-```{literalinclude} /../slos/prometheus/alert-notifications.yaml
-:language: yaml
-```
-
-### Storage (TSDB)
-
-```{literalinclude} /../slos/prometheus/storage.yaml
-:language: yaml
-```
