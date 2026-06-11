@@ -6,9 +6,8 @@ myst:
 
 # Prometheus SLIs
 
-This page documents Service Level Indicators (SLIs) and Service Level
-Objectives (SLOs) for monitoring the health of Prometheus. To set up these
-SLOs, see [Set up SLOs with Sloth](/how-to/integrate/set-up-slos-with-sloth).
+This page documents Service Level Indicators (SLIs) for monitoring the health of Prometheus. 
+To set up Service Level Objectives (SLOs), see [Set up SLOs with Sloth](/how-to/integrate/set-up-slos-with-sloth).
 
 These metrics are recommended as Service Level Indicators for Prometheus.
 
