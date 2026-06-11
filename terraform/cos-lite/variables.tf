@@ -137,7 +137,7 @@ variable "grafana" {
     resources          = optional(map(string), {})
     revision           = optional(number, null)
     storage_directives = optional(map(string), {})
-    units              = optional(number, 3)
+    units              = optional(number, 1)
   })
   default     = {}
   description = "Application configuration for Grafana. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
