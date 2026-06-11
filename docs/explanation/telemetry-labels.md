@@ -150,5 +150,5 @@ This is useful for:
 
 See also:
 - [reference/juju-topology-labels](Juju topology labels)
-- [How relabeling in Prometheus works](https://grafana.com/blog/2022/03/21/how-relabeling-in-prometheus-works)
+- [How relabeling in Prometheus works](https://grafana.com/blog/how-relabeling-in-prometheus-works/)
 - [PromLens Relabeler](https://relabeler.promlabs.com/).

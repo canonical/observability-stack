@@ -22,7 +22,7 @@ By default, applications of Charmed Grafana are deployed with a single administr
 * change this password as described [in the Grafana charm docs](https://github.com/canonical/grafana-k8s-operator?tab=readme-ov-file#web-interface)
 * consider adding less-privileged accounts as needed (see the [official Grafana Docs](https://grafana.com/docs/grafana/latest/) for how to do this manually inside Grafana)
 
-If you're using the Canonical Identity Platform to manage authentication, this could be used to manage Grafana user accounts directly.  See [the Hydra docs](https://charmhub.io/hydra/docs/how-to/integrate-oidc-compatible-charms) for more details.
+If you're using the Canonical Identity Platform to manage authentication, this could be used to manage Grafana user accounts directly.  See [the Hydra docs](https://canonical-identity.readthedocs-hosted.com/reference/charms/hydra/) for more details.
 
 ### Be judicious about what is exposed via an ingress
 
