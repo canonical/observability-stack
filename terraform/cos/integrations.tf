@@ -599,13 +599,9 @@ resource "juju_integration" "pgbouncer_grafana_dashboards" {
 resource "juju_integration" "pgbouncer_grafana" {
   model_uuid = var.model_uuid
 
-  application {
-    name     = juju_application.pgbouncer.name
-    endpoint = "database"
-  }
-
+  application { offer_url = var.postgresql_offer_url }
   application {
     name     = juju_application.grafana.name
-    endpoint = module.grafana.endpoints.database
+    endpoint = module.grafana.endpoints.pgsql
   }
 }
