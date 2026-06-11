@@ -517,7 +517,8 @@ resource "juju_integration" "external_ca_cert" {
   }
 }
 
-# TODO: Add a comment separator
+# -------------- # Database --------------
+
 resource "juju_integration" "grafana_database" {
   count = local.grafana_db_required ? 1 : 0
   
