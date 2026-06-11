@@ -517,6 +517,7 @@ resource "juju_integration" "external_ca_cert" {
   }
 }
 
+# TODO: Add a comment separator
 resource "juju_integration" "grafana_database" {
   count = local.grafana_db_required ? 1 : 0
   
@@ -525,6 +526,6 @@ resource "juju_integration" "grafana_database" {
   application { offer_url = var.postgresql_offer_url }
   application {
     name     = module.grafana.app_name
-    endpoint = module.grafana.endpoints.pgsql
+    endpoint = module.grafana.requires.pgsql
   }
 }

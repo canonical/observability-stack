@@ -105,6 +105,11 @@ variable "postgresql_offer_url" {
   description = "A Juju offer URL (e.g. admin/postgresql.database) of a PostgreSQL service providing the 'postgresql_client' integration for applications to connect to the database."
   type        = string
   default     = null
+
+  validation {
+    condition = var.postgresql_offer_url == null && local.grafana_db_required == true
+    error_message = "postgresql_offer_url must be supplied when Grafana is scaled > 1 due to its database requirements."
+  }
 }
 
 # -------------- # Ingress configurations --------------
