@@ -7,16 +7,36 @@ variables {
   s3_secret_key = "foo"
 }
 
-# --- grafana: scaled > 1 requires database offer ---
+# --- grafana: scale > 1 requires database offer ---
 
-run "grafana_requires_database_offer" {
+run "default_grafana_requires_database_offer" {
   command = plan
 
-  variables {
-    grafana = {
-      units = 3
-    }
-  }
-
   expect_failures = [var.postgresql_offer_url]
+}
+
+# --- grafana: scale > 1 with database offer integration ---
+
+run "grafana_conditionally_integrated_to_database_offer" {
+  command = plan
+
+  variables { postgresql_offer_url = "admin/postgresql.database" }
+
+  assert {
+    condition     = length(juju_integration.grafana_database) == 1
+    error_message = "Expected a grafana_database integration when scale is > 1"
+  }
+}
+
+# --- grafana: scale 1 does not require database offer ---
+
+run "grafana_scale_1_no_database_offer" {
+  command = plan
+
+  variables { grafana = { units = 1 } }
+
+  assert {
+    condition     = length(juju_integration.grafana_database) == 0
+    error_message = "Unexpected grafana_database integrations when scale is 1"
+  }
 }

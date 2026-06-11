@@ -107,7 +107,7 @@ variable "postgresql_offer_url" {
   default     = null
 
   validation {
-    condition = var.postgresql_offer_url == null && local.grafana_db_required == true
+    condition     = !(var.postgresql_offer_url == null && var.grafana.units > 1)
     error_message = "postgresql_offer_url must be supplied when Grafana is scaled > 1 due to its database requirements."
   }
 }
