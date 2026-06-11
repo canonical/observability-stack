@@ -537,71 +537,14 @@ resource "juju_integration" "traces_and_metrics_correlation" {
   }
 }
 
-
-# -------------- # Provided by PGBouncer --------------
-
-resource "juju_integration" "otel_collector_pgbouncer_logging" {
-  model_uuid = var.model_uuid
-
-  application {
-    name     = juju_application.pgbouncer.name
-    endpoint = "logging"
-  }
-
-  application {
-    name     = module.otel_collector.app_name
-    endpoint = module.otel_collector.endpoints.receive_loki_logs
-  }
-}
-
-resource "juju_integration" "otel_collector_pgbouncer_metrics" {
-  model_uuid = var.model_uuid
-
-  application {
-    name     = juju_application.pgbouncer.name
-    endpoint = "metrics-endpoint"
-  }
-
-  application {
-    name     = module.otel_collector.app_name
-    endpoint = module.otel_collector.endpoints.metrics_endpoint
-  }
-}
-
-resource "juju_integration" "otel_collector_pgbouncer_tracing" {
-  model_uuid = var.model_uuid
-
-  application {
-    name     = juju_application.pgbouncer.name
-    endpoint = "tracing"
-  }
-
-  application {
-    name     = module.otel_collector.app_name
-    endpoint = module.otel_collector.endpoints.receive_traces
-  }
-}
-
-resource "juju_integration" "pgbouncer_grafana_dashboards" {
-  model_uuid = var.model_uuid
-
-  application {
-    name     = juju_application.pgbouncer.name
-    endpoint = "grafana-dashboard"
-  }
-
-  application {
-    name     = module.grafana.app_name
-    endpoint = module.grafana.endpoints.grafana_dashboard
-  }
-}
-
-resource "juju_integration" "pgbouncer_grafana" {
-  model_uuid = var.model_uuid
+resource "juju_integration" "grafana_database" {
+  count = local.grafana_db_required ? 1 : 0
+  
+  model_uuid = local.model_uuid
 
   application { offer_url = var.postgresql_offer_url }
   application {
-    name     = juju_application.grafana.name
+    name     = module.grafana.app_name
     endpoint = module.grafana.endpoints.pgsql
   }
 }
