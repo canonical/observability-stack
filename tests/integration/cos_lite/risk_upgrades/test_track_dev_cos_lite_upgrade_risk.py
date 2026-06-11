@@ -3,10 +3,10 @@ from pathlib import Path
 import jubilant
 from helpers import generic_assertions
 
-TF_FILE = Path(__file__).parent.resolve() / "track-dev-risks.tf"
+TF_FILE = Path(__file__).parent.resolve() / "track-2.tf"
 
 
-def test_deploy_from_track_2(
+def test_deploy_from_stable(
     tf_manager, ca_model: jubilant.Juju, cos_model: jubilant.Juju, tmp_path
 ):
     # GIVEN a module deployed with a "stable" risk
