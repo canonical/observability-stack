@@ -11,7 +11,7 @@ May 2026
 
 These release notes cover new features and changes in COS 3.0.
 
-COS 3.0 newer versions of all underlying charms, as well as new features around charmed opentelemetry-collector.
+COS 3.0 features newer versions of all underlying charms, as well as new features around charmed opentelemetry-collector.
 
 COS 3.0 is designated as a long-term support (LTS) release. This means it will continue to receive security updates and critical bug fixes for 15 years.
 
