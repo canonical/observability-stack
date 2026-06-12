@@ -38,7 +38,7 @@ For Site Reliability Engineers, COS provides a turn-key, out-of-the-box solution
 [Charmed alert rules]: explanation/alerting/charmed-rules
 [Add alert rules]: how-to/integrate/adding-alert-rules
 [Data integrity]: explanation/operations/data-integrity
-[COS components]: reference/cos-components
+[COS components]: reference/cos-components/index
 
 
 ## How this documentation is organized

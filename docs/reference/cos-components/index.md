@@ -81,3 +81,8 @@ myst:
 | [Node Exporter](https://snapcraft.io/node-exporter) | [Source](https://github.com/canonical/node-exporter-snap), [issues](https://github.com/canonical/node-exporter-snap/issues) |
 | [OpenTelemetry Collector](https://snapcraft.io/opentelemetry-collector) | [Source](https://github.com/canonical/opentelemetry-collector-snap), [issues](https://github.com/canonical/opentelemetry-collector-snap/issues) |
 
+```{toctree}
+:maxdepth: 1
+
+Prometheus <prometheus/index>
+```

@@ -55,7 +55,7 @@ Compatibility and packaging information for charms, snaps, and rocks (OCI images
 :maxdepth: 1
 
 Integration matrix <integration-matrix>
-COS components <cos-components>
+COS components <cos-components/index>
 ```
 
 ## Architecture decisions

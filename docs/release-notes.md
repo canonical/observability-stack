@@ -23,7 +23,7 @@ If you have COS 2 installed, make plans to upgrade to COS 3.0 before July 2026.
 
 See our [release policy](reference/release-policy) and [upgrade instructions](how-to/deploy-and-manage/upgrade).
 
-To report bugs or security issues, refer to the index of [COS components](../reference/cos-components).
+To report bugs or security issues, refer to the index of [COS components](../reference/cos-components/index).
 
 ## Requirements and compatibility
 See [system requirements](reference/system-requirements).
