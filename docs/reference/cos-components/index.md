@@ -84,5 +84,6 @@ myst:
 ```{toctree}
 :maxdepth: 1
 
+Grafana <grafana/index>
 Prometheus <prometheus/index>
 ```
