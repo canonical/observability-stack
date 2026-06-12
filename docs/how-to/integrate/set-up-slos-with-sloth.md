@@ -27,7 +27,7 @@ SLO specifications use the
 [Sloth Prometheus/v1 format](https://pkg.go.dev/github.com/slok/sloth/pkg/prometheus/api/v1).
 Create a YAML file with the following structure:
 
-```{literalinclude} /how-to/integrate/alert-notifications.yaml
+```{literalinclude} /how-to/integrate/alert-notifications-sample-slo.yaml
 :language: yaml
 ```
 
