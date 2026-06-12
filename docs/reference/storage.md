@@ -8,6 +8,9 @@ myst:
 
 Use this document to plan storage for a COS or COS Lite deployment.
 
+## Customize storage options
+Before deploying, [configure the storage options](/how-to/configure-and-tune/customize-storage-options.md) for each component — persistent volumes are difficult to resize after initial deployment.
+
 ## Evaluate storage volume needs
 Evaluate the [telemetry volume needed](/how-to/configure-and-tune/evaluate-telemetry-volume) for your solution
 and refer to the [sizing guide](system-requirements) for concrete numbers.

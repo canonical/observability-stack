@@ -48,11 +48,10 @@ Deploy COS on a high-availability Kubernetes cluster with at least 3 control pla
 
 ### Sizing
 
+Follow the [storage best practices](/reference/storage) to set up PVCs and a distributed storage backend with a replication factor of 3. Do **not** use `hostPath` storage in production.
+
 Use the [sizing guide](/reference/system-requirements) to determine the minimum hardware for your deployment.
 If you don't yet know how much telemetry your workloads generate, start with [How to evaluate telemetry volume](/how-to/configure-and-tune/evaluate-telemetry-volume).
-
-Follow the [storage best practices](/reference/storage) to set up a distributed storage backend with a replication factor of 3.
-Do **not** use `hostPath` storage in production.
 
 ### Configure networking
 
@@ -73,10 +72,6 @@ To expose Grafana publicly, deploy two Traefik charms: one for internal connecti
 ### Dedicated Juju controller and model
 
 You should bootstrap a dedicated Juju controller and model just for COS. See [How to configure the Juju model of COS](configure-juju-model.md) to determine if you want a module-managed or target an existing Juju model.
-
-### Strict reproducibility
-
-Review [How to configure COS for strict reproducibility](configure-strict-reproducibility.md) guide if you have production-like requirements.
 
 ### Strict reproducibility
 
