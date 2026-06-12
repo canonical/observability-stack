@@ -11,11 +11,25 @@ To set up Service Level Objectives (SLOs), see [Set up SLOs with Sloth](/how-to/
 
 These metrics are recommended as Service Level Indicators for Grafana.
 
+## The `slo_group` label
+
+Grafana's HTTP request metrics include a `slo_group` label that Grafana Labs uses internally to classify endpoints by their service level tier. When building SLIs, filter on this label to exclude endpoints that are intentionally not covered by any SLO:
+
+| `slo_group` value | Meaning |
+|---|---|
+| `high-fast` | Default for most handlers; expected to respond quickly |
+| `high-medium` | Handlers that may take longer to respond |
+| `high-slow` | Proxy and downstream handlers; high availability but no latency guarantees |
+| `low` | Experimental or unstable handlers not covered by the standard SLO |
+| `none` | Handlers where errors are expected (for example, WebSocket connections); **exclude from SLIs** |
+
+Use `slo_group!="none"` in your SLI queries to exclude the `none` group.
+
 ## HTTP API
 
 | Metric | Type | Description |
 |--------|------|-------------|
-| `grafana_http_request_duration_seconds` | Histogram | HTTP request latency by handler, method, status code, and SLO group |
+| `grafana_http_request_duration_seconds` | Histogram | HTTP request latency by handler, method, status code, and `slo_group` |
 | `grafana_http_request_in_flight` | Gauge | Number of HTTP requests currently being served |
 | `grafana_api_response_status_total` | Counter | API responses by HTTP status code |
 | `grafana_page_response_status_total` | Counter | Page responses by HTTP status code |
