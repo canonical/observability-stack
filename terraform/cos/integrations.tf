@@ -521,7 +521,7 @@ resource "juju_integration" "external_ca_cert" {
 
 resource "juju_integration" "grafana_database" {
   count = local.grafana_db_required ? 1 : 0
-  
+
   model_uuid = local.model_uuid
 
   application { offer_url = var.postgresql_offer_url }
