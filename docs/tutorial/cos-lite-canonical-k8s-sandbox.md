@@ -17,7 +17,7 @@ In this tutorial you deploy a single-node COS Lite appliance, backed by hostPath
 - Proxy ([doc](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/networking/proxy/)) and
   DNS ([doc](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/networking/default-dns/)) for K8s are configured (if applicable).
 - K8s cloud added to Juju ([doc](https://documentation.ubuntu.com/juju/3.6/howto/manage-clouds/#add-a-kubernetes-cloud)).
-- See also, the [installation considerations](../how-to/deploy-and-manage/install#preparation).
+- See also, the [installation considerations](../how-to/deploy-and-manage/install.md#preparation).
 
 ## Deploy COS Lite using Terraform
 
