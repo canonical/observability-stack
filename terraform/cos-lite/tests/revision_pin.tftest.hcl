@@ -1,7 +1,5 @@
 mock_provider "juju" {}
 
-variables { model_uuid = "00000000-0000-0000-0000-000000000000" }
-
 # --- User revision pin is respected and not overridden by juju_charm datasource ---
 
 run "user_revision_pin_is_respected" {

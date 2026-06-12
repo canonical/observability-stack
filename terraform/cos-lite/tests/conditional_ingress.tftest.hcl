@@ -1,7 +1,5 @@
 mock_provider "juju" {}
 
-variables { model_uuid = "00000000-0000-0000-0000-000000000000" }
-
 # --- traefik: all ingress enabled by default ---
 
 run "traefik_ingress_enabled" {

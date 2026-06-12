@@ -8,33 +8,9 @@ myst:
 
 This guide describes how to configure storage classes and volume sizes for COS components, using the Juju Terraform provider.
 
-## Configure custom storage class
-
-You may want to use custom storage classes like Ceph or Cinder-backed PVCs for your containers. List the available storage classes:
-
-```bash
-kubectl get sc
+```{warning}
+Persistent volumes are difficult to resize after initial deployment without fully replacing the application.
 ```
-```
-NAME                  PROVISIONER              RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE    
-ceph-ext4             rbd.csi.ceph.com         Delete          Immediate              true                   2d22h  
-ceph-xfs              rbd.csi.ceph.com         Delete          Immediate              true                   2d22h  
-csi-rawfile-default   rawfile.csi.openebs.io   Delete          WaitForFirstConsumer   false                  3d1h   
-```
-
-For example, to have all the pods deployed with a PVC that is provisioned by `ceph-xfs` storage class, modify the `juju_model`
-resource in the base file with a `workload-storage` config:
-
-```diff
-resource "juju_model" "cos" {                             
-  name   = "cos"
-  config = { logging-config = "<root>=WARNING; unit=DEBUG"
-  
-+ workload-storage = "ceph-xfs"      
-  }                                
-}
-```
-
 
 ## Configure custom storage sizes
 
@@ -74,6 +50,33 @@ This shows 3 examples setting sizes for Prometheus, Loki and Alertmanager using 
 `{storage_directives = {<storage_name> = "<size>"}}`
 
 You can find the names of relevant storage volumes in the [storage reference](/reference/storage).
+
+## Configure custom storage class
+
+You may want to use custom storage classes like Ceph or Cinder-backed PVCs for your containers. List the available storage classes:
+
+```bash
+kubectl get sc
+```
+```
+NAME                  PROVISIONER              RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE    
+ceph-ext4             rbd.csi.ceph.com         Delete          Immediate              true                   2d22h  
+ceph-xfs              rbd.csi.ceph.com         Delete          Immediate              true                   2d22h  
+csi-rawfile-default   rawfile.csi.openebs.io   Delete          WaitForFirstConsumer   false                  3d1h   
+```
+
+For example, to have all the pods deployed with a PVC that is provisioned by `ceph-xfs` storage class, modify the `juju_model`
+resource in the base file with a `workload-storage` config:
+
+```diff
+resource "juju_model" "cos" {                             
+  name   = "cos"
+  config = { logging-config = "<root>=WARNING; unit=DEBUG"
+  
++ workload-storage = "ceph-xfs"      
+  }                                
+}
+```
 
 ## External links
 
