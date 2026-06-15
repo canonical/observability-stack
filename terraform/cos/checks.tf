@@ -1,0 +1,36 @@
+# -------------- # Storage directives for storage-intensive components --------------
+
+check "alertmanager_storage_directives" {
+  assert {
+    condition     = length(var.alertmanager.storage_directives) > 0
+    error_message = "alertmanager.storage_directives ${local.storage_directives_warning}"
+  }
+}
+
+check "loki_worker_storage_directives" {
+  assert {
+    condition     = length(var.loki_worker.write_storage_directives) > 0
+    error_message = "loki_worker.write_storage_directives ${local.storage_directives_warning}"
+  }
+}
+
+check "mimir_worker_storage_directives" {
+  assert {
+    condition     = length(var.mimir_worker.write_storage_directives) > 0
+    error_message = "mimir_worker.write_storage_directives ${local.storage_directives_warning}"
+  }
+}
+
+check "tempo_worker_storage_directives" {
+  assert {
+    condition     = length(var.tempo_worker.ingester_worker_storage_directives) > 0
+    error_message = "tempo_worker.ingester_worker_storage_directives ${local.storage_directives_warning}"
+  }
+}
+
+check "opentelemetry_collector_storage_directives" {
+  assert {
+    condition     = length(var.opentelemetry_collector.storage_directives) > 0
+    error_message = "opentelemetry_collector.storage_directives ${local.storage_directives_warning}"
+  }
+}

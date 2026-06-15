@@ -5,6 +5,12 @@ variables {
   s3_endpoint   = "foo"
   s3_access_key = "foo"
   s3_secret_key = "foo"
+
+  alertmanager            = { storage_directives = { "foo" = "1G" } }
+  loki_worker             = { write_storage_directives = { "foo" = "1G" } }
+  mimir_worker            = { write_storage_directives = { "foo" = "1G" } }
+  tempo_worker            = { ingester_worker_storage_directives = { "foo" = "1G" } }
+  opentelemetry_collector = { storage_directives = { "foo" = "1G" } }
 }
 
 # --- traefik: tempo and otelcol ingress enabled raises validation errror ---

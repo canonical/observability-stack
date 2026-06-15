@@ -1,11 +1,12 @@
 locals {
-  create_model          = var.model.uuid == null
-  model_uuid            = local.create_model ? juju_model.cos[0].uuid : data.juju_model.cos[0].uuid
-  clouds                = ["aws", "self-managed"] # list of k8s clouds where this COS module can be deployed.
-  tls_termination       = var.external_certificates_offer_url != null ? true : false
-  reverse_proxy_enabled = anytrue(values(var.ingress))
-  traefik_enabled       = local.reverse_proxy_enabled
-  traefik_base          = "ubuntu@20.04"
+  clouds                     = ["aws", "self-managed"] # list of k8s clouds where this COS module can be deployed.
+  create_model               = var.model.uuid == null
+  model_uuid                 = local.create_model ? juju_model.cos[0].uuid : data.juju_model.cos[0].uuid
+  reverse_proxy_enabled      = anytrue(values(var.ingress))
+  storage_directives_warning = "is unset, so it will use the default 1G volume. Set a size before deploying to production; resizing a persistent volume after deployment requires manual steps. See https://documentation.ubuntu.com/observability/latest/how-to/configure-and-tune/customize-storage-options/"
+  tls_termination            = var.external_certificates_offer_url != null ? true : false
+  traefik_enabled            = local.reverse_proxy_enabled
+  traefik_base               = "ubuntu@20.04"
   tracks = {
     alertmanager = "dev"
     catalogue    = "dev"
