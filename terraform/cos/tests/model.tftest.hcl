@@ -1,9 +1,10 @@
 mock_provider "juju" {}
 
 variables {
-  s3_endpoint   = "foo"
-  s3_access_key = "foo"
-  s3_secret_key = "foo"
+  s3_endpoint          = "foo"
+  s3_access_key        = "foo"
+  s3_secret_key        = "foo"
+  postgresql_offer_url = "admin/postgresql.database"
 }
 
 # --- model: create when no uuid provided ---
