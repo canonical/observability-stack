@@ -49,7 +49,7 @@ Deploy COS on a high-availability Kubernetes cluster with at least 3 control pla
 ### Sizing
 
 ```{warning}
-Refer to the [storage customization guide](/reference/storage.md#customize-storage-options) since some storage can be difficult to resize after the initial deployment.
+Persistent volumes require manual steps to resize after the initial deployment. Configure storage options before deploying — see the [storage customization guide](/reference/storage.md#customize-storage-options).
 ```
 
 Follow the [storage best practices](/reference/storage) to set up PVCs and a distributed storage backend with a replication factor of 3. Do **not** use `hostPath` storage in production.

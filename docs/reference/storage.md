@@ -11,10 +11,10 @@ Use this document to plan storage for a COS or COS Lite deployment.
 ## Customize storage options
 
 ```{warning}
-Persistent volumes are difficult to resize after initial deployment without fully replacing the application.
+Persistent volumes require manual steps to resize after the initial deployment.
 ```
 
-Before deploying, [configure the storage options](/how-to/configure-and-tune/customize-storage-options.md) for each component which is data intensive.
+Before deploying, [configure the storage options](/how-to/configure-and-tune/customize-storage-options.md) for each data-intensive component.
 
 For COS:
 
@@ -22,7 +22,7 @@ For COS:
 - Loki
 - Mimir
 - Tempo
-- Opentelemetry-collector
+- OpenTelemetry Collector
 
 For COS Lite:
 
@@ -31,6 +31,7 @@ For COS Lite:
 - Prometheus
 
 ## Evaluate storage volume needs
+
 Evaluate the [telemetry volume needed](/how-to/configure-and-tune/evaluate-telemetry-volume) for your solution
 and refer to the [sizing guide](system-requirements) for concrete numbers.
 

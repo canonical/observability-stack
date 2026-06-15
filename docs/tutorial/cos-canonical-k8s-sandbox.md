@@ -23,7 +23,7 @@ You can reproduce the COS deployment in this tutorial with a [cloud-config](cos-
 - A Juju Kubernetes controller is bootstrapped and ready.
 
 ```{warning}
-See also, the [storage customization guide](/reference/storage.md#customize-storage-options) since some storage can be difficult to resize after the initial deployment.
+Persistent volumes require manual steps to resize after the initial deployment. Configure storage options before deploying — see the [storage customization guide](/reference/storage.md#customize-storage-options).
 ```
 
 ## Set up S3

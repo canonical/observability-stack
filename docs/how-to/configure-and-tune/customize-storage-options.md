@@ -9,7 +9,7 @@ myst:
 This guide describes how to configure storage classes and volume sizes for COS components, using the Juju Terraform provider.
 
 ```{warning}
-Persistent volumes are difficult to resize after initial deployment without fully replacing the application.
+Persistent volumes require manual steps to resize after the initial deployment.
 ```
 
 ## Configure custom storage sizes

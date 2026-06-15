@@ -19,7 +19,7 @@ In this tutorial you deploy a single-node COS Lite appliance, backed by hostPath
 - K8s cloud added to Juju ([doc](https://documentation.ubuntu.com/juju/3.6/howto/manage-clouds/#add-a-kubernetes-cloud)).
 
 ```{warning}
-See also, the [storage customization guide](/reference/storage.md#customize-storage-options) since some storage can be difficult to resize after the initial deployment.
+Persistent volumes require manual steps to resize after the initial deployment. Configure storage options before deploying — see the [storage customization guide](/reference/storage.md#customize-storage-options).
 ```
 
 ## Deploy COS Lite using Terraform
