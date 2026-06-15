@@ -101,7 +101,7 @@ The compactor merges small blocks into larger ones and enforces retention. Backl
 
 ## Cluster membership
 
-Tempo uses a distributed ring for component coordination. These metrics measure the health of cluster membership. An `Unhealthy` ring member count above 0 means at least one component has stopped heartbeating.
+Tempo uses a distributed ring for component coordination. These metrics measure the health of cluster membership. An `Unhealthy` ring member count above 0 means at least one component has stopped sending heartbeats.
 
 | Metric | Type | Description |
 |--------|------|-------------|
