@@ -1,10 +1,15 @@
 mock_provider "juju" {}
 
 variables {
-  model         = { uuid = "00000000-0000-0000-0000-000000000000" }
-  s3_endpoint   = "foo"
-  s3_access_key = "foo"
-  s3_secret_key = "foo"
+  s3_endpoint             = "foo"
+  s3_access_key           = "foo"
+  s3_secret_key           = "foo"
+  alertmanager            = { storage_directives = { "foo" = "1G" } }
+  grafana                 = { storage_directives = { "foo" = "1G" } }
+  loki_worker             = { write_storage_directives = { "foo" = "1G" } }
+  mimir_worker            = { write_storage_directives = { "foo" = "1G" }, backend_storage_directives = { "foo" = "1G" } }
+  tempo_worker            = { ingester_worker_storage_directives = { "foo" = "1G" } }
+  opentelemetry_collector = { storage_directives = { "foo" = "1G" } }
 }
 
 # --- grafana: scale > 1 requires database offer ---
@@ -34,7 +39,7 @@ run "grafana_scale_1_integrated_to_database_offer" {
   command = plan
 
   variables {
-    grafana              = { units = 1 }
+    grafana              = { units = 1, storage_directives = { "foo" = "1G" } }
     postgresql_offer_url = "admin/postgresql.database"
   }
 
@@ -49,7 +54,7 @@ run "grafana_scale_1_integrated_to_database_offer" {
 run "grafana_scale_1_no_database_offer" {
   command = plan
 
-  variables { grafana = { units = 1 } }
+  variables { grafana = { units = 1, storage_directives = { "foo" = "1G" } } }
 
   assert {
     condition     = length(juju_integration.grafana_database) == 0

@@ -1,11 +1,16 @@
 mock_provider "juju" {}
 
 variables {
-  model                = { uuid = "00000000-0000-0000-0000-000000000000" }
-  s3_endpoint          = "foo"
-  s3_access_key        = "foo"
-  s3_secret_key        = "foo"
-  postgresql_offer_url = "admin/postgresql.database"
+  s3_endpoint             = "foo"
+  s3_access_key           = "foo"
+  s3_secret_key           = "foo"
+  postgresql_offer_url    = "admin/postgresql.database"
+  alertmanager            = { storage_directives = { "foo" = "1G" } }
+  grafana                 = { storage_directives = { "foo" = "1G" } }
+  loki_worker             = { write_storage_directives = { "foo" = "1G" } }
+  mimir_worker            = { write_storage_directives = { "foo" = "1G" }, backend_storage_directives = { "foo" = "1G" } }
+  tempo_worker            = { ingester_worker_storage_directives = { "foo" = "1G" } }
+  opentelemetry_collector = { storage_directives = { "foo" = "1G" } }
 }
 
 # --- User revision pin is respected and not overridden by juju_charm datasource ---
@@ -14,18 +19,18 @@ run "user_revision_pin_is_respected" {
   command = plan
 
   variables {
-    alertmanager            = { revision = 1 }
+    alertmanager            = { revision = 1, storage_directives = { "foo" = "1G" } }
     catalogue               = { revision = 2 }
-    grafana                 = { revision = 3 }
+    grafana                 = { revision = 3, storage_directives = { "foo" = "1G" } }
     loki_coordinator        = { revision = 4 }
-    loki_worker             = { revision = 5 }
+    loki_worker             = { revision = 5, write_storage_directives = { "foo" = "1G" } }
     mimir_coordinator       = { revision = 6 }
-    mimir_worker            = { revision = 7 }
-    opentelemetry_collector = { revision = 8 }
+    mimir_worker            = { revision = 7, write_storage_directives = { "foo" = "1G" }, backend_storage_directives = { "foo" = "1G" } }
+    opentelemetry_collector = { revision = 8, storage_directives = { "foo" = "1G" } }
     ssc                     = { revision = 9 }
     s3_integrator           = { revision = 10 }
     tempo_coordinator       = { revision = 11 }
-    tempo_worker            = { revision = 12 }
+    tempo_worker            = { revision = 12, ingester_worker_storage_directives = { "foo" = "1G" } }
     traefik                 = { revision = 13 }
   }
 
