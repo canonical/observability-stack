@@ -55,7 +55,7 @@ run "no_warning_when_grafana_storage_unset_but_database_enabled" {
   }
 }
 
-run "warns_when_loki_worker_storage_directives_unset" {
+run "warns_when_loki_worker_write_storage_directives_unset" {
   command = plan
 
   variables {
@@ -67,11 +67,11 @@ run "warns_when_loki_worker_storage_directives_unset" {
   }
 
   expect_failures = [
-    check.loki_worker_storage_directives,
+    check.loki_worker_write_storage_directives,
   ]
 }
 
-run "warns_when_mimir_worker_storage_directives_unset" {
+run "warns_when_mimir_worker_write_storage_directives_unset" {
   command = plan
 
   variables {
@@ -84,7 +84,7 @@ run "warns_when_mimir_worker_storage_directives_unset" {
   }
 
   expect_failures = [
-    check.mimir_worker_storage_directives,
+    check.mimir_worker_write_storage_directives,
   ]
 }
 
@@ -105,7 +105,7 @@ run "warns_when_mimir_worker_backend_storage_directives_unset" {
   ]
 }
 
-run "warns_when_tempo_worker_storage_directives_unset" {
+run "warns_when_tempo_worker_ingester_storage_directives_unset" {
   command = plan
 
   variables {
@@ -117,7 +117,7 @@ run "warns_when_tempo_worker_storage_directives_unset" {
   }
 
   expect_failures = [
-    check.tempo_worker_storage_directives,
+    check.tempo_worker_ingester_storage_directives,
   ]
 }
 
