@@ -22,9 +22,6 @@ You can reproduce the COS deployment in this tutorial with a [cloud-config](cos-
 - K8s cloud added to Juju ([doc](https://documentation.ubuntu.com/juju/3.6/howto/manage-clouds/#add-a-kubernetes-cloud)).
 - A Juju Kubernetes controller is bootstrapped and ready.
 
-```{warning}
-Persistent volumes require manual steps to resize after the initial deployment. Configure storage options before deploying — see the [storage customization guide](/reference/storage.md#customize-storage-options).
-```
 
 ## Set up S3
 For S3, we will install the Microceph snap ([doc](https://canonical-microceph.readthedocs-hosted.com/latest/snap/tutorial/get-started/))

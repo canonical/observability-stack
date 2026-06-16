@@ -8,16 +8,12 @@ myst:
 
 This guide describes how to configure storage classes and volume sizes for COS components, using the Juju Terraform provider.
 
-```{warning}
-Persistent volumes require manual steps to resize after the initial deployment.
-```
-
 ## Configure custom storage sizes
 
 Since COS components are storage intensive, it is recommended to modify the size of your PVC.
 
 ```{important}
-If you don't specify a size, a PVC will be created with a default size of 1G backed by the storage class you configured. 
+If you don't specify a size, a PVC will be created with a default size of 1G backed by the storage class you configured. Persistent volumes require manual steps to resize after the initial deployment.
 ```
 
 Add a `storage_directive` for each storage container in your terraform file. For COS Lite it may look like this:
