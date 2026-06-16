@@ -7,8 +7,9 @@ variables {
   s3_secret_key = "foo"
 
   alertmanager            = { storage_directives = { "foo" = "1G" } }
+  grafana                 = { storage_directives = { "foo" = "1G" } }
   loki_worker             = { write_storage_directives = { "foo" = "1G" } }
-  mimir_worker            = { write_storage_directives = { "foo" = "1G" } }
+  mimir_worker            = { write_storage_directives = { "foo" = "1G" }, backend_storage_directives = { "foo" = "1G" } }
   tempo_worker            = { ingester_worker_storage_directives = { "foo" = "1G" } }
   opentelemetry_collector = { storage_directives = { "foo" = "1G" } }
 }
@@ -21,11 +22,11 @@ run "user_revision_pin_is_respected" {
   variables {
     alertmanager            = { revision = 1, storage_directives = { "foo" = "1G" } }
     catalogue               = { revision = 2 }
-    grafana                 = { revision = 3 }
+    grafana                 = { revision = 3, storage_directives = { "foo" = "1G" } }
     loki_coordinator        = { revision = 4 }
     loki_worker             = { revision = 5, write_storage_directives = { "foo" = "1G" } }
     mimir_coordinator       = { revision = 6 }
-    mimir_worker            = { revision = 7, write_storage_directives = { "foo" = "1G" } }
+    mimir_worker            = { revision = 7, write_storage_directives = { "foo" = "1G" }, backend_storage_directives = { "foo" = "1G" } }
     opentelemetry_collector = { revision = 8, storage_directives = { "foo" = "1G" } }
     ssc                     = { revision = 9 }
     s3_integrator           = { revision = 10 }

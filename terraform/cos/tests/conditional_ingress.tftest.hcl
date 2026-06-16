@@ -7,8 +7,9 @@ variables {
   s3_secret_key = "foo"
 
   alertmanager            = { storage_directives = { "foo" = "1G" } }
+  grafana                 = { storage_directives = { "foo" = "1G" } }
   loki_worker             = { write_storage_directives = { "foo" = "1G" } }
-  mimir_worker            = { write_storage_directives = { "foo" = "1G" } }
+  mimir_worker            = { write_storage_directives = { "foo" = "1G" }, backend_storage_directives = { "foo" = "1G" } }
   tempo_worker            = { ingester_worker_storage_directives = { "foo" = "1G" } }
   opentelemetry_collector = { storage_directives = { "foo" = "1G" } }
 }
