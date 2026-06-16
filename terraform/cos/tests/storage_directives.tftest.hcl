@@ -23,10 +23,13 @@ run "warns_when_alertmanager_storage_directives_unset" {
   ]
 }
 
-run "warns_when_grafana_storage_directives_unset" {
+run "warns_when_grafana_storage_directives_unset_and_database_disabled" {
   command = plan
 
   variables {
+    # No database integration (units = 1, no offer), so storage must be set.
+    postgresql_offer_url    = null
+    grafana                 = { units = 1 }
     alertmanager            = { storage_directives = { "foo" = "1G" } }
     loki_worker             = { write_storage_directives = { "foo" = "1G" } }
     mimir_worker            = { write_storage_directives = { "foo" = "1G" }, backend_storage_directives = { "foo" = "1G" } }
@@ -37,6 +40,19 @@ run "warns_when_grafana_storage_directives_unset" {
   expect_failures = [
     check.grafana_storage_directives,
   ]
+}
+
+run "no_warning_when_grafana_storage_unset_but_database_enabled" {
+  command = plan
+
+  variables {
+    # Database integration enabled (offer set), so Grafana storage is not needed.
+    alertmanager            = { storage_directives = { "foo" = "1G" } }
+    loki_worker             = { write_storage_directives = { "foo" = "1G" } }
+    mimir_worker            = { write_storage_directives = { "foo" = "1G" }, backend_storage_directives = { "foo" = "1G" } }
+    tempo_worker            = { ingester_worker_storage_directives = { "foo" = "1G" } }
+    opentelemetry_collector = { storage_directives = { "foo" = "1G" } }
+  }
 }
 
 run "warns_when_loki_worker_storage_directives_unset" {

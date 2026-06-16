@@ -9,7 +9,7 @@ check "alertmanager_storage_directives" {
 
 check "grafana_storage_directives" {
   assert {
-    condition     = length(var.grafana.storage_directives) > 0
+    condition     = local.grafana_db_enabled || length(var.grafana.storage_directives) > 0
     error_message = "grafana.storage_directives ${local.storage_directives_warning}"
   }
 }
