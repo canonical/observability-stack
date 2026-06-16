@@ -520,7 +520,7 @@ resource "juju_integration" "external_ca_cert" {
 # -------------- # Database --------------
 
 resource "juju_integration" "grafana_database" {
-  count = local.grafana_db_required ? 1 : 0
+  count = local.grafana_db_enabled ? 1 : 0
 
   model_uuid = local.model_uuid
 
