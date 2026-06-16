@@ -6,6 +6,7 @@ locals {
   reverse_proxy_enabled = anytrue(values(var.ingress))
   traefik_enabled       = local.reverse_proxy_enabled
   traefik_base          = "ubuntu@20.04"
+  grafana_ha            = var.grafana.units > 1
   tracks = {
     alertmanager = "dev"
     catalogue    = "dev"

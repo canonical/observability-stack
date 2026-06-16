@@ -55,6 +55,23 @@ module "loki" {
   units              = var.loki.units
 }
 
+resource "juju_application" "pgbouncer" {
+  name               = var.pgbouncer.app_name
+  config             = var.pgbouncer.config
+  constraints        = var.pgbouncer.constraints
+  model_uuid         = local.model_uuid
+  resources          = var.pgbouncer.resources
+  storage_directives = var.pgbouncer.storage_directives
+  trust              = true
+  units              = var.pgbouncer.units
+
+  charm {
+    name     = "pgbouncer-k8s"
+    channel  = local.channels.pgbouncer
+    revision = local.revisions.pgbouncer
+  }
+}
+
 module "prometheus" {
   source = "git::https://github.com/canonical/prometheus-k8s-operator//terraform"
 

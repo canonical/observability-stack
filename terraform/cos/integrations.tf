@@ -530,3 +530,76 @@ resource "juju_integration" "grafana_database" {
     endpoint = module.grafana.requires.pgsql
   }
 }
+
+
+# -------------- # Provided by PGBouncer --------------
+
+resource "juju_integration" "otel_collector_pgbouncer_logging" {
+  model_uuid = var.model_uuid
+
+  application {
+    name     = juju_application.pgbouncer.name
+    endpoint = "logging"
+  }
+
+  application {
+    name     = module.otel_collector.app_name
+    endpoint = module.otel_collector.endpoints.receive_loki_logs
+  }
+}
+
+resource "juju_integration" "otel_collector_pgbouncer_metrics" {
+  model_uuid = var.model_uuid
+
+  application {
+    name     = juju_application.pgbouncer.name
+    endpoint = "metrics-endpoint"
+  }
+
+  application {
+    name     = module.otel_collector.app_name
+    endpoint = module.otel_collector.endpoints.metrics_endpoint
+  }
+}
+
+resource "juju_integration" "otel_collector_pgbouncer_tracing" {
+  model_uuid = var.model_uuid
+
+  application {
+    name     = juju_application.pgbouncer.name
+    endpoint = "tracing"
+  }
+
+  application {
+    name     = module.otel_collector.app_name
+    endpoint = module.otel_collector.endpoints.receive_traces
+  }
+}
+
+resource "juju_integration" "pgbouncer_grafana_dashboards" {
+  model_uuid = var.model_uuid
+
+  application {
+    name     = juju_application.pgbouncer.name
+    endpoint = "grafana-dashboard"
+  }
+
+  application {
+    name     = module.grafana.app_name
+    endpoint = module.grafana.endpoints.grafana_dashboard
+  }
+}
+
+resource "juju_integration" "pgbouncer_grafana" {
+  model_uuid = var.model_uuid
+
+  application {
+    name     = juju_application.pgbouncer.name
+    endpoint = "database"
+  }
+
+  application {
+    name     = juju_application.grafana.name
+    endpoint = module.grafana.endpoints.database
+  }
+}
