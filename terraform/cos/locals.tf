@@ -1,7 +1,7 @@
 locals {
   clouds                     = ["aws", "self-managed"] # list of k8s clouds where this COS module can be deployed.
   create_model               = var.model.uuid == null
-  grafana_db_enabled    = var.postgresql_offer_url != null
+  grafana_db_enabled         = var.postgresql_offer_url != null
   model_uuid                 = local.create_model ? juju_model.cos[0].uuid : data.juju_model.cos[0].uuid
   reverse_proxy_enabled      = anytrue(values(var.ingress))
   storage_directives_warning = "is unset, so it will use the default 1G volume. Set a size before deploying to production; resizing a persistent volume after deployment requires manual steps. See https://documentation.ubuntu.com/observability/latest/how-to/configure-and-tune/customize-storage-options/"

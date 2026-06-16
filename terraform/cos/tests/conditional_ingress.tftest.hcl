@@ -1,10 +1,10 @@
 mock_provider "juju" {}
 
 variables {
-  s3_endpoint   = "foo"
-  s3_access_key = "foo"
-  s3_secret_key = "foo"
-  postgresql_offer_url = "admin/postgresql.database"
+  s3_endpoint             = "foo"
+  s3_access_key           = "foo"
+  s3_secret_key           = "foo"
+  postgresql_offer_url    = "admin/postgresql.database"
   alertmanager            = { storage_directives = { "foo" = "1G" } }
   grafana                 = { storage_directives = { "foo" = "1G" } }
   loki_worker             = { write_storage_directives = { "foo" = "1G" } }
