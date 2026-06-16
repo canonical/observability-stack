@@ -86,4 +86,5 @@ myst:
 
 Grafana <grafana/index>
 Prometheus <prometheus/index>
+Tempo <tempo/index>
 ```
