@@ -237,6 +237,12 @@ YouTube
 ZooKeeper
 rsyslog
 syslog
+ingesters
+lookback
+memberlist
+Memberlist
+misconfigured
+queriers
 SLIs
 SLOs
 URIs

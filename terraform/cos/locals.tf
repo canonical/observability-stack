@@ -2,6 +2,7 @@ locals {
   create_model          = var.model.uuid == null
   model_uuid            = local.create_model ? juju_model.cos[0].uuid : data.juju_model.cos[0].uuid
   clouds                = ["aws", "self-managed"] # list of k8s clouds where this COS module can be deployed.
+  grafana_db_enabled    = var.postgresql_offer_url != null
   tls_termination       = var.external_certificates_offer_url != null ? true : false
   reverse_proxy_enabled = anytrue(values(var.ingress))
   traefik_enabled       = local.reverse_proxy_enabled
