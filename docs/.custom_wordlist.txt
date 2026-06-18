@@ -247,17 +247,14 @@ SLIs
 SLOs
 URIs
 compactor
-compactors
-dispatcher
-lifecycler
-metastore
-MetaStore
-nflog
+etcd
+lookups
 preloading
+refetches
 ruler
+sharding
 shipper
-silences
 storegateway
-StoreGateway
+subexpression
 TSDB
 
