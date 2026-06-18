@@ -260,4 +260,8 @@ silences
 storegateway
 StoreGateway
 TSDB
+clientError
+contextCanceled
+contextDeadlineExceeded
+serverError
 
