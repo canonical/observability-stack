@@ -248,13 +248,7 @@ SLOs
 URIs
 compactor
 etcd
-lookups
-preloading
-refetches
 ruler
-sharding
 shipper
-storegateway
-subexpression
 TSDB
 
