@@ -155,17 +155,3 @@ A ring health SLI (unhealthy members should be 0):
 ```promql
 sum by (name) (cortex_ring_members{state="Unhealthy"})
 ```
-
-## KV store
-
-The KV store (typically Consul or etcd) is used for ring state coordination.
-
-| Metric | Type | Description |
-|--------|------|-------------|
-| `cortex_kv_request_duration_seconds` | Histogram | KV store request latency by operation and status code |
-
-## Query engine
-
-| Metric | Type | Description |
-|--------|------|-------------|
-| `cortex_mimir_query_engine_supported_queries_total` | Counter | Total queries evaluated by the query engine |
