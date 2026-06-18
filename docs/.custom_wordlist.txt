@@ -246,4 +246,18 @@ queriers
 SLIs
 SLOs
 URIs
+compactor
+compactors
+dispatcher
+lifecycler
+metastore
+MetaStore
+nflog
+preloading
+ruler
+shipper
+silences
+storegateway
+StoreGateway
+TSDB
 
