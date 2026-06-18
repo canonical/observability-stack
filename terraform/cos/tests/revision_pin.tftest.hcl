@@ -5,7 +5,6 @@ variables {
   s3_access_key           = "foo"
   s3_secret_key           = "foo"
   postgresql_offer_url    = "admin/postgresql.database"
-  alertmanager            = { storage_directives = { "foo" = "1G" } }
   grafana                 = { storage_directives = { "foo" = "1G" } }
   loki_worker             = { write_storage_directives = { "foo" = "1G" } }
   mimir_worker            = { write_storage_directives = { "foo" = "1G" }, backend_storage_directives = { "foo" = "1G" } }
@@ -19,7 +18,7 @@ run "user_revision_pin_is_respected" {
   command = plan
 
   variables {
-    alertmanager            = { revision = 1, storage_directives = { "foo" = "1G" } }
+    alertmanager            = { revision = 1 }
     catalogue               = { revision = 2 }
     grafana                 = { revision = 3, storage_directives = { "foo" = "1G" } }
     loki_coordinator        = { revision = 4 }
