@@ -1,7 +1,6 @@
 mock_provider "juju" {}
 
 variables {
-  alertmanager = { storage_directives = { "foo" = "1G" } }
   grafana      = { storage_directives = { "foo" = "1G" } }
   loki         = { storage_directives = { "foo" = "1G" } }
   prometheus   = { storage_directives = { "foo" = "1G" } }
