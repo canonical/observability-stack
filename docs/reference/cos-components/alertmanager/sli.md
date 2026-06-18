@@ -18,7 +18,7 @@ Alertmanager receives alerts from Prometheus and other senders. These metrics ca
 | Metric | Type | Description |
 |--------|------|-------------|
 | `alertmanager_alerts` | Gauge | Number of alerts by state (`active`, `suppressed`, `unprocessed`) |
-| `alertmanager_alerts_received_total` | Counter | Total alerts received, labelled by `status` (firing, resolved) and `version` (v2) |
+| `alertmanager_alerts_received_total` | Counter | Total alerts received, labelled by `status` (firing, resolved) and `version` |
 | `alertmanager_alerts_invalid_total` | Counter | Alerts rejected due to invalid format; should remain at 0 |
 | `alertmanager_marked_alerts` | Gauge | Number of alerts by state as tracked by the marker, regardless of expiry |
 
