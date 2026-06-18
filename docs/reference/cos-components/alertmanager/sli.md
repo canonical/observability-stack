@@ -85,7 +85,6 @@ Silences suppress alert notifications based on matchers. These metrics measure t
 
 | Metric | Type | Description |
 |--------|------|-------------|
-| `alertmanager_silences` | Gauge | Number of silences by state (`active`, `pending`, `expired`) |
 | `alertmanager_silences_query_duration_seconds` | Histogram | Duration of silence query evaluation |
 | `alertmanager_silences_queries_total` | Counter | Total silence queries received |
 | `alertmanager_silences_query_errors_total` | Counter | Silence queries that failed |
