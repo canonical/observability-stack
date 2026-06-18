@@ -150,12 +150,3 @@ The notification log (`nflog`) records which notifications have been sent to avo
 | `alertmanager_nflog_snapshot_duration_seconds` | Summary | Duration of the last notification log snapshot |
 | `alertmanager_nflog_snapshot_size_bytes` | Gauge | Size of the last notification log snapshot |
 
-## Cluster
-
-When running in high-availability mode, Alertmanager uses gossip-based clustering for silences and notification log replication. If clustering is enabled, these metrics indicate cluster health.
-
-| Metric | Type | Description |
-|--------|------|-------------|
-| `alertmanager_cluster_enabled` | Gauge | Whether clustering is enabled (1) or not (0) |
-| `alertmanager_silences_gossip_messages_propagated_total` | Counter | Silence gossip messages re-propagated to the cluster |
-| `alertmanager_nflog_gossip_messages_propagated_total` | Counter | Notification log gossip messages re-propagated to the cluster |
