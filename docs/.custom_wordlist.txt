@@ -247,11 +247,8 @@ SLIs
 SLOs
 URIs
 compactor
-metastore
-MetaStore
-nflog
 ruler
 shipper
-silences
 TSDB
+unflushed
 
