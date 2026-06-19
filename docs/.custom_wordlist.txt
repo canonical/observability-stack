@@ -246,6 +246,11 @@ queriers
 SLIs
 SLOs
 URIs
+compactor
+ruler
+shipper
+TSDB
+unflushed
 dispatcher
 nflog
 silences
