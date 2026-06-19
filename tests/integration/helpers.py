@@ -1,15 +1,20 @@
 import json
+import logging
 import os
 import re
 import shlex
 import shutil
 import ssl
 import subprocess
+import time
 from pathlib import Path
 from typing import List, Optional
 from urllib.request import urlopen
 
 import jubilant
+import sh
+
+logger = logging.getLogger(__name__)
 
 
 class TfDirManager:
@@ -53,7 +58,11 @@ def generic_assertions(
         raise ValueError("temp_path is required when ca_model is provided")
     models = [ca_model, cos_model] if ca_model is not None else [cos_model]
     wait_for_active_idle_without_error(models, timeout=60 * 60)
-    tls_ctx = get_tls_context(temp_path, ca_model, "self-signed-certificates") if ca_model is not None else None
+    tls_ctx = (
+        get_tls_context(temp_path, ca_model, "self-signed-certificates")
+        if ca_model is not None
+        else None
+    )
     catalogue_apps_are_reachable(cos_model, tls_ctx)
 
 
@@ -110,24 +119,39 @@ def catalogue_apps_are_reachable(
 # 2026-04-22T12:00:54.179Z [otelcol] 2026-04-22T12:00:54.179Z info memorylimiter@v0.130.1/memorylimiter.go:171 Memory usage after GC. {"resource": {"service.instance.id": "9f774ce2-bbdd-44b8-95aa-abe1bd6b72eb", "service.name": "otelcol", "service.version": "0.130.1"}, "otelcol.component.id": "memory_limiter", "otelcol.component.kind": "processor", "otelcol.pipeline.id": "traces/otelcol/0", "otelcol.signal": "traces", "cur_mem_mib": 11}
 # 2026-04-22T12:08:54.309Z [otelcol] 2026-04-22T12:08:54.309Z error adapter/receiver.go:61 ConsumeLogs() failed {"resource": {"service.instance.id": "9f774ce2-bbdd-44b8-95aa-abe1bd6b72eb", "service.name": "otelcol", "service.version": "0.130.1"}, "otelcol.component.id": "filelog/var-log", "otelcol.component.kind": "receiver", "otelcol.signal": "logs", "error": "data refused due to high memory usage"}
 _LOG_LEVEL_RE = re.compile(
-    r"^\d{4}-\d{2}-\d{2}T[\d:.]+Z \[otelcol\] \d{4}-\d{2}-\d{2}T[\d:.]+Z\t(\w+)\t"  # pebble format
+    r"^\d{4}-\d{2}-\d{2}T[\d:.]+Z \[otelcol\] \d{4}-\d{2}-\d{2}T[\d:.]+Z(?:\\t|\s+)(\w+)(?:\\t|\s+)"  # pebble format (handles raw & escaped tabs)
     r"|^\d{4}-\d{2}-\d{2}T[\d:.]+Z (\w+) "  # raw otelcol format
 )
 
 
-def no_errors_in_otelcol_logs(juju: jubilant.Juju):
-    stdout = juju.ssh("otelcol/0", "pebble logs", container="otelcol")
-    assert stdout, "no logs found for otelcol"
-    _no_errors_in_otelcol_logs(stdout)
+def no_errors_in_otelcol_logs(juju: jubilant.Juju, lookback_window: int = 60 * 5):
+    """Capture only new logs for a specified duration, checking for error logs from otelcol."""
+    logger.info(
+        f"Following otelcol logs for {lookback_window} seconds to check for errors ..."
+    )
+    time.sleep(lookback_window)
+    logs = sh.kubectl.logs(
+        "otelcol-0", container="otelcol", n=juju.model, since=f"{lookback_window}s"
+    )
+    assert logs, "no logs found for otelcol"
+    _no_errors_in_otelcol_logs(logs)
 
 
-def _no_errors_in_otelcol_logs(stdout: str):
+def _no_errors_in_otelcol_logs(logs: str):
+    assert "[otelcol]" in logs, (
+        "no otelcol logs found; has the pebble log format changed?"
+    )
     matched_lines = [
         (m.group(1) or m.group(2), line)
-        for line in stdout.splitlines()
+        for line in logs.splitlines()
         if (m := _LOG_LEVEL_RE.match(line))
     ]
-    info_lines = [line for level, line in matched_lines if level == "info"]
-    assert info_lines, "no 'info' level logs found in otelcol output"
     error_lines = [line for level, line in matched_lines if level in ("warn", "error")]
     assert not error_lines, "otelcol error logs:\n" + "\n".join(error_lines)
+    # this INFO assertion ensures that the regex is correctly capturing log levels; avoids checking
+    # an empty set of logs due to a regex mismatch or log format change
+    info_lines = [line for level, line in matched_lines if level == "info"]
+    assert info_lines, (
+        "no 'info' level logs found in otelcol output, see logs:\n"
+        + "\n".join(logs.splitlines())
+    )
