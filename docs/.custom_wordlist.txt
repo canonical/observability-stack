@@ -247,6 +247,10 @@ SLIs
 SLOs
 URIs
 compactor
+etcd
+ruler
+shipper
+TSDB
 ruler
 shipper
 TSDB

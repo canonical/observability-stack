@@ -87,6 +87,7 @@ myst:
 Alertmanager <alertmanager/index>
 Grafana <grafana/index>
 Loki <loki/index>
+Mimir <mimir/index>
 Prometheus <prometheus/index>
 Tempo <tempo/index>
 ```
