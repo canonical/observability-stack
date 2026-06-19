@@ -85,6 +85,7 @@ myst:
 :maxdepth: 1
 
 Grafana <grafana/index>
+Mimir <mimir/index>
 Prometheus <prometheus/index>
 Tempo <tempo/index>
 ```
