@@ -1,15 +1,19 @@
 import json
+import logging
 import os
 import re
 import shlex
 import shutil
 import ssl
 import subprocess
+import time
 from pathlib import Path
 from typing import List, Optional
 from urllib.request import urlopen
 
 import jubilant
+
+logger = logging.getLogger(__name__)
 
 
 class TfDirManager:
@@ -53,7 +57,11 @@ def generic_assertions(
         raise ValueError("temp_path is required when ca_model is provided")
     models = [ca_model, cos_model] if ca_model is not None else [cos_model]
     wait_for_active_idle_without_error(models, timeout=60 * 60)
-    tls_ctx = get_tls_context(temp_path, ca_model, "self-signed-certificates") if ca_model is not None else None
+    tls_ctx = (
+        get_tls_context(temp_path, ca_model, "self-signed-certificates")
+        if ca_model is not None
+        else None
+    )
     catalogue_apps_are_reachable(cos_model, tls_ctx)
 
 
@@ -115,16 +123,39 @@ _LOG_LEVEL_RE = re.compile(
 )
 
 
-def no_errors_in_otelcol_logs(juju: jubilant.Juju):
+def _logs_newer_than(logs: str, timestamp: str) -> List[str]:
+    """Filter log lines to only include those newer than the specified timestamp."""
+    newer_logs = []
+    for line in logs.splitlines():
+        m = _LOG_LEVEL_RE.match(line)
+        if m:
+            log_ts_str = line.split(" ")[0]
+            if log_ts_str > timestamp:
+                newer_logs.append(line)
+    return newer_logs
+
+
+def no_errors_in_otelcol_logs(juju: jubilant.Juju, lookback_window: int = 60 * 5):
+    """Capture only new logs for a specified duration, checking for error logs from otelcol."""
+    breakpoint()
+    stdout = juju.ssh("otelcol/0", "pebble logs -n 1", container="otelcol")
+    assert stdout, "no logs found for otelcol"
+    # TODO: Get the timestamp of the latest log to compare against future log lines
+    latest_log_ts = _LOG_LEVEL_RE.match(stdout)
+    logger.info(
+        f"Following otelcol logs for {lookback_window} seconds to check for errors ..."
+    )
+    time.sleep(lookback_window)
     stdout = juju.ssh("otelcol/0", "pebble logs", container="otelcol")
     assert stdout, "no logs found for otelcol"
-    _no_errors_in_otelcol_logs(stdout)
+    logs = _logs_newer_than(stdout, latest_log_ts)
+    _no_errors_in_otelcol_logs(logs)
 
 
-def _no_errors_in_otelcol_logs(stdout: str):
+def _no_errors_in_otelcol_logs(logs: List[str]):
     matched_lines = [
         (m.group(1) or m.group(2), line)
-        for line in stdout.splitlines()
+        for line in logs
         if (m := _LOG_LEVEL_RE.match(line))
     ]
     info_lines = [line for level, line in matched_lines if level == "info"]
