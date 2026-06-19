@@ -6,8 +6,7 @@ myst:
 
 # Loki
 
-Reference material specific to Loki deployments within COS. Use these
-pages for SLI definitions, and Loki-specific operational guidance.
+Reference material specific to Loki deployments within COS.
 
 ## Service levels
 
