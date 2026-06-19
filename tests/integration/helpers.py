@@ -137,7 +137,6 @@ def _logs_newer_than(logs: str, timestamp: str) -> List[str]:
 
 def no_errors_in_otelcol_logs(juju: jubilant.Juju, lookback_window: int = 60 * 5):
     """Sleep for lookback_window, then assert otelcol logged no errors during it."""
-    breakpoint()
     baseline = juju.ssh("otelcol/0", "pebble logs -n 1", container="otelcol")
     assert baseline, "no logs found for otelcol"
     # Pebble timestamp (first field) of the most recent log line; new lines sort above it.
