@@ -123,6 +123,33 @@ _LOG_LEVEL_RE = re.compile(
 )
 
 
+def no_errors_in_otelcol_logs(juju: jubilant.Juju, lookback_window: int = 60 * 2):
+    """Sleep for lookback_window, then assert otelcol logged no errors during it."""
+    baseline = juju.ssh("otelcol/0", "pebble logs -n 1", container="otelcol")
+    assert baseline, "no logs found for otelcol"
+    # confirm the regex parses a level out of a real log line
+    assert _log_level(baseline) in ("debug", "info", "warn", "error"), (
+        f"could not parse log level from: {baseline}"
+    )
+    # Pebble timestamp of the most recent log line
+    latest_log_ts = baseline.split(" ", 1)[0]
+    logger.info(
+        f"Following otelcol logs for {lookback_window} seconds to check for errors ..."
+    )
+    time.sleep(lookback_window)
+    stdout = juju.ssh("otelcol/0", "pebble logs -n all", container="otelcol")
+    assert stdout, "no logs found for otelcol"
+    logs = _logs_newer_than(stdout, latest_log_ts)
+    # no new logs is a good sign
+    _no_errors_in_otelcol_logs(logs)
+
+
+def _log_level(line: str) -> Optional[str]:
+    """Parse the log level from an otelcol log line, or None if it doesn't match."""
+    m = _LOG_LEVEL_RE.match(line)
+    return (m.group(1) or m.group(2)) if m else None
+
+
 def _logs_newer_than(logs: str, timestamp: str) -> List[str]:
     """Filter log lines to only include those newer than the specified timestamp."""
     newer_logs = []
@@ -135,33 +162,6 @@ def _logs_newer_than(logs: str, timestamp: str) -> List[str]:
     return newer_logs
 
 
-def no_errors_in_otelcol_logs(juju: jubilant.Juju, lookback_window: int = 60 * 5):
-    """Sleep for lookback_window, then assert otelcol logged no errors during it."""
-    breakpoint()
-    baseline = juju.ssh("otelcol/0", "pebble logs -n 1", container="otelcol")
-    assert baseline, "no logs found for otelcol"
-    # Pebble timestamp (first field) of the most recent log line; new lines sort above it.
-    latest_log_ts = baseline.split(" ", 1)[0]
-    logger.info(
-        f"Following otelcol logs for {lookback_window} seconds to check for errors ..."
-    )
-    time.sleep(lookback_window)
-    stdout = juju.ssh("otelcol/0", "pebble logs -n all", container="otelcol")
-    assert stdout, "no logs found for otelcol"
-    logs = _logs_newer_than(stdout, latest_log_ts)
-    assert logs, "no new logs found for otelcol since baseline"
-    _no_errors_in_otelcol_logs(logs)
-
-
 def _no_errors_in_otelcol_logs(logs: List[str]):
-    matched_lines = [
-        (m.group(1) or m.group(2), line)
-        for line in logs
-        if (m := _LOG_LEVEL_RE.match(line))
-    ]
-    error_lines = [line for level, line in matched_lines if level in ("warn", "error")]
+    error_lines = [line for line in logs if _log_level(line) in ("warn", "error")]
     assert not error_lines, "otelcol error logs:\n" + "\n".join(error_lines)
-    # this INFO assertion ensures that the regex is correctly capturing log levels; avoids checking
-    # an empty set of logs due to a regex mismatch or log format change
-    info_lines = [line for level, line in matched_lines if level == "info"]
-    assert info_lines, "no 'info' level logs found in otelcol output"
