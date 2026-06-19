@@ -251,4 +251,15 @@ etcd
 ruler
 shipper
 TSDB
+ruler
+shipper
+TSDB
+unflushed
+dispatcher
+nflog
+silences
+clientError
+contextCanceled
+contextDeadlineExceeded
+serverError
 
