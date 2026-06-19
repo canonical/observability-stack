@@ -6,8 +6,7 @@ myst:
 
 # Mimir
 
-Reference material specific to Mimir deployments within COS. Use these
-pages for SLI definitions, and Mimir-specific operational guidance.
+Reference material specific to Mimir deployments within COS.
 
 ## Service levels
 
