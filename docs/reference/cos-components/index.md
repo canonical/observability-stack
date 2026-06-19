@@ -84,6 +84,7 @@ myst:
 ```{toctree}
 :maxdepth: 1
 
+Alertmanager <alertmanager/index>
 Grafana <grafana/index>
 Prometheus <prometheus/index>
 Tempo <tempo/index>
