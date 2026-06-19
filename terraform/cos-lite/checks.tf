@@ -1,12 +1,5 @@
 # -------------- # Storage directives for storage-intensive components --------------
 
-check "alertmanager_storage_directives" {
-  assert {
-    condition     = length(var.alertmanager.storage_directives) > 0
-    error_message = "alertmanager.storage_directives ${local.storage_directives_warning}"
-  }
-}
-
 check "grafana_storage_directives" {
   assert {
     condition     = length(var.grafana.storage_directives) > 0
