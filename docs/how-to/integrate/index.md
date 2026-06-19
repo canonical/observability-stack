@@ -34,6 +34,7 @@ Add tracing to COS Lite <add-tracing-to-cos-lite>
 Manually enable a Tempo HA tracing receiver <manually-enable-tempo-ha-tracing-receiver>
 Add alert rules <adding-alert-rules>
 Integrate Alertmanager with external receivers <integrate-alertmanager-receivers>
+Set up SLOs with Sloth <set-up-slos-with-sloth>
 ```
 
 ## Test & validate integrations
