@@ -140,7 +140,7 @@ def no_errors_in_otelcol_logs(juju: jubilant.Juju, lookback_window: int = 60 * 2
     stdout = juju.ssh("otelcol/0", "pebble logs -n all", container="otelcol")
     assert stdout, "no logs found for otelcol"
     logs = _logs_newer_than(stdout, latest_log_ts)
-    # no new logs is a good sign
+    # no new logs is a good sign, as long as the lookback_window is sufficiently long
     _no_errors_in_otelcol_logs(logs)
 
 
