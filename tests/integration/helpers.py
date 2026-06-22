@@ -1,15 +1,19 @@
 import json
+import logging
 import os
 import re
 import shlex
 import shutil
 import ssl
 import subprocess
+import time
 from pathlib import Path
 from typing import List, Optional
 from urllib.request import urlopen
 
 import jubilant
+
+logger = logging.getLogger(__name__)
 
 
 class TfDirManager:
@@ -53,7 +57,11 @@ def generic_assertions(
         raise ValueError("temp_path is required when ca_model is provided")
     models = [ca_model, cos_model] if ca_model is not None else [cos_model]
     wait_for_active_idle_without_error(models, timeout=60 * 60)
-    tls_ctx = get_tls_context(temp_path, ca_model, "self-signed-certificates") if ca_model is not None else None
+    tls_ctx = (
+        get_tls_context(temp_path, ca_model, "self-signed-certificates")
+        if ca_model is not None
+        else None
+    )
     catalogue_apps_are_reachable(cos_model, tls_ctx)
 
 
@@ -115,19 +123,45 @@ _LOG_LEVEL_RE = re.compile(
 )
 
 
-def no_errors_in_otelcol_logs(juju: jubilant.Juju):
-    stdout = juju.ssh("otelcol/0", "pebble logs", container="otelcol")
+def no_errors_in_otelcol_logs(juju: jubilant.Juju, lookback_window: int = 60 * 2):
+    """Sleep for lookback_window, then assert otelcol logged no errors during it."""
+    baseline = juju.ssh("otelcol/0", "pebble logs -n 1", container="otelcol")
+    assert baseline, "no logs found for otelcol"
+    # confirm the regex parses a level out of a real log line
+    assert _log_level(baseline) in ("debug", "info", "warn", "error"), (
+        f"could not parse log level from: {baseline}"
+    )
+    # Pebble timestamp of the most recent log line
+    latest_log_ts = baseline.split(" ", 1)[0]
+    logger.info(
+        f"Following otelcol logs for {lookback_window} seconds to check for errors ..."
+    )
+    time.sleep(lookback_window)
+    stdout = juju.ssh("otelcol/0", "pebble logs -n all", container="otelcol")
     assert stdout, "no logs found for otelcol"
-    _no_errors_in_otelcol_logs(stdout)
+    logs = _logs_newer_than(stdout, latest_log_ts)
+    # no new logs is a good sign, as long as the lookback_window is sufficiently long
+    _no_errors_in_otelcol_logs(logs)
 
 
-def _no_errors_in_otelcol_logs(stdout: str):
-    matched_lines = [
-        (m.group(1) or m.group(2), line)
-        for line in stdout.splitlines()
-        if (m := _LOG_LEVEL_RE.match(line))
-    ]
-    info_lines = [line for level, line in matched_lines if level == "info"]
-    assert info_lines, "no 'info' level logs found in otelcol output"
-    error_lines = [line for level, line in matched_lines if level in ("warn", "error")]
+def _log_level(line: str) -> Optional[str]:
+    """Parse the log level from an otelcol log line, or None if it doesn't match."""
+    m = _LOG_LEVEL_RE.match(line)
+    return (m.group(1) or m.group(2)) if m else None
+
+
+def _logs_newer_than(logs: str, timestamp: str) -> List[str]:
+    """Filter log lines to only include those newer than the specified timestamp."""
+    newer_logs = []
+    for line in logs.splitlines():
+        m = _LOG_LEVEL_RE.match(line)
+        if m:
+            log_ts_str = line.split(" ")[0]
+            if log_ts_str > timestamp:
+                newer_logs.append(line)
+    return newer_logs
+
+
+def _no_errors_in_otelcol_logs(logs: List[str]):
+    error_lines = [line for line in logs if _log_level(line) in ("warn", "error")]
     assert not error_lines, "otelcol error logs:\n" + "\n".join(error_lines)
