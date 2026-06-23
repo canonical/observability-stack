@@ -1,3 +1,4 @@
+# TODO: Remove when done testing
 module "alertmanager" {
   source = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform"
 
