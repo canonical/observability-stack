@@ -1,3 +1,4 @@
+# TODO: Remove this when done testing
 locals {
   clouds                     = ["aws", "self-managed"] # list of k8s clouds where this COS module can be deployed.
   create_model               = var.model.uuid == null
