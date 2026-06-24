@@ -1,11 +1,4 @@
 #!/bin/bash
 set -ex
 
-sudo snap install go --classic
-go install github.com/tebeka/go2xunit@v1.4.10
-
-juju wait-for model cos --timeout=60m --query='forEach(applications, app => app.status == "active")'
-
-~/go/bin/go2xunit -input test_results.raw -output test_results.xml
-
-exit
+juju wait-for model cos --timeout=60m --query='forEach(applications, app => app.status == "active")' > test_results.raw
