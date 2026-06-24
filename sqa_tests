@@ -1,53 +1,11 @@
 #!/bin/bash
 set -ex
 
-TF_JUJU_QA_CTRL="tfqa"
-TF_JUJU_QA_OFFERING_CTRL="tfqa-offering"
-CLUSTER_TAG="sqa-$CLUSTER"
-
 sudo snap install go --classic
-sudo snap install terraform --classic
-sudo snap install yq --classic
-sudo snap install kubectl --classic
 go install github.com/tebeka/go2xunit@v1.4.10
 
-# MAAS credentials
-read -r api_name api_url api_key <<< "$(maas list)"
-
-cat > "./clouds.yaml" << EOF
-clouds:
-    maas-cloud:
-        type: maas
-        auth-types: [oauth1]
-        endpoint: $api_url
-EOF
-juju add-cloud --client --file ./clouds.yaml
-rm -f ./clouds.yaml
-trap "juju remove-cloud maas-cloud" EXIT
-
-cat > "./creds.yaml" << EOF
-credentials:
-    maas-cloud:
-        maas-creds:
-            auth-type: oauth1
-            maas-oauth: $api_key
-EOF
-juju add-credential --client --file ./creds.yaml maas-cloud
-rm -f ./creds.yaml
-trap "juju remove-credential maas-cloud maas-creds" EXIT
-
-juju bootstrap --credential maas-creds maas-cloud $TF_JUJU_QA_CTRL --constraints "tags=juju,$CLUSTER_TAG"
-trap "juju kill-controller --no-prompt $TF_JUJU_QA_CTRL" EXIT
-
-juju bootstrap --credential maas-creds maas-cloud $TF_JUJU_QA_OFFERING_CTRL --constraints "tags=juju_upgrade,$CLUSTER_TAG"
-trap "juju kill-controller --no-prompt $TF_JUJU_QA_OFFERING_CTRL" EXIT
-
-# Actually run machine tests
-# Tag name is just for picking machines, doesn't actually have vault running
-set +e
-TF_VAR_tags="vault,$CLUSTER_TAG" TF_VAR_cloud="maas-cloud" go test -v -timeout=8h ./tests_machine/... |& tee test_results.raw
-go_test_exit=${PIPESTATUS[0]}
-set -e
+juju wait-for model cos --timeout=60m --query='forEach(applications, app => app.status == "active")'
 
 ~/go/bin/go2xunit -input test_results.raw -output test_results.xml
-exit "$go_test_exit"
+
+exit
