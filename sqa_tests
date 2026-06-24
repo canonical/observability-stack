@@ -2,3 +2,5 @@
 set -ex
 
 juju wait-for model cos --timeout=60m --query='forEach(applications, app => app.status == "active")' > test_results.raw
+
+exit
