@@ -1,0 +1,6 @@
+#!/bin/bash
+set -ex
+
+juju wait-for model cos --timeout=60m --query='forEach(applications, app => app.status == "active")'
+
+exit
