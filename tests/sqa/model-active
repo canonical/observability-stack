@@ -1,0 +1,49 @@
+#!/bin/bash
+set -eu
+
+MODEL="cos"
+QUERY='forEach(applications, app => app.status == "active")'
+
+# Overall deadline and how long each individual wait-for attempt runs before we
+# bail out to print status and try again.
+OVERALL_TIMEOUT=$((60 * 60)) # 60 minutes, in seconds
+POLL_TIMEOUT=30              # seconds per wait-for attempt
+
+start_time=$(date +%s)
+attempt=0
+
+while true; do
+    attempt=$((attempt + 1))
+    elapsed=$(($(date +%s) - start_time))
+    remaining=$((OVERALL_TIMEOUT - elapsed))
+
+    if [ "$remaining" -le 0 ]; then
+        echo "=========================================================="
+        echo "ERROR: model '${MODEL}' did not become active within ${OVERALL_TIMEOUT}s." >&2
+        echo "Final status:" >&2
+        juju status --model "${MODEL}" --relations || true
+        exit 1
+    fi
+
+    # Don't let a single attempt run past the overall deadline.
+    this_timeout=$POLL_TIMEOUT
+    if [ "$remaining" -lt "$this_timeout" ]; then
+        this_timeout=$remaining
+    fi
+
+    echo "=========================================================="
+    echo "Attempt ${attempt}: waiting up to ${this_timeout}s for model '${MODEL}' to be active (elapsed ${elapsed}s / ${OVERALL_TIMEOUT}s)..."
+
+    if juju wait-for model "${MODEL}" --timeout="${this_timeout}s" --query="${QUERY}"; then
+        echo "=========================================================="
+        echo "SUCCESS: model '${MODEL}' is active after ${attempt} attempt(s) (${elapsed}s)."
+        juju status --model "${MODEL}" --relations || true
+        exit 0
+    fi
+
+    # wait-for timed out (or otherwise failed); surface the current state so we
+    # can see *why* the model isn't active yet, then loop and try again.
+    echo "----------------------------------------------------------"
+    echo "Model '${MODEL}' not active yet; current status:"
+    juju status --model "${MODEL}" --relations || true
+done
