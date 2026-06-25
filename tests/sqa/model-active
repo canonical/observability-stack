@@ -2,7 +2,9 @@
 set -eu
 
 MODEL="cos"
-QUERY='forEach(applications, app => app.status == "active")'
+# Require every application to be active *and* every unit to have an active
+# workload with an idle agent
+QUERY='forEach(applications, app => app.status == "active" && forEach(app.units, unit => unit.workload-status == "active" && unit.agent-status == "idle"))'
 
 # Overall deadline and how long each individual wait-for attempt runs before we
 # bail out to print status and try again.
