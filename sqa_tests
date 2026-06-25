@@ -1,6 +1,4 @@
 #!/bin/bash
-set -ex
+set -eu
 
-juju wait-for model cos --timeout=60m --query='forEach(applications, app => app.status == "active")'
-
-exit
+./tests/sqa/model-active
