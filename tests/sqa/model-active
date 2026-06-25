@@ -47,5 +47,5 @@ while true; do
     # can see *why* the model isn't active yet, then loop and try again.
     echo "----------------------------------------------------------"
     echo "Model '${MODEL}' not active yet; current status:"
-    juju status --model "${MODEL}" --relations || true
+    juju status --model "${MODEL}" || true
 done
