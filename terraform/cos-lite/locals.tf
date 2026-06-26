@@ -1,6 +1,7 @@
 locals {
   create_model               = var.model.uuid == null
   model_uuid                 = local.create_model ? juju_model.cos[0].uuid : data.juju_model.cos[0].uuid
+  grafana_db_enabled         = var.postgresql_offer_url != null
   reverse_proxy_enabled      = anytrue(values(var.ingress))
   storage_directives_warning = "is unset, so it will use the default 1G volume. Set a size before deploying to production; resizing a persistent volume after deployment requires manual steps. See https://documentation.ubuntu.com/observability/latest/how-to/configure-and-tune/customize-storage-options/"
   tls_termination            = var.external_certificates_offer_url != null ? true : false
