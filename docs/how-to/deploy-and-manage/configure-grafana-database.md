@@ -8,13 +8,13 @@ myst:
 
 Grafana stores its state (dashboards, users, and settings) in a database. In COS you can either:
 
-- Use the default per-unit Juju storage (single Grafana unit only), or
+- Use SQLite (single Grafana unit only), or
 - Integrate Grafana with an external PostgreSQL database, which is required to scale Grafana to more than one unit for high availability.
 
 Which path is used is controlled by the `postgresql_offer_url` and `grafana.units` inputs of the Terraform module:
 
 - When `postgresql_offer_url` is set, Grafana is integrated with the external PostgreSQL service over the `postgresql_client` interface, at any scale.
-- When `postgresql_offer_url` is `null` (the default), Grafana uses the default Juju storage. In this case Grafana **must** run as a single unit.
+- When `postgresql_offer_url` is `null` (the default), Grafana uses SQLite. In this case Grafana **must** run as a single unit.
 
 ```{important}
 Grafana defaults to 3 units in COS and 1 unit in COS Lite.
@@ -33,7 +33,7 @@ The `postgresql_offer_url` input determines whether Grafana is integrated with t
 
 Ensure that you have provided any required variables (update the `... other inputs ...` placeholder) for the respective COS module before applying the configuration, by running `terraform apply`.
 
-## Configure Juju storage
+## Configure SQLite
 
 If you do not supply `postgresql_offer_url`, Grafana falls back to SQLite. This is only supported with a single Grafana unit, so set `grafana.units` to `1`:
 
