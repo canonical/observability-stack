@@ -35,7 +35,7 @@ Ensure that you have provided any required variables (update the `... other inpu
 
 ## Configure Juju storage
 
-If you do not supply `postgresql_offer_url`, Grafana falls back to the default per-unit Juju storage. This is only supported with a single Grafana unit, so set `grafana.units` to `1`:
+If you do not supply `postgresql_offer_url`, Grafana falls back to SQLite. This is only supported with a single Grafana unit, so set `grafana.units` to `1`:
 
 ```hcl
 module "cos" {
