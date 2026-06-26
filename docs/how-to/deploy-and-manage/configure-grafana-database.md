@@ -19,7 +19,7 @@ Which path is used is controlled by the `postgresql_offer_url` and `grafana.unit
 ```{important}
 Grafana defaults to 3 units in COS and 1 unit in COS Lite.
 
-Running more than one Grafana unit requires a shared external database. Therefore, whenever `grafana.units` is greater than 1, you must also set `postgresql_offer_url`. If you don't, applying the module fails validation on a Terraform plan.
+Running more than one Grafana unit requires a shared external database. Therefore, whenever `grafana.units` is greater than 1, you must also set `postgresql_offer_url`. If you don't, applying the module fails validation on a `terraform plan`.
 ```
 
 ## Configure an external database
