@@ -4,7 +4,7 @@ myst:
     description: "Learn how to sync alert rules and dashboards from a git repository using the cos-configuration-k8s charm."
 ---
 
-# Sync alert rules from a git repo
+# Sync alert rules from a git repository
 
 This guide shows how to sync Prometheus alert rules from a git repository into your COS deployment using the [cos-configuration-k8s](https://charmhub.io/cos-configuration-k8s/docs) charm. The same approach works for Loki alert rules and Grafana dashboards.
 
@@ -65,7 +65,7 @@ The cos-configuration charm requires the following configuration options:
 - `git_repo`: URL of the git repository to clone and sync.
 - `git_branch`: The git branch to check out.
 - `git_depth`: Cloning depth, to truncate commit history to the specified number of commits. Zero means no truncation.
-- `prometheus_alert_rules_path`: Relative path in the repo to Prometheus rules.
+- `prometheus_alert_rules_path`: Relative path in the repository to Prometheus rules.
 
 Deploy the charm with your configuration:
 
