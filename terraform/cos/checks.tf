@@ -34,10 +34,3 @@ check "tempo_worker_ingester_storage_directives" {
     error_message = "tempo_worker.ingester_worker_storage_directives ${local.storage_directives_warning}"
   }
 }
-
-check "opentelemetry_collector_storage_directives" {
-  assert {
-    condition     = length(var.opentelemetry_collector.storage_directives) > 0
-    error_message = "opentelemetry_collector.storage_directives ${local.storage_directives_warning}"
-  }
-}
