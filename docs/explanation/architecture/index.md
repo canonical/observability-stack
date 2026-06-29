@@ -43,6 +43,16 @@ The available stack configurations and how telemetry moves through them.
 Telemetry flow <telemetry-flow>
 ```
 
+## Coordinated workers
+
+The coordinated workers pattern and the role it plays in COS HA.
+
+```{toctree}
+:maxdepth: 1
+
+Coordinated workers <coordinated-workers>
+```
+
 ## Peripheral charms
 
 Charms that extend COS by producing or forwarding telemetry from external
@@ -52,14 +62,4 @@ sources.
 :maxdepth: 1
 
 Peripheral charms <peripheral-charms/index>
-```
-
-## Coordinated workers
-
-The coordinated workers pattern and the role it plays in COS HA.
-
-```{toctree}
-:maxdepth: 1
-
-Coordinated workers <coordinated-workers>
 ```
