@@ -1,3 +1,9 @@
+---
+myst:
+  html_meta:
+    description: "How the Blackbox Exporter charm performs blackbox probing of endpoints and integrates with COS."
+---
+
 (blackbox-exporter)=
 
 # Blackbox Exporter

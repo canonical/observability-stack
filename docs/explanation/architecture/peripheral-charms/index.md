@@ -1,3 +1,9 @@
+---
+myst:
+  html_meta:
+    description: "Charms that extend COS by producing or forwarding telemetry from external sources."
+---
+
 (peripheral-charms)=
 
 # Peripheral charms

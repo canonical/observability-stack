@@ -1,3 +1,9 @@
+---
+myst:
+  html_meta:
+    description: "Configure Blackbox Exporter to monitor SSL certificate expiry and surface the results in Grafana dashboards and Alertmanager alerts."
+---
+
 # Monitor SSL Certificates with Blackbox Exporter
 
 This guide shows how to configure Blackbox Exporter to monitor SSL certificate
