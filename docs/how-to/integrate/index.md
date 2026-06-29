@@ -14,6 +14,7 @@ Bring charmed and uncharmed workloads into the COS telemetry pipeline.
 Integrate COS Lite with uncharmed applications <integrating-cos-lite-with-uncharmed-applications>
 Expose a metrics endpoint <exposing-a-metrics-endpoint>
 Configure scrape jobs <configure-scrape-jobs>
+Monitor SSL certificates with blackbox exporter <monitor-ssl-certificates-with-blackbox-exporter>
 Instrument machine charms <instrument-machine-charms>
 Use the Loki HTTP API <use-loki-http-api>
 Use Catalogue <use-catalogue>
