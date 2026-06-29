@@ -4,28 +4,24 @@ myst:
     description: "Learn how to sync alert rules and dashboards from a git repository using the cos-configuration-k8s charm."
 ---
 
-# Sync alert rules from a git repo using the cos-configuration charm
+# Sync alert rules from a git repo
 
-Imagine your business is looking to migrate your observability solution to COS Lite, but that you already have a lot of time invested into converting operational knowledge into alert rules that you're versioning in a git repository.
-
-In this tutorial you will learn how to make COS Lite automatically sync the alert rules of your git repo to Prometheus using the [COS Configuration charm](https://charmhub.io/cos-configuration-k8s/docs).
+This guide shows how to sync Prometheus alert rules from a git repository into your COS deployment using the [cos-configuration-k8s](https://charmhub.io/cos-configuration-k8s/docs) charm. The same approach works for Loki alert rules and Grafana dashboards.
 
 ## Prerequisites
 
-This tutorial assumes that you already have the following:
+- A Kubernetes deployment [bootstrapped with Juju](https://juju.is/docs/olm/get-started-with-juju#heading--prepare-your-cloud).
+- A git repository containing your Prometheus alert rules.
 
-- a Kubernetes deployment [bootstrapped with Juju](https://juju.is/docs/olm/get-started-with-juju#heading--prepare-your-cloud).
-- a git repo with your Prometheus Alert rules.
+## Create a model
 
-## Create a juju model
-
-In the following Juju model we will deploy our applications
+Add a model to host the deployment:
 
 ```shell
 juju add-model cos
 ```
 
-Now, you can check that our model is empty and ready:
+Confirm the model is empty and ready:
 
 ```shell
 $ juju status
@@ -36,13 +32,15 @@ cos    charm-dev-batteries  microk8s/localhost  3.0.3    unsupported  17:21:00-0
 Model "admin/cos" is empty.
 ```
 
-## Deploy Prometheus Charmed Operator
+## Deploy Prometheus
+
+Deploy Prometheus from the stable channel:
 
 ```
 $ juju deploy prometheus-k8s prometheus --channel stable
 ```
 
-After a few seconds, our Prometheus application is up and running:
+After a few seconds, Prometheus is up and running:
 
 ```shell
 $ juju status --relations
@@ -60,16 +58,16 @@ Relation provider            Requirer                     Interface         Type
 prometheus:prometheus-peers  prometheus:prometheus-peers  prometheus_peers  peer
 ```
 
-## Deploy COS configuration Charmed Operator
+## Deploy cos-configuration
 
-When deploying this charm, we will also need to provide some configuration:
+The cos-configuration charm requires the following configuration options:
 
-- `git_repo`: URL to repo to clone and sync against.
+- `git_repo`: URL of the git repository to clone and sync.
 - `git_branch`: The git branch to check out.
-- `git_depth`: Cloning depth, to truncate commit history to the specified number of commits. Zero means no truncating.
-- `prometheus_alert_rules_path`: Relative path in repo to prometheus rules.
+- `git_depth`: Cloning depth, to truncate commit history to the specified number of commits. Zero means no truncation.
+- `prometheus_alert_rules_path`: Relative path in the repo to Prometheus rules.
 
-Now, let's deploy it:
+Deploy the charm with your configuration:
 
 ```shell
 $ juju deploy cos-configuration-k8s cos-config \
@@ -79,7 +77,7 @@ $ juju deploy cos-configuration-k8s cos-config \
     --config prometheus_alert_rules_path=rules/prod/prometheus/
 ```
 
-At this moment, our model looks like this:
+The model now looks like this:
 
 ```shell
 $ juju status --relations
@@ -100,15 +98,15 @@ cos-config:replicas          cos-config:replicas          cos_configuration_repl
 prometheus:prometheus-peers  prometheus:prometheus-peers  prometheus_peers           peer
 ```
 
-## Relate Prometheus to COS Configuration
+## Integrate with Prometheus
 
-Once we execute this command:
+Relate Prometheus to cos-configuration so it can pick up the alert rules:
 
 ```shell
 $ juju relate prometheus cos-config
 ```
 
-we will get both charms related:
+Confirm the relation is established:
 
 ```shell
 $ juju status --relations
@@ -129,9 +127,9 @@ cos-config:replicas           cos-config:replicas          cos_configuration_rep
 prometheus:prometheus-peers   prometheus:prometheus-peers  prometheus_peers           peer
 ```
 
-## Verification
+## Verify the sync
 
-After setting the `git_repo` (and optionally `git_branch`), the contents should be present in the workload container,
+Check that the repository contents are present in the workload container:
 
 ```shell
 $ juju ssh --container git-sync cos-config/0  ls -l /git
@@ -141,7 +139,7 @@ drwxr-xr-x 3 root root 4096 Feb 23 20:40 dd2cc335a9b5734e0adbb25681074b09a4c3a11
 lrwxrwxrwx 1 root root   40 Feb 23 20:40 repo -> dd2cc335a9b5734e0adbb25681074b09a4c3a111
 ```
 
-and accessible from the charm container
+They are also accessible from the charm container:
 
 ```shell
 $ juju ssh cos-config/0 ls -l /var/lib/juju/storage/content-from-git/0
@@ -151,7 +149,7 @@ drwxr-xr-x 3 root root 4096 Feb 23 20:40 dd2cc335a9b5734e0adbb25681074b09a4c3a11
 lrwxrwxrwx 1 root root   40 Feb 23 20:40 repo -> dd2cc335a9b5734e0adbb25681074b09a4c3a111
 ```
 
-After relating to e.g. prometheus, rules from the synced repo should appear in app data,
+After relating to Prometheus, the synced rules appear in application data:
 
 ```shell
 $ juju show-unit prometheus/0 \
@@ -182,7 +180,7 @@ $ juju show-unit prometheus/0 \
 ...
 ```
 
-as well as in prometheus itself using the command line:
+They also appear in the Prometheus rules API:
 
 ```shell
 $ juju ssh prometheus/0 curl localhost:9090/api/v1/rules
@@ -192,7 +190,7 @@ $ juju ssh prometheus/0 curl localhost:9090/api/v1/rules
 
 ## Sync interval
 
-The repo syncs on every [`update-status` event](https://juju.is/docs/sdk/update-status-event) or when the juju administrator manually runs the `sync-now` action.
+The repository syncs automatically on every [`update-status` event](https://juju.is/docs/sdk/update-status-event). To trigger a sync manually, run the `sync-now` action:
 
 ```shell
 $ juju run cos-config/0 sync-now
@@ -206,11 +204,9 @@ Waiting for task 2...
 git-sync-stdout: ""
 ```
 
-## Extra information
+## Sync Loki rules and Grafana dashboards
 
-COS Configuration Charmed Operator not only can forward alert rules to Prometheus, but also alert rules to Loki and Dashboards to Grafana.
-
-Paths to Loki alert rules and Grafana dashboard files, can also be set after deployment:
+The cos-configuration charm can also sync Loki alert rules and Grafana dashboards. Set the paths and relate the corresponding charms:
 
 ```shell
 $ juju config cos-config loki_alert_rules_path=rules/prod/loki/
