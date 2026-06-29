@@ -1,51 +1,67 @@
+(blackbox-exporter)=
+
 # Blackbox Exporter
 
-The Blackbox Exporter is a tool that allows for blackbox probing of endpoints over a multitude of protocols, including HTTP, HTTPS, DNS, TCP, ICMP, and gRPC.
+The Blackbox Exporter charm provides blackbox probing of endpoints over
+HTTP, HTTPS, DNS, TCP, ICMP, and gRPC. It extends the COS telemetry pipeline
+by producing metrics about the reachability, latency, and certificate
+validity of external services — services that don't expose their own
+telemetry endpoints.
 
-This document will focus on how to use the charm and how to integrate with other charms from the COS Lite bundle. If in doubt, please refer to the [Blackbox Exporter repository](https://github.com/prometheus/blackbox_exporter).
+## How probing works
 
-### How does Blackbox Exporter work?
+Blackbox Exporter exposes a `/probe` endpoint. A probe is triggered by an
+HTTP GET request with three query parameters:
 
-To manually execute a probe with Blackbox Exporter, you'll need an HTTP GET request at the `/probe` path. You can specify three parameters in this query:
+| Parameter | Purpose                                                |
+| --------- | ------------------------------------------------------ |
+| `target`  | The endpoint to probe                                  |
+| `module`  | The probe type to use (e.g. `http_2xx`, `tcp_connect`) |
+| `debug`   | Optional — returns debug information in the response   |
 
-- `target`, the endpoint to probe;
-- `module`, the type of probe to execute;
-- `debug` (optional), to get debug information in the response.
-
-Putting things together, to manually probe `google.com`:
+For example, probing `google.com` with the HTTP module:
 
 ```bash
-# Either curl or open it in your browser
 curl http://<blackbox-exporter>:9115/probe?target=google.com&module=http_2xx
 ```
 
-The currently supported modules are: HTTP, HTTPS (via the `http` prober), DNS, TCP socket, ICMP and gRPC, as per the [upstream documentation](https://github.com/prometheus/blackbox_exporter#configuration). You can define custom modules by following the official [examples](https://github.com/prometheus/blackbox_exporter/blob/master/example.yml).
+The supported modules follow the
+[upstream specification](https://github.com/prometheus/blackbox_exporter#configuration):
+HTTP, HTTPS (via the `http` prober), DNS, TCP socket, ICMP, and gRPC.
+Custom modules can be defined by following the
+[official examples](https://github.com/prometheus/blackbox_exporter/blob/master/example.yml).
 
-## How to automate the probes
+On its own, the charm only supports ad-hoc probes. To run probes on a
+schedule and store the results, it must be integrated with Prometheus.
 
-The Blackbox Exporter charm on its own allows for manual probes execution. To run them programmatically, you'll need to integrate it with the [prometheus-k8s charm](https://charmhub.io/prometheus-k8s), which will periodically scrape the `/probe` endpoints you configure, and store the related data.
+## Integration with Prometheus
 
-### Deployment
-
-Deploying the charm works just like any other:
+When related to [`prometheus-k8s`](https://charmhub.io/prometheus-k8s),
+the Blackbox Exporter charm forwards its scrape configuration so that
+Prometheus periodically hits the `/probe` endpoint for each configured
+target. Prometheus stores the resulting metrics as time series data.
 
 ```shell
 juju deploy blackbox-exporter-k8s blackbox
-# To run probes programmatically, you need Prometheus
 juju deploy prometheus-k8s prometheus
 juju relate blackbox prometheus
 ```
 
-### Configuration
+## Configuration
 
-There are two configurations you can provide through `juju config` options:
+The charm accepts two configuration files, both supplied via `juju config`:
 
-- **the Blackbox exporter configuration file** (optional): this is where you specify and customize which modules are available for the exporter to use (read the [official docs](https://github.com/prometheus/blackbox_exporter/blob/master/CONFIGURATION.md));
-- **the probes configuration**: this is the _Prometheus_ scrape jobs configuration, which you should write following [the official docs](https://github.com/prometheus/blackbox_exporter) (and their [examples](https://github.com/prometheus/blackbox_exporter/blob/master/example.yml)).
+**Blackbox Exporter configuration** (`config_file`): defines the modules
+available to the exporter — which probe types exist and how they behave.
+Follows the [upstream configuration format](https://github.com/prometheus/blackbox_exporter/blob/master/CONFIGURATION.md).
 
-Please note that, for the probes configuration, the `relabel_configs` section will be overridden by the charm with the correct labels (`__address__`, `__param_target`, `instance` and `probe_target`) and with the appropriate Blackbox Exporter url.
+**Probes configuration** (`probes_file`): a Prometheus scrape configuration
+that specifies which targets to probe, using which module, and under which
+job name. The charm automatically sets the correct `relabel_configs` —
+`__address__`, `__param_target`, `instance`, and `probe_target` — so you
+don't need to specify them.
 
-For example, if you want to probe `prometheus.io`, your probes configuration might look like this:
+Example probes file:
 
 ```yaml
 --- # probes.yml
@@ -53,24 +69,26 @@ scrape_configs:
   - job_name: "prometheus.io_probes"
     metrics_path: /probe
     params:
-      module: [http_2xx] # Look for a HTTP 200 response.
+      module: [http_2xx]
     static_configs:
       - targets:
-          - http://prometheus.io # Target to probe with http.
-          - https://prometheus.io # Target to probe with https.
+          - http://prometheus.io
+          - https://prometheus.io
 ```
 
-After writing those files, simply pass them to the charm through `juju config`:
+Apply the configuration:
 
 ```shell
-# Blackbox Exporter configuration
 juju config blackbox config_file='@/path/to/config.yml'
-# Probes configuration
 juju config blackbox probes_file='@/path/to/probes.yml'
 ```
 
-### Self-monitoring
+## Self-monitoring
 
-The Blackbox Exporter charm can be integrated with COS Lite to forward logs to [Loki](https://charmhub.io/loki-k8s-operator), provide a dashboard for all the probes to [Grafana](https://charmhub.io/grafana-k8s-operator), and be listed alongside the other COS Lite components in [Catalogue](https://charmhub.io/catalogue-k8s).
+When integrated with COS, the charm forwards its own
+logs to [Loki](https://charmhub.io/loki-k8s-operator), ships a built-in
+dashboard covering all configured probes to
+[Grafana](https://charmhub.io/grafana-k8s-operator), and registers itself
+with [Catalogue](https://charmhub.io/catalogue-k8s) for discoverability.
 
 ![Dashboard|690x405](/assets/grafana_blackbox_exporter_dashboard.png)
