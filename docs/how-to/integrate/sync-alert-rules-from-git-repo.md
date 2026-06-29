@@ -37,8 +37,6 @@ Model "admin/cos" is empty.
 Deploy Prometheus from the stable channel:
 
 ```
-$ juju deploy prometheus-k8s prometheus --channel stable
-```
 
 After a few seconds, Prometheus is up and running:
 
@@ -70,7 +68,7 @@ The cos-configuration charm requires the following configuration options:
 Deploy the charm with your configuration:
 
 ```shell
-$ juju deploy cos-configuration-k8s cos-config \
+juju deploy cos-configuration-k8s cos-config \
     --config git_repo=https://github.com/Abuelodelanada/cos-config \
     --config git_branch=main \
     --config git_depth=1 \
@@ -103,7 +101,7 @@ prometheus:prometheus-peers  prometheus:prometheus-peers  prometheus_peers      
 Relate Prometheus to cos-configuration so it can pick up the alert rules:
 
 ```shell
-$ juju relate prometheus cos-config
+juju relate prometheus cos-config
 ```
 
 Confirm the relation is established:
@@ -209,9 +207,9 @@ git-sync-stdout: ""
 The cos-configuration charm can also sync Loki alert rules and Grafana dashboards. Set the paths and relate the corresponding charms:
 
 ```shell
-$ juju config cos-config loki_alert_rules_path=rules/prod/loki/
-$ juju relate cos-config loki-k8s
+juju config cos-config loki_alert_rules_path=rules/prod/loki/
+juju relate cos-config loki-k8s
 
-$ juju config cos-config grafana_dashboards_path=dashboards/prod/grafana/
-$ juju relate cos-config grafana-k8s
+juju config cos-config grafana_dashboards_path=dashboards/prod/grafana/
+juju relate cos-config grafana-k8s
 ```
