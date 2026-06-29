@@ -36,6 +36,7 @@ Manually enable a Tempo HA tracing receiver <manually-enable-tempo-ha-tracing-re
 Add alert rules <adding-alert-rules>
 Integrate Alertmanager with external receivers <integrate-alertmanager-receivers>
 Set up SLOs with Sloth <set-up-slos-with-sloth>
+Sync alert rules from a git repo <sync-alert-rules-from-git-repo>
 ```
 
 ## Test & validate integrations

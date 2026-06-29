@@ -1,3 +1,9 @@
+---
+myst:
+  html_meta:
+    description: "Learn how to sync alert rules and dashboards from a git repository using the cos-configuration-k8s charm."
+---
+
 # Sync alert rules from a git repo using the cos-configuration charm
 
 Imagine your business is looking to migrate your observability solution to COS Lite, but that you already have a lot of time invested into converting operational knowledge into alert rules that you're versioning in a git repository.
