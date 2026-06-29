@@ -27,7 +27,7 @@ curl http://<blackbox-exporter>:9115/probe?target=google.com&module=http_2xx
 
 The supported modules follow the
 [upstream specification](https://github.com/prometheus/blackbox_exporter#configuration):
-HTTP, HTTPS (via the `http` prober), DNS, TCP socket, ICMP, and gRPC.
+HTTP, HTTPS (via the `http` probe), DNS, TCP socket, ICMP, and gRPC.
 Custom modules can be defined by following the
 [official examples](https://github.com/prometheus/blackbox_exporter/blob/master/example.yml).
 

@@ -6,7 +6,7 @@ notifications.
 
 This guide makes use of the following charms:
 
-- [`blackbox-exporter-k8s`](https://charmhub.io/blackbox-exporter-k8s). This will produce the `probe_ssl_earliest_cert_expiry` metric, which is the "last SSL chain expiry in unixtime".
+- [`blackbox-exporter-k8s`](https://charmhub.io/blackbox-exporter-k8s). This will produce the `probe_ssl_earliest_cert_expiry` metric, which is the "last SSL chain expiry in unix time".
 - [`prometheus-k8s`](https://charmhub.io/prometheus-k8s)
 - [`grafana-k8s`](https://charmhub.io/grafana-k8s)
 - [`alertmanager-k8s`](https://charmhub.io/alertmanager-k8s)
