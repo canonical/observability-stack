@@ -10,7 +10,7 @@ This guide shows how to sync Prometheus alert rules from a git repository into y
 
 ## Prerequisites
 
-- A Kubernetes deployment [bootstrapped with Juju](https://juju.is/docs/olm/get-started-with-juju#heading--prepare-your-cloud).
+- A Kubernetes deployment [bootstrapped with Juju](https://canonical.com/juju/docs/juju-cli/3.6/tutorial/).
 - A git repository containing your Prometheus alert rules.
 
 ## Create a model
