@@ -114,7 +114,7 @@ module "mimir" {
 }
 
 module "opentelemetry_collector" {
-  source = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform?ref=feat/tf-checks"
 
   app_name           = var.opentelemetry_collector.app_name
   channel            = local.channels.otelcol
