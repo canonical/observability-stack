@@ -19,3 +19,11 @@ Indicators and Objectives.
 
 SLIs <sli>
 ```
+
+## Release notes
+
+```{toctree}
+:maxdepth: 1
+
+Changelog <release-notes>
+```
