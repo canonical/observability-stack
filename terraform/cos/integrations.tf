@@ -16,7 +16,7 @@ resource "juju_integration" "grafana_dashboards" {
     }
     otelcol = {
       app_name = module.opentelemetry_collector.app_name
-      endpoint = module.opentelemetry_collector.provides.grafana_dashboards_provider
+      endpoint = module.opentelemetry_collector.endpoints.grafana_dashboards_provider
     }
     tempo = {
       app_name = module.tempo.app_names.tempo_coordinator
