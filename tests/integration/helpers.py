@@ -16,6 +16,9 @@ import pytest
 
 logger = logging.getLogger(__name__)
 
+# An xfail'ing test is reported (so the otelcol log errors stay visible) but is
+# never treated as a failure, so it does NOT trigger --exitfirst and does not
+# fail the run. See https://github.com/canonical/observability-stack/issues/428
 xfail_otelcol_logs = pytest.mark.xfail(
     reason="otelcol emits spurious warn/error logs; "
     "see https://github.com/canonical/observability-stack/issues/428",
@@ -171,7 +174,7 @@ def _logs_newer_than(logs: str, timestamp: str) -> List[str]:
 
 def _no_errors_in_otelcol_logs(logs: List[str]):
     error_lines = [line for line in logs if _log_level(line) in ("warn", "error")]
-    # FIXME: Add the otelcol assertions back
-    # - 
-    # assert not error_lines, "otelcol error logs:\n" + "\n".join(error_lines)
-    print("otelcol error logs:\n" + "\n".join(error_lines))
+
+    banner = "=" * 80
+    report = f"\n{banner}\n" + "\n".join(error_lines) + f"\n{banner}"
+    assert not error_lines, report
