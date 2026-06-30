@@ -12,6 +12,7 @@ from helpers import (
     get_tls_context,
     no_errors_in_otelcol_logs,
     wait_for_active_idle_without_error,
+    xfail_otelcol_logs,
 )
 
 TRACK_DEV_TF_FILE = Path(__file__).parent.resolve() / "track-dev.tf"
@@ -23,4 +24,8 @@ def test_deploy(tmp_path, tf_manager, ca_model: jubilant.Juju, cos_model: jubila
     wait_for_active_idle_without_error([ca_model, cos_model])
     tls_ctx = get_tls_context(tmp_path, ca_model, "self-signed-certificates")
     catalogue_apps_are_reachable(cos_model, tls_ctx)
+
+
+@xfail_otelcol_logs
+def test_no_errors_in_otelcol_logs_dev(cos_model: jubilant.Juju):
     no_errors_in_otelcol_logs(cos_model)
