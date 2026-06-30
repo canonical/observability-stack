@@ -12,19 +12,6 @@ locals {
     ssc           = "ubuntu@24.04"
     traefik       = "ubuntu@26.04"
   }
-  tracks = {
-    alertmanager = "dev"
-    catalogue    = "dev"
-    grafana      = "dev"
-    loki         = "dev"
-    mimir        = "dev"
-    otelcol      = "dev"
-    tempo        = "dev"
-    # external charms
-    s3_integrator = "2"
-    ssc           = "1"
-    traefik       = "latest"
-  }
   channels = {
     alertmanager  = "${local.tracks.alertmanager}/${var.risk}"
     catalogue     = "${local.tracks.catalogue}/${var.risk}"
@@ -51,5 +38,18 @@ locals {
     tempo_coordinator = var.tempo_coordinator.revision != null ? var.tempo_coordinator.revision : data.juju_charm.tempo_coordinator_info.revision
     tempo_worker      = var.tempo_worker.revision != null ? var.tempo_worker.revision : data.juju_charm.tempo_worker_info.revision
     traefik           = var.traefik.revision != null ? var.traefik.revision : data.juju_charm.traefik_info.revision
+  }
+  tracks = {
+    alertmanager = "dev"
+    catalogue    = "dev"
+    grafana      = "dev"
+    loki         = "dev"
+    mimir        = "dev"
+    otelcol      = "dev"
+    tempo        = "dev"
+    # external charms
+    s3_integrator = "2"
+    ssc           = "1"
+    traefik       = "latest"
   }
 }
