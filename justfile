@@ -64,6 +64,7 @@ validate-terraform:
 [group("Unit")]
 [working-directory("./terraform")]
 unit-test module:
+  echo "==> Running unit tests for module: {{module}}"
   if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
   $terraform -chdir={{module}} init -upgrade && $terraform -chdir={{module}} test
 
