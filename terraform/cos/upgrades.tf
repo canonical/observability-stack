@@ -83,13 +83,13 @@ data "juju_charm" "tempo_worker_info" {
 data "juju_charm" "ssc_info" {
   charm   = "self-signed-certificates"
   channel = local.channels.ssc
-  base    = var.base
+  base    = local.ssc_base
 }
 
 data "juju_charm" "s3_integrator_info" {
   charm   = "s3-integrator"
   channel = local.channels.s3_integrator
-  base    = var.base
+  base    = local.s3_integrator_base
 }
 
 data "juju_charm" "traefik_info" {

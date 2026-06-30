@@ -53,7 +53,7 @@ data "juju_charm" "prometheus_info" {
 data "juju_charm" "ssc_info" {
   charm   = "self-signed-certificates"
   channel = local.channels.ssc
-  base    = var.base
+  base    = local.ssc_base
 }
 
 data "juju_charm" "traefik_info" {

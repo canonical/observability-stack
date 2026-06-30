@@ -7,7 +7,11 @@ locals {
   storage_directives_warning = "is unset, so it will use the default 1G volume. Set a size before deploying to production; resizing a persistent volume after deployment requires manual steps. See https://documentation.ubuntu.com/observability/latest/how-to/configure-and-tune/customize-storage-options/"
   tls_termination            = var.external_certificates_offer_url != null ? true : false
   traefik_enabled            = local.reverse_proxy_enabled
-  traefik_base               = "ubuntu@20.04"
+  bases = {
+    s3_integrator = "ubuntu@24.04"
+    ssc           = "ubuntu@24.04"
+    traefik       = "ubuntu@26.04"
+  }
   tracks = {
     alertmanager = "dev"
     catalogue    = "dev"
@@ -16,17 +20,10 @@ locals {
     mimir        = "dev"
     otelcol      = "dev"
     tempo        = "dev"
-
-    # alertmanager  = "0.31"
-    # catalogue     = "3.0"
-    # grafana       = "12.4"
-    # loki          = "3.7"
-    # mimir         = "3.0"
-    # otelcol       = "0.130"
+    # external charms
     s3_integrator = "2"
     ssc           = "1"
-    # tempo         = "2.10"
-    traefik = "latest"
+    traefik       = "latest"
   }
   channels = {
     alertmanager  = "${local.tracks.alertmanager}/${var.risk}"
