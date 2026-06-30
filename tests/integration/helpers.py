@@ -12,8 +12,15 @@ from typing import List, Optional
 from urllib.request import urlopen
 
 import jubilant
+import pytest
 
 logger = logging.getLogger(__name__)
+
+xfail_otelcol_logs = pytest.mark.xfail(
+    reason="otelcol emits spurious warn/error logs; "
+    "see https://github.com/canonical/observability-stack/issues/428",
+    strict=False,
+)
 
 
 class TfDirManager:
