@@ -72,4 +72,4 @@ unit-test module:
 [group("Integration")]
 [working-directory("./tests/integration")]
 integration *args='':
-  uv run ${uv_flags} pytest -vv --capture=no --exitfirst "${args}"
+  uv run ${uv_flags} pytest -vv -ra --capture=no --exitfirst "${args}"

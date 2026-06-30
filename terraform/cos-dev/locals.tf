@@ -2,20 +2,11 @@ locals {
   tls_termination       = var.external_certificates_offer_url != null ? true : false
   reverse_proxy_enabled = anytrue(values(var.ingress))
   traefik_enabled       = local.reverse_proxy_enabled
-  traefik_base          = "ubuntu@20.04"
-  tracks = {
-    alertmanager = "dev"
-    catalogue    = "dev"
-    grafana      = "dev"
-    loki         = "dev"
-    mimir        = "dev"
-    otelcol      = "dev"
-    tempo        = "dev"
-
-    s3_integrator = "2"
-    seaweedfs     = "latest"
-    ssc           = "1"
-    traefik       = "latest"
+  bases = {
+    s3_integrator = "ubuntu@24.04"
+    ssc           = "ubuntu@24.04"
+    swfs          = "ubuntu@24.04"
+    traefik       = "ubuntu@26.04"
   }
   channels = {
     alertmanager  = "${local.tracks.alertmanager}/${var.risk}"
@@ -45,5 +36,19 @@ locals {
     tempo_coordinator = var.tempo_coordinator.revision != null ? var.tempo_coordinator.revision : data.juju_charm.tempo_coordinator_info.revision
     tempo_worker      = var.tempo_worker.revision != null ? var.tempo_worker.revision : data.juju_charm.tempo_worker_info.revision
     traefik           = var.traefik.revision != null ? var.traefik.revision : data.juju_charm.traefik_info.revision
+  }
+  tracks = {
+    alertmanager = "dev"
+    catalogue    = "dev"
+    grafana      = "dev"
+    loki         = "dev"
+    mimir        = "dev"
+    otelcol      = "dev"
+    tempo        = "dev"
+    # external charms
+    s3_integrator = "2"
+    seaweedfs     = "latest"
+    ssc           = "1"
+    traefik       = "latest"
   }
 }
