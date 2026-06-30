@@ -71,13 +71,13 @@ data "juju_charm" "otelcol_info" {
 data "juju_charm" "seaweedfs_info" {
   charm   = "seaweedfs-k8s"
   channel = local.channels.seaweedfs
-  base    = var.bases.swfs
+  base    = local.bases.swfs
 }
 
 data "juju_charm" "ssc_info" {
   charm   = "self-signed-certificates"
   channel = local.channels.ssc
-  base    = var.bases.ssc
+  base    = local.bases.ssc
 }
 
 data "juju_charm" "tempo_coordinator_info" {
@@ -95,7 +95,7 @@ data "juju_charm" "tempo_worker_info" {
 data "juju_charm" "s3_integrator_info" {
   charm   = "s3-integrator"
   channel = local.channels.s3_integrator
-  base    = var.bases.s3_integrator
+  base    = local.bases.s3_integrator
 }
 
 data "juju_charm" "traefik_info" {
