@@ -1,6 +1,8 @@
 mock_provider "juju" {}
 
-variables { model_uuid = "00000000-0000-0000-0000-000000000000" }
+variables {
+  opentelemetry_collector = { storage_directives = { "foo" = "1G" } }
+}
 
 # --- User revision pin is respected and not overridden by juju_charm datasource ---
 
