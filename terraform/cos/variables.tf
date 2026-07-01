@@ -11,12 +11,6 @@ variable "risk" {
   default     = "stable"
 }
 
-variable "base" {
-  description = "The operating system on which to deploy. E.g. ubuntu@24.04. Check Charmhub for per-charm base support."
-  default     = "ubuntu@26.04"
-  type        = string
-}
-
 variable "model" {
   description = "Model configuration. When `uuid` is set, an existing model is looked up; otherwise a new model is created with the given fields. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/model"
   type = object({

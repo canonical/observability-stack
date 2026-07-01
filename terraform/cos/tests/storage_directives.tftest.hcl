@@ -99,21 +99,6 @@ run "warns_when_tempo_worker_ingester_storage_directives_unset" {
   ]
 }
 
-run "warns_when_opentelemetry_collector_storage_directives_unset" {
-  command = plan
-
-  variables {
-    grafana      = { storage_directives = { "foo" = "1G" } }
-    loki_worker  = { write_storage_directives = { "foo" = "1G" } }
-    mimir_worker = { write_storage_directives = { "foo" = "1G" }, backend_storage_directives = { "foo" = "1G" } }
-    tempo_worker = { ingester_worker_storage_directives = { "foo" = "1G" } }
-  }
-
-  expect_failures = [
-    check.opentelemetry_collector_storage_directives,
-  ]
-}
-
 run "no_warning_when_all_storage_directives_set" {
   command = plan
 

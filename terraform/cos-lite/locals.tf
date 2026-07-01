@@ -1,19 +1,16 @@
 locals {
   create_model               = var.model.uuid == null
   model_uuid                 = local.create_model ? juju_model.cos[0].uuid : data.juju_model.cos[0].uuid
+  grafana_db_enabled         = var.postgresql_offer_url != null
   reverse_proxy_enabled      = anytrue(values(var.ingress))
   storage_directives_warning = "is unset, so it will use the default 1G volume. Set a size before deploying to production; resizing a persistent volume after deployment requires manual steps. See https://documentation.ubuntu.com/observability/latest/how-to/configure-and-tune/customize-storage-options/"
   tls_termination            = var.external_certificates_offer_url != null ? true : false
   traefik_enabled            = local.reverse_proxy_enabled
   traefik_base               = "ubuntu@20.04"
-  tracks = {
-    alertmanager  = "0.31"
-    catalogue     = "3.0"
-    grafana       = "12.4"
-    loki          = "3.7"
-    prometheus   = "3.11"
-    ssc           = "1"
-    traefik = "latest"
+  bases = {
+    o11y    = "ubuntu@26.04"
+    ssc     = "ubuntu@24.04"
+    traefik = "ubuntu@26.04"
   }
   channels = {
     alertmanager = "${local.tracks.alertmanager}/${var.risk}"
@@ -32,5 +29,15 @@ locals {
     prometheus   = var.prometheus.revision != null ? var.prometheus.revision : data.juju_charm.prometheus_info.revision
     ssc          = var.ssc.revision != null ? var.ssc.revision : data.juju_charm.ssc_info.revision
     traefik      = var.traefik.revision != null ? var.traefik.revision : data.juju_charm.traefik_info.revision
+  }
+  tracks = {
+    alertmanager = "0.31"
+    catalogue    = "3.0"
+    grafana      = "12.4"
+    loki         = "3.7"
+    prometheus   = "3.11"
+    # external charms
+    ssc     = "1"
+    traefik = "latest"
   }
 }

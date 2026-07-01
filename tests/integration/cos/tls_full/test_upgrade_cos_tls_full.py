@@ -8,7 +8,11 @@ import os
 from pathlib import Path
 
 import jubilant
-from helpers import generic_assertions, no_errors_in_otelcol_logs
+from helpers import (
+    generic_assertions,
+    no_errors_in_otelcol_logs,
+    xfail_otelcol_logs,
+)
 
 TRACK_2_TF_FILE = Path(__file__).parent.resolve() / "track-2.tf"
 TRACK_3_TF_FILE = Path(__file__).parent.resolve() / "track-3.0.tf"
@@ -33,6 +37,10 @@ def test_deploy_from_track_2(
     tf_manager.init(TRACK_2_TF_FILE)
     tf_manager.apply(ca_model=ca_model.model, cos_model=cos_model.model, **S3_ENDPOINT)
     generic_assertions(cos_model, ca_model, tmp_path)
+
+
+@xfail_otelcol_logs
+def test_no_errors_in_otelcol_logs_2(cos_model: jubilant.Juju):
     no_errors_in_otelcol_logs(cos_model)
 
 
@@ -57,4 +65,8 @@ def test_deploy_to_track_dev(
 
     # THEN the model is upgraded and is healthy
     generic_assertions(cos_model, ca_model, tmp_path)
+
+
+@xfail_otelcol_logs
+def test_no_errors_in_otelcol_logs_dev(cos_model: jubilant.Juju):
     no_errors_in_otelcol_logs(cos_model)

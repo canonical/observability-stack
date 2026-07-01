@@ -14,6 +14,7 @@ Bring charmed and uncharmed workloads into the COS telemetry pipeline.
 Integrate COS Lite with uncharmed applications <integrating-cos-lite-with-uncharmed-applications>
 Expose a metrics endpoint <exposing-a-metrics-endpoint>
 Configure scrape jobs <configure-scrape-jobs>
+Monitor SSL certificates with blackbox exporter <monitor-ssl-certificates-with-blackbox-exporter>
 Instrument machine charms <instrument-machine-charms>
 Use the Loki HTTP API <use-loki-http-api>
 Use Catalogue <use-catalogue>
@@ -35,6 +36,7 @@ Manually enable a Tempo HA tracing receiver <manually-enable-tempo-ha-tracing-re
 Add alert rules <adding-alert-rules>
 Integrate Alertmanager with external receivers <integrate-alertmanager-receivers>
 Set up SLOs with Sloth <set-up-slos-with-sloth>
+Sync alert rules from a git repo <sync-alert-rules-from-git-repo>
 ```
 
 ## Test & validate integrations
