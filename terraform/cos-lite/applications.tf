@@ -92,7 +92,7 @@ module "traefik" {
   source = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
   count  = local.traefik_enabled ? 1 : 0
 
-  app_name           = var.traefik.app_name
+  app_name = var.traefik.app_name
   # FIXME: Once Traefik TF module supports a base var, add it here
   # base               = local.bases.traefik
   channel            = local.channels.traefik
