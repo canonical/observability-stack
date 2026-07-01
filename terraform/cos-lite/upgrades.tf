@@ -23,31 +23,31 @@ resource "terraform_data" "grafana_ingress_interface" {
 data "juju_charm" "alertmanager_info" {
   charm   = "alertmanager-k8s"
   channel = local.channels.alertmanager
-  base    = var.base
+  base    = local.bases.o11y
 }
 
 data "juju_charm" "catalogue_info" {
   charm   = "catalogue-k8s"
   channel = local.channels.catalogue
-  base    = var.base
+  base    = local.bases.o11y
 }
 
 data "juju_charm" "grafana_info" {
   charm   = "grafana-k8s"
   channel = local.channels.grafana
-  base    = var.base
+  base    = local.bases.o11y
 }
 
 data "juju_charm" "loki_info" {
   charm   = "loki-k8s"
   channel = local.channels.loki
-  base    = var.base
+  base    = local.bases.o11y
 }
 
 data "juju_charm" "prometheus_info" {
   charm   = "prometheus-k8s"
   channel = local.channels.prometheus
-  base    = var.base
+  base    = local.bases.o11y
 }
 
 data "juju_charm" "ssc_info" {

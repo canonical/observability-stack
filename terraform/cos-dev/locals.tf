@@ -3,6 +3,7 @@ locals {
   reverse_proxy_enabled = anytrue(values(var.ingress))
   traefik_enabled       = local.reverse_proxy_enabled
   bases = {
+    o11y          = "ubuntu@26.04"
     s3_integrator = "ubuntu@24.04"
     ssc           = "ubuntu@24.04"
     swfs          = "ubuntu@24.04"

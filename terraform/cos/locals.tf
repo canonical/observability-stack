@@ -8,6 +8,7 @@ locals {
   tls_termination            = var.external_certificates_offer_url != null ? true : false
   traefik_enabled            = local.reverse_proxy_enabled
   bases = {
+    o11y          = "ubuntu@26.04"
     s3_integrator = "ubuntu@24.04"
     ssc           = "ubuntu@24.04"
     traefik       = "ubuntu@26.04"
