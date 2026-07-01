@@ -17,15 +17,15 @@ This is a Terraform module facilitating the deployment of the COS solution, usin
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_alertmanager"></a> [alertmanager](#module\_alertmanager) | git::https://github.com/canonical/alertmanager-k8s-operator//terraform | tf-0.31.0 |
-| <a name="module_catalogue"></a> [catalogue](#module\_catalogue) | git::https://github.com/canonical/catalogue-k8s-operator//terraform | tf-3.0.0 |
-| <a name="module_grafana"></a> [grafana](#module\_grafana) | git::https://github.com/canonical/grafana-k8s-operator//terraform | tf-12.4.0 |
-| <a name="module_loki"></a> [loki](#module\_loki) | git::https://github.com/canonical/loki-operators//terraform | tf-3.7.0 |
+| <a name="module_alertmanager"></a> [alertmanager](#module\_alertmanager) | git::https://github.com/canonical/alertmanager-k8s-operator//terraform | tf-0.31.1 |
+| <a name="module_catalogue"></a> [catalogue](#module\_catalogue) | git::https://github.com/canonical/catalogue-k8s-operator//terraform | tf-3.0.1 |
+| <a name="module_grafana"></a> [grafana](#module\_grafana) | git::https://github.com/canonical/grafana-k8s-operator//terraform | tf-12.4.1 |
+| <a name="module_loki"></a> [loki](#module\_loki) | git::https://github.com/canonical/loki-operators//terraform | tf-3.7.1 |
 | <a name="module_mimir"></a> [mimir](#module\_mimir) | git::https://github.com/canonical/mimir-operators//terraform | tf-2.17.0 |
-| <a name="module_opentelemetry_collector"></a> [opentelemetry\_collector](#module\_opentelemetry\_collector) | git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform | tf-0.130.0 |
-| <a name="module_ssc"></a> [ssc](#module\_ssc) | git::https://github.com/canonical/self-signed-certificates-operator//terraform | n/a |
+| <a name="module_opentelemetry_collector"></a> [opentelemetry\_collector](#module\_opentelemetry\_collector) | git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform | tf-0.130.1 |
+| <a name="module_ssc"></a> [ssc](#module\_ssc) | git::https://github.com/canonical/self-signed-certificates-operator//terraform | rev653 |
 | <a name="module_tempo"></a> [tempo](#module\_tempo) | git::https://github.com/canonical/tempo-operators//terraform | tf-2.10.0 |
-| <a name="module_traefik"></a> [traefik](#module\_traefik) | git::https://github.com/canonical/traefik-k8s-operator//terraform | rev301 |
+| <a name="module_traefik"></a> [traefik](#module\_traefik) | git::https://github.com/canonical/traefik-k8s-operator//terraform | traefik-k8s-rev345 |
 
 ## Inputs
 
