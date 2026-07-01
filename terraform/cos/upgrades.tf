@@ -83,19 +83,19 @@ data "juju_charm" "tempo_worker_info" {
 data "juju_charm" "ssc_info" {
   charm   = "self-signed-certificates"
   channel = local.channels.ssc
-  base    = var.base
+  base    = local.bases.ssc
 }
 
 data "juju_charm" "s3_integrator_info" {
   charm   = "s3-integrator"
   channel = local.channels.s3_integrator
-  base    = var.base
+  base    = local.bases.s3_integrator
 }
 
 data "juju_charm" "traefik_info" {
   charm   = "traefik-k8s"
   channel = local.channels.traefik
-  base    = local.traefik_base
+  base    = local.bases.traefik
 }
 
 # -------------- # State migrations -------------- #

@@ -6,16 +6,9 @@ locals {
   storage_directives_warning = "is unset, so it will use the default 1G volume. Set a size before deploying to production; resizing a persistent volume after deployment requires manual steps. See https://documentation.ubuntu.com/observability/latest/how-to/configure-and-tune/customize-storage-options/"
   tls_termination            = var.external_certificates_offer_url != null ? true : false
   traefik_enabled            = local.reverse_proxy_enabled
-  traefik_base               = "ubuntu@20.04"
-  tracks = {
-    alertmanager = "dev"
-    catalogue    = "dev"
-    grafana      = "dev"
-    loki         = "dev"
-    prometheus   = "dev"
-
-    ssc     = "1"
-    traefik = "latest"
+  bases = {
+    ssc     = "ubuntu@24.04"
+    traefik = "ubuntu@26.04"
   }
   channels = {
     alertmanager = "${local.tracks.alertmanager}/${var.risk}"
@@ -34,5 +27,15 @@ locals {
     prometheus   = var.prometheus.revision != null ? var.prometheus.revision : data.juju_charm.prometheus_info.revision
     ssc          = var.ssc.revision != null ? var.ssc.revision : data.juju_charm.ssc_info.revision
     traefik      = var.traefik.revision != null ? var.traefik.revision : data.juju_charm.traefik_info.revision
+  }
+  tracks = {
+    alertmanager = "dev"
+    catalogue    = "dev"
+    grafana      = "dev"
+    loki         = "dev"
+    prometheus   = "dev"
+    # external charms
+    ssc     = "1"
+    traefik = "latest"
   }
 }
