@@ -6,7 +6,6 @@ locals {
   storage_directives_warning = "is unset, so it will use the default 1G volume. Set a size before deploying to production; resizing a persistent volume after deployment requires manual steps. See https://documentation.ubuntu.com/observability/latest/how-to/configure-and-tune/customize-storage-options/"
   tls_termination            = var.external_certificates_offer_url != null ? true : false
   traefik_enabled            = local.reverse_proxy_enabled
-  traefik_base               = "ubuntu@20.04"
   bases = {
     o11y    = "ubuntu@26.04"
     ssc     = "ubuntu@24.04"
