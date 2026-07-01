@@ -2,6 +2,7 @@ module "alertmanager" {
   source = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform"
 
   app_name           = var.alertmanager.app_name
+  base               = local.bases.o11y
   channel            = local.channels.alertmanager
   config             = var.alertmanager.config
   constraints        = var.alertmanager.constraints
@@ -16,6 +17,7 @@ module "catalogue" {
   source = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
 
   app_name           = var.catalogue.app_name
+  base               = local.bases.o11y
   channel            = local.channels.catalogue
   config             = var.catalogue.config
   constraints        = var.catalogue.constraints
@@ -30,6 +32,7 @@ module "grafana" {
   source = "git::https://github.com/canonical/grafana-k8s-operator//terraform"
 
   app_name           = var.grafana.app_name
+  base               = local.bases.o11y
   channel            = local.channels.grafana
   config             = var.grafana.config
   constraints        = var.grafana.constraints
@@ -45,12 +48,14 @@ module "loki" {
   source = "git::https://github.com/canonical/loki-operators//terraform"
 
   anti_affinity                     = var.anti_affinity
+  base                              = local.bases.o11y
   channel                           = local.channels.loki
   model_uuid                        = local.model_uuid
   s3_endpoint                       = var.s3_endpoint
   s3_secret_key                     = var.s3_secret_key
   s3_access_key                     = var.s3_access_key
   s3_bucket                         = var.loki_bucket
+  s3_integrator_base                = local.bases.s3_integrator
   s3_integrator_channel             = local.channels.s3_integrator
   s3_integrator_config              = var.s3_integrator.config
   s3_integrator_constraints         = var.s3_integrator.constraints
@@ -81,12 +86,14 @@ module "mimir" {
   source = "git::https://github.com/canonical/mimir-operators//terraform"
 
   anti_affinity                     = var.anti_affinity
+  base                              = local.bases.o11y
   channel                           = local.channels.mimir
   model_uuid                        = local.model_uuid
   s3_endpoint                       = var.s3_endpoint
   s3_secret_key                     = var.s3_secret_key
   s3_access_key                     = var.s3_access_key
   s3_bucket                         = var.mimir_bucket
+  s3_integrator_base                = local.bases.s3_integrator
   s3_integrator_channel             = local.channels.s3_integrator
   s3_integrator_config              = var.s3_integrator.config
   s3_integrator_constraints         = var.s3_integrator.constraints
@@ -117,6 +124,7 @@ module "opentelemetry_collector" {
   source = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform"
 
   app_name           = var.opentelemetry_collector.app_name
+  base               = local.bases.o11y
   channel            = local.channels.otelcol
   config             = var.opentelemetry_collector.config
   constraints        = var.opentelemetry_collector.constraints
@@ -132,6 +140,7 @@ module "ssc" {
   count  = var.internal_tls ? 1 : 0
 
   app_name    = var.ssc.app_name
+  base        = local.bases.ssc
   channel     = local.channels.ssc
   config      = var.ssc.config
   constraints = var.ssc.constraints
@@ -144,12 +153,14 @@ module "tempo" {
   source = "git::https://github.com/canonical/tempo-operators//terraform"
 
   anti_affinity                               = var.anti_affinity
+  base                                        = local.bases.o11y
   channel                                     = local.channels.tempo
   model_uuid                                  = local.model_uuid
   s3_endpoint                                 = var.s3_endpoint
   s3_access_key                               = var.s3_access_key
   s3_secret_key                               = var.s3_secret_key
   s3_bucket                                   = var.tempo_bucket
+  s3_integrator_base                          = local.bases.s3_integrator
   s3_integrator_channel                       = local.channels.s3_integrator
   s3_integrator_config                        = var.s3_integrator.config
   s3_integrator_constraints                   = var.s3_integrator.constraints
@@ -189,7 +200,9 @@ module "traefik" {
   source = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
   count  = local.traefik_enabled ? 1 : 0
 
-  app_name           = var.traefik.app_name
+  app_name = var.traefik.app_name
+  # FIXME: Once Traefik TF module supports a base var, add it here
+  # base               = local.bases.traefik
   channel            = local.channels.traefik
   config             = var.cloud == "aws" ? { "loadbalancer_annotations" = "service.beta.kubernetes.io/aws-load-balancer-scheme=internet-facing" } : var.traefik.config
   constraints        = var.traefik.constraints

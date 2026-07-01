@@ -2,6 +2,7 @@ module "alertmanager" {
   source = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform"
 
   app_name           = var.alertmanager.app_name
+  base               = local.bases.o11y
   channel            = local.channels.alertmanager
   config             = var.alertmanager.config
   constraints        = var.alertmanager.constraints
@@ -16,6 +17,7 @@ module "catalogue" {
   source = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
 
   app_name           = var.catalogue.app_name
+  base               = local.bases.o11y
   channel            = local.channels.catalogue
   config             = var.catalogue.config
   constraints        = var.catalogue.constraints
@@ -31,6 +33,7 @@ module "grafana" {
   replace_triggers = [terraform_data.grafana_litestream_resource.id]
 
   app_name           = var.grafana.app_name
+  base               = local.bases.o11y
   channel            = local.channels.grafana
   config             = var.grafana.config
   constraints        = var.grafana.constraints
@@ -45,6 +48,7 @@ module "loki" {
   source = "git::https://github.com/canonical/loki-k8s-operator//terraform"
 
   app_name           = var.loki.app_name
+  base               = local.bases.o11y
   channel            = local.channels.loki
   config             = var.loki.config
   constraints        = var.loki.constraints
@@ -59,6 +63,7 @@ module "prometheus" {
   source = "git::https://github.com/canonical/prometheus-k8s-operator//terraform"
 
   app_name           = var.prometheus.app_name
+  base               = local.bases.o11y
   channel            = local.channels.prometheus
   config             = var.prometheus.config
   constraints        = var.prometheus.constraints
@@ -74,6 +79,7 @@ module "ssc" {
   count  = var.internal_tls ? 1 : 0
 
   app_name    = var.ssc.app_name
+  base        = local.bases.ssc
   channel     = local.channels.ssc
   config      = var.ssc.config
   constraints = var.ssc.constraints
@@ -86,7 +92,9 @@ module "traefik" {
   source = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
   count  = local.traefik_enabled ? 1 : 0
 
-  app_name           = var.traefik.app_name
+  app_name = var.traefik.app_name
+  # FIXME: Once Traefik TF module supports a base var, add it here
+  # base               = local.bases.traefik
   channel            = local.channels.traefik
   config             = var.traefik.config
   constraints        = var.traefik.constraints
