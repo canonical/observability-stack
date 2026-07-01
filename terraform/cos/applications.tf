@@ -55,6 +55,7 @@ module "loki" {
   s3_secret_key                     = var.s3_secret_key
   s3_access_key                     = var.s3_access_key
   s3_bucket                         = var.loki_bucket
+  s3_integrator_base                = local.bases.s3_integrator
   s3_integrator_channel             = local.channels.s3_integrator
   s3_integrator_config              = var.s3_integrator.config
   s3_integrator_constraints         = var.s3_integrator.constraints
@@ -92,6 +93,7 @@ module "mimir" {
   s3_secret_key                     = var.s3_secret_key
   s3_access_key                     = var.s3_access_key
   s3_bucket                         = var.mimir_bucket
+  s3_integrator_base                = local.bases.s3_integrator
   s3_integrator_channel             = local.channels.s3_integrator
   s3_integrator_config              = var.s3_integrator.config
   s3_integrator_constraints         = var.s3_integrator.constraints
@@ -158,6 +160,7 @@ module "tempo" {
   s3_access_key                               = var.s3_access_key
   s3_secret_key                               = var.s3_secret_key
   s3_bucket                                   = var.tempo_bucket
+  s3_integrator_base                          = local.bases.s3_integrator
   s3_integrator_channel                       = local.channels.s3_integrator
   s3_integrator_config                        = var.s3_integrator.config
   s3_integrator_constraints                   = var.s3_integrator.constraints
