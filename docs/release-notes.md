@@ -70,7 +70,6 @@ COS 3.0 is compatible with Juju v3.6+.
 
 | Change | Scope | Details |
 |--------|-------|---------|
-| **`base` added** | `cos`, `cos-lite` | New variable for the component bases. |
 | **`ingress` added** | `cos`, `cos-lite` | New structured object to toggle ingress per component. |
 | **`model` added** | `cos`, `cos-lite` | New structured object to configure the Juju model. |
 

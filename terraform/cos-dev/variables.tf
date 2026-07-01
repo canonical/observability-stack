@@ -11,12 +11,6 @@ variable "risk" {
   default     = "edge"
 }
 
-variable "base" {
-  description = "The operating system on which to deploy. E.g. ubuntu@26.04. Check Charmhub for per-charm base support."
-  default     = "ubuntu@26.04"
-  type        = string
-}
-
 variable "model_uuid" {
   description = "Reference to an existing model resource or data source for the model to deploy to"
   type        = string
