@@ -1,5 +1,5 @@
 module "alertmanager" {
-  source = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform?ref=tf-0.31.1"
+  source = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform?ref=tf-0.31.2"
 
   app_name           = var.alertmanager.app_name
   base               = local.bases.o11y
@@ -14,7 +14,7 @@ module "alertmanager" {
 }
 
 module "catalogue" {
-  source = "git::https://github.com/canonical/catalogue-k8s-operator//terraform?ref=tf-3.0.1"
+  source = "git::https://github.com/canonical/catalogue-k8s-operator//terraform?ref=tf-3.0.2"
 
   app_name           = var.catalogue.app_name
   base               = local.bases.o11y
@@ -29,7 +29,7 @@ module "catalogue" {
 }
 
 module "grafana" {
-  source = "git::https://github.com/canonical/grafana-k8s-operator//terraform?ref=tf-12.4.1"
+  source = "git::https://github.com/canonical/grafana-k8s-operator//terraform?ref=tf-12.4.2"
 
   app_name           = var.grafana.app_name
   base               = local.bases.o11y
@@ -45,7 +45,7 @@ module "grafana" {
 }
 
 module "loki" {
-  source = "git::https://github.com/canonical/loki-operators//terraform?ref=tf-3.7.1"
+  source = "git::https://github.com/canonical/loki-operators//terraform?ref=tf-3.7.3"
 
   anti_affinity                     = var.anti_affinity
   base                              = local.bases.o11y
@@ -83,7 +83,7 @@ module "loki" {
 }
 
 module "mimir" {
-  source = "git::https://github.com/canonical/mimir-operators//terraform?ref=tf-2.17.1"
+  source = "git::https://github.com/canonical/mimir-operators//terraform?ref=tf-2.17.2"
 
   anti_affinity                     = var.anti_affinity
   base                              = local.bases.o11y
@@ -121,7 +121,7 @@ module "mimir" {
 }
 
 module "opentelemetry_collector" {
-  source = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform?ref=tf-0.130.1"
+  source = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform?ref=tf-0.130.2"
 
   app_name           = var.opentelemetry_collector.app_name
   base               = local.bases.o11y
@@ -150,7 +150,7 @@ module "ssc" {
 }
 
 module "tempo" {
-  source = "git::https://github.com/canonical/tempo-operators//terraform?ref=tf-2.10.0"
+  source = "git::https://github.com/canonical/tempo-operators//terraform?ref=tf-2.10.1"
 
   anti_affinity                               = var.anti_affinity
   base                                        = local.bases.o11y
