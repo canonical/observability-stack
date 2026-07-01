@@ -83,7 +83,7 @@ module "loki" {
 }
 
 module "mimir" {
-  source = "git::https://github.com/canonical/mimir-operators//terraform?ref=tf-2.17.0"
+  source = "git::https://github.com/canonical/mimir-operators//terraform?ref=tf-2.17.1"
 
   anti_affinity                     = var.anti_affinity
   base                              = local.bases.o11y
