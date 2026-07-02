@@ -53,6 +53,22 @@ juju deploy prometheus-k8s prometheus
 juju relate blackbox prometheus
 ```
 
+## Cross-unit connectivity checks
+
+The [machine charm](https://charmhub.io/blackbox-exporter) supports
+automatic cross-unit connectivity checks. Every Blackbox Exporter unit
+probes all of its peer units over every available network interface,
+using the ICMP module. Each unit creates Prometheus-compatible scrape
+jobs whose targets are the addresses of the other Blackbox Exporter
+units across their different network interfaces.
+
+To scrape the `probe_success` metrics produced by these checks, you
+need:
+
+- An [OpenTelemetry Collector machine charm](https://charmhub.io/opentelemetry-collector)
+  on every machine that hosts a Blackbox Exporter unit.
+- The `cos-agent` relation between the two charms.
+
 ## Configuration
 
 The charm accepts two configuration files, both supplied via `juju config`:
