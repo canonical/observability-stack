@@ -35,7 +35,7 @@ juju deploy opentelemetry-collector otelcol \
 
 #### Kubernetes Model
 ```
-juju deploy opentelemetry-collector-k8s otelcol --channel 2/stable
+juju deploy opentelemetry-collector-k8s otelcol --channel 0.130/stable
 ```
 <br>
 

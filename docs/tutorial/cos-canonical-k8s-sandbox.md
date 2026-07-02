@@ -38,7 +38,7 @@ and configure RadosGW to listen on port 8080 ([doc](https://canonical-microceph.
 
 Create a `cos-demo.tf` file as follows:
 
-```{literalinclude} /../tests/integration/cos/tls_internal/track-dev.tf
+```{literalinclude} /../tests/integration/cos/tls_internal/track-3.0.tf
     :language: hcl
 ```
 
@@ -68,31 +68,31 @@ The output of `juju status --relations` for your deployment should eventually be
 Model  Controller  Cloud/Region  Version  SLA          Timestamp
 cos    ck8s        ck8s          3.6.21   unsupported  12:14:38+02:00
 
-App                      Version  Status  Scale  Charm                        Channel      Rev  Address         Exposed  Message
-alertmanager             0.31.0   active      1  alertmanager-k8s             dev/edge     206  10.152.183.104  no
-ca                                active      1  self-signed-certificates     1/edge       637  10.152.183.157  no
-catalogue                         active      1  catalogue-k8s                dev/edge     125  10.152.183.162  no
-grafana                  12.4.2   active      1  grafana-k8s                  dev/edge     187  10.152.183.83   no
-loki                              active      1  loki-coordinator-k8s         dev/edge      61  10.152.183.88   no       Degraded.
-loki-backend             3.7.1    active      1  loki-worker-k8s              dev/edge      68  10.152.183.90   no       backend ready.
-loki-read                3.7.1    active      1  loki-worker-k8s              dev/edge      68  10.152.183.211  no       read ready.
-loki-s3-integrator                active      1  s3-integrator                2/edge       550  10.152.183.129  no
-loki-write               3.7.1    active      1  loki-worker-k8s              dev/edge      68  10.152.183.217  no       write ready.
-mimir                             active      1  mimir-coordinator-k8s        dev/edge      81  10.152.183.220  no
-mimir-backend            2.17.10  active      1  mimir-worker-k8s             dev/edge      71  10.152.183.212  no       backend ready.
-mimir-read               2.17.10  active      1  mimir-worker-k8s             dev/edge      71  10.152.183.227  no       read ready.
-mimir-s3-integrator               active      1  s3-integrator                2/edge       550  10.152.183.100  no
-mimir-write              2.17.10  active      1  mimir-worker-k8s             dev/edge      71  10.152.183.193  no       write ready.
-otelcol                  0.130.1  active      1  opentelemetry-collector-k8s  dev/edge     179  10.152.183.115  no
-tempo                             active      1  tempo-coordinator-k8s        dev/edge     149  10.152.183.117  no
-tempo-compactor          2.10.1   active      1  tempo-worker-k8s             dev/edge     102  10.152.183.200  no       compactor ready.
-tempo-distributor        2.10.1   active      1  tempo-worker-k8s             dev/edge     102  10.152.183.228  no       distributor ready.
-tempo-ingester           2.10.1   active      1  tempo-worker-k8s             dev/edge     102  10.152.183.92   no       ingester ready.
-tempo-metrics-generator  2.10.1   active      1  tempo-worker-k8s             dev/edge     102  10.152.183.183  no       metrics-generator ready.
-tempo-querier            2.10.1   active      1  tempo-worker-k8s             dev/edge     102  10.152.183.137  no       querier ready.
-tempo-query-frontend     2.10.1   active      1  tempo-worker-k8s             dev/edge     102  10.152.183.20   no       query-frontend ready.
-tempo-s3-integrator               active      1  s3-integrator                2/edge       550  10.152.183.216  no
-traefik                  2.11.0   active      1  traefik-k8s                  latest/edge  294  10.152.183.182  no       Serving at http://10.249.85.241
+App                      Version  Status  Scale  Charm                        Channel        Rev  Address         Exposed  Message
+alertmanager             0.31.0   active      1  alertmanager-k8s             0.31/stable    230  10.152.183.104  no
+ca                                active      1  self-signed-certificates     1/stable       586  10.152.183.157  no
+catalogue                         active      1  catalogue-k8s                3.0/stable     147  10.152.183.162  no
+grafana                  12.4.2   active      1  grafana-k8s                  12.4/stable    193  10.152.183.83   no
+loki                              active      1  loki-coordinator-k8s         3.7/stable      87  10.152.183.88   no       Degraded.
+loki-backend             3.7.1    active      1  loki-worker-k8s              3.7/stable     105  10.152.183.90   no       backend ready.
+loki-read                3.7.1    active      1  loki-worker-k8s              3.7/stable     105  10.152.183.211  no       read ready.
+loki-s3-integrator                active      1  s3-integrator                2/stable       545  10.152.183.129  no
+loki-write               3.7.1    active      1  loki-worker-k8s              3.7/stable     105  10.152.183.217  no       write ready.
+mimir                             active      1  mimir-coordinator-k8s        2.17/stable    114  10.152.183.220  no
+mimir-backend            2.17.10  active      1  mimir-worker-k8s             2.17/stable    101  10.152.183.212  no       backend ready.
+mimir-read               2.17.10  active      1  mimir-worker-k8s             2.17/stable    101  10.152.183.227  no       read ready.
+mimir-s3-integrator               active      1  s3-integrator                2/stable       545  10.152.183.100  no
+mimir-write              2.17.10  active      1  mimir-worker-k8s             2.17/stable    101  10.152.183.193  no       write ready.
+otelcol                  0.130.1  active      1  opentelemetry-collector-k8s  0.130/stable   211  10.152.183.115  no
+tempo                             active      1  tempo-coordinator-k8s        2.10/stable    162  10.152.183.117  no
+tempo-compactor          2.10.1   active      1  tempo-worker-k8s             2.10/stable    116  10.152.183.200  no       compactor ready.
+tempo-distributor        2.10.1   active      1  tempo-worker-k8s             2.10/stable    116  10.152.183.228  no       distributor ready.
+tempo-ingester           2.10.1   active      1  tempo-worker-k8s             2.10/stable    116  10.152.183.92   no       ingester ready.
+tempo-metrics-generator  2.10.1   active      1  tempo-worker-k8s             2.10/stable    116  10.152.183.183  no       metrics-generator ready.
+tempo-querier            2.10.1   active      1  tempo-worker-k8s             2.10/stable    116  10.152.183.137  no       querier ready.
+tempo-query-frontend     2.10.1   active      1  tempo-worker-k8s             2.10/stable    116  10.152.183.20   no       query-frontend ready.
+tempo-s3-integrator               active      1  s3-integrator                2/stable       545  10.152.183.216  no
+traefik                  2.11.0   active      1  traefik-k8s                  latest/stable  343  10.152.183.182  no       Serving at http://10.249.85.241
 
 Unit                        Workload  Agent      Address     Ports  Message
 alertmanager/0*             active    idle       10.1.0.112
@@ -121,12 +121,12 @@ tempo/0*                    active    idle       10.1.0.107
 traefik/0*                  active    idle       10.1.0.135         Serving at http://10.249.85.241
 
 Offer                         Application   Charm                     Rev  Connected  Endpoint              Interface                Role
-alertmanager-karma-dashboard  alertmanager  alertmanager-k8s          206  0/0        karma-dashboard       karma_dashboard          provider
-certificates                  ca            self-signed-certificates  637  0/0        certificates          tls-certificates         provider
-grafana-dashboards            grafana       grafana-k8s               187  0/0        grafana-dashboard     grafana_dashboard        requirer
-loki-logging                  loki          loki-coordinator-k8s      61   0/0        logging               loki_push_api            provider
-mimir-receive-remote-write    mimir         mimir-coordinator-k8s     81   0/0        receive-remote-write  prometheus_remote_write  provider
-send-ca-cert                  ca            self-signed-certificates  637  0/0        send-ca-cert          certificate_transfer     provider
+alertmanager-karma-dashboard  alertmanager  alertmanager-k8s          230  0/0        karma-dashboard       karma_dashboard          provider
+certificates                  ca            self-signed-certificates  586  0/0        certificates          tls-certificates         provider
+grafana-dashboards            grafana       grafana-k8s               193  0/0        grafana-dashboard     grafana_dashboard        requirer
+loki-logging                  loki          loki-coordinator-k8s       87  0/0        logging               loki_push_api            provider
+mimir-receive-remote-write    mimir         mimir-coordinator-k8s     114  0/0        receive-remote-write  prometheus_remote_write  provider
+send-ca-cert                  ca            self-signed-certificates  586  0/0        send-ca-cert          certificate_transfer     provider
 
 Integration provider                 Requirer                               Interface                    Type     Message
 alertmanager:alerting                loki:alertmanager                      alertmanager_dispatch        regular

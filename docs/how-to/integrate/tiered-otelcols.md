@@ -33,7 +33,7 @@ class fan-out,warn,info thickStroke;
 classDef thickStroke stroke-width:2px, stroke:#FFA500;
 ```
 
-With Juju config we use the [otelcol processor config](https://charmhub.io/opentelemetry-collector-k8s/configurations?channel=2/edge#processors) to:
+With Juju config we use the [otelcol processor config](https://charmhub.io/opentelemetry-collector-k8s/configurations?channel=0.130/stable#processors) to:
 
 1. Set the minimum severity level to `WARNING`
 
@@ -72,7 +72,7 @@ class fan-in,dev,prod thickStroke;
 classDef thickStroke stroke-width:2px, stroke:#FFA500;
 ```
 
-With Juju config we use the [otelcol processor config](https://charmhub.io/opentelemetry-collector-k8s/configurations?channel=2/edge#processors) to:
+With Juju config we use the [otelcol processor config](https://charmhub.io/opentelemetry-collector-k8s/configurations?channel=0.130/stable#processors) to:
 
 1. Label the log stream as `development` and originating from `region-a`
 
