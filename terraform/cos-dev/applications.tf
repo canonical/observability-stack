@@ -126,7 +126,7 @@ module "mimir_coordinator" {
 
   app_name           = var.mimir_coordinator.app_name
   channel            = local.channels.mimir
-  config             = merge(var.mimir_coordinator.config, { "max_global_exemplars_per_user" = "100000" })
+  config             = var.mimir_coordinator.config
   constraints        = var.mimir_coordinator.constraints
   model_uuid         = var.model_uuid
   resources          = var.mimir_coordinator.resources
