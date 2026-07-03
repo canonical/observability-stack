@@ -2,10 +2,7 @@ bundle: kubernetes
 applications:
   dev-attributes:
     charm: opentelemetry-collector-k8s
-    channel: 2/edge
-    revision: 74
-    resources:
-      opentelemetry-collector-image: 9
+    channel: 0.130/stable
     scale: 1
     options:
       processors: |-
@@ -52,10 +49,7 @@ applications:
     trust: true
   prod-attributes:
     charm: opentelemetry-collector-k8s
-    channel: 2/edge
-    revision: 74
-    resources:
-      opentelemetry-collector-image: 9
+    channel: 0.130/stable
     scale: 1
     options:
       processors: |-
@@ -70,10 +64,7 @@ applications:
     trust: true
   redact-and-batch:
     charm: opentelemetry-collector-k8s
-    channel: 2/edge
-    revision: 74
-    resources:
-      opentelemetry-collector-image: 9
+    channel: 0.130/stable
     scale: 1
     options:
       processors: |-

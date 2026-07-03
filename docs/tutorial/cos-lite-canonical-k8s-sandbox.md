@@ -56,14 +56,14 @@ juju status --relations --storage
 Model     Controller  Cloud/Region  Version  SLA          Timestamp
 cos-lite  kub         k8s           3.6.21   unsupported  11:39:52+02:00
 
-App           Version  Status  Scale  Charm                     Channel      Rev  Address         Exposed  Message
-alertmanager  0.31.0   active      1  alertmanager-k8s          dev/edge     202  10.152.183.170  no
-ca                     active      1  self-signed-certificates  1/edge       637  10.152.183.71   no
-catalogue              active      1  catalogue-k8s             dev/edge     125  10.152.183.24   no
-grafana       12.4.2   active      1  grafana-k8s               dev/edge     186  10.152.183.59   no
-loki          3.7.1    active      1  loki-k8s                  dev/edge     226  10.152.183.29   no
-prometheus    3.11.1   active      1  prometheus-k8s            dev/edge     292  10.152.183.104  no
-traefik       2.11.0   active      1  traefik-k8s               latest/edge  292  10.152.183.108  no       Serving at http://192.168.178.192
+App           Version  Status  Scale  Charm                     Channel        Rev  Address         Exposed  Message
+alertmanager  0.31.0   active      1  alertmanager-k8s          0.31/stable    230  10.152.183.170  no
+ca                     active      1  self-signed-certificates  1/stable       588  10.152.183.71   no
+catalogue              active      1  catalogue-k8s             3.0/stable     147  10.152.183.24   no
+grafana       12.4.2   active      1  grafana-k8s               12.4/stable    193  10.152.183.59   no
+loki          3.7.1    active      1  loki-k8s                  3.7/stable     244  10.152.183.29   no
+prometheus    3.11.1   active      1  prometheus-k8s            3.11/stable    309  10.152.183.104  no
+traefik       2.11.0   active      1  traefik-k8s               latest/stable  342  10.152.183.108  no       Serving at http://192.168.178.192
 
 Unit             Workload  Agent      Address     Ports  Message
 alertmanager/0*  active    idle       10.1.0.207
@@ -75,13 +75,13 @@ prometheus/0*    active    idle       10.1.0.83
 traefik/0*       active    idle       10.1.0.93          Serving at http://192.168.178.192
 
 Offer                            Application   Charm                     Rev  Connected  Endpoint              Interface                Role
-alertmanager-karma-dashboard     alertmanager  alertmanager-k8s          202  0/0        karma-dashboard       karma_dashboard          provider
-certificates                     ca            self-signed-certificates  637  0/0        certificates          tls-certificates         provider
-grafana-dashboards               grafana       grafana-k8s               186  0/0        grafana-dashboard     grafana_dashboard        requirer
-loki-logging                     loki          loki-k8s                  226  0/0        logging               loki_push_api            provider
-prometheus-metrics-endpoint      prometheus    prometheus-k8s            292  0/0        metrics-endpoint      prometheus_scrape        requirer
-prometheus-receive-remote-write  prometheus    prometheus-k8s            292  0/0        receive-remote-write  prometheus_remote_write  provider
-send-ca-cert                     ca            self-signed-certificates  637  0/0        send-ca-cert          certificate_transfer     provider
+alertmanager-karma-dashboard     alertmanager  alertmanager-k8s          230  0/0        karma-dashboard       karma_dashboard          provider
+certificates                     ca            self-signed-certificates  588  0/0        certificates          tls-certificates         provider
+grafana-dashboards               grafana       grafana-k8s               193  0/0        grafana-dashboard     grafana_dashboard        requirer
+loki-logging                     loki          loki-k8s                  244  0/0        logging               loki_push_api            provider
+prometheus-metrics-endpoint      prometheus    prometheus-k8s            309  0/0        metrics-endpoint      prometheus_scrape        requirer
+prometheus-receive-remote-write  prometheus    prometheus-k8s            309  0/0        receive-remote-write  prometheus_remote_write  provider
+send-ca-cert                     ca            self-signed-certificates  588  0/0        send-ca-cert          certificate_transfer     provider
 
 Integration provider                Requirer                     Interface              Type     Message
 alertmanager:alerting               loki:alertmanager            alertmanager_dispatch  regular
