@@ -13,7 +13,7 @@ module "alertmanager" {
 }
 
 module "catalogue" {
-  source = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/catalogue-k8s-operator//charm/terraform"
 
   app_name           = var.catalogue.app_name
   channel            = local.channels.catalogue
@@ -126,7 +126,7 @@ module "mimir_coordinator" {
 
   app_name           = var.mimir_coordinator.app_name
   channel            = local.channels.mimir
-  config             = var.mimir_coordinator.config
+  config             = merge(var.mimir_coordinator.config, { "max_global_exemplars_per_user" = "100000" })
   constraints        = var.mimir_coordinator.constraints
   model_uuid         = var.model_uuid
   resources          = var.mimir_coordinator.resources
