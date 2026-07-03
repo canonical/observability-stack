@@ -17,7 +17,7 @@ This module is intended for development and testing environments where full HA i
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_alertmanager"></a> [alertmanager](#module\_alertmanager) | git::https://github.com/canonical/alertmanager-k8s-operator//terraform | n/a |
-| <a name="module_catalogue"></a> [catalogue](#module\_catalogue) | git::https://github.com/canonical/catalogue-k8s-operator//terraform | n/a |
+| <a name="module_catalogue"></a> [catalogue](#module\_catalogue) | git::https://github.com/canonical/catalogue-k8s-operator//charm/terraform | n/a |
 | <a name="module_grafana"></a> [grafana](#module\_grafana) | git::https://github.com/canonical/grafana-k8s-operator//terraform | n/a |
 | <a name="module_loki_coordinator"></a> [loki\_coordinator](#module\_loki\_coordinator) | git::https://github.com/canonical/loki-operators//coordinator/terraform | n/a |
 | <a name="module_loki_worker"></a> [loki\_worker](#module\_loki\_worker) | git::https://github.com/canonical/loki-operators//worker/terraform | n/a |
