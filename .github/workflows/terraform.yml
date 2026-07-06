@@ -60,14 +60,14 @@ jobs:
   test-integration-cos-lite:
     name: COS Lite Terraform integration
     needs: [test-unit]
-    uses: canonical/observability-stack/.github/workflows/_integration.yml@feat/risk-upgrades
+    uses: canonical/observability-stack/.github/workflows/_integration.yml@main
     with:
       product: cos_lite
       runner: self-hosted-linux-amd64-noble-large
   test-integration-cos:
     name: COS Terraform integration
     needs: [test-unit]
-    uses: canonical/observability-stack/.github/workflows/_integration.yml@feat/risk-upgrades
+    uses: canonical/observability-stack/.github/workflows/_integration.yml@main
     with:
       product: cos
       runner: self-hosted-linux-amd64-noble-xlarge
