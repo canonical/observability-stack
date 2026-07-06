@@ -375,6 +375,7 @@ module "traefik" {
   count  = local.traefik_enabled ? 1 : 0
 
   app_name           = var.traefik.app_name
+  base               = local.bases.traefik
   channel            = local.channels.traefik
   config             = var.traefik.config
   constraints        = var.traefik.constraints

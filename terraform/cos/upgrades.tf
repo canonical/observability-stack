@@ -18,6 +18,12 @@ resource "terraform_data" "grafana_ingress_interface" {
   triggers_replace = lookup(data.juju_charm.grafana_info.requires, "ingress", "")
 }
 
+# -- Traefik -- #
+
+# [application] Base changed from implicit ubuntu@20.04 (track/2) to explicit ubuntu@26.04 (dev)
+#   The traefik TF module now accepts a base variable; the Juju provider treats changes to the
+#   charm.base field as ForceNew, so Terraform will destroy and re-create the application.
+
 # -------------- # CharmHub API -------------- #
 
 data "juju_charm" "alertmanager_info" {
