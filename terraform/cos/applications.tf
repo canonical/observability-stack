@@ -14,7 +14,7 @@ module "alertmanager" {
 }
 
 module "catalogue" {
-  source = "git::https://github.com/canonical/catalogue-k8s-operator//terraform?ref=tf-3.0.3"
+  source = "git::https://github.com/canonical/catalogue-k8s-operator//charm/terraform?ref=tf-3.0.3"
 
   app_name           = var.catalogue.app_name
   base               = local.bases.o11y
