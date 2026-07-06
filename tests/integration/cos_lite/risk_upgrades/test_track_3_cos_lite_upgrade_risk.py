@@ -3,7 +3,7 @@ from pathlib import Path
 import jubilant
 from helpers import generic_assertions
 
-TF_FILE = Path(__file__).parent.resolve() / "track-3.0.tf"
+TF_FILE = Path(__file__).parent.parent.resolve() / "tls_full/track-3.0.tf"
 
 
 def test_deploy_from_stable(
