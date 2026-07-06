@@ -13,7 +13,7 @@ module "alertmanager" {
 }
 
 module "catalogue" {
-  source = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/catalogue-k8s-operator//charm/terraform"
 
   app_name           = var.catalogue.app_name
   channel            = local.channels.catalogue
@@ -375,6 +375,7 @@ module "traefik" {
   count  = local.traefik_enabled ? 1 : 0
 
   app_name           = var.traefik.app_name
+  base               = local.bases.traefik
   channel            = local.channels.traefik
   config             = var.traefik.config
   constraints        = var.traefik.constraints
