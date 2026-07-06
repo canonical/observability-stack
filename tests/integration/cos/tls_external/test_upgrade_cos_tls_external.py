@@ -15,6 +15,7 @@ from helpers import (
 )
 
 TRACK_2_TF_FILE = Path(__file__).parent.resolve() / "track-2.tf"
+TRACK_3_TF_FILE = Path(__file__).parent.resolve() / "track-3.0.tf"
 TRACK_DEV_TF_FILE = Path(__file__).parent.resolve() / "track-dev.tf"
 S3_ENDPOINT = {
     "s3_endpoint": os.getenv("S3_ENDPOINT"),
@@ -40,6 +41,18 @@ def test_deploy_from_track_2(
 
 @xfail_otelcol_logs
 def test_no_errors_in_otelcol_logs_2(cos_model: jubilant.Juju):
+    no_errors_in_otelcol_logs(cos_model)
+
+
+def test_deploy_to_track_3(
+    tmp_path, tf_manager, ca_model: jubilant.Juju, cos_model: jubilant.Juju
+):
+    # WHEN upgraded to track 3.0
+    tf_manager.init(TRACK_3_TF_FILE)
+    tf_manager.apply(ca_model=ca_model.model, cos_model=cos_model.model, **S3_ENDPOINT)
+
+    # THEN the model is upgraded and is healthy
+    generic_assertions(cos_model, ca_model, tmp_path)
     no_errors_in_otelcol_logs(cos_model)
 
 
