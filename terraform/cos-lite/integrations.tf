@@ -352,3 +352,17 @@ resource "juju_integration" "external_ca_cert" {
     endpoint = each.value.endpoint
   }
 }
+
+# -------------- # Database --------------
+
+resource "juju_integration" "grafana_database" {
+  count = local.grafana_db_enabled ? 1 : 0
+
+  model_uuid = local.model_uuid
+
+  application { offer_url = var.postgresql_offer_url }
+  application {
+    name     = module.grafana.app_name
+    endpoint = module.grafana.requires.pgsql
+  }
+}

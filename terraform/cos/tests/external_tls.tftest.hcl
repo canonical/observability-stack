@@ -1,10 +1,15 @@
 mock_provider "juju" {}
 
 variables {
-  model         = { uuid = "00000000-0000-0000-0000-000000000000" }
-  s3_endpoint   = "foo"
-  s3_access_key = "foo"
-  s3_secret_key = "foo"
+  s3_endpoint             = "foo"
+  s3_access_key           = "foo"
+  s3_secret_key           = "foo"
+  postgresql_offer_url    = "admin/postgresql.database"
+  grafana                 = { storage_directives = { "foo" = "1G" } }
+  loki_worker             = { write_storage_directives = { "foo" = "1G" } }
+  mimir_worker            = { write_storage_directives = { "foo" = "1G" }, backend_storage_directives = { "foo" = "1G" } }
+  tempo_worker            = { ingester_worker_storage_directives = { "foo" = "1G" } }
+  opentelemetry_collector = { storage_directives = { "foo" = "1G" } }
 }
 
 # --- external cert URLs both null: no validation error ---

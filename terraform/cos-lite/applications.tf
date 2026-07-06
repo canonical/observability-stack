@@ -1,7 +1,8 @@
 module "alertmanager" {
-  source = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform?ref=tf-0.31.2"
 
   app_name           = var.alertmanager.app_name
+  base               = local.bases.o11y
   channel            = local.channels.alertmanager
   config             = var.alertmanager.config
   constraints        = var.alertmanager.constraints
@@ -13,9 +14,10 @@ module "alertmanager" {
 }
 
 module "catalogue" {
-  source = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/catalogue-k8s-operator//charm/terraform?ref=tf-3.0.3"
 
   app_name           = var.catalogue.app_name
+  base               = local.bases.o11y
   channel            = local.channels.catalogue
   config             = var.catalogue.config
   constraints        = var.catalogue.constraints
@@ -27,10 +29,11 @@ module "catalogue" {
 }
 
 module "grafana" {
-  source           = "git::https://github.com/canonical/grafana-k8s-operator//terraform"
+  source           = "git::https://github.com/canonical/grafana-k8s-operator//terraform?ref=tf-12.4.2"
   replace_triggers = [terraform_data.grafana_litestream_resource.id]
 
   app_name           = var.grafana.app_name
+  base               = local.bases.o11y
   channel            = local.channels.grafana
   config             = var.grafana.config
   constraints        = var.grafana.constraints
@@ -42,9 +45,10 @@ module "grafana" {
 }
 
 module "loki" {
-  source = "git::https://github.com/canonical/loki-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/loki-k8s-operator//terraform?ref=tf-3.7.2"
 
   app_name           = var.loki.app_name
+  base               = local.bases.o11y
   channel            = local.channels.loki
   config             = var.loki.config
   constraints        = var.loki.constraints
@@ -56,9 +60,10 @@ module "loki" {
 }
 
 module "prometheus" {
-  source = "git::https://github.com/canonical/prometheus-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/prometheus-k8s-operator//terraform?ref=tf-3.11.2"
 
   app_name           = var.prometheus.app_name
+  base               = local.bases.o11y
   channel            = local.channels.prometheus
   config             = var.prometheus.config
   constraints        = var.prometheus.constraints
@@ -70,10 +75,11 @@ module "prometheus" {
 }
 
 module "ssc" {
-  source = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
+  source = "git::https://github.com/canonical/self-signed-certificates-operator//terraform?ref=rev653"
   count  = var.internal_tls ? 1 : 0
 
   app_name    = var.ssc.app_name
+  base        = local.bases.ssc
   channel     = local.channels.ssc
   config      = var.ssc.config
   constraints = var.ssc.constraints
@@ -83,10 +89,11 @@ module "ssc" {
 }
 
 module "traefik" {
-  source = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/traefik-k8s-operator//terraform?ref=traefik-k8s-rev360"
   count  = local.traefik_enabled ? 1 : 0
 
   app_name           = var.traefik.app_name
+  base               = local.bases.traefik
   channel            = local.channels.traefik
   config             = var.traefik.config
   constraints        = var.traefik.constraints

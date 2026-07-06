@@ -8,13 +8,7 @@
 variable "risk" {
   description = "Risk level that the applications are (unless overwritten by individual channels) deployed from"
   type        = string
-  default     = "edge"
-}
-
-variable "base" {
-  description = "The operating system on which to deploy. E.g. ubuntu@24.04. Check Charmhub for per-charm base support."
-  default     = "ubuntu@24.04"
-  type        = string
+  default     = "stable"
 }
 
 variable "model" {
@@ -101,6 +95,17 @@ variable "external_ca_cert_offer_url" {
   default     = null
 }
 
+variable "postgresql_offer_url" {
+  description = "A Juju offer URL (e.g. admin/postgresql.database) of a PostgreSQL service providing the 'postgresql_client' integration for applications to connect to the database."
+  type        = string
+  default     = null
+
+  validation {
+    condition     = !(var.postgresql_offer_url == null && var.grafana.units > 1)
+    error_message = "postgresql_offer_url must be supplied when Grafana is scaled > 1 due to its database requirements."
+  }
+}
+
 # -------------- # Ingress configurations --------------
 
 variable "ingress" {
@@ -172,7 +177,7 @@ variable "alertmanager" {
     resources          = optional(map(string), {})
     revision           = optional(number, null)
     storage_directives = optional(map(string), {})
-    units              = optional(number, 1)
+    units              = optional(number, 3)
   })
   default     = {}
   description = "Application configuration for Alertmanager. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
@@ -200,7 +205,7 @@ variable "grafana" {
     resources          = optional(map(string), {})
     revision           = optional(number, null)
     storage_directives = optional(map(string), {})
-    units              = optional(number, 1)
+    units              = optional(number, 3)
   })
   default     = {}
   description = "Application configuration for Grafana. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"

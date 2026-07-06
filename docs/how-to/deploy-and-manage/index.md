@@ -20,6 +20,7 @@ See our [tutorials](/tutorial/index) for guidance on deploying COS.
 Install <install>
 Configure strict reproducibility <configure-strict-reproducibility>
 Configure the Juju model <configure-juju-model>
+Configure the Grafana database <configure-grafana-database>
 ```
 
 ## Secure access
