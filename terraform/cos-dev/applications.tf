@@ -13,7 +13,7 @@ module "alertmanager" {
 }
 
 module "catalogue" {
-  source = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/catalogue-k8s-operator//charm/terraform"
 
   app_name           = var.catalogue.app_name
   channel            = local.channels.catalogue
