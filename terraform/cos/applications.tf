@@ -14,7 +14,7 @@ module "alertmanager" {
 }
 
 module "catalogue" {
-  source = "git::https://github.com/canonical/catalogue-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/catalogue-k8s-operator//charm/terraform"
 
   app_name           = var.catalogue.app_name
   base               = local.bases.o11y
@@ -100,7 +100,7 @@ module "mimir" {
   s3_integrator_revision            = local.revisions.s3_integrator
   s3_integrator_storage_directives  = var.s3_integrator.storage_directives
   s3_integrator_units               = var.s3_integrator.units
-  coordinator_config                = { "max_global_exemplars_per_user" = "100000" }
+  coordinator_config                = merge(var.mimir_coordinator.config, { "max_global_exemplars_per_user" = "100000" })
   coordinator_constraints           = var.mimir_coordinator.constraints
   coordinator_resources             = var.mimir_coordinator.resources
   coordinator_revision              = local.revisions.mimir_coordinator
@@ -200,9 +200,8 @@ module "traefik" {
   source = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
   count  = local.traefik_enabled ? 1 : 0
 
-  app_name = var.traefik.app_name
-  # FIXME: Once Traefik TF module supports a base var, add it here
-  # base               = local.bases.traefik
+  app_name           = var.traefik.app_name
+  base               = local.bases.traefik
   channel            = local.channels.traefik
   config             = var.cloud == "aws" ? { "loadbalancer_annotations" = "service.beta.kubernetes.io/aws-load-balancer-scheme=internet-facing" } : var.traefik.config
   constraints        = var.traefik.constraints
