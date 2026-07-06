@@ -197,12 +197,11 @@ module "tempo" {
 }
 
 module "traefik" {
-  source = "git::https://github.com/canonical/traefik-k8s-operator//terraform?ref=traefik-k8s-rev345"
+  source = "git::https://github.com/canonical/traefik-k8s-operator//terraform?ref=traefik-k8s-rev360"
   count  = local.traefik_enabled ? 1 : 0
 
-  app_name = var.traefik.app_name
-  # FIXME: Once Traefik TF module supports a base var, add it here
-  # base               = local.bases.traefik
+  app_name           = var.traefik.app_name
+  base               = local.bases.traefik
   channel            = local.channels.traefik
   config             = var.cloud == "aws" ? { "loadbalancer_annotations" = "service.beta.kubernetes.io/aws-load-balancer-scheme=internet-facing" } : var.traefik.config
   constraints        = var.traefik.constraints

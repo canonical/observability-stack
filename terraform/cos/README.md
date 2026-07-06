@@ -25,7 +25,7 @@ This is a Terraform module facilitating the deployment of the COS solution, usin
 | <a name="module_opentelemetry_collector"></a> [opentelemetry\_collector](#module\_opentelemetry\_collector) | git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform | tf-0.130.2 |
 | <a name="module_ssc"></a> [ssc](#module\_ssc) | git::https://github.com/canonical/self-signed-certificates-operator//terraform | rev653 |
 | <a name="module_tempo"></a> [tempo](#module\_tempo) | git::https://github.com/canonical/tempo-operators//terraform | tf-2.10.1 |
-| <a name="module_traefik"></a> [traefik](#module\_traefik) | git::https://github.com/canonical/traefik-k8s-operator//terraform | traefik-k8s-rev345 |
+| <a name="module_traefik"></a> [traefik](#module\_traefik) | git::https://github.com/canonical/traefik-k8s-operator//terraform | traefik-k8s-rev360 |
 
 ## Inputs
 
