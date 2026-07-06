@@ -12,7 +12,6 @@ on:
         options:
         - cos
         - cos_lite
-        - cos_dev
       runner:
         description: 'The runner label to use for the job.'
         type: choice

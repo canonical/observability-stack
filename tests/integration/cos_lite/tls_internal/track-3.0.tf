@@ -17,9 +17,9 @@ data "juju_model" "model" {
   owner = "admin"
 }
 
-module "cos-dev" {
-  source       = "git::https://github.com/canonical/observability-stack//terraform/cos-dev"
-  model_uuid   = data.juju_model.model.uuid
+module "cos-lite" {
+  source       = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=track/3.0"
+  model        = { uuid = data.juju_model.model.uuid }
   risk         = "edge"
-  internal_tls = false
+  internal_tls = true
 }
