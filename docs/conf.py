@@ -217,6 +217,7 @@ linkcheck_ignore = [
     "https://github.com/canonical/ACME/*",
     "troubleshooting/",
     "https://github.com/canonical/observability-stack//terraform/cos-lite",
+    r"https://matrix\.to/.*",
     ]
 
 
@@ -284,6 +285,7 @@ copybutton_line_continuation_character = "\\"
 
 exclude_patterns = [
     "doc-cheat-sheet*",
+    ".venv",
 ]
 
 suppress_warnings = ["misc.copy_overwrite"]
