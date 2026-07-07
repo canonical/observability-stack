@@ -10,13 +10,13 @@ This guide shows how to upgrade an existing COS deployment to a newer track.
 
 Find the section that matches the upgrade path you need:
 
-- [Migrate from track 2 to track 3.0](#migrate-from-track-2-to-track-30) (COS or COS Lite)
+- [Migrate from COS 2 to COS 3.0](#migrate-from-cos-2-to-cos-30) (COS or COS Lite)
 - [Migrate from COS Lite 1 to COS 2](#migrate-from-cos-lite-1-to-cos-2)
 - [Migrate from COS Lite 1 to COS Lite 2](#migrate-from-cos-lite-1-to-cos-lite-2)
 
 ## COS 3.0
 
-### Migrate from track 2 to track 3.0
+### Migrate from COS 2 to COS 3.0
 
 These steps apply to both **COS 3.0** and **COS Lite 3.0**. Although COS and COS Lite are distinct products with separate Terraform modules and different component sets, the upgrade procedure is the same unless a step includes an *Applies to* note.
 
@@ -25,7 +25,7 @@ Choose the method that matches how you deployed COS:
 - [Using Terraform](#using-terraform) (recommended)
 - [Without Terraform](#without-terraform)
 
-#### Using Terraform
+### Using Terraform
 
 This is the recommended upgrade method.
 
@@ -36,7 +36,7 @@ Before you begin, review [How to configure COS for strict reproducibility](confi
     terraform apply
     ```
 2. Refresh all charms to the latest revision on `2/stable`:
-    1. Check [charmhub.io](https://charmhub.io/) for the latest revision on `2/stable` [per component](reference/cos-components).
+    1. Check [charmhub.io](https://charmhub.io/) for the latest revision on `2/stable` [per component](../../reference/cos-components/index.md).
     2. Pin all components to those revisions, then apply:
         ```bash
         terraform apply
@@ -53,7 +53,7 @@ Before you begin, review [How to configure COS for strict reproducibility](confi
     terraform apply
     ```
 
-#### Without Terraform
+### Without Terraform
 
 Use this method only if you have no Terraform state, for example if you deployed via the COS Lite Juju bundle. Otherwise, upgrade [using Terraform](#using-terraform).
 
@@ -61,7 +61,7 @@ Use this method only if you have no Terraform state, for example if you deployed
     ```bash
     juju refresh <charm-name> --channel 2/stable
     ```
-2. Refresh each charm to its target track (`major.minor`) as listed in [COS components](reference/cos-components):
+2. Refresh each charm to its target track (`major.minor`) as listed in [COS components](../../reference/cos-components/index.md):
     ```bash
     juju refresh <charm-name> --channel major.minor/stable
     ```
