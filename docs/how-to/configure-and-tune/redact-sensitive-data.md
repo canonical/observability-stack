@@ -38,9 +38,9 @@ apps   microk8s    microk8s/localhost  3.6.8    unsupported  20:00:30-03:00
 SAAS          Status  Store     URL
 loki-logging  active  microk8s  admin/cos.loki-logging
 
-App      Version  Status   Scale  Charm                        Channel      Rev  Address        Exposed  Message
+App      Version  Status   Scale  Charm                        Channel        Rev  Address        Exposed  Message
 flog              active       1  flog-k8s                     latest/edge    9  10.152.183.89  no
-otelcol           active       1  opentelemetry-collector-k8s  2/edge        75  10.152.183.40  no
+otelcol  0.130.1  active       1  opentelemetry-collector-k8s  0.130/stable  211  10.152.183.40  no
 
 Unit        Workload  Agent  Address       Ports  Message
 flog/0*     active    idle   10.1.167.123
@@ -94,7 +94,7 @@ service:
       - loki
 ```
 
-Since we are in the context of a Juju deployment, none of these changes should be done manually. The [`OpentelemetryCollector` charm provides a simple way to do this](https://charmhub.io/opentelemetry-collector-k8s/configurations?channel=2/edge#processors).
+Since we are in the context of a Juju deployment, none of these changes should be done manually. The [`OpentelemetryCollector` charm provides a simple way to do this](https://charmhub.io/opentelemetry-collector-k8s/configurations?channel=0.130/stable#processors).
 
 A file, say `transform.yaml`,  with the specific config for the transform processor needs to be created.
 

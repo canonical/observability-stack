@@ -40,12 +40,12 @@ Model     Controller  Cloud/Region  Version  SLA          Timestamp
 cos-lite  ck8s        k8s           3.6.19   unsupported  18:07:14-03:00
 
 App           Version  Status  Scale  Charm             Channel        Rev  Address         Exposed  Message
-alertmanager  0.28.0   active      1  alertmanager-k8s  2/stable       191  10.152.183.36   no
-catalogue              active      1  catalogue-k8s     2/stable       113  10.152.183.195  no
-grafana       12.0.2   active      1  grafana-k8s       2/stable       180  10.152.183.90   no
-loki          2.9.15   active      1  loki-k8s          2/stable       217  10.152.183.57   no
-prometheus    2.53.3   active      1  prometheus-k8s    2/stable       287  10.152.183.172  no
-traefik       2.11.0   active      1  traefik-k8s       latest/stable  281  10.152.183.221  no       Serving at http://192.168.1.200
+alertmanager  0.31.0   active      1  alertmanager-k8s  0.31/stable    230  10.152.183.36   no
+catalogue              active      1  catalogue-k8s     3.0/stable     147  10.152.183.195  no
+grafana       12.4.2   active      1  grafana-k8s       12.4/stable    193  10.152.183.90   no
+loki          3.7.1    active      1  loki-k8s          3.7/stable     244  10.152.183.57   no
+prometheus    3.11.1   active      1  prometheus-k8s    3.11/stable    309  10.152.183.172  no
+traefik       2.11.0   active      1  traefik-k8s       latest/stable  343  10.152.183.221  no       Serving at http://192.168.1.200
 
 Unit             Workload  Agent  Address     Ports  Message
 alertmanager/0*  active    idle   10.1.0.87
@@ -56,11 +56,11 @@ prometheus/0*    active    idle   10.1.0.90
 traefik/0*       active    idle   10.1.0.35          Serving at http://192.168.1.200
 
 Offer                            Application   Charm             Rev  Connected  Endpoint              Interface                Role
-alertmanager-karma-dashboard     alertmanager  alertmanager-k8s  191  0/0        karma-dashboard       karma_dashboard          provider
-grafana-dashboards               grafana       grafana-k8s       180  2/2        grafana-dashboard     grafana_dashboard        requirer
-loki-logging                     loki          loki-k8s          217  2/2        logging               loki_push_api            provider
-prometheus-metrics-endpoint      prometheus    prometheus-k8s    287  0/0        metrics-endpoint      prometheus_scrape        requirer
-prometheus-receive-remote-write  prometheus    prometheus-k8s    287  2/2        receive-remote-write  prometheus_remote_write  provider
+alertmanager-karma-dashboard     alertmanager  alertmanager-k8s  230  0/0        karma-dashboard       karma_dashboard          provider
+grafana-dashboards               grafana       grafana-k8s       193  2/2        grafana-dashboard     grafana_dashboard        requirer
+loki-logging                     loki          loki-k8s          244  2/2        logging               loki_push_api            provider
+prometheus-metrics-endpoint      prometheus    prometheus-k8s    309  0/0        metrics-endpoint      prometheus_scrape        requirer
+prometheus-receive-remote-write  prometheus    prometheus-k8s    309  2/2        receive-remote-write  prometheus_remote_write  provider
 
 Integration provider                Requirer                     Interface              Type     Message
 alertmanager:alerting               loki:alertmanager            alertmanager_dispatch  regular
@@ -212,7 +212,7 @@ Model  Controller  Cloud/Region         Version  SLA          Timestamp
 zoo    lxd         localhost/localhost  3.6.19   unsupported  18:25:34-03:00
 
 App        Version  Status   Scale  Charm                    Channel   Rev  Exposed  Message
-otelcol             unknown      0  opentelemetry-collector  2/stable  248  no
+otelcol             unknown      0  opentelemetry-collector  2/stable  316  no
 zookeeper  3.9.2    active       1  zookeeper                3/stable  163  no
 
 Unit          Workload  Agent  Machine  Public address  Ports  Message
@@ -245,7 +245,7 @@ Model  Controller  Cloud/Region         Version  SLA          Timestamp
 zoo    lxd         localhost/localhost  3.6.19   unsupported  18:28:50-03:00
 
 App        Version  Status   Scale  Charm                    Channel   Rev  Exposed  Message
-otelcol    0.130.0  blocked      1  opentelemetry-collector  2/stable  248  no       ['cloud-config']|['grafana-dashboards-provider']|['send-loki-logs']|['send-remote-write'] for cos-agent
+otelcol    0.130.0  blocked      1  opentelemetry-collector  2/stable  316  no       ['cloud-config']|['grafana-dashboards-provider']|['send-loki-logs']|['send-remote-write'] for cos-agent
 zookeeper  3.9.2    active       1  zookeeper                3/stable  163  no
 
 Unit          Workload  Agent  Machine  Public address  Ports  Message
@@ -309,7 +309,7 @@ loki-logging                     active  ck8s   admin/cos-lite.loki-logging
 prometheus-receive-remote-write  active  ck8s   admin/cos-lite.prometheus-receive-remote-write
 
 App        Version  Status   Scale  Charm                    Channel   Rev  Exposed  Message
-otelcol    0.130.0  blocked      1  opentelemetry-collector  2/stable  248  no       ['cloud-config']|['grafana-dashboards-provider']|['send-loki-logs']|['send-remote-write'] for cos-agent
+otelcol    0.130.0  blocked      1  opentelemetry-collector  2/stable  316  no       ['cloud-config']|['grafana-dashboards-provider']|['send-loki-logs']|['send-remote-write'] for cos-agent
 zookeeper  3.9.2    active       1  zookeeper                3/stable  163  no
 
 Unit          Workload  Agent  Machine  Public address  Ports  Message
@@ -346,7 +346,7 @@ loki-logging                     active  ck8s   admin/cos-lite.loki-logging
 prometheus-receive-remote-write  active  ck8s   admin/cos-lite.prometheus-receive-remote-write
 
 App        Version  Status  Scale  Charm                    Channel   Rev  Exposed  Message
-otelcol    0.130.0  active      1  opentelemetry-collector  2/stable  248  no
+otelcol    0.130.0  active      1  opentelemetry-collector  2/stable  316  no
 zookeeper  3.9.2    active      1  zookeeper                3/stable  163  no
 
 Unit          Workload  Agent  Machine  Public address  Ports  Message
