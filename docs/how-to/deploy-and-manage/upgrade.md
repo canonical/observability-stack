@@ -62,7 +62,7 @@ Without Terraform:
     ```bash
     juju refresh <charm-name> --channel 2/stable
     ```
-2. Refresh each charm's track (`major.minor`) to the ones in the [release notes](https://documentation.ubuntu.com/observability/latest/release-notes/#cos-lite-components).
+2. Refresh each charm's track (`major.minor`) to the ones in the [COS components reference](/reference/cos-components/index).
     ```bash
     juju refresh <charm-name> --channel major.minor/stable
     ```
