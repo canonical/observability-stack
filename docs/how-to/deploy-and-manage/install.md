@@ -8,12 +8,6 @@ myst:
 
 This guide walks you through the prerequisites and deployment planning needed to install the Canonical Observability Stack (COS). Use it to prepare your environment, create a Terraform plan, and deploy supporting components in the recommended order.
 
-```{note}
-If you are coming from upstream Grafana Mimir docs and only want to deploy
-standalone Mimir on Juju, start with
-[Get started with standalone Mimir on Juju](/tutorial/mimir-on-juju).
-```
-
 ## Preparation
 
 Before deploying COS or COS Lite, work through the items below.
@@ -103,3 +97,10 @@ where `.n` in `tf-cos-3.0.n` is the latest available patch version in the [COS t
 ## Deploy COS Alerter
 
 COS Alerter is a watchdog service for COS. Deploy it on dedicated infrastructure that is separate from your COS or COS Lite deployment. For more information, including deployment details, see the [COS Alerter repository](https://github.com/canonical/cos-alerter).
+
+## Deploy individual components
+
+If you are not deploying the full Canonical Observability Stack and only need a
+specific COS component on Juju, see the component-focused guides:
+
+- [How to deploy Mimir on Juju](deploy-mimir-on-juju)

@@ -1,26 +1,49 @@
 ---
 myst:
   html_meta:
-    description: "Send metrics from uncharmed workloads to standalone Mimir on Juju by using the OpenTelemetry Collector snap as a scraper and remote_write client."
+    description: "Send metrics from applications outside Juju into a Mimir on Juju deployment by using the OpenTelemetry Collector snap as a scraper and remote_write client."
 ---
 
-# How to send metrics to Mimir
+# How to send metrics to Mimir on Juju
 
-Use this guide when your workload is **not** managed by Juju and you want to
-ship its metrics into standalone Mimir.
+Use this guide to send metrics from an application that is **not** managed by
+Juju into a Mimir on Juju deployment.
 
-The recommended path is to run the OpenTelemetry Collector snap near the
-uncharmed workload, scrape its `/metrics` endpoint, and forward those metrics
-to Mimir over Prometheus `remote_write`.
+## What this guide sets up
 
-For the standalone Mimir deployment itself, see
-[Get started with standalone Mimir on Juju](/tutorial/mimir-on-juju).
+Mimir on Juju accepts metrics over Prometheus `remote_write` through its
+`receive-remote-write` relation. When the sender is another charm, that
+relation does everything for you. When the sender is an uncharmed workload
+(for example, a plain systemd service on a VM), there is no relation to
+attach to, so you need something outside Juju that can:
+
+1. scrape or receive metrics from the workload, and
+2. push them into Mimir's `remote_write` endpoint through the Mimir
+   ingress URL.
+
+We use the [OpenTelemetry Collector
+snap](https://snapcraft.io/opentelemetry-collector) for this. The **snap**
+(not the charm) is a standalone binary you install directly on the machine
+that runs, or can reach, the uncharmed workload. It is configured through a
+YAML file placed in `/etc/otelcol/config.d/`. We recommend running it as
+close as possible to the workload to minimize network hops and reduce the
+chance of losing telemetry during transient failures.
+
+The end result is: `uncharmed workload` -> `otelcol snap` -(remote_write over
+Traefik ingress)-> `Mimir on Juju`.
+
+For a general primer on this pattern with the full COS Lite stack, see
+[How to integrate COS Lite with uncharmed applications](integrating-cos-lite-with-uncharmed-applications).
+For the Mimir deployment itself, see
+[How to deploy Mimir on Juju](/how-to/deploy-and-manage/deploy-mimir-on-juju).
 
 ## Prerequisites
 
-- A working standalone Mimir deployment with ingress enabled.
+- A working Mimir on Juju deployment with ingress enabled (see
+  [How to deploy Mimir on Juju](/how-to/deploy-and-manage/deploy-mimir-on-juju)).
 - An uncharmed workload that exposes Prometheus-format metrics.
-- A machine where you can install the OpenTelemetry Collector snap and that can:
+- A machine where you can install the OpenTelemetry Collector snap and that
+  can:
   - reach the workload metrics endpoint
   - reach the Mimir ingress URL
 
@@ -57,15 +80,19 @@ On the machine that can reach the uncharmed workload:
 sudo snap install opentelemetry-collector
 ```
 
-We recommend placing the collector as close as possible to the workload to
-reduce network hops and avoid losing telemetry during transient failures.
-
 ## 3. Create the collector configuration
 
-Write a collector config file under `/etc/otelcol/config.d/`.
+Write a collector config file under `/etc/otelcol/config.d/`. The snap loads
+every YAML file it finds in that directory and merges them, so you can drop
+in additional files later for more workloads without editing the existing
+one.
 
-This example scrapes a workload that exposes metrics on `http://my-workload:9000/metrics`
-and forwards them to Mimir:
+The pipeline below scrapes a workload that exposes metrics on
+`http://my-workload:9000/metrics` and forwards them to Mimir over
+`remote_write`. The `prometheus` receiver acts as the scraper, and the
+`prometheusremotewrite` exporter pushes into Mimir's ingestion URL. The
+`X-Scope-OrgID` header is required by Mimir's multi-tenant API; use
+`anonymous` for a single-tenant deployment.
 
 ```yaml
 receivers:
@@ -131,15 +158,17 @@ If the pipeline is working, the query returns a successful result for the
 
 ## HTTPS and private CAs
 
-If either the workload metrics endpoint or the Mimir ingress URL uses TLS signed
-by a private CA, install that CA into the machine trust store used by the snap.
+If either the workload metrics endpoint or the Mimir ingress URL uses TLS
+signed by a private CA, install that CA into the machine trust store used by
+the snap.
 
 See the CA-handling guidance in
 [How to integrate COS Lite with uncharmed applications](integrating-cos-lite-with-uncharmed-applications).
 
 ## Adapting the scrape config
 
-The example above uses a single static target, but the same pattern works for:
+The example above uses a single static target, but the same pattern works
+for:
 
 - multiple targets in one job
 - multiple scrape jobs

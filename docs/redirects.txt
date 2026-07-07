@@ -12,3 +12,4 @@
 "design-goals" "explanation/architecture/design-goals"
 "juju-topology" "explanation/architecture/juju-topology"
 "security" "reference/security-hardening-guide"
+"tutorial/mimir-on-juju" "how-to/deploy-and-manage/deploy-mimir-on-juju"
