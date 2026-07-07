@@ -206,8 +206,8 @@ sitemap_excludes = [
 # Template and asset locations #
 ################################
 
-# html_static_path = ["_static"]
-# templates_path = ["_templates"]
+html_static_path = [".sphinx/_static"]
+templates_path = [".sphinx/_templates"]
 
 
 #############
@@ -242,6 +242,9 @@ linkcheck_ignore = [
     r"https://.*\.sourceforge\.(net|io)/.*",
     "troubleshooting/",
     "https://github.com/canonical/observability-stack//terraform/cos-lite",
+    # Until https://github.com/canonical/observability-stack/issues/384 is closed
+    r"https://charmhub\.io/.*",
+    r"https://ubuntu\.com/.*",
     ]
 
 
@@ -264,6 +267,7 @@ linkcheck_retries = 3
 #       substitution, deflist, linkify
 
 myst_enable_extensions = {"dollarmath"}
+myst_heading_anchors = 3
 
 
 # Custom Sphinx extensions; see
@@ -298,6 +302,15 @@ extensions = [
 
 mathjax_path = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'
 
+# Configure sphinx-copybutton (auto-enabled by canonical_sphinx) to strip
+# the "$ " shell prompt from copied content. In code blocks that contain
+# prompts, only the prompted lines (commands) are copied; output lines are
+# skipped. Code blocks without any prompts (e.g. JSON output) are unaffected
+# and copy verbatim.
+copybutton_prompt_text = r"\$ "
+copybutton_prompt_is_regexp = True
+copybutton_line_continuation_character = "\\"
+
 # Excludes files or directories from processing
 
 exclude_patterns = [
@@ -307,16 +320,16 @@ exclude_patterns = [
 
 # Adds custom CSS files, located under 'html_static_path'
 
-# html_css_files = [
-#     "https://assets.ubuntu.com/v1/d86746ef-cookie_banner.css",
-# ]
+html_css_files = [
+    "cookie-banner.css",
+]
 
 
 # Adds custom JavaScript files, located under 'html_static_path'
 
-# html_js_files = [
-#     "https://assets.ubuntu.com/v1/287a5e8f-bundle.js",
-# ]
+html_js_files = [
+    "bundle.js",
+ ]
 
 
 # Specifies a reST snippet to be appended to each .rst file

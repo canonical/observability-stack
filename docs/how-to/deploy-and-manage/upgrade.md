@@ -8,31 +8,53 @@ myst:
 
 This guide shows how to upgrade an existing COS deployment to a newer track.
 
-## COS 3
-### Migrate from COS 2 to COS 3
+## COS 3.0
+
+Before you begin, review [How to configure COS for strict reproducibility](configure-strict-reproducibility.md) to understand the implications of upgrading COS.
+
+### Migrate from COS 2 to COS 3.0
 Using Terraform:
 
-1. Update all references to track 2/stable and then:
+1. Update the channel input to track 2/stable and then:
     ```bash
+    terraform init -upgrade
     terraform apply
     ```
-2. Manually refresh all charms to 2/stable
+2. Manually refresh all charms to the latest revision in 2/stable 
     ```bash
     juju refresh <charm-name> --channel 2/stable
     ```
-3. Update all references to track 3/stable and then:
+3. Update the Terraform module source ref to a `tf-cos-3.0.n` tag and apply:
+    ```bash
+    terraform init -upgrade
+    terraform apply
+    ```
+4. Once Terraform has applied all resources, apply again until no new resources are applied:
     ```bash
     terraform apply
     ```
 
-### Migrate from COS Lite 2 to COS Lite 3
+### Migrate from COS Lite 2 to COS Lite 3.0
 Using Terraform:
 
-1. Update all references to track 2/stable and then:
+1. Update the channel input to track 2/stable and then:
+    ```bash
+    terraform init -upgrade
+    terraform apply
+    ```
+2. Manually refresh all charms to the latest revision in 2/stable:
+    ```bash
+    juju refresh <charm-name> --channel 2/stable
+    ```
+3. Update the Terraform module source ref to tf-cos-lite-3.0.0 and then:
+    ```bash
+    terraform init -upgrade
+    terraform apply
+    ```
+4. Once Terraform has applied all resources, apply again until no new resources are applied:
     ```bash
     terraform apply
     ```
-2. Follow the instructions for `Without Terraform`.
 
 Without Terraform:
 
@@ -40,8 +62,14 @@ Without Terraform:
     ```bash
     juju refresh <charm-name> --channel 2/stable
     ```
-2. Refresh to track 3.
+2. Refresh each charm's track (`major.minor`) to the ones in the [release notes](https://documentation.ubuntu.com/observability/latest/release-notes/#cos-lite-components).
+    ```bash
+    juju refresh <charm-name> --channel major.minor/stable
+    ```
 
+```{warning}
+There is a known issue with manually refreshing Grafana from track 2 to a later track, which can cause the application to enter an error state. Without Terraform, the only workaround is to redeploy the Grafana application and re-add its previous relations.
+```
 
 ## COS 2
 

@@ -3,7 +3,7 @@ terraform {
   required_providers {
     juju = {
       source  = "juju/juju"
-      version = "~> 1.0"
+      version = ">= 1.0"
     }
   }
 }
@@ -19,7 +19,7 @@ data "juju_model" "model" {
 
 module "cos-lite" {
   source       = "git::https://github.com/canonical/observability-stack//terraform/cos-lite"
-  model_uuid   = data.juju_model.model.uuid
-  channel      = "dev/edge"
+  model        = { uuid = data.juju_model.model.uuid }
+  risk         = "edge"
   internal_tls = true
 }

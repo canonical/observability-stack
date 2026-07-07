@@ -1,5 +1,10 @@
 # -------------- # Integration offers -------------- #
 
+output "model_uuid" {
+  value       = local.model_uuid
+  description = "The UUID of the model (created or looked up)"
+}
+
 output "offers" {
   value = {
     alertmanager_karma_dashboard    = juju_offer.alertmanager_karma_dashboard
@@ -20,8 +25,8 @@ output "components" {
     grafana      = module.grafana
     loki         = module.loki
     prometheus   = module.prometheus
-    ssc          = module.ssc
-    traefik      = module.traefik
+    ssc          = try(module.ssc[0], null)
+    traefik      = try(module.traefik[0], null)
   }
   description = "All Terraform charm modules which make up this product module"
 }

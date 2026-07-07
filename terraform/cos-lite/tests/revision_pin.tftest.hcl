@@ -1,6 +1,10 @@
 mock_provider "juju" {}
 
-variables { model_uuid = "00000000-0000-0000-0000-000000000000" }
+variables {
+  grafana    = { storage_directives = { "foo" = "1G" } }
+  loki       = { storage_directives = { "foo" = "1G" } }
+  prometheus = { storage_directives = { "foo" = "1G" } }
+}
 
 # --- User revision pin is respected and not overridden by juju_charm datasource ---
 
@@ -10,9 +14,9 @@ run "user_revision_pin_is_respected" {
   variables {
     alertmanager = { revision = 1 }
     catalogue    = { revision = 2 }
-    grafana      = { revision = 3 }
-    loki         = { revision = 4 }
-    prometheus   = { revision = 5 }
+    grafana      = { revision = 3, storage_directives = { "foo" = "1G" } }
+    loki         = { revision = 4, storage_directives = { "foo" = "1G" } }
+    prometheus   = { revision = 5, storage_directives = { "foo" = "1G" } }
     ssc          = { revision = 6 }
     traefik      = { revision = 7 }
   }

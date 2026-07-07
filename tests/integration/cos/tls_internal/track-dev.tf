@@ -3,7 +3,7 @@ terraform {
   required_providers {
     juju = {
       source  = "juju/juju"
-      version = "~> 1.0"
+      version = ">= 1.0"
     }
   }
 }
@@ -31,14 +31,16 @@ variable "s3_access_key" {
 
 module "cos" {
   source       = "git::https://github.com/canonical/observability-stack//terraform/cos"
-  model_uuid   = data.juju_model.model.uuid
-  channel      = "dev/edge"
+  model        = { uuid = data.juju_model.model.uuid }
+  risk         = "edge"
   internal_tls = true
 
   s3_endpoint   = var.s3_endpoint
   s3_secret_key = var.s3_secret_key
   s3_access_key = var.s3_access_key
 
+  alertmanager      = { units = 1 }
+  grafana           = { units = 1 }
   loki_coordinator  = { units = 1 }
   loki_worker       = { backend_units = 1, read_units = 1, write_units = 1 }
   mimir_coordinator = { units = 1 }

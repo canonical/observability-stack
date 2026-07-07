@@ -11,18 +11,47 @@ variable "risk" {
   default     = "edge"
 }
 
-variable "base" {
-  description = "The operating system on which to deploy. E.g. ubuntu@22.04. Changing this value for machine charms will trigger a replace by terraform. Check Charmhub for per-charm base support."
-  default     = "ubuntu@24.04"
-  type        = string
+variable "model" {
+  description = "Model configuration. When `uuid` is set, an existing model is looked up; otherwise a new model is created with the given fields. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/model"
+  type = object({
+    uuid = optional(string)
+    name = optional(string, "cos-lite")
+    cloud = optional(object({
+      name   = string
+      region = optional(string)
+    }))
+    annotations       = optional(map(string))
+    config            = optional(map(string))
+    constraints       = optional(string)
+    credential        = optional(string)
+    target_controller = optional(string)
+  })
+  default = {}
+
+  validation {
+    condition = var.model.uuid == null || (
+      var.model.annotations == null &&
+      var.model.cloud == null &&
+      var.model.config == null &&
+      var.model.constraints == null &&
+      var.model.credential == null &&
+      var.model.target_controller == null
+    )
+    error_message = "When `model.uuid` is set, the model already exists; do not also set `annotations`, `cloud`, `config`, `constraints`, `credential`, or `target_controller`."
+  }
+
+  validation {
+    condition     = var.model.uuid != null || (var.model.name != null && length(var.model.name) > 0)
+    error_message = "`model.name` must be non-empty when creating a model (i.e. when `model.uuid` is null)."
+  }
+
+  validation {
+    condition     = var.model.uuid == null || can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", var.model.uuid))
+    error_message = "`model.uuid` must be a valid UUID."
+  }
 }
 
-variable "model_uuid" {
-  description = "Reference to an existing model resource or data source for the model to deploy to"
-  type        = string
-}
-
-# -------------- # TLS configurations --------------
+# -------------- # Network configurations --------------
 
 variable "internal_tls" {
   description = "Specify whether to use TLS or not for internal COS communication. By default, TLS is enabled using self-signed-certificates"
@@ -50,6 +79,17 @@ variable "external_ca_cert_offer_url" {
   default     = null
 }
 
+variable "postgresql_offer_url" {
+  description = "A Juju offer URL (e.g. admin/postgresql.database) of a PostgreSQL service providing the 'postgresql_client' integration for applications to connect to the database."
+  type        = string
+  default     = null
+
+  validation {
+    condition     = !(var.postgresql_offer_url == null && var.grafana.units > 1)
+    error_message = "postgresql_offer_url must be supplied when Grafana is scaled > 1 due to its database requirements."
+  }
+}
+
 # -------------- # Ingress configurations --------------
 
 variable "ingress" {
@@ -71,6 +111,7 @@ variable "alertmanager" {
     app_name           = optional(string, "alertmanager")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
+    resources          = optional(map(string), {})
     revision           = optional(number, null)
     storage_directives = optional(map(string), {})
     units              = optional(number, 1)
@@ -84,6 +125,7 @@ variable "catalogue" {
     app_name           = optional(string, "catalogue")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
+    resources          = optional(map(string), {})
     revision           = optional(number, null)
     storage_directives = optional(map(string), {})
     units              = optional(number, 1)
@@ -97,6 +139,7 @@ variable "grafana" {
     app_name           = optional(string, "grafana")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
+    resources          = optional(map(string), {})
     revision           = optional(number, null)
     storage_directives = optional(map(string), {})
     units              = optional(number, 1)
@@ -110,6 +153,7 @@ variable "loki" {
     app_name           = optional(string, "loki")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
+    resources          = optional(map(string), {})
     revision           = optional(number, null)
     storage_directives = optional(map(string), {})
     units              = optional(number, 1)
@@ -123,6 +167,7 @@ variable "prometheus" {
     app_name           = optional(string, "prometheus")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
+    resources          = optional(map(string), {})
     revision           = optional(number, null)
     storage_directives = optional(map(string), {})
     units              = optional(number, 1)
@@ -149,6 +194,7 @@ variable "traefik" {
     app_name           = optional(string, "traefik")
     config             = optional(map(string), {})
     constraints        = optional(string, "arch=amd64")
+    resources          = optional(map(string), {})
     revision           = optional(number, null)
     storage_directives = optional(map(string), {})
     units              = optional(number, 1)

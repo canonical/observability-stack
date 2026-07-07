@@ -89,7 +89,7 @@ relations:
 this results in an auto-render Promtail config file with three scrape jobs, one for each "filename":
 
 ```bash
-$ juju ssh --container postgresql pgsql/0 cat /etc/promtail/promtail_config.yaml
+juju ssh --container postgresql pgsql/0 cat /etc/promtail/promtail_config.yaml
 ```
 
 ```yaml
@@ -163,7 +163,7 @@ relations:
 This results in an auto-generated `/etc/otelcol/config.d/otelcol_0.yaml` config file with juju topology labels and the default scrape jobs for `/var/log/**/*log` and `journalctl`:
 
 ```bash
-$ juju ssh otelcol/0 cat /etc/otelcol/config.d/otelcol_0.yaml
+juju ssh otelcol/0 cat /etc/otelcol/config.d/otelcol_0.yaml
 ```
 
 ```yaml
@@ -205,7 +205,7 @@ You can set up [any client](https://grafana.com/docs/loki/latest/send-data/) tha
 
 ### Manually query Loki API endpoints
 
-You can [query loki](https://discourse.charmhub.io/t/loki-k8s-docs-http-api/13440) to obtain logs via [HTTP API](https://grafana.com/docs/loki/latest/reference/loki-http-api/#query-logs-within-a-range-of-time).
+You can [use the Loki HTTP API](../../how-to/integrate/use-loki-http-api.md) to inspect or push logs.
 
 ### Display in a Grafana panel
 A Loki [data source](https://grafana.com/docs/grafana/latest/datasources/loki/) is automatically created in grafana when a relation is formed [between loki and grafana](https://charmhub.io/integrations/grafana_datasource).

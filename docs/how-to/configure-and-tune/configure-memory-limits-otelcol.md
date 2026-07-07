@@ -8,17 +8,18 @@ myst:
 
 The `opentelemetry-collector` charm applies a [memory limiter processor](https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/memorylimiterprocessor) to every pipeline. This processor monitors the collector's Go heap usage and begins refusing data when memory consumption crosses configurable thresholds:
 
-- **Soft limit** (80% of the hard limit): the processor starts returning errors to upstream pipeline components so that receivers can back-pressure or retry.
+- **Soft limit** (80% of the hard limit): the processor starts refusing data so that receivers propagate backpressure to their data sources.
 - **Hard limit**: the processor additionally forces garbage collection.
 
-The `memory_limit_percentage` Juju config option sets the hard limit as a percentage of total available memory. The soft limit is always 80% of that value. Invalid inputs are clamped to `[0, 100]`; a value of `0` disables the limiter.
+The `memory_limit_percentage` Juju config option sets the hard limit as a percentage of total available memory. The soft limit is always 80% of that value. A value of `0` disables the limiter.
 
-| User input (%) | Hard limit (% of total) | Soft limit (% of hard) |
-|-----------------|-------------------------|------------------------|
-| -10             | 0 (disabled)            | 0                      |
-| 0               | 0 (disabled)            | 0                      |
-| 50              | 50                      | 40                     |
-| 100 *(default)* | 100                     | 80                     |
+| User input (%)  | Hard limit (% of total) | Soft limit (% of total) |
+|-----------------|-------------------------|-------------------------|
+| 0               | 0 (disabled)            | 0                       |
+| 50              | 50                      | 40                      |
+| 100 *(default)* | 100                     | 80                      |
+
+Values outside `[0, 100]` or non-integer strings are rejected: the charm enters BlockedStatus and the Opentelemetry Collector workload process continues operations with the fallback value of 100%.
 
 ```{warning}
 The memory limiter processor is **not** a replacement for properly sizing the host or container where the collector runs.
@@ -139,7 +140,7 @@ limit_mib: 250
 spike_limit_mib: 50
 ```
 
-Where `limit_mib` is the hard limit and the soft limit is `limit_mib - spike_limit_mib`.
+Explanation: 500 MiB × 50% = 250 `limit_mib`; 250 × 20% = 50 `spike_limit_mib`. The soft limit is `limit_mib - spike_limit_mib` (i.e. 200 MiB).
 
 ## How total memory is determined
 
@@ -147,4 +148,25 @@ The charm reads the cgroup memory limit from `/sys/fs/cgroup/memory.max`. If the
 
 ```shell
 juju ssh <unit> "cat /sys/fs/cgroup/memory.max"
+```
+
+## Override the default memory limiter
+
+If you require more control over the configuration of the `memory_limiter`, the charm's `processors` config option allows you to define custom processors, applied to all pipelines in YAML format. For example, define an `override.yaml` to change the `check_interval` to 10 seconds:
+
+```yaml
+memory_limiter:
+  check_interval: 10s
+  limit_mib: 250
+  spike_limit_mib: 50
+```
+
+and apply it with:
+
+```shell
+juju config <app> processors=@override.yaml
+```
+
+```{note}
+If you define a custom `memory_limiter` processor, the default one will be replaced. Make sure to configure it with appropriate limits to avoid OOM kills.
 ```

@@ -22,7 +22,7 @@ fmt: format-terraform format-terraform-docs
 
 # Run unit tests
 [group("Unit")]
-unit: (unit-test "cos") (unit-test "cos-lite")
+unit: (unit-test "cos") (unit-test "cos-lite") (unit-test "cos-dev")
 
 # Lint the Github workflows
 [group("Lint")]
@@ -64,6 +64,7 @@ validate-terraform:
 [group("Unit")]
 [working-directory("./terraform")]
 unit-test module:
+  echo "==> Running unit tests for module: {{module}}"
   if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
   $terraform -chdir={{module}} init -upgrade && $terraform -chdir={{module}} test
 
@@ -71,4 +72,4 @@ unit-test module:
 [group("Integration")]
 [working-directory("./tests/integration")]
 integration *args='':
-  uv run ${uv_flags} pytest -vv --capture=no --exitfirst "${args}"
+  uv run ${uv_flags} pytest -vv -ra --capture=no --exitfirst "${args}"
