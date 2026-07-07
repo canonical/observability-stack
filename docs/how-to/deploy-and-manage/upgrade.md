@@ -10,7 +10,7 @@ This guide shows how to upgrade an existing COS deployment to a newer track.
 
 ## COS 3.0
 
-Before you begin, review [How to configure COS for strict reproducibility](configure-strict-reproducibility.md) to understand the implications of upgrading COS.
+Before you begin, review [How to configure COS for strict reproducibility](configure-strict-reproducibility.md) to understand how to upgrade with revision pinning.
 
 ### Migrate from COS 2 to COS 3.0
 Using Terraform:
