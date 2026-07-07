@@ -207,7 +207,7 @@ juju deploy cos-lite \
 
 To deploy the COS Lite solution, create this root module and set the `model` to `cos-lite`:
 
-```{literalinclude} ../../tests/integration/cos_lite/tls_internal/track-dev.tf
+```{literalinclude} ../../tests/integration/cos_lite/tls_internal/track-3.0.tf
 ```
 
 <!-- if Field wants, allow setting `anti_affinity` by something other than `kubernetes/hostname` -->
