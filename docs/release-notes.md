@@ -1,79 +1,127 @@
 ---
 myst:
  html_meta:
-  description: "Read COS 3.0 release notes to track new features, review requirements and compatibility, peripheral-charm changes, and breaking and deprecated changes."
+  description: "Read COS 3.0 and COS Lite 3.0 release notes to track new features, review requirements and compatibility, peripheral-charm changes, and breaking and deprecated changes."
 ---
 
 # Release notes
 
-## COS 3.0
-May 2026
+## COS 3.0 and COS Lite 3.0
 
-These release notes cover new features and changes in COS 3.0.
+*Released July 2026, long-term support (LTS).*
 
-COS 3.0 features newer versions of all underlying charms, as well as new features around charmed opentelemetry-collector.
+These release notes cover both **COS 3.0** and **COS Lite 3.0**. COS and COS Lite are distinct products with separate Terraform modules and different component sets; sections below apply to both unless noted otherwise, via a `Scope` column or an *Applies to* note.
 
-COS 3.0 is designated as a long-term support (LTS) release. This means it will continue to receive security updates and critical bug fixes for 15 years.
+Both tracks are LTS releases. They receive security updates and critical bug fixes for the same support window as [Ubuntu 26.04 LTS](https://ubuntu.com/about/release-cycle). If you have COS 2 or COS Lite 2 installed, plan to upgrade before **July 2026**. See the [release policy](reference/release-policy) for the full support window and cadence.
 
 ```{note}
-COS track `3` is a release track for the COS bundle and does not correspond to any individual charm track on Charmhub. The individual charms retain their own versioning.
+COS `3.0` is a product version, not a single Charmhub track shared by every component. Some charms use `3.0` as their track, but most retain their own versioning; see [Component versions](#component-versions) for the exact track each charm uses in this release.
 ```
 
-If you have COS 2 installed, make plans to upgrade to COS 3.0 before July 2026.
+**Compatibility.** COS 3.0 and COS Lite 3.0 require Juju v3.6+. See [system requirements](reference/system-requirements) for the full compatibility matrix.
 
-See our [release policy](reference/release-policy) and [upgrade instructions](how-to/deploy-and-manage/upgrade).
+**Upgrade**
 
-To report bugs or security issues, refer to the index of [COS components](../reference/cos-components/index).
+- [Migrate from COS 2 to COS 3.0](how-to/deploy-and-manage/upgrade.md#migrate-from-cos-2-to-cos-30)
+- [Migrate from COS Lite 2 to COS Lite 3.0](how-to/deploy-and-manage/upgrade.md#migrate-from-cos-lite-2-to-cos-lite-30)
 
-## Requirements and compatibility
-See [system requirements](reference/system-requirements).
+## What's new
 
-COS 3.0 is compatible with Juju v3.6+.
+### Reproducibility and lifecycle
 
-## What's new in COS 3.0
+#### Strict reproducibility
 
-- [Strict reproducibility](how-to/deploy-and-manage/configure-strict-reproducibility.md): previously only charm revisions could be pinned. New in COS 3.0, you can limit deployment variance of the Terraform and Juju layers.
-- [Granular Traefik ingress](how-to/deploy-and-manage/configure-granular-ingress.md): previously all components were ingressed. New in COS 3.0, you can be selective, or remove ingress entirely.
-- [Smooth cross-track upgrades via lifecycle-managed resources](how-to/deploy-and-manage/upgrade.md#migrate-from-cos-2-to-cos-30): previously, a Juju admin had to manually refresh all components to the new track. New in COS 3.0, you can upgrade to the next track with a single `terraform apply`, since the upgrade path is product-managed via Terraform lifecycle definitions.
-- [A module-managed Juju model](how-to/deploy-and-manage/configure-juju-model.md): previously, an existing Juju model and its `model_uuid` was required to deploy COS into. New in COS 3.0, a model's UUID is now an optional input, defaulting to a module-managed Juju model with the option to target an existing model via its UUID.
-- [A configurable Grafana database](how-to/deploy-and-manage/configure-grafana-database.md): previously, Grafana was limited to a single unit backed by local Juju storage. New in COS 3.0, you can supply a `postgresql_offer_url` to back Grafana with an external PostgreSQL database, enabling Grafana to scale to multiple units for high availability.
-- **Opentelemetry collector**. Charmed opentelemetry-collector's workload is pinned to version 0.130 because the upstream `opentelemetry-collector-contrib` [project](https://github.com/open-telemetry/opentelemetry-collector-contrib) dropped support for Loki exporter in [release v0.131.0](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.131.0), stating that users can migrate to the OTLP exporters instead.
-  - The logging integrations for the `opentelemetry-collector` charms rely on `lokiexporter` to send logs to Loki push API endpoints. Loki only recently received upstream support for an OTLP endpoint, and migrating to an OTLP-first ecosystem in COS began in 26.04. The objective is to have support for OTLP ecosystem-wide by the end of 26.10 and to deprecate the Loki Push API feature (`logging` endpoint). Support will then be fully dropped in 27.04, and the `opentelemetry-collector` charms will no longer be pinned to `v0.130`.
+*Applies to: `cos`, `cos-lite`.*
 
-## Terraform product changes
+Previously only charm revisions could be pinned. In COS 3.0 you can also constrain the Terraform module version and Juju behavior, so a re-deploy converges on the same result. See [Configure strict reproducibility](how-to/deploy-and-manage/configure-strict-reproducibility.md).
 
-### Breaking changes in COS 3.0 (from COS 2)
+#### Smooth cross-track upgrades
 
-#### Inputs
+*Applies to: `cos`, `cos-lite`.*
 
-| Change | Scope | Details |
-|--------|-------|---------|
-| **`channel` removed** | `cos`, `cos-lite` | Replaced by a new `risk` variable. The old `channel` had a default of `"2/stable"` and validated a `2/` prefix. Track is no longer user-facing: only risk is configurable. |
-| **`ssc.channel` removed** | `cos`, `cos-lite` | No longer configurable per-component; controlled by `risk`. |
-| **`s3_integrator.channel` removed** | `cos`, `cos-lite` | No longer configurable per-component; controlled by `risk`. |
-| **`traefik.channel` removed** | `cos`, `cos-lite` | No longer configurable per-component; controlled by `risk`. |
-| **`model_uuid` removed** | `cos`, `cos-lite` | Replaced by the `model` structured object. Pass the UUID as `model = { uuid = "<uuid>" }` instead. If omitted, the module manages its own Juju model. |
-| **`loki_worker.storage_directives` split** | `cos` | Single `storage_directives` replaced by three: `backend_storage_directives`, `read_storage_directives`, `write_storage_directives`. |
-| **`mimir_worker.storage_directives` split** | `cos` | Same as above: split into (3) per-role storage directives. |
-| **`tempo_worker.storage_directives` split** | `cos` | Same as above: split into (6) per-role storage directives. |
+Upgrading from track 2 previously required a Juju admin to manually refresh every component. In COS 3.0 the upgrade path is product-managed via Terraform lifecycle definitions, so a single `terraform apply` moves the deployment to the new track. See [How to upgrade](how-to/deploy-and-manage/upgrade.md).
 
-#### Outputs
+### Deployment topology
 
-| Change | Scope | Details |
-|--------|-------|---------|
-| **`components.ssc`** | `cos`, `cos-lite` | Now `try(module.ssc[0], null)` — SSC became conditional (count-based), so this output may be `null`. |
-| **`components.traefik`** | `cos`, `cos-lite` | Now `try(module.traefik[0], null)` — Traefik became conditional, so this output may be `null`. |
+#### Module-managed Juju model
 
-### Non-breaking changes
+*Applies to: `cos`, `cos-lite`.*
 
-#### Inputs
+`model_uuid` is no longer required as input. By default the module manages its own Juju model; pass `model = { uuid = "<uuid>" }` to target an existing one. See [Configure the Juju model](how-to/deploy-and-manage/configure-juju-model.md).
 
-| Change | Scope | Details |
-|--------|-------|---------|
-| **`ingress` added** | `cos`, `cos-lite` | New structured object to toggle ingress per component. |
-| **`model` added** | `cos`, `cos-lite` | New structured object to configure the Juju model. |
+#### Granular Traefik ingress
 
-### COS components
+*Applies to: `cos`, `cos-lite`.*
+
+Previously all components were ingressed unconditionally. You can now select which components are exposed, or opt out of Traefik entirely. See [Configure granular ingress](how-to/deploy-and-manage/configure-granular-ingress.md).
+
+#### Configurable Grafana database
+
+*Applies to: `cos`, `cos-lite`.*
+
+Grafana was previously limited to a single unit backed by local Juju storage. Supplying a `postgresql_offer_url` now backs Grafana with an external PostgreSQL, enabling multi-unit high availability. See [Configure the Grafana database](how-to/deploy-and-manage/configure-grafana-database.md).
+
+### Telemetry pipelines
+
+#### OpenTelemetry Collector pinned to v0.130
+
+*Applies to: `cos`.*
+
+The `opentelemetry-collector` charm workload is pinned to `v0.130` because upstream [`opentelemetry-collector-contrib`](https://github.com/open-telemetry/opentelemetry-collector-contrib) dropped the Loki exporter in [v0.131.0](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.131.0), directing users to the OTLP exporters instead.
+
+The `logging` integration relies on `lokiexporter` to send logs to Loki push API endpoints. Loki only recently gained an upstream OTLP endpoint, and the migration to an OTLP-first ecosystem began in 26.04. The plan is:
+
+- **26.10**: OTLP support ecosystem-wide.
+- **27.04**: the Loki Push API feature (`logging` endpoint) is dropped and the `opentelemetry-collector` charms are unpinned from `v0.130`.
+
+## Breaking changes
+
+The following changes apply when upgrading from COS 2 or COS Lite 2.
+
+### Terraform inputs
+
+| Change                                    | Scope              | Details                                                                                                                                                                          |
+|-------------------------------------------|--------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **`channel` removed**                     | `cos`, `cos-lite`  | Replaced by a new `risk` variable. The old `channel` defaulted to `"2/stable"` and validated a `2/` prefix. Track is no longer user-facing; only risk is configurable.           |
+| **`ssc.channel` removed**                 | `cos`, `cos-lite`  | No longer configurable per-component; controlled by `risk`.                                                                                                                      |
+| **`s3_integrator.channel` removed**       | `cos`, `cos-lite`  | No longer configurable per-component; controlled by `risk`.                                                                                                                      |
+| **`traefik.channel` removed**             | `cos`, `cos-lite`  | No longer configurable per-component; controlled by `risk`.                                                                                                                      |
+| **`model_uuid` removed**                  | `cos`, `cos-lite`  | Replaced by the `model` structured object. Pass the UUID as `model = { uuid = "<uuid>" }` instead. If omitted, the module manages its own Juju model.                            |
+| **`loki_worker.storage_directives` split**  | `cos`              | Single `storage_directives` replaced by three: `backend_storage_directives`, `read_storage_directives`, `write_storage_directives`.                                            |
+| **`mimir_worker.storage_directives` split** | `cos`              | Split into 3 per-role storage directives.                                                                                                                                        |
+| **`tempo_worker.storage_directives` split** | `cos`              | Split into 6 per-role storage directives.                                                                                                                                        |
+
+### Terraform outputs
+
+| Change                     | Scope              | Details                                                                                              |
+|----------------------------|--------------------|------------------------------------------------------------------------------------------------------|
+| **`components.ssc`**       | `cos`, `cos-lite`  | Now `try(module.ssc[0], null)`: SSC became conditional (count-based), so this output may be `null`.  |
+| **`components.traefik`**   | `cos`, `cos-lite`  | Now `try(module.traefik[0], null)`: Traefik became conditional, so this output may be `null`.        |
+
+### Peripheral charms
+
+**Promtail is no longer maintained by Grafana Labs.** `LogProxyConsumer` relied on Promtail to scrape logs from files and forward them to Loki. Since March 2026, [Promtail](https://grafana.com/docs/loki/latest/send-data/promtail/) is no longer under active development.
+
+Starting with COS 3.0, use [Pebble log forwarding](https://documentation.ubuntu.com/pebble/reference/log-forwarding/) from Kubernetes workloads. The `LogForwarder` object in the [`loki_push_api` charm library](https://charmhub.io/loki-k8s/libraries/loki_push_api) automates the Pebble setup. This requires the workload to emit logs to stdout (standard practice in Kubernetes).
+
+## Non-breaking additions
+
+### Terraform inputs
+
+| Change                | Scope              | Details                                                       |
+|-----------------------|--------------------|---------------------------------------------------------------|
+| **`ingress` added**   | `cos`, `cos-lite`  | New structured object to toggle ingress per component.        |
+| **`model` added**     | `cos`, `cos-lite`  | New structured object to configure the Juju model.            |
+
+## Deprecations
+
+- **Charmed Grafana Agent**: end-of-life July 2026, upstream vendor announced end-of-life. Plan to [migrate to charmed OpenTelemetry Collector](how-to/migrate/migrate-grafana-agent-to-otelcol).
+- **Loki Push API in `opentelemetry-collector`**: the `logging` endpoint is planned for removal in the 27.04 release. Migrate telemetry pipelines to OTLP as OTLP support lands ecosystem-wide in 26.10.
+
+## Component versions
+
+(cos-components)=
+### COS 3.0
 
 | Component                | Version |
 |--------------------------|---------|
@@ -88,8 +136,8 @@ COS 3.0 is compatible with Juju v3.6+.
 | tempo                    | 2.10    |
 | traefik                  | 2.11    |
 
-
-### COS Lite components
+(cos-lite-components)=
+### COS Lite 3.0
 
 | Component                | Version |
 |--------------------------|---------|
@@ -99,18 +147,3 @@ COS 3.0 is compatible with Juju v3.6+.
 | loki                     | 3.7     |
 | prometheus               | 3.11    |
 | traefik                  | 2.11    |
-
-## Notable changes in peripheral charms
-
-### Promtail is no longer maintained by Grafana Labs
-LogProxyConsumer is relying on promtail for scraping log lines from files, and sending them to Loki.
-Since March 2026, [promtail](https://grafana.com/docs/loki/latest/send-data/promtail/) is no longer under active development by Grafana Labs.
-Starting COS 3.0, it is recommended to use [pebble for forwarding logs](https://documentation.ubuntu.com/pebble/reference/log-forwarding/) from kubernetes workloads.
-You can use the `LogForwarder` object from the [`loki_push_api` charm library](https://charmhub.io/loki-k8s/libraries/loki_push_api)  to automatically set up pebble for log forwarding.
-
-Note that for this to work, the workload needs to emit logs to stdout (this is standard practice in kubernetes).
-
-## Backwards-incompatible changes
-- If you are using charmed Grafana Agent to push telemetry to COS, note that the vendor announced end-of-life, so we will not be supporting the charm beyond July 2026. Make plans to [upgrade to charmed OpenTelemetry Collector](how-to/migrate/migrate-grafana-agent-to-otelcol).
-
-## Deprecated features
