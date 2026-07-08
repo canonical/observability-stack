@@ -45,7 +45,7 @@ module "grafana" {
 }
 
 module "loki" {
-  source = "git::https://github.com/canonical/loki-operators//terraform?ref=tf-3.7.3"
+  source = "git::https://github.com/canonical/loki-operators//terraform?ref=tf-loki-3.7.3"
 
   anti_affinity                     = var.anti_affinity
   base                              = local.bases.o11y
@@ -83,7 +83,7 @@ module "loki" {
 }
 
 module "mimir" {
-  source = "git::https://github.com/canonical/mimir-operators//terraform?ref=tf-2.17.2"
+  source = "git::https://github.com/canonical/mimir-operators//terraform?ref=tf-mimir-2.17.2"
 
   anti_affinity                     = var.anti_affinity
   base                              = local.bases.o11y
@@ -150,7 +150,7 @@ module "ssc" {
 }
 
 module "tempo" {
-  source = "git::https://github.com/canonical/tempo-operators//terraform?ref=tf-2.10.1"
+  source = "git::https://github.com/canonical/tempo-operators//terraform?ref=tf-tempo-2.10.2"
 
   anti_affinity                               = var.anti_affinity
   base                                        = local.bases.o11y
