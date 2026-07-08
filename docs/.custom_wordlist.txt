@@ -263,3 +263,7 @@ clientError
 contextCanceled
 contextDeadlineExceeded
 serverError
+Chaoscenter
+Parca
+Profiler
+Pyroscope
