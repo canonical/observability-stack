@@ -120,30 +120,4 @@ Starting with COS 3.0, use [Pebble log forwarding](https://documentation.ubuntu.
 
 ## Component versions
 
-(cos-components)=
-### COS 3.0
-
-| Component                | Version |
-|--------------------------|---------|
-| alertmanager             | 0.31    |
-| catalogue                | 3.0     |
-| grafana                  | 12.4    |
-| loki                     | 3.7     |
-| mimir                    | 2.17    |
-| opentelemetry-collector  | 0.130   |
-| s3-integrator            |         |
-| self-signed-certificates |         |
-| tempo                    | 2.10    |
-| traefik                  | 2.11    |
-
-(cos-lite-components)=
-### COS Lite 3.0
-
-| Component                | Version |
-|--------------------------|---------|
-| alertmanager             | 0.31    |
-| catalogue                | 3.0     |
-| grafana                  | 12.4    |
-| loki                     | 3.7     |
-| prometheus               | 3.11    |
-| traefik                  | 2.11    |
+For the full list of charms bundled in this release, along with each charm's LTS status and Charmhub track, see [COS components](reference/cos-components/index).
