@@ -6,7 +6,7 @@ myst:
 
 # COS components
 
-This page describes the charms, rocks, and snaps that make up the current **Observability 3.0** release (comprising both COS 3.0 and COS Lite 3.0). The `LTS` column indicates whether a component is part of the LTS set for this release; LTS charms follow the [release policy](../release-policy) support windows, while non-LTS charms follow the shorter nine-month cycle. Use the `Track` column to pick the right channel when deploying (e.g. `juju deploy <charm> --channel <track>/stable`).
+This page describes the charms, rocks, and snaps that make up the current **Observability 3.0** release (comprising both COS 3.0 and COS Lite 3.0). The `LTS` column indicates whether a component is part of the LTS set for this release; both LTS and non-LTS charms follow the [release policy](../release-policy) support windows; see that page for the end of support dates for each. Use the `Track` column to pick the right channel when deploying (e.g. `juju deploy <charm> --channel <track>/stable`).
 
 ## COS charms
 
@@ -19,8 +19,8 @@ This page describes the charms, rocks, and snaps that make up the current **Obse
 | [Loki Worker](https://charmhub.io/loki-worker-k8s)                       | Yes | K8s       | 3.7              | 3.7   | [Source](https://github.com/canonical/loki-operators/tree/main/worker), [issues](https://github.com/canonical/loki-operators/issues)                      |
 | [Mimir Coordinator](https://charmhub.io/mimir-coordinator-k8s)           | Yes | K8s       | 1.27 (`nginx`)   | 2.17  | [Source](https://github.com/canonical/mimir-operators/tree/main/coordinator), [issues](https://github.com/canonical/mimir-operators/issues)               |
 | [Mimir Worker](https://charmhub.io/mimir-worker-k8s)                     | Yes | K8s       | 3.0              | 2.17  | [Source](https://github.com/canonical/mimir-operators/tree/main/worker), [issues](https://github.com/canonical/mimir-operators/issues)                    |
-| [S3 Integrator](https://charmhub.io/s3-integrator)                       | Yes | Any       | -                |       | [Source](https://github.com/canonical/s3-integrator), [issues](https://github.com/canonical/s3-integrator/issues)                                         |
-| [Self-signed Certificates](https://charmhub.io/self-signed-certificates) | Yes | Any       | -                |       | [Source](https://github.com/canonical/self-signed-certificates-operator), [issues](https://github.com/canonical/self-signed-certificates-operator/issues) |
+| [S3 Integrator](https://charmhub.io/s3-integrator)                       | Yes | Any       | -                | 2     | [Source](https://github.com/canonical/s3-integrator), [issues](https://github.com/canonical/s3-integrator/issues)                                         |
+| [Self-signed Certificates](https://charmhub.io/self-signed-certificates) | Yes | Any       | -                | 1     | [Source](https://github.com/canonical/self-signed-certificates-operator), [issues](https://github.com/canonical/self-signed-certificates-operator/issues) |
 | [Tempo Coordinator](https://charmhub.io/tempo-coordinator-k8s)           | Yes | K8s       | 1.27 (`nginx`)   | 2.10  | [Source](https://github.com/canonical/tempo-coordinator-k8s-operator), [issues](https://github.com/canonical/tempo-coordinator-k8s-operator/issues)       |
 | [Tempo Worker](https://charmhub.io/tempo-worker-k8s)                     | Yes | K8s       | 2.10             | 2.10  | [Source](https://github.com/canonical/tempo-worker-k8s-operator), [issues](https://github.com/canonical/tempo-worker-k8s-operator/issues)                 |
 | [Traefik](https://charmhub.io/traefik-k8s)                               | Yes | K8s       | 2.11             | 2.11  | [Source](https://github.com/canonical/traefik-k8s-operator), [issues](https://github.com/canonical/traefik-k8s-operator/issues)                           |
@@ -34,7 +34,7 @@ This page describes the charms, rocks, and snaps that make up the current **Obse
 | [Grafana](https://charmhub.io/grafana-k8s)                               | Yes | K8s       | 12.4             | 12.4  | [Source](https://github.com/canonical/grafana-k8s-operator), [issues](https://github.com/canonical/grafana-k8s-operator/issues)                           |
 | [Loki](https://charmhub.io/loki-k8s)                                     | Yes | K8s       | 3.7              | 3.7   | [Source](https://github.com/canonical/loki-k8s-operator), [issues](https://github.com/canonical/loki-k8s-operator/issues)                                 |
 | [Prometheus](https://charmhub.io/prometheus-k8s)                         | Yes | K8s       | 3.11             | 3.11  | [Source](https://github.com/canonical/prometheus-k8s-operator), [issues](https://github.com/canonical/prometheus-k8s-operator/issues)                     |
-| [Self-signed Certificates](https://charmhub.io/self-signed-certificates) | Yes | Any       | -                |       | [Source](https://github.com/canonical/self-signed-certificates-operator), [issues](https://github.com/canonical/self-signed-certificates-operator/issues) |
+| [Self-signed Certificates](https://charmhub.io/self-signed-certificates) | Yes | Any       | -                | 1     | [Source](https://github.com/canonical/self-signed-certificates-operator), [issues](https://github.com/canonical/self-signed-certificates-operator/issues) |
 | [Traefik](https://charmhub.io/traefik-k8s)                               | Yes | K8s       | 2.11             | 2.11  | [Source](https://github.com/canonical/traefik-k8s-operator), [issues](https://github.com/canonical/traefik-k8s-operator/issues)                           |
 
 ## Peripheral charms
@@ -100,6 +100,10 @@ This page describes the charms, rocks, and snaps that make up the current **Obse
 | [Grafana Agent](https://snapcraft.io/grafana-agent)                     | [Source](https://github.com/canonical/grafana-agent-snap), [issues](https://github.com/canonical/grafana-agent-snap/issues)                     |
 | [Node Exporter](https://snapcraft.io/node-exporter)                     | [Source](https://github.com/canonical/node-exporter-snap), [issues](https://github.com/canonical/node-exporter-snap/issues)                     |
 | [OpenTelemetry Collector](https://snapcraft.io/opentelemetry-collector) | [Source](https://github.com/canonical/opentelemetry-collector-snap), [issues](https://github.com/canonical/opentelemetry-collector-snap/issues) |
+
+## Reference pages
+
+The following pages provide per-component reference material, including SLI definitions and workload-specific details.
 
 ```{toctree}
 :maxdepth: 1

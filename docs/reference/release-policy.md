@@ -16,6 +16,8 @@ Throughout this page we talk about **product releases**: COS (and COS Lite) `1`,
 
 "Track" is a Charmhub concept, and each component charm is versioned independently on Charmhub: Grafana, Loki, Mimir, and the others all have their own tracks that rarely line up with the product release number. Some charms happen to use `3.0` as their track for COS 3.0, but most do not. See the [release notes](../release-notes.md) for the exact charm tracks bundled in a given product release.
 
+You may also encounter phrases like "track 3 charms" or "track 3.0 charms" used informally to mean "charms released as part of COS 3.0", our Ubuntu 26.04-based LTS release. This is a shorthand for the product release, not a reference to any specific Charmhub track.
+
 Correspondingly, `track/3.0` in this documentation repository is a **git branch** that hosts the docs for the COS 3.0 product release, not a Charmhub track.
 
 
@@ -23,11 +25,11 @@ Correspondingly, `track/3.0` in this documentation repository is a **git branch*
 
 Short-term releases receive security patches and critical bug fixes for nine months. LTS releases receive standard support for the same window as the Ubuntu base they are built on (see [Ubuntu's release cycle](https://ubuntu.com/about/release-cycle)), and extended support with an [Ubuntu Pro](https://ubuntu.com/pro) subscription.
 
-| Release                                                                                | LTS | Base         | Release date  | Standard support  | Extended support |
-| -------------------------------------------------------------------------------------- | --- | ------------ | ------------- | ----------------- | ---------------- |
-| [`3.0`](https://documentation.ubuntu.com/observability/track-3.0/release-notes/)       | Yes | Ubuntu 26.04 | July 2026     | May 2031          | May 2041         |
-| [`2`](https://documentation.ubuntu.com/observability/track-2/reference/release-notes/) | No  | Ubuntu 24.04 | November 2025 | July 2026         |                  |
-| `1`                                                                                    | No  | Ubuntu 24.04 | May 2025      | February 2026     |                  |
+| Release                                                                                | LTS | Cycle | Base         | Release date  | Standard support  | Extended support |
+| -------------------------------------------------------------------------------------- | --- | ----- | ------------ | ------------- | ----------------- | ---------------- |
+| [`3.0`](https://documentation.ubuntu.com/observability/track-3.0/release-notes/)       | Yes | 26.04 | Ubuntu 26.04 | July 2026     | May 2031          | May 2041         |
+| [`2`](https://documentation.ubuntu.com/observability/track-2/reference/release-notes/) | No  | 25.10 | Ubuntu 24.04 | November 2025 | July 2026         |                  |
+| `1`                                                                                    | No  | 25.04 | Ubuntu 24.04 | May 2025      | February 2026     |                  |
 
 
 ## Peripheral charms
