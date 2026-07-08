@@ -27,3 +27,10 @@ resource "juju_offer" "mimir_receive_remote_write" {
   application_name = module.mimir.app_names.mimir_coordinator
   endpoints        = [module.mimir.provides.receive_remote_write]
 }
+
+resource "juju_offer" "otelcol_receive_traces" {
+  name             = "otelcol-receive-traces"
+  model_uuid       = local.model_uuid
+  application_name = module.opentelemetry_collector.app_name
+  endpoints        = [module.opentelemetry_collector.provides.receive_traces]
+}
