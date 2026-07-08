@@ -32,7 +32,7 @@ COS `3.0` is a product version, not a single Charmhub track shared by every comp
 
 *Applies to: `cos`, `cos-lite`.*
 
-Previously only charm revisions could be pinned. In COS 3.0 you can also constrain the Terraform module version and Juju behavior, so a re-deploy converges on the same result. See [Configure strict reproducibility](how-to/deploy-and-manage/configure-strict-reproducibility.md).
+Previously only charm revisions could be pinned. In COS 3.0 you can also constrain the Terraform module version, limiting the deployment variance of the Terraform and Juju layers, so that a re-deploy converges on the same result. See [Configure strict reproducibility](how-to/deploy-and-manage/configure-strict-reproducibility.md).
 
 #### Smooth cross-track upgrades
 
