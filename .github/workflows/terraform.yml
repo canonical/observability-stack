@@ -78,8 +78,6 @@ jobs:
               - '.github/workflows/_integration.yml'
               - 'tests/integration/conftest.py'
               - 'tests/integration/helpers.py'
-              - 'pyproject.toml'
-              - 'uv.lock'
             cos:
               - *shared
               - 'terraform/cos/**'
