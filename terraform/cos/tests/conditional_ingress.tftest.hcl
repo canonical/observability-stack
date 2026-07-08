@@ -28,6 +28,25 @@ run "traefik_ingress_validates_conflicting_ingress" {
   expect_failures = [var.ingress]
 }
 
+# --- traefik: otelcol is ingressed by default, tempo is not ---
+# FIXME: Band-aid for https://github.com/canonical/observability-stack/issues/382
+# otelcol is the intended ingestion entrypoint of traces for Tempo, so it takes
+# the ingress by default; tempo receives traces internally via otelcol.
+
+run "traefik_default_ingresses_otelcol_not_tempo" {
+  command = plan
+
+  assert {
+    condition     = contains(keys(juju_integration.traefik_route), "opentelemetry_collector")
+    error_message = "Expected opentelemetry_collector to be ingressed by default"
+  }
+
+  assert {
+    condition     = !contains(keys(juju_integration.traefik_route), "tempo")
+    error_message = "Expected tempo to NOT be ingressed by default"
+  }
+}
+
 # --- traefik: all ingress enabled by default ---
 
 run "traefik_ingress_enabled" {

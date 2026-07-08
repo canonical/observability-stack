@@ -116,8 +116,8 @@ variable "ingress" {
     grafana                 = optional(bool, true)
     loki                    = optional(bool, true)
     mimir                   = optional(bool, true)
-    opentelemetry_collector = optional(bool, false)
-    tempo                   = optional(bool, true)
+    opentelemetry_collector = optional(bool, true)
+    tempo                   = optional(bool, false)
   })
   default = {}
 
