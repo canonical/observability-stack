@@ -22,7 +22,7 @@ COS `3.0` is a product version, not a single Charmhub track shared by every comp
 
 **Upgrade**
 
-- [Migrate from COS 2 or COS Lite 2 to COS 3.0](how-to/deploy-and-manage/upgrade.md#migrate-from-cos-2-to-cos-30)
+- [Migrate from COS 2 to COS 3.0 (or from COS Lite 2 to COS Lite 3.0)](how-to/deploy-and-manage/upgrade.md#migrate-from-cos-2-to-cos-30)
 
 ## What's new
 
