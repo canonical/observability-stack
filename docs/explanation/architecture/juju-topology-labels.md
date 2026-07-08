@@ -42,6 +42,17 @@ When dashboards are forwarded through a `opentelemetry-collector` intermediary, 
 ## Metrics
 Metrics are workload-specific and vary from charm to charm.
 
+### Charms relating through `metrics-endpoint`
+
+When a charm relates to `prometheus-k8s`, `opentelemetry-collector-k8s` or `opentelemetry-collector` via the `metrics-endpoint` interface, the `prometheus_scrape` library generates per-unit scrape jobs enriched with all Juju topology labels, including `juju_unit`.
+
+Scrape targets can be specified in two ways:
+
+- **Wildcard targets** (e.g. `*:8080`): The wildcard is expanded into one scrape job per unit, each targeting the unit's address and labeled with the corresponding `juju_unit`.
+- **Non-wildcard targets** (e.g. `alertmanager-0.alertmanager-endpoints.svc.cluster.local:9093` or `10.1.14.39:8080`): The library matches each target's host (IP address or FQDN) against known unit addresses. Matched targets produce a per-unit scrape job with `juju_unit`, just like wildcard targets. Targets that cannot be matched to any known unit are grouped in a single job with all other topology labels but without `juju_unit`.
+
+This ensures that metrics from any charmed workload — regardless of how its targets are defined — can be filtered by unit in Grafana dashboards and alert expressions.
+
 ### Charms relating through `opentelemetry-collector` (`-k8s` or not)
 For `opentelemetry-collector`: any metrics coming from the principal charm will be tagged with the topology of the principal unit. The generic Linux metrics coming from the node exporter will be tagged with the opentelemetry-collector unit topology.
 
