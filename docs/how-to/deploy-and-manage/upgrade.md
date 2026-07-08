@@ -57,7 +57,7 @@ Before you begin, review [How to configure COS for strict reproducibility](confi
 
 Use this method only if you have no Terraform state, for example if you deployed via the COS Lite Juju bundle. Otherwise, upgrade [using Terraform](#using-terraform).
 
-1. Refresh all track 2 charms to the latest revision on `2/stable`:
+1. Refresh all COS 2 charms to the latest revision on `2/stable`:
     ```bash
     juju refresh <charm-name> --channel 2/stable
     ```
@@ -79,7 +79,7 @@ From a data perspective, the main difference between COS Lite and COS is that CO
 - For metrics, [Prometheus](https://charmhub.io/prometheus-k8s) is replaced with [distributed Mimir](https://charmhub.io/mimir-coordinator-k8s).
 - For logs, monolithic [Loki](https://charmhub.io/loki-k8s) is replaced with [distributed Loki](https://charmhub.io/loki-coordinator-k8s).
 
-Migrating data from Prometheus to Mimir, or between Loki charm revisions, is complex and nuanced. For this reason, we recommend a retention-based phase-out instead.
+Migrating data from Prometheus to Mimir, or between different Loki charms, is complex and nuanced. For this reason, we recommend a retention-based phase-out instead.
 
 #### Migrate via retention-based phase-out
 
@@ -91,5 +91,5 @@ Migrating data from Prometheus to Mimir, or between Loki charm revisions, is com
 
 ### Migrate from COS Lite 1 to COS Lite 2
 
-1. Refresh all track 1 charms to the latest revision on `1/stable`.
-2. Refresh each charm to track 2.
+1. Refresh all COS Lite 1 charms to the latest revision on `1/stable`.
+2. Refresh each charm to track `2/stable`.
