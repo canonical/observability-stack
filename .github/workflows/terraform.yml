@@ -63,6 +63,7 @@ jobs:
     outputs:
       cos: ${{ steps.filter.outputs.cos }}
       cos_lite: ${{ steps.filter.outputs.cos_lite }}
+      cos_dev: ${{ steps.filter.outputs.cos_dev }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -87,6 +88,10 @@ jobs:
               - *shared
               - 'terraform/cos-lite/**'
               - 'tests/integration/cos_lite/**'
+            cos_dev:
+              - *shared
+              - 'terraform/cos-dev/**'
+              - 'tests/integration/cos_dev/**'
   test-integration-cos-lite:
     name: COS Lite Terraform integration
     needs: [test-unit, changes]
@@ -103,3 +108,11 @@ jobs:
     with:
       product: cos
       runner: self-hosted-linux-amd64-noble-xlarge
+  test-integration-cos-dev:
+    name: COS Dev Terraform integration
+    needs: [test-unit, changes]
+    if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.cos_dev == 'true' }}
+    uses: canonical/observability-stack/.github/workflows/_integration.yml@main
+    with:
+      product: cos_dev
+      runner: self-hosted-linux-amd64-noble-large
