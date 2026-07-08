@@ -57,16 +57,46 @@ jobs:
           sudo snap install just --classic
       - name: Unit test the Terraform modules
         run: just unit
+  changes:
+    name: Detect changed products
+    runs-on: ubuntu-latest
+    outputs:
+      cos: ${{ steps.filter.outputs.cos }}
+      cos_lite: ${{ steps.filter.outputs.cos_lite }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Filter changed paths per product
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            # Shared paths affect *both* products, so they trigger both suites
+            shared: &shared
+              - '.github/workflows/terraform.yml'
+              - '.github/workflows/_integration.yml'
+              - 'tests/integration/conftest.py'
+              - 'tests/integration/helpers.py'
+            cos:
+              - *shared
+              - 'terraform/cos/**'
+              - 'tests/integration/cos/**'
+            cos_lite:
+              - *shared
+              - 'terraform/cos-lite/**'
+              - 'tests/integration/cos_lite/**'
   test-integration-cos-lite:
     name: COS Lite Terraform integration
-    needs: [test-unit]
+    needs: [test-unit, changes]
+    if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.cos_lite == 'true' }}
     uses: canonical/observability-stack/.github/workflows/_integration.yml@main
     with:
       product: cos_lite
       runner: self-hosted-linux-amd64-noble-large
   test-integration-cos:
     name: COS Terraform integration
-    needs: [test-unit]
+    needs: [test-unit, changes]
+    if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.cos == 'true' }}
     uses: canonical/observability-stack/.github/workflows/_integration.yml@main
     with:
       product: cos
