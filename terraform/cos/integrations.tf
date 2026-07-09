@@ -306,7 +306,7 @@ resource "juju_integration" "charm_tracing_otelcol" {
 
   application {
     name     = module.tempo.app_names.tempo_coordinator
-    endpoint = module.tempo.provides.charm_tracing
+    endpoint = module.tempo.provides.tracing
   }
 
   application {
