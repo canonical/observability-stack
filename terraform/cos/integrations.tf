@@ -301,6 +301,20 @@ resource "juju_integration" "charm_tracing_grafana" {
   lifecycle { replace_triggered_by = [terraform_data.grafana_litestream_resource] }
 }
 
+resource "juju_integration" "charm_tracing_otelcol" {
+  model_uuid = local.model_uuid
+
+  application {
+    name     = module.tempo.app_names.tempo_coordinator
+    endpoint = module.tempo.provides.tracing
+  }
+
+  application {
+    name     = module.opentelemetry_collector.app_name
+    endpoint = module.opentelemetry_collector.requires.send_charm_traces
+  }
+}
+
 resource "juju_integration" "tempo_tracing_otelcol_tracing" {
   model_uuid = local.model_uuid
 
