@@ -38,7 +38,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        juju-channel: ["3.6/stable", "4.0/beta", "4.1/beta"]
+        juju-channel: ["3.6/stable"]
         scenario: ["tls_full", "tls_external", "tls_internal", "tls_none"]
         include:
         - juju-channel: "4.0/beta"
