@@ -12,7 +12,7 @@ myst:
 
 These release notes cover both **COS 3.0** and **COS Lite 3.0**. COS and COS Lite are distinct products with separate Terraform modules and different component sets; sections below apply to both unless noted otherwise, via a `Scope` column or an *Applies to* note.
 
-Both tracks are LTS releases. They receive security updates and critical bug fixes for the same support window as [Ubuntu 26.04 LTS](https://ubuntu.com/about/release-cycle). If you have COS 2 or COS Lite 2 installed, plan to upgrade before **July 2026**. See the [release policy](reference/release-policy) for the full support window and cadence.
+Both tracks are LTS releases. They receive security updates and critical bug fixes for the same support window as [Ubuntu 26.04 LTS](https://ubuntu.com/about/release-cycle). If you have COS 2 or COS Lite 2 installed, plan to upgrade by the **end of July 2026**. See the [release policy](reference/release-policy) for the full support window and cadence.
 
 ```{note}
 COS `3.0` is a product version, not a single Charmhub track shared by every component. Some charms use `3.0` as their track, but most retain their own versioning; see [Component versions](#component-versions) for the exact track each charm uses in this release.
@@ -20,8 +20,9 @@ COS `3.0` is a product version, not a single Charmhub track shared by every comp
 
 **Compatibility.** COS 3.0 and COS Lite 3.0 require Juju v3.6+. See [system requirements](reference/system-requirements) for the full compatibility matrix.
 
-**Upgrade**
+**Install and upgrade**
 
+- [Install COS 3.0 or COS Lite 3.0](how-to/deploy-and-manage/install.md)
 - [Migrate from COS 2 to COS 3.0 (or from COS Lite 2 to COS Lite 3.0)](how-to/deploy-and-manage/upgrade.md#migrate-from-cos-2-to-cos-30)
 
 ## What's new
