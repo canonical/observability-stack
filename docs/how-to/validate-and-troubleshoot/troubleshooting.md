@@ -433,6 +433,78 @@ otelcol 45246 root   17r      REG                8,1       474    3183206 /var/l
 
 Compare the total size of logs to the available memory.
 
+#### Runaway internal logs during a backend outage?
+
+The collector ingests its **own** internal telemetry logs into its `logs` pipeline so they can be
+forwarded to Loki (see [`{job="otelcol-internal"}`](#where-are-the-collectors-own-internal-logs)).
+If an exporter on the **logs** pipeline (e.g. Loki, or a `send-otlp` logs endpoint) is down, its
+`Exporting failed` message is itself an internal log; without protection it would re-enter the
+pipeline, be re-exported, fail again, and loop — spiking CPU, log volume, and, because the sending
+queue is persistent, storage/PVC usage.
+
+The charm prevents this with a loop-breaker `filter` processor that drops the internal logs emitted
+by the exporter components attached to the logs pipeline (the components that can recurse). The
+filter is populated automatically from whichever log exporters are configured, so every log
+destination — `send-loki-logs`, cloud-integrator, `send-otlp` logs — is covered. If you suspect a
+runaway loop:
+
+- Confirm the failure-rate is **not accelerating** (a healthy, throttled retry looks flat):
+  ```bash
+  # K8s
+  juju ssh --container otelcol otelcol/0 "curl -s localhost:8888/metrics" \
+    | grep otelcol_exporter_send_failed_log_records_total
+  ```
+- Check for growing on-disk queue usage (persistent sending queue):
+  ```bash
+  # K8s: the file_storage queue lives on the charm's persistent volume
+  juju ssh --container otelcol otelcol/0 "du -sh /otelcol"
+  ```
+- Verify the loop-breaker filter is present in the rendered config:
+  ```bash
+  # K8s
+  juju ssh --container otelcol otelcol/0 "cat /etc/otelcol/config.yaml" \
+    | grep -A5 internal-telemetry-loop-breaker
+  ```
+
+If the queue keeps growing unbounded, confirm `retry_on_failure.max_elapsed_time` is finite (it
+must never be `0`, which retries forever). Restoring the backend lets the queue drain.
+
+### Where are the collector's own internal logs?
+
+The collector forwards its own internal logs to Loki, tagged `job=otelcol-internal`. Query them in
+Grafana / Loki with:
+
+```logql
+{job="otelcol-internal"}
+```
+
+If they are missing, confirm the `send-loki-logs` relation exists and the pipeline is healthy.
+
+### Missing `Exporting failed` logs for Loki (expected)
+
+When Loki (or any exporter on the **logs** pipeline, such as a `send-otlp` logs endpoint) is
+**down**, you will **not** see that exporter's own logs in Loki. This is **intentional**: the
+internal logs emitted by log-pipeline exporters are dropped by the loop-breaker filter to prevent a
+recursive log explosion (they cannot be delivered to a down destination anyway). Inspect them at
+the source instead:
+
+```bash
+# K8s
+juju ssh --container otelcol otelcol/0 pebble logs
+# machine/VM
+sudo snap logs opentelemetry-collector
+```
+
+and rely on the `otelcol_exporter_send_failed_log_records_total` metric and the `failed-logs` alert
+for detection.
+
+```{note}
+Failure logs from exporters on **other** pipelines (e.g. remote-write to Mimir on the metrics
+pipeline, or Tempo on the traces pipeline) are **not** dropped and still reach Loki — they cannot
+form a loop while the logs path is healthy, so their `Exporting failed` logs remain visible in
+Grafana.
+```
+
 
 ## `socket: too many open files`
 
