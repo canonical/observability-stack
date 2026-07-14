@@ -465,6 +465,13 @@ runaway loop:
   juju ssh --container otelcol otelcol/0 "cat /etc/otelcol/config.yaml" \
     | grep -A5 internal-telemetry-loop-breaker
   ```
+- Confirm the loop-breaker is actively dropping the looping exporter's logs (should climb during
+  the outage; a stuck `0` means the filter is not matching):
+  ```bash
+  # K8s
+  juju ssh --container otelcol otelcol/0 "curl -s localhost:8888/metrics" \
+    | grep otelcol_processor_filter_logs_filtered
+  ```
 
 If the queue keeps growing unbounded, confirm `retry_on_failure.max_elapsed_time` is finite (it
 must never be `0`, which retries forever). Restoring the backend lets the queue drain.
@@ -485,18 +492,17 @@ If they are missing, confirm the `send-loki-logs` relation exists and the pipeli
 When Loki (or any exporter on the **logs** pipeline, such as a `send-otlp` logs endpoint) is
 **down**, you will **not** see that exporter's own logs in Loki. This is **intentional**: the
 internal logs emitted by log-pipeline exporters are dropped by the loop-breaker filter to prevent a
-recursive log explosion (they cannot be delivered to a down destination anyway). Inspect them at
-the source instead:
+recursive log explosion (they cannot be delivered to a down destination anyway).
 
-```bash
-# K8s
-juju ssh --container otelcol otelcol/0 pebble logs
-# machine/VM
-sudo snap logs opentelemetry-collector
+For detection, rely on the `otelcol_exporter_send_failed_log_records_total` metric and the
+`failed-logs` alert rather than on the logs themselves.
+
+```{note}
+Once the collector has started, its internal telemetry is routed to the OTLP self-ingest pipeline
+(and on to Loki), **not** to stderr. So `pebble logs` (K8s) / `sudo snap logs opentelemetry-collector`
+(machine) mostly show the *startup* internal logs and are **not** a reliable place to read
+steady-state internal telemetry. Prefer Loki (`{job="otelcol-internal"}`) and the metrics above.
 ```
-
-and rely on the `otelcol_exporter_send_failed_log_records_total` metric and the `failed-logs` alert
-for detection.
 
 ```{note}
 Failure logs from exporters on **other** pipelines (e.g. remote-write to Mimir on the metrics
