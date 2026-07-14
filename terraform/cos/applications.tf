@@ -121,7 +121,7 @@ module "mimir" {
 }
 
 module "opentelemetry_collector" {
-  source = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform?ref=tf-0.130.2"
+  source = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform?ref=tf-0.130.3"
 
   app_name           = var.opentelemetry_collector.app_name
   base               = local.bases.o11y
