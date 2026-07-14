@@ -209,6 +209,10 @@ resource "juju_integration" "metrics_endpoint" {
       app_name = module.alertmanager.app_name
       endpoint = module.alertmanager.provides.self_metrics_endpoint
     }
+    grafana = {
+      app_name = module.grafana.app_name
+      endpoint = module.grafana.provides.metrics_endpoint
+    }
     mimir = {
       app_name = module.mimir.app_names.mimir_coordinator
       endpoint = module.mimir.provides.self_metrics_endpoint
