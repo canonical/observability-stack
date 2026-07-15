@@ -1,8 +1,6 @@
-"""There are 2 sections of the COS deployment (internal and external) which can implement TLS
-communication. This python test file deploys COS with external and internal TLS.
+"""Test the deployment of COS in full TLS mode for the current track.
 
-For more further TLS configuration details, refer to our documentation:
-https://documentation.ubuntu.com/observability/latest/how-to/configure-tls-encryption/"""
+Any pytest file within this parent directory will be run against Juju v4."""
 
 from pathlib import Path
 
