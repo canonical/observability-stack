@@ -75,7 +75,7 @@ module "prometheus" {
 }
 
 module "ssc" {
-  source = "git::https://github.com/canonical/self-signed-certificates-operator//terraform?ref=rev653"
+  source = "git::https://github.com/canonical/self-signed-certificates-operator//terraform?ref=df04ad32b488b20942a9db02fb061ac5b55c9c04"
   count  = var.internal_tls ? 1 : 0
 
   app_name    = var.ssc.app_name
