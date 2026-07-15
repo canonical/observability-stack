@@ -448,27 +448,24 @@ filter is populated automatically from whichever log exporters are configured, s
 destination — `send-loki-logs`, cloud-integrator, `send-otlp` logs — is covered. If you suspect a
 runaway loop:
 
-- Confirm the failure-rate is **not accelerating** (a healthy, throttled retry looks flat):
+- Confirm the failure rate is **not accelerating** (a healthy, throttled retry looks flat):
   ```bash
-  # K8s
   juju ssh --container otelcol otelcol/0 "curl -s localhost:8888/metrics" \
     | grep otelcol_exporter_send_failed_log_records_total
   ```
-- Check for growing on-disk queue usage (persistent sending queue):
+- Check for growing on-disk queue usage. The persistent sending queue lives on the charm's
+  persistent volume:
   ```bash
-  # K8s: the file_storage queue lives on the charm's persistent volume
   juju ssh --container otelcol otelcol/0 "du -sh /otelcol"
   ```
 - Verify the loop-breaker filter is present in the rendered config:
   ```bash
-  # K8s
   juju ssh --container otelcol otelcol/0 "cat /etc/otelcol/config.yaml" \
     | grep -A5 internal-telemetry-loop-breaker
   ```
-- Confirm the loop-breaker is actively dropping the looping exporter's logs (should climb during
-  the outage; a stuck `0` means the filter is not matching):
+- Confirm the loop-breaker is actively dropping the looping exporter's logs. The count should climb
+  during the outage; a value stuck at zero means the filter is not matching:
   ```bash
-  # K8s
   juju ssh --container otelcol otelcol/0 "curl -s localhost:8888/metrics" \
     | grep otelcol_processor_filter_logs_filtered
   ```
@@ -490,18 +487,30 @@ If they are missing, confirm the `send-loki-logs` relation exists and the pipeli
 ### Missing `Exporting failed` logs for Loki (expected)
 
 When Loki (or any exporter on the **logs** pipeline, such as a `send-otlp` logs endpoint) is
-**down**, you will **not** see that exporter's own logs in Loki. This is **intentional**: the
-internal logs emitted by log-pipeline exporters are dropped by the loop-breaker filter to prevent a
-recursive log explosion (they cannot be delivered to a down destination anyway).
+**down**, you will **not** see that exporter's own `Exporting failed` logs **in Loki**. This is
+**intentional**: those internal logs are dropped from the `logs` pipeline by the loop-breaker
+filter to prevent a recursive log explosion (they cannot be delivered to a down Loki anyway).
 
-For detection, rely on the `otelcol_exporter_send_failed_log_records_total` metric and the
-`failed-logs` alert rather than on the logs themselves.
+They are, however, still written to the collector's **stderr**, so you can always read them at the
+source. On Kubernetes:
+
+```bash
+juju ssh --container otelcol otelcol/0 pebble logs
+```
+
+On machines:
+
+```bash
+sudo snap logs opentelemetry-collector
+```
+
+The `otelcol_exporter_send_failed_log_records_total` metric and the `failed-logs` alert also fire
+for detection.
 
 ```{note}
-Once the collector has started, its internal telemetry is routed to the OTLP self-ingest pipeline
-(and on to Loki), **not** to stderr. So `pebble logs` (K8s) / `sudo snap logs opentelemetry-collector`
-(machine) mostly show the *startup* internal logs and are **not** a reliable place to read
-steady-state internal telemetry. Prefer Loki (`{job="otelcol-internal"}`) and the metrics above.
+The loop-breaker only removes these logs from the **pipeline** (so they can't recurse to Loki); it
+does **not** silence them. Internal telemetry is teed to stderr (`output_paths`) *and* self-ingested
+via OTLP, so `pebble logs` / `snap logs` remain a complete source for the collector's own logs.
 ```
 
 ```{note}
