@@ -74,6 +74,8 @@ module "prometheus" {
   units              = var.prometheus.units
 }
 
+# FIXME: replace the commit hash with a `revX` charm release tag once this is fixed:
+# https://github.com/canonical/self-signed-certificates-operator/issues/591
 module "ssc" {
   source = "git::https://github.com/canonical/self-signed-certificates-operator//terraform?ref=df04ad32b488b20942a9db02fb061ac5b55c9c04"
   count  = var.internal_tls ? 1 : 0

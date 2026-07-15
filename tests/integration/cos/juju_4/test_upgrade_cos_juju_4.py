@@ -10,7 +10,7 @@ from pathlib import Path
 import jubilant
 from helpers import generic_assertions, no_errors_in_otelcol_logs
 
-TRACK_3_TF_FILE = Path(__file__).parent.resolve() / "track-3.0.tf"
+TF_FILE = Path(__file__).parent.parent.resolve() / "tls_full/track-3.0.tf"
 S3_ENDPOINT = {
     "s3_endpoint": os.getenv("S3_ENDPOINT"),
     "s3_secret_key": os.getenv("S3_SECRET_KEY"),
@@ -27,9 +27,9 @@ def test_envvars():
 def test_deploy_from_track(
     tmp_path, tf_manager, ca_model: jubilant.Juju, cos_model: jubilant.Juju
 ):
-    # GIVEN a module deployed from a track with full TLS configuration
-    # this mode gives us the most coverage of the TLS configuration options
-    tf_manager.init(TRACK_3_TF_FILE)
+    # GIVEN a module deployed with full TLS configuration, providing the most coverage of the TLS
+    # configuration options
+    tf_manager.init(TF_FILE)
     tf_manager.apply(ca_model=ca_model.model, cos_model=cos_model.model, **S3_ENDPOINT)
     generic_assertions(cos_model, ca_model, tmp_path)
     no_errors_in_otelcol_logs(cos_model)

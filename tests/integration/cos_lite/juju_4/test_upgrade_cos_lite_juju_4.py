@@ -9,14 +9,14 @@ from pathlib import Path
 import jubilant
 from helpers import generic_assertions
 
-TRACK_3_TF_FILE = Path(__file__).parent.resolve() / "track-3.0.tf"
+TF_FILE = Path(__file__).parent.parent.resolve() / "tls_full/track-3.0.tf"
 
 
 def test_deploy_from_track(
     tmp_path, tf_manager, ca_model: jubilant.Juju, cos_model: jubilant.Juju
 ):
-    # GIVEN a module deployed from a track with full TLS configuration
-    # this mode gives us the most coverage of the TLS configuration options
-    tf_manager.init(TRACK_3_TF_FILE)
+    # GIVEN a module deployed with full TLS configuration, providing the most coverage of the TLS
+    # configuration options
+    tf_manager.init(TF_FILE)
     tf_manager.apply(ca_model=ca_model.model, cos_model=cos_model.model)
     generic_assertions(cos_model, ca_model, tmp_path)
