@@ -39,6 +39,9 @@ jobs:
       matrix:
         juju-channel: ["3.6/stable"]
         scenario: ["risk_upgrades", "tls_full", "tls_external", "tls_internal", "tls_none"]
+        include:
+        - juju-channel: "4.1/beta"
+          scenario: "juju_4"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
