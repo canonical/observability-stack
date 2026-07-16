@@ -39,12 +39,12 @@ variable "s3_access_key" {
 }
 
 module "ssc" {
-  source     = "git::https://github.com/canonical/self-signed-certificates-operator//terraform?ref=df04ad32b488b20942a9db02fb061ac5b55c9c04"
+  source     = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
   model_uuid = data.juju_model.ca-model.uuid
 }
 
 module "cos" {
-  source                          = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=feat/juju-v4-support"
+  source                          = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=track/3.0"
   model                           = { uuid = data.juju_model.cos-model.uuid }
   risk                            = var.risk
   internal_tls                    = true
