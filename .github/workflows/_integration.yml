@@ -38,9 +38,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - juju-channel: "4.1/beta"
-            scenario: "juju_4"
+        juju-channel: ["4.1/beta"]
+        scenario: ["juju_4"]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
