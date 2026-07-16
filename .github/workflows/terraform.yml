@@ -5,6 +5,7 @@ on:
   pull_request:
     paths:
       - "**/*.tf"
+      - "tests/integration/**"
 
 jobs:
   lint-terraform:
