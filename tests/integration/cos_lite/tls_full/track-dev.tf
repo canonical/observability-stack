@@ -36,6 +36,11 @@ module "cos-lite" {
   model                           = { uuid = data.juju_model.cos-model.uuid }
   risk                            = "edge"
   internal_tls                    = true
-  external_certificates_offer_url = module.ssc.offers["certificates"].url
-  external_ca_cert_offer_url      = module.ssc.offers["send-ca-cert"].url
+  external_certificates_offer_url = "admin/${var.ca_model}.certificates"
+  external_ca_cert_offer_url      = "admin/${var.ca_model}.send-ca-cert"
+
+  # The offer URLs must stay static strings so count/for_each in the module
+  # remain known at plan time. depends_on guarantees the CA model's offers are
+  # created before COS consumes them, without introducing apply-time-unknowns.
+  depends_on = [module.ssc]
 }
