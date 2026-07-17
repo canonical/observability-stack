@@ -470,6 +470,12 @@ runaway loop:
     | grep otelcol_processor_filter_logs_filtered
   ```
 
+The same signal is visible in Grafana: the loop-breaker's `filtered` counter climbs while a
+**logs**-pipeline exporter is down, and stays flat during a **metrics**- or **traces**-pipeline
+outage (whose failure logs are intentionally *not* dropped — see below).
+
+![Grafana panel of the loop-breaker filter processor's dropped-log counter rising during logs-pipeline exporter outages and flat during other outages|690x300](/assets/otelcol-loop-breaker-filtered.png)
+
 If the queue keeps growing unbounded, confirm `retry_on_failure.max_elapsed_time` is finite (it
 must never be `0`, which retries forever). Restoring the backend lets the queue drain.
 
@@ -483,6 +489,69 @@ Grafana / Loki with:
 ```
 
 If they are missing, confirm the `send-loki-logs` relation exists and the pipeline is healthy.
+
+![Grafana Explore showing an otelcol-internal log line and its parsed fields, indexed labels, and structured metadata|690x400](/assets/grafana-otelcol-internal-logs.png)
+
+#### Telling apart multiple collectors
+
+The internal logs are labelled with the emitting collector's own Juju topology, so when several
+`opentelemetry-collector` apps (or units) ship to the same Loki you can tell their internal logs
+apart. Every `job=otelcol-internal` stream carries these **indexed labels**:
+
+| Label | Value | Notes |
+| --- | --- | --- |
+| `job` | `otelcol-internal` | derived from `service.name` |
+| `instance` | e.g. `otelcol/0` | pinned to the Juju **unit** (not a random per-restart UUID) |
+| `juju_application` / `juju_unit` | e.g. `otelcol` / `otelcol/0` | this collector's topology |
+| `juju_model` / `juju_model_uuid` / `juju_charm` | — | this collector's topology |
+| `level` | e.g. `INFO`, `WARN` | log severity |
+
+So to read the internal logs of one specific app or unit:
+
+```logql
+{job="otelcol-internal", juju_application="otelcol"}
+{job="otelcol-internal", juju_unit="otelcol/0"}
+```
+
+```{note}
+Before this change, the `instance` label was a random UUID minted per collector process, so it
+changed on every restart (creating a new Loki stream each time) and could not be mapped back to a
+unit. It is now pinned to the Juju unit, which both stabilizes the stream and makes it correlatable
+with the collector's metrics and traces.
+```
+
+#### Filtering by pipeline component or signal
+
+Details such as *which* collector component emitted a log (`otelcol.component.id`), its kind, and
+the signal it was processing (`logs` / `metrics` / `traces`) are rendered into the log line as
+`logfmt`, **not** promoted to indexed labels. Extract them at query time with the `logfmt` parser
+(dots in the key become underscores):
+
+```logql
+{job="otelcol-internal"}
+  | logfmt
+  | instrumentation_scope_attribute_otelcol_component_id=`prometheus/metrics-endpoint/otelcol/0`
+```
+
+```logql
+# only the internal logs for a given signal
+{job="otelcol-internal"} | logfmt | instrumentation_scope_attribute_otelcol_signal=`metrics`
+```
+
+In Grafana Explore you can also click any parsed field under a log line and choose *"Filter for
+value"* to build these expressions for you.
+
+```{note}
+**Why aren't these fields labels, and does that cost cardinality?** Loki only indexes the stream
+labels above; the `logfmt` fields (e.g. `attribute_target_labels`, `attribute_scrape_timestamp`,
+`instrumentation_scope_attribute_otelcol.component.id`) live only in the log line and are parsed at
+query time, so they add **no** index/stream cardinality no matter how high their own cardinality is.
+This is deliberate: the collector's internal logs carry effectively unbounded fields
+(`error`, `target_labels`, `scrape_timestamp`, …), and promoting those to labels would explode the
+number of Loki streams. Only the bounded Juju topology is promoted to labels, so cardinality stays
+proportional to the number of collector units.
+```
+
 
 ### Missing `Exporting failed` logs for Loki (expected)
 

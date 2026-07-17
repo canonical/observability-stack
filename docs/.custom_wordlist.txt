@@ -25,6 +25,7 @@ config
 configs
 contextualize
 contrib
+correlatable
 cpu
 cryptographic
 cryptographically
@@ -218,6 +219,7 @@ uncomment(ing)?
 unencrypted
 URL
 utils
+UUID
 uv
 vCPU
 vCPUs
