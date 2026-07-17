@@ -502,8 +502,7 @@ apart. Every `job=otelcol-internal` stream carries these **indexed labels**:
 | --- | --- | --- |
 | `job` | `otelcol-internal` | derived from `service.name` |
 | `instance` | e.g. `otelcol/0` | pinned to the Juju **unit** (not a random per-restart UUID) |
-| `juju_application` / `juju_unit` | e.g. `otelcol` / `otelcol/0` | this collector's topology |
-| `juju_model` / `juju_model_uuid` / `juju_charm` | — | this collector's topology |
+| `juju_*` | e.g. `juju_unit=otelcol/0` | this collector's topology |
 | `level` | e.g. `INFO`, `WARN` | log severity |
 
 So to read the internal logs of one specific app or unit:
@@ -559,13 +558,10 @@ does **not** silence them. Internal telemetry is teed to stderr (`output_paths`)
 via OTLP, so `pebble logs` / `snap logs` remain a complete source for the collector's own logs.
 ```
 
-```{note}
 Failure logs from exporters on **other** pipelines (e.g. remote-write to Mimir on the metrics
 pipeline, or Tempo on the traces pipeline) are **not** dropped and still reach Loki — they cannot
 form a loop while the logs path is healthy, so their `Exporting failed` logs remain visible in
 Grafana.
-```
-
 
 ## `socket: too many open files`
 
