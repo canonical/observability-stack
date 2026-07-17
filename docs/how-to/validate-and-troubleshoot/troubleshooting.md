@@ -451,7 +451,7 @@ runaway loop:
 - Confirm the failure rate is **not accelerating** (a healthy, throttled retry looks flat):
   ```bash
   juju ssh --container otelcol otelcol/0 "curl -s localhost:8888/metrics" \
-    | grep otelcol_exporter_send_failed_log_records_total
+    | grep otelcol_exporter_send_failed_log_records
   ```
 - Check for growing on-disk queue usage. The persistent sending queue lives on the charm's
   persistent volume:
@@ -513,13 +513,6 @@ So to read the internal logs of one specific app or unit:
 {job="otelcol-internal", juju_unit="otelcol/0"}
 ```
 
-```{note}
-Before this change, the `instance` label was a random UUID minted per collector process, so it
-changed on every restart (creating a new Loki stream each time) and could not be mapped back to a
-unit. It is now pinned to the Juju unit, which both stabilizes the stream and makes it correlatable
-with the collector's metrics and traces.
-```
-
 #### Filtering by pipeline component or signal
 
 Details such as *which* collector component emitted a log (`otelcol.component.id`), its kind, and
@@ -528,30 +521,14 @@ the signal it was processing (`logs` / `metrics` / `traces`) are rendered into t
 (dots in the key become underscores):
 
 ```text
-{job="otelcol-internal"}
-  | logfmt
-  | instrumentation_scope_attribute_otelcol_component_id=`prometheus/metrics-endpoint/otelcol/0`
+{job="otelcol-internal"} | logfmt | instrumentation_scope_attribute_otelcol_component_id=`prometheus/metrics-endpoint/otelcol/0`
 ```
-
 ```text
-# only the internal logs for a given signal
 {job="otelcol-internal"} | logfmt | instrumentation_scope_attribute_otelcol_signal=`metrics`
 ```
 
 In Grafana Explore you can also click any parsed field under a log line and choose *"Filter for
 value"* to build these expressions for you.
-
-```{note}
-**Why aren't these fields labels, and does that cost cardinality?** Loki only indexes the stream
-labels above; the `logfmt` fields (e.g. `attribute_target_labels`, `attribute_scrape_timestamp`,
-`instrumentation_scope_attribute_otelcol.component.id`) live only in the log line and are parsed at
-query time, so they add **no** index/stream cardinality no matter how high their own cardinality is.
-This is deliberate: the collector's internal logs carry effectively unbounded fields
-(`error`, `target_labels`, `scrape_timestamp`, …), and promoting those to labels would explode the
-number of Loki streams. Only the bounded Juju topology is promoted to labels, so cardinality stays
-proportional to the number of collector units.
-```
-
 
 ### Missing `Exporting failed` logs for Loki (expected)
 
