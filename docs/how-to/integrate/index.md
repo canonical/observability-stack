@@ -18,6 +18,7 @@ Monitor SSL certificates with blackbox exporter <monitor-ssl-certificates-with-b
 Instrument machine charms <instrument-machine-charms>
 Use the Loki HTTP API <use-loki-http-api>
 Use Catalogue <use-catalogue>
+Send metrics to Mimir on Juju <send-metrics-to-mimir>
 ```
 
 ## Extend the pipeline
@@ -41,10 +42,11 @@ Sync alert rules from a git repo <sync-alert-rules-from-git-repo>
 
 ## Test & validate integrations
 
-Verify your object-storage integration with a local Minio instance.
+Validate local object-storage integrations or wire existing storage into Mimir.
 
 ```{toctree}
 :maxdepth: 1
 
 Testing with Minio <deploy-s3-integrator-and-minio>
+Connect object storage to Mimir on Juju <configure-object-storage-for-mimir>
 ```
