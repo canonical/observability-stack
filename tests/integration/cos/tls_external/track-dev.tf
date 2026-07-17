@@ -48,8 +48,8 @@ module "cos" {
   model                           = { uuid = data.juju_model.cos-model.uuid }
   risk                            = "edge"
   internal_tls                    = false
-  external_certificates_offer_url = "admin/${var.ca_model}.certificates"
-  external_ca_cert_offer_url      = "admin/${var.ca_model}.send-ca-cert"
+  external_certificates_offer_url = module.ssc.offers["certificates"].url
+  external_ca_cert_offer_url      = module.ssc.offers["send-ca-cert"].url
 
   s3_endpoint   = var.s3_endpoint
   s3_secret_key = var.s3_secret_key

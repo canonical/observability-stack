@@ -36,6 +36,6 @@ module "cos-lite" {
   model                           = { uuid = data.juju_model.cos-model.uuid }
   risk                            = "stable"
   internal_tls                    = true
-  external_certificates_offer_url = "admin/${var.ca_model}.certificates"
-  external_ca_cert_offer_url      = "admin/${var.ca_model}.send-ca-cert"
+  external_certificates_offer_url = module.ssc.offers["certificates"].url
+  external_ca_cert_offer_url      = module.ssc.offers["send-ca-cert"].url
 }
