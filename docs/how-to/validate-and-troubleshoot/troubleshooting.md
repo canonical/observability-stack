@@ -474,7 +474,7 @@ The same signal is visible in Grafana: the loop-breaker's `filtered` counter cli
 **logs**-pipeline exporter is down, and stays flat during a **metrics**- or **traces**-pipeline
 outage (whose failure logs are intentionally *not* dropped — see below).
 
-![Grafana panel of the loop-breaker filter processor's dropped-log counter rising during logs-pipeline exporter outages and flat during other outages|690x300](/assets/otelcol-loop-breaker-filtered.png)
+![Grafana panel of the loop-breaker filter processor's dropped-log counter rising during logs-pipeline exporter outages and flat during other outages|690x300](/assets/grafana-otelcol-loop-breaker-filtered.png)
 
 If the queue keeps growing unbounded, confirm `retry_on_failure.max_elapsed_time` is finite (it
 must never be `0`, which retries forever). Restoring the backend lets the queue drain.
@@ -484,7 +484,7 @@ must never be `0`, which retries forever). Restoring the backend lets the queue 
 The collector forwards its own internal logs to Loki, tagged `job=otelcol-internal`. Query them in
 Grafana / Loki with:
 
-```logql
+```text
 {job="otelcol-internal"}
 ```
 
@@ -508,7 +508,7 @@ apart. Every `job=otelcol-internal` stream carries these **indexed labels**:
 
 So to read the internal logs of one specific app or unit:
 
-```logql
+```text
 {job="otelcol-internal", juju_application="otelcol"}
 {job="otelcol-internal", juju_unit="otelcol/0"}
 ```
@@ -527,13 +527,13 @@ the signal it was processing (`logs` / `metrics` / `traces`) are rendered into t
 `logfmt`, **not** promoted to indexed labels. Extract them at query time with the `logfmt` parser
 (dots in the key become underscores):
 
-```logql
+```text
 {job="otelcol-internal"}
   | logfmt
   | instrumentation_scope_attribute_otelcol_component_id=`prometheus/metrics-endpoint/otelcol/0`
 ```
 
-```logql
+```text
 # only the internal logs for a given signal
 {job="otelcol-internal"} | logfmt | instrumentation_scope_attribute_otelcol_signal=`metrics`
 ```
