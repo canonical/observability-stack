@@ -32,15 +32,12 @@ module "ssc" {
 }
 
 module "cos-dev" {
-  source                          = "git::https://github.com/canonical/observability-stack//terraform/cos-dev"
+  source     = "git::https://github.com/canonical/observability-stack//terraform/cos-dev"
+  depends_on = [module.ssc] # Ensure the CA model's offers exist before COS consumes them.
+
   model_uuid                      = data.juju_model.cos-model.uuid
   risk                            = "edge"
   internal_tls                    = true
   external_certificates_offer_url = "admin/${var.ca_model}.certificates"
   external_ca_cert_offer_url      = "admin/${var.ca_model}.send-ca-cert"
-
-  # The offer URLs must stay static strings so count/for_each in the module
-  # remain known at plan time. depends_on guarantees the CA model's offers are
-  # created before COS consumes them, without introducing apply-time-unknowns.
-  depends_on = [module.ssc]
 }
