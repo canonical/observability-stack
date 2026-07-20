@@ -157,4 +157,16 @@ jobs:
             export S3_ACCESS_KEY=access-key
             export S3_SECRET_KEY=secret-key
           fi
-          just integration ${{ inputs.product }}/${{ matrix.scenario }}
+          if [[ "${{ runner.debug }}" == "1" ]]; then
+            export KEEP_MODELS=true
+            just integration ${{ inputs.product }}/${{ matrix.scenario }} --keep-models
+          else
+            just integration ${{ inputs.product }}/${{ matrix.scenario }}
+          fi
+
+      - name: Open SSH session on failure
+        if: ${{ failure() && (runner.debug == '1') }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          timeout-minutes: 30
+          limit-access-to-actor: true
