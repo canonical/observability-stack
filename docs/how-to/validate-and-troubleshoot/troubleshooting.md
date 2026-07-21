@@ -487,7 +487,8 @@ Compare the total size of logs to the available memory.
 #### Runaway internal logs during a backend outage?
 
 The collector ingests its own internal telemetry logs into its `logs` pipeline so they can be
-forwarded to Loki (see [`{job="otelcol-internal"}`](#where-are-the-collectors-own-internal-logs)).
+forwarded to Loki (see `{job="otelcol-internal"}`).
+
 If an exporter on the logs pipeline (e.g. Loki, or a `send-otlp` logs endpoint) is down, its
 `Exporting failed` message is itself an internal log; without protection it would re-enter the
 pipeline, be re-exported, fail again, and loop — spiking CPU, log volume, and, because the sending
