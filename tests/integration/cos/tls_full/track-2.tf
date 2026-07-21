@@ -44,7 +44,9 @@ module "ssc" {
 }
 
 module "cos" {
-  source                          = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=track/2"
+  source     = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=track/2"
+  depends_on = [module.ssc] # Ensure the CA model's offers exist before COS consumes them.
+
   model_uuid                      = data.juju_model.cos-model.uuid
   channel                         = "2/stable"
   internal_tls                    = true
