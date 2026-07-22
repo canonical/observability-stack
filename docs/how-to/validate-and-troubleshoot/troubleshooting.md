@@ -524,7 +524,14 @@ On Kubernetes:
     | grep otelcol_processor_filter_logs_filtered
   ```
 
-On machines: Use the same commands above, but omit `--container otelcol`.
+On machines:
+
+- Use the same Kubernetes commands as above, but omit `--container otelcol`.
+- Check for growing on-disk queue usage. The persistent sending queue lives on the charm's
+  machine:
+  ```bash
+  juju ssh otelcol/0 "du -sh"
+  ```
 
 The same signal is visible in Grafana: the loop-breaker's `filtered` counter climbs while a
 logs-pipeline exporter is down, and stays flat during a metrics- or traces-pipeline
