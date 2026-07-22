@@ -405,6 +405,57 @@ telemetry.
 
 ## OpenTelemetry Collector
 
+### Where are the collector's own internal logs?
+
+The collector forwards its own internal logs to Loki, tagged `job=otelcol-internal`. Query them in
+Grafana / Loki with:
+
+```text
+{job="otelcol-internal"}
+```
+
+If they are missing, verify that an exporter relation exists (e.g., `send-loki-logs` or `send-otlp`) and that the pipeline is healthy.
+
+![Grafana Explore showing an otelcol-internal log line and its parsed fields, indexed labels, and structured metadata|690x400](/assets/grafana-otelcol-internal-logs.png)
+
+#### Telling apart multiple collectors
+
+The internal logs are labelled with the emitting collector's own Juju topology, so when several
+`opentelemetry-collector` apps (or units) ship to the same Loki you can tell their internal logs
+apart. Every `job=otelcol-internal` stream carries these indexed labels:
+
+| Label | Value | Notes |
+| --- | --- | --- |
+| `job` | `otelcol-internal` | derived from `service.name` |
+| `instance` | e.g. `otelcol/0` | pinned to the Juju unit (not a random per-restart UUID) |
+| `juju_*` | e.g. `juju_unit=otelcol/0` | this collector's topology |
+| `level` | e.g. `INFO`, `WARN` | log severity |
+
+So to read the internal logs of one specific app or unit:
+
+```text
+{job="otelcol-internal", juju_application="otelcol"}
+{job="otelcol-internal", juju_unit="otelcol/0"}
+```
+
+#### Filtering by pipeline component or signal
+
+Details such as *which* collector component emitted a log (`otelcol.component.id`), its kind, and
+the signal it was processing (`logs` / `metrics` / `traces`) are rendered into the log line as
+`logfmt`, *not* promoted to indexed labels. Extract them at query time with the `logfmt` parser
+(dots in the key become underscores):
+
+```text
+{job="otelcol-internal"} | logfmt | instrumentation_scope_attribute_otelcol_component_id=`prometheus/metrics-endpoint/otelcol/0`
+```
+or, to filter by signal:
+```text
+{job="otelcol-internal"} | logfmt | instrumentation_scope_attribute_otelcol_signal=`metrics`
+```
+
+In Grafana Explore you can also click any parsed field under a log line and choose *"Filter for
+value"* to build these expressions for you.
+
 ### High resource usage
 
 #### Attempting to scrape too many logs?
@@ -433,6 +484,93 @@ otelcol 45246 root   17r      REG                8,1       474    3183206 /var/l
 
 Compare the total size of logs to the available memory.
 
+#### Runaway internal logs during a backend outage?
+
+The collector ingests its own internal telemetry logs into its `logs` pipeline so they can be
+forwarded to Loki (see `{job="otelcol-internal"}`).
+
+If an exporter on the logs pipeline (e.g. Loki, or a `send-otlp` logs endpoint) is down, its
+`Exporting failed` message is itself an internal log; without protection it would re-enter the
+pipeline, be re-exported, fail again, and loop — spiking CPU, log volume, and, because the sending
+queue is persistent, storage/PVC usage.
+
+The charm prevents this with a loop-breaker `filter` processor that drops the internal logs emitted
+by the exporter components attached to the logs pipeline (the components that can recurse). The
+filter is populated automatically from whichever log exporters are configured, so every log
+destination — `send-loki-logs`, `cloud-config`, `send-otlp` logs — is covered. If you suspect a
+runaway loop.
+
+On Kubernetes:
+
+- Confirm the failure rate is not accelerating (a healthy, throttled retry looks flat):
+  ```bash
+  juju ssh --container otelcol otelcol/0 "curl -s localhost:8888/metrics" \
+    | grep otelcol_exporter_send_failed_log_records
+  ```
+- Check for growing on-disk queue usage. The persistent sending queue lives on the charm's
+  persistent volume:
+  ```bash
+  juju ssh --container otelcol otelcol/0 "du -sh /otelcol"
+  ```
+- Verify the loop-breaker filter is present in the rendered config:
+  ```bash
+  juju ssh --container otelcol otelcol/0 "cat /etc/otelcol/config.yaml" \
+    | grep -A5 internal-telemetry-loop-breaker
+  ```
+- Confirm the loop-breaker is actively dropping the looping exporter's logs. The count should climb
+  during the outage; a value stuck at zero means the filter is not matching:
+  ```bash
+  juju ssh --container otelcol otelcol/0 "curl -s localhost:8888/metrics" \
+    | grep otelcol_processor_filter_logs_filtered
+  ```
+
+On machines:
+
+- Use the same Kubernetes commands as above, but omit `--container otelcol`.
+- Check for growing on-disk queue usage. The persistent sending queue lives on the charm's
+  machine:
+  ```bash
+  juju ssh otelcol/0 "du -sh"
+  ```
+
+The same signal is visible in Grafana: the loop-breaker's `filtered` counter climbs while a
+logs-pipeline exporter is down, and stays flat during a metrics- or traces-pipeline
+outage (whose failure logs are intentionally *not* dropped — see below).
+
+![Grafana panel of the loop-breaker filter processor's dropped-log counter rising during logs-pipeline exporter outages and flat during other outages|690x300](/assets/grafana-otelcol-loop-breaker-filtered.png)
+
+If the queue keeps growing unbounded, confirm `retry_on_failure.max_elapsed_time` is finite (it
+must never be `0`, which retries forever). Restoring the backend lets the queue drain.
+
+### Missing `Exporting failed` logs for Loki (expected)
+
+When Loki (or any exporter on the logs pipeline, such as a `send-otlp` logs endpoint) is
+down, you will *not* see that exporter's own `Exporting failed` logs in Loki. This is
+intentional: those internal logs are dropped from the `logs` pipeline by the loop-breaker
+filter to prevent a recursive log explosion (they cannot be delivered to a down Loki anyway).
+
+They are, however, still written to the collector's stderr, so you can always read them at the
+source.
+
+On Kubernetes:
+
+```bash
+juju ssh --container otelcol otelcol/0 pebble logs
+```
+
+On machines:
+
+```bash
+sudo snap logs opentelemetry-collector
+```
+
+The `otelcol_exporter_send_failed_log_records_total` metric and the `failed-logs` alert also fire
+for detection.
+
+Failure logs from exporters on other pipelines (e.g. remote-write to Mimir on the metrics
+pipeline, or Tempo on the traces pipeline) are *not* dropped and still reach Loki — they cannot
+form a loop while the logs path is healthy, so their `Exporting failed` logs remain visible in
+Grafana.
 
 ## `socket: too many open files`
 
