@@ -25,6 +25,7 @@ config
 configs
 contextualize
 contrib
+correlatable
 cpu
 cryptographic
 cryptographically
@@ -161,6 +162,7 @@ RadosGW
 reachability
 Read the Docs
 readthedocs
+recurse
 redeclare
 relabeler
 reStructuredText
@@ -217,6 +219,7 @@ uncomment(ing)?
 unencrypted
 URL
 utils
+UUID
 uv
 vCPU
 vCPUs
