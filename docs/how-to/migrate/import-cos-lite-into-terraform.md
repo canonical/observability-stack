@@ -17,10 +17,9 @@ supported tracks.
 ## Prerequisites
 
 - A running COS Lite deployment on a Juju `>= 3.6` controller.
-- [Atelier](https://github.com/MichaelThamm/atelier) (for the automated method) or
-  [Terraform](https://developer.hashicorp.com/terraform/install) `>= 1.5` with the
-  [Juju Terraform provider](https://registry.terraform.io/providers/juju/juju) `>= 1.4.0`
-  (for the manual method).
+- [Atelier](https://github.com/MichaelThamm/atelier) (for the automated method)
+- [Terraform](https://developer.hashicorp.com/terraform/install) `>= 1.5` with the
+  [Juju Terraform provider](https://registry.terraform.io/providers/juju/juju) `>= 1.4.0`.
 - The model UUID of your COS Lite deployment.
 
 ---
@@ -44,7 +43,8 @@ module's resource addresses, and running `terraform import` for each match.
 
 ### 1. Set up a wrapper directory
 
-Create an empty directory and run `atelier import`:
+Create an empty directory and run `atelier import`, passing the required module
+variables with `--var` flags:
 
 ```bash
 mkdir cos-lite-import && cd cos-lite-import
@@ -54,7 +54,7 @@ atelier import juju \
   --module terraform/cos-lite \
   --ref track/2 \
   --query-var model_uuid=eddaeb90-3115-4832-8bc4-ad4167df94dc \
-  --preset cos-lite-2
+  --var model_uuid=eddaeb90-3115-4832-8bc4-ad4167df94dc
 ```
 
 What the flags do:
@@ -65,31 +65,12 @@ What the flags do:
 | `--module` | Path to the Terraform module inside the repository |
 | `--ref` | Git ref (branch or tag) matching your deployment track |
 | `--query-var` | Variables the Juju provider needs to query live resources |
-| `--preset` | Predefined variable values for this module version |
-
-If you do not have a preset file, supply the required variables directly with
-`--var` flags instead:
-
-```bash
-atelier import juju \
-  --source https://github.com/canonical/observability-stack.git \
-  --module terraform/cos-lite \
-  --ref track/2 \
-  --query-var model_uuid=eddaeb90-3115-4832-8bc4-ad4167df94dc \
-  --var model.uuid=eddaeb90-3115-4832-8bc4-ad4167df94dc \
-  --var risk=stable
-```
+| `--var` | Module input variables the module requires |
 
 ```{note}
 `--query-var model_uuid` is consumed by `terraform query` and is separate from
-`--var model.uuid`, which is a module input variable.
-```
-
-```{tip}
-Presets are defined in an `atelier.local.yaml` file in your working directory.
-A `cos-lite-2` preset for this track might set `model.uuid` and `risk` so you
-do not have to pass them every time. See the
-[Atelier preset documentation](https://opencode.ai) for details.
+`--var model_uuid`, which is a module input variable that tells the module
+which existing model to manage. Both are required.
 ```
 
 ### 2. Review the import results
