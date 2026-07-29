@@ -195,7 +195,7 @@ for available tracks.
 The `terraform query` command (available in Terraform `>= 1.10`) enumerates
 live objects from the provider. Create a query file:
 
-```hcl
+```text
 # atelier-import.tfquery.hcl
 list "juju_application" "juju_application" {
   provider        = juju
