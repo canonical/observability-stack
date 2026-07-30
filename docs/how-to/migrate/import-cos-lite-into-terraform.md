@@ -351,6 +351,6 @@ operations.
 
 ```{seealso}
 - [Cross-track upgrade](/how-to/deploy-and-manage/upgrade/)
-- [Release notes](../release-notes.md)
+- [Release notes](../../release-notes.md)
 - [Juju Terraform provider](https://registry.terraform.io/providers/juju/juju)
 ```
