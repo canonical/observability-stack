@@ -12,6 +12,7 @@ Replace an older LMA deployment with the COS Lite stack.
 :maxdepth: 1
 
 Migrate from LMA to COS Lite <migrate-lma-to-cos-lite>
+Migrate from Traefik to Istio <istio-migration>
 ```
 
 ## Agent migration
