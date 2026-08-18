@@ -123,7 +123,7 @@ jobs:
       - name: Open SSH session on failure
         uses: mxschmitt/action-tmate@v3
         with:
-          timeout-minutes: 30
+          connect-timeout-seconds: 1800
           limit-access-to-actor: true
       - name: Test deployment
         run: |
@@ -144,5 +144,5 @@ jobs:
         if: ${{ failure() && (runner.debug == '1') }}
         uses: mxschmitt/action-tmate@v3
         with:
-          timeout-minutes: 30
+          connect-timeout-seconds: 1800
           limit-access-to-actor: true
