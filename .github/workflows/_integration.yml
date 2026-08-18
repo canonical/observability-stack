@@ -61,6 +61,7 @@ jobs:
       - name: Concierge prepare machine
         if: ${{ runner.environment == 'self-hosted' }}
         run: |
+          sudo snap install concierge --classic
           sudo concierge prepare --juju-channel ${{ matrix.juju-channel }} -p machine
       - name: (IS hosted) Configure microk8s Docker Hub mirror
         timeout-minutes: 10

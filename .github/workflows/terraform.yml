@@ -23,7 +23,7 @@ jobs:
         id: filter
         with:
           filters: |
-            # Shared paths affect *both* products, so they trigger both suites
+            # Shared paths affect *multiple* products, so they trigger as well
             shared: &shared
               - '.github/workflows/terraform.yml'
               - '.github/workflows/_integration.yml'
