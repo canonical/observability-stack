@@ -8,6 +8,39 @@ on:
       - "tests/integration/**"
 
 jobs:
+  changes:
+    name: Detect changed products
+    runs-on: ubuntu-latest
+    outputs:
+      cos: ${{ steps.filter.outputs.cos }}
+      cos_lite: ${{ steps.filter.outputs.cos_lite }}
+      cos_dev: ${{ steps.filter.outputs.cos_dev }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Filter changed paths per product
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            # Shared paths affect *both* products, so they trigger both suites
+            shared: &shared
+              - '.github/workflows/terraform.yml'
+              - '.github/workflows/_integration.yml'
+              - 'tests/integration/conftest.py'
+              - 'tests/integration/helpers.py'
+            cos:
+              - *shared
+              - 'terraform/cos/**'
+              - 'tests/integration/cos/**'
+            cos_lite:
+              - *shared
+              - 'terraform/cos-lite/**'
+              - 'tests/integration/cos_lite/**'
+            cos_dev:
+              - *shared
+              - 'terraform/cos-dev/**'
+              - 'tests/integration/cos_dev/**'
   test-integration-cos:
     name: COS Terraform integration
 
