@@ -28,13 +28,15 @@ def _keep_models(request) -> bool:
 
 @pytest.fixture(scope="module")
 def ca_model(request):
-    with jubilant.temp_model(keep=_keep_models(request), controller="concierge-microk8s") as juju:
+    # TODO: Set the name of the controller in concierge to "microk8s" since we have 2 paths: self-hosted and GH hosted which will break this.
+    # This will also break local testing if the controller is not named "microk8s"
+    with jubilant.temp_model(keep=_keep_models(request), controller="microk8s") as juju:
         yield juju
 
 
 @pytest.fixture(scope="module")
 def cos_model(request):
-    with jubilant.temp_model(keep=_keep_models(request), controller="concierge-microk8s") as juju:
+    with jubilant.temp_model(keep=_keep_models(request), controller="microk8s") as juju:
         yield juju
 
 
