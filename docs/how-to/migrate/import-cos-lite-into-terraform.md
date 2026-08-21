@@ -24,8 +24,6 @@ supported tracks.
 - [Terraform](https://developer.hashicorp.com/terraform/install) `>= 1.14` with the
   [Juju Terraform provider](https://registry.terraform.io/providers/juju/juju) `>= 1.4.0`.
 
----
-
 ## Import with Atelier
 
 [Atelier](https://github.com/MichaelThamm/atelier) automates the import by cloning the
@@ -152,8 +150,6 @@ Plan: 3 to add, 2 to change, 0 to destroy.
 
 If the plan shows `0 to destroy`, the import is complete. Run `terraform apply`
 to converge.
-
----
 
 ## Import manually (without Atelier)
 
@@ -541,8 +537,6 @@ every plan:
 rm imports.tf
 ```
 
----
-
 ## Safety properties
 
 - **Importing writes state only.** `terraform import` and `import {}` blocks
@@ -558,8 +552,6 @@ rm imports.tf
 - **Check the plan before applying.** `juju_application` resources must not
   show `replace` or `create`. A clean import shows only attribute drift and
   Terraform-internal resources with no live counterpart.
-
----
 
 ## Next steps
 
