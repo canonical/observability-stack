@@ -45,7 +45,7 @@ atelier import juju \
 
 COS Lite gives every variable a default, so no `--var` flags are needed.
 Atelier picks up the model UUID from the live deployment (see
-[How model UUID is resolved](#how-model-uuid-is-resolved)).
+"How model UUID is resolved").
 
 | Flag | Purpose |
 |------|---------|
