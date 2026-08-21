@@ -6,7 +6,10 @@ myst:
 
 # How to import an existing COS Lite deployment into Terraform
 
-If you deployed COS Lite via a Juju bundle (or any means other than Terraform) and now want to manage it with the `terraform/cos-lite` module, or if you lost your `terraform.tfstate` file and need to recover it, this guide shows two ways to reconstruct Terraform state from a live deployment.
+If you deployed COS Lite outside of Terraform and want to manage it with the
+`terraform/cos-lite` module — or if you lost your `terraform.tfstate` and need
+to recover it — this guide shows how to reconstruct Terraform state from a live
+deployment.
 
 ```{warning}
 Before importing, make sure the module version you plan to use is compatible with the
@@ -17,25 +20,13 @@ supported tracks.
 ## Prerequisites
 
 - A running COS Lite deployment on a Juju `>= 3.6` controller.
-- [Atelier](https://github.com/MichaelThamm/atelier) (for the automated method)
-- [Terraform](https://developer.hashicorp.com/terraform/install) `>= 1.5` with the
+- [Atelier](https://github.com/MichaelThamm/atelier) `>= 0.4.5` (for the automated method)
+- [Terraform](https://developer.hashicorp.com/terraform/install) `>= 1.14` with the
   [Juju Terraform provider](https://registry.terraform.io/providers/juju/juju) `>= 1.4.0`.
-- The model UUID of your COS Lite deployment.
 
 ---
 
-## Get the model UUID
-
-```bash
-juju models --format json | jq -r '.models[] | select(.["short-name"] == "demo") | .["model-uuid"]'
-eddaeb90-3115-4832-8bc4-ad4167df94dc
-```
-
-You will need this value in both methods below.
-
----
-
-## Method 1: Import with Atelier
+## Import with Atelier
 
 [Atelier](https://github.com/MichaelThamm/atelier) automates the import by cloning the
 upstream module, discovering live resources via `terraform query`, matching them to the
@@ -43,8 +34,7 @@ module's resource addresses, and running `terraform import` for each match.
 
 ### 1. Set up a wrapper directory
 
-Create an empty directory and run `atelier import`, passing the required module
-variables with `--var` flags:
+Create an empty directory and run `atelier import`:
 
 ```bash
 mkdir cos-lite-import && cd cos-lite-import
@@ -52,12 +42,12 @@ mkdir cos-lite-import && cd cos-lite-import
 atelier import juju \
   --source https://github.com/canonical/observability-stack.git \
   --module terraform/cos-lite \
-  --ref track/2 \
-  --query-var model_uuid=eddaeb90-3115-4832-8bc4-ad4167df94dc \
-  --var model_uuid=eddaeb90-3115-4832-8bc4-ad4167df94dc
+  --ref track/2
 ```
 
-What the flags do:
+COS Lite gives every variable a default, so no `--var` flags are needed.
+Atelier picks up the model UUID from the live deployment (see
+[How model UUID is resolved](#how-model-uuid-is-resolved)).
 
 | Flag | Purpose |
 |------|---------|
@@ -66,12 +56,44 @@ What the flags do:
 | `--ref` | Git ref (branch or tag) matching your deployment track |
 | `--query-var` | Variables the Juju provider needs to query live resources |
 | `--var` | Module input variables the module requires |
+| `--preset` | Named variable sets from an `atelier.local.yaml` file |
+| `--dry-run` | Preview what would be imported without touching state |
 
 ```{note}
 `--query-var model_uuid` is consumed by `terraform query` and is separate from
-`--var model_uuid`, which is a module input variable that tells the module
-which existing model to manage. Both are required.
+module input variables. You only need to pass it when your model UUID is not
+automatically discoverable from live resources (e.g. a model with only offers).
 ```
+
+#### How model UUID is resolved
+
+Atelier resolves the model UUID in this order:
+
+1. **Live resource identities** — the most frequent UUID prefix among all
+   discovered objects is used.
+2. **`--query-var model_uuid`** — the value supplied to the query engine.
+3. **`--var model_uuid`** — a module input variable.
+
+For COS Lite, which uses a `model = { uuid = ... }` object variable, the UUID
+is injected into the wrapper automatically.
+
+### 1a. Check coverage first (optional)
+
+Use `--dry-run` to preview what would be imported without touching Terraform
+state:
+
+```bash
+atelier import juju \
+  --source https://github.com/canonical/observability-stack.git \
+  --module terraform/cos-lite \
+  --ref track/2 \
+  --dry-run
+```
+
+The number to watch is **to add** — resources the module would create rather
+than import. A non-zero count here means your variables do not match the
+live deployment. An `imports.tf` artifact is written for review; Atelier does
+**not** apply it.
 
 ### 2. Review the import results
 
@@ -89,7 +111,12 @@ Imported 26 resource(s) into state:
   …
 ```
 
-Some module resources may remain unmatched. These typically fall into two categories:
+Resources that were already in state are skipped. A second run over a
+finished import reports `Nothing to import: all N matched resource(s) are
+already in state.` and changes nothing.
+
+Some module resources may remain unmatched. These typically fall into two
+categories:
 
 - **TLS resources** (`internal_certificates`, `ssc.*`) — created only when
   `var.internal_tls` is `true` (the default). If the original bundle had no
@@ -128,10 +155,15 @@ to converge.
 
 ---
 
-## Method 2: Import manually (without Atelier)
+## Import manually (without Atelier)
 
-If you prefer not to use Atelier, you can import resources step by step with
-standard Terraform commands.
+To import without Atelier, use standard Terraform commands. This method
+requires you to look up the model UUID yourself.
+
+```bash
+juju models --format json | jq -r '.models[] | select(.["short-name"] == "demo") | .["model-uuid"]'
+eddaeb90-3115-4832-8bc4-ad4167df94dc
+```
 
 ### 1. Prepare the Terraform root
 
@@ -139,7 +171,7 @@ Create a directory and write `main.tf`:
 
 ```hcl
 terraform {
-  required_version = ">= 1.5"
+  required_version = ">= 1.14"
   required_providers {
     juju = {
       source  = "juju/juju"
@@ -157,7 +189,7 @@ module "cos_lite" {
 }
 ```
 
-Then initialise:
+Then initialize:
 
 ```bash
 terraform init
@@ -171,7 +203,7 @@ for available tracks.
 
 ### 2. Discover live resources with `terraform query`
 
-The `terraform query` command (available in Terraform `>= 1.10`) enumerates
+The `terraform query` command (available in Terraform `>= 1.14`) enumerates
 live objects from the provider. Create a query file covering the resource
 types you need to import:
 
@@ -200,14 +232,6 @@ list "juju_offer" "juju_offer" {
     model_uuid = "eddaeb90-3115-4832-8bc4-ad4167df94dc"
   }
 }
-```
-
-```{note}
-Atelier generates a larger query file that also covers `juju_machine`,
-`juju_model`, `juju_secret`, and `juju_storage_pool` — all list resource types
-the provider offers. Only the three types shown above are needed for a COS
-Lite import; the extra types are harmless and are included by Atelier for
-completeness.
 ```
 
 Run the query:
@@ -257,56 +281,214 @@ identity objects with an `"id"` field in the format:
 - `juju_integration`: `<model_uuid>:<provider_app>:<provider_endpoint>:<requirer_app>:<requirer_endpoint>`
 - `juju_offer`: `<offer_url>` (e.g. `admin/demo.alertmanager-karma-dashboard`)
 
-### 4. Import resources
+### 4. Write an `imports.tf` file
 
-With the mappings built, import each resource:
+With the mappings built, write an `imports.tf` file with `import {}` blocks
+(Terraform `>= 1.5`):
 
-```bash
-# Applications
-terraform import 'module.cos_lite.module.alertmanager.juju_application.alertmanager' 'eddaeb90-…:alertmanager'
-terraform import 'module.cos_lite.module.catalogue.juju_application.catalogue'        'eddaeb90-…:catalogue'
-terraform import 'module.cos_lite.module.grafana.juju_application.grafana'             'eddaeb90-…:grafana'
-terraform import 'module.cos_lite.module.loki.juju_application.loki'                   'eddaeb90-…:loki'
-terraform import 'module.cos_lite.module.prometheus.juju_application.prometheus'       'eddaeb90-…:prometheus'
-terraform import 'module.cos_lite.module.ssc[0].juju_application.self-signed-certificates' 'eddaeb90-…:ca'
-terraform import 'module.cos_lite.module.traefik.juju_application.traefik'             'eddaeb90-…:traefik'
+```hcl
+# imports.tf
 
-# Integrations
-terraform import 'module.cos_lite.juju_integration.alertmanager_certificates[0]'              'eddaeb90-…:ca:certificates:alertmanager:certificates'
-terraform import 'module.cos_lite.juju_integration.alertmanager_grafana_dashboards'           'eddaeb90-…:alertmanager:grafana-dashboard:grafana:grafana-dashboard'
-terraform import 'module.cos_lite.juju_integration.alertmanager_ingress'                      'eddaeb90-…:traefik:ingress:alertmanager:ingress'
-terraform import 'module.cos_lite.juju_integration.alertmanager_loki'                         'eddaeb90-…:alertmanager:alerting:loki:alertmanager'
-terraform import 'module.cos_lite.juju_integration.alertmanager_prometheus'                   'eddaeb90-…:alertmanager:alerting:prometheus:alertmanager'
-terraform import 'module.cos_lite.juju_integration.alertmanager_self_monitoring_prometheus'    'eddaeb90-…:alertmanager:self-metrics-endpoint:prometheus:metrics-endpoint'
-terraform import 'module.cos_lite.juju_integration.catalogue_alertmanager'                    'eddaeb90-…:catalogue:catalogue:alertmanager:catalogue'
-terraform import 'module.cos_lite.juju_integration.catalogue_certificates[0]'                 'eddaeb90-…:ca:certificates:catalogue:certificates'
-terraform import 'module.cos_lite.juju_integration.catalogue_grafana'                         'eddaeb90-…:catalogue:catalogue:grafana:catalogue'
-terraform import 'module.cos_lite.juju_integration.catalogue_ingress'                         'eddaeb90-…:traefik:ingress:catalogue:ingress'
-terraform import 'module.cos_lite.juju_integration.catalogue_prometheus'                      'eddaeb90-…:catalogue:catalogue:prometheus:catalogue'
-terraform import 'module.cos_lite.juju_integration.grafana_certificates[0]'                   'eddaeb90-…:ca:certificates:grafana:certificates'
-terraform import 'module.cos_lite.juju_integration.grafana_ingress'                           'eddaeb90-…:traefik:traefik-route:grafana:ingress'
-terraform import 'module.cos_lite.juju_integration.grafana_self_monitoring_prometheus'        'eddaeb90-…:grafana:metrics-endpoint:prometheus:metrics-endpoint'
-terraform import 'module.cos_lite.juju_integration.grafana_source_alertmanager'               'eddaeb90-…:alertmanager:grafana-source:grafana:grafana-source'
-terraform import 'module.cos_lite.juju_integration.loki_certificates[0]'                      'eddaeb90-…:ca:certificates:loki:certificates'
-terraform import 'module.cos_lite.juju_integration.loki_grafana_dashboards_provider'          'eddaeb90-…:loki:grafana-dashboard:grafana:grafana-dashboard'
-terraform import 'module.cos_lite.juju_integration.loki_grafana_source'                       'eddaeb90-…:loki:grafana-source:grafana:grafana-source'
-terraform import 'module.cos_lite.juju_integration.loki_ingress'                              'eddaeb90-…:traefik:ingress-per-unit:loki:ingress'
-terraform import 'module.cos_lite.juju_integration.loki_self_monitoring_prometheus'           'eddaeb90-…:loki:metrics-endpoint:prometheus:metrics-endpoint'
-terraform import 'module.cos_lite.juju_integration.prometheus_certificates[0]'                'eddaeb90-…:ca:certificates:prometheus:certificates'
-terraform import 'module.cos_lite.juju_integration.prometheus_grafana_dashboards_provider'    'eddaeb90-…:prometheus:grafana-dashboard:grafana:grafana-dashboard'
-terraform import 'module.cos_lite.juju_integration.prometheus_grafana_source'                 'eddaeb90-…:prometheus:grafana-source:grafana:grafana-source'
-terraform import 'module.cos_lite.juju_integration.prometheus_ingress'                        'eddaeb90-…:traefik:ingress-per-unit:prometheus:ingress'
-terraform import 'module.cos_lite.juju_integration.traefik_receive_ca_certificate[0]'         'eddaeb90-…:ca:send-ca-cert:traefik:receive-ca-cert'
-terraform import 'module.cos_lite.juju_integration.traefik_self_monitoring_prometheus'         'eddaeb90-…:traefik:metrics-endpoint:prometheus:metrics-endpoint'
+import {
+  to = module.cos_lite.module.alertmanager.juju_application.alertmanager
+  id = "eddaeb90-…:alertmanager"
+}
+
+import {
+  to = module.cos_lite.module.catalogue.juju_application.catalogue
+  id = "eddaeb90-…:catalogue"
+}
+
+import {
+  to = module.cos_lite.module.grafana.juju_application.grafana
+  id = "eddaeb90-…:grafana"
+}
+
+import {
+  to = module.cos_lite.module.loki.juju_application.loki
+  id = "eddaeb90-…:loki"
+}
+
+import {
+  to = module.cos_lite.module.prometheus.juju_application.prometheus
+  id = "eddaeb90-…:prometheus"
+}
+
+import {
+  to = module.cos_lite.module.ssc[0].juju_application.self-signed-certificates
+  id = "eddaeb90-…:ca"
+}
+
+import {
+  to = module.cos_lite.module.traefik.juju_application.traefik
+  id = "eddaeb90-…:traefik"
+}
+
+import {
+  to = module.cos_lite.juju_integration.alertmanager_certificates[0]
+  id = "eddaeb90-…:ca:certificates:alertmanager:certificates"
+}
+
+import {
+  to = module.cos_lite.juju_integration.alertmanager_grafana_dashboards
+  id = "eddaeb90-…:alertmanager:grafana-dashboard:grafana:grafana-dashboard"
+}
+
+import {
+  to = module.cos_lite.juju_integration.alertmanager_ingress
+  id = "eddaeb90-…:traefik:ingress:alertmanager:ingress"
+}
+
+import {
+  to = module.cos_lite.juju_integration.alertmanager_loki
+  id = "eddaeb90-…:alertmanager:alerting:loki:alertmanager"
+}
+
+import {
+  to = module.cos_lite.juju_integration.alertmanager_prometheus
+  id = "eddaeb90-…:alertmanager:alerting:prometheus:alertmanager"
+}
+
+import {
+  to = module.cos_lite.juju_integration.alertmanager_self_monitoring_prometheus
+  id = "eddaeb90-…:alertmanager:self-metrics-endpoint:prometheus:metrics-endpoint"
+}
+
+import {
+  to = module.cos_lite.juju_integration.catalogue_alertmanager
+  id = "eddaeb90-…:catalogue:catalogue:alertmanager:catalogue"
+}
+
+import {
+  to = module.cos_lite.juju_integration.catalogue_certificates[0]
+  id = "eddaeb90-…:ca:certificates:catalogue:certificates"
+}
+
+import {
+  to = module.cos_lite.juju_integration.catalogue_grafana
+  id = "eddaeb90-…:catalogue:catalogue:grafana:catalogue"
+}
+
+import {
+  to = module.cos_lite.juju_integration.catalogue_ingress
+  id = "eddaeb90-…:traefik:ingress:catalogue:ingress"
+}
+
+import {
+  to = module.cos_lite.juju_integration.catalogue_prometheus
+  id = "eddaeb90-…:catalogue:catalogue:prometheus:catalogue"
+}
+
+import {
+  to = module.cos_lite.juju_integration.grafana_certificates[0]
+  id = "eddaeb90-…:ca:certificates:grafana:certificates"
+}
+
+import {
+  to = module.cos_lite.juju_integration.grafana_ingress
+  id = "eddaeb90-…:traefik:traefik-route:grafana:ingress"
+}
+
+import {
+  to = module.cos_lite.juju_integration.grafana_self_monitoring_prometheus
+  id = "eddaeb90-…:grafana:metrics-endpoint:prometheus:metrics-endpoint"
+}
+
+import {
+  to = module.cos_lite.juju_integration.grafana_source_alertmanager
+  id = "eddaeb90-…:alertmanager:grafana-source:grafana:grafana-source"
+}
+
+import {
+  to = module.cos_lite.juju_integration.loki_certificates[0]
+  id = "eddaeb90-…:ca:certificates:loki:certificates"
+}
+
+import {
+  to = module.cos_lite.juju_integration.loki_grafana_dashboards_provider
+  id = "eddaeb90-…:loki:grafana-dashboard:grafana:grafana-dashboard"
+}
+
+import {
+  to = module.cos_lite.juju_integration.loki_grafana_source
+  id = "eddaeb90-…:loki:grafana-source:grafana:grafana-source"
+}
+
+import {
+  to = module.cos_lite.juju_integration.loki_ingress
+  id = "eddaeb90-…:traefik:ingress-per-unit:loki:ingress"
+}
+
+import {
+  to = module.cos_lite.juju_integration.loki_self_monitoring_prometheus
+  id = "eddaeb90-…:loki:metrics-endpoint:prometheus:metrics-endpoint"
+}
+
+import {
+  to = module.cos_lite.juju_integration.prometheus_certificates[0]
+  id = "eddaeb90-…:ca:certificates:prometheus:certificates"
+}
+
+import {
+  to = module.cos_lite.juju_integration.prometheus_grafana_dashboards_provider
+  id = "eddaeb90-…:prometheus:grafana-dashboard:grafana:grafana-dashboard"
+}
+
+import {
+  to = module.cos_lite.juju_integration.prometheus_grafana_source
+  id = "eddaeb90-…:prometheus:grafana-source:grafana:grafana-source"
+}
+
+import {
+  to = module.cos_lite.juju_integration.prometheus_ingress
+  id = "eddaeb90-…:traefik:ingress-per-unit:prometheus:ingress"
+}
+
+import {
+  to = module.cos_lite.juju_integration.traefik_receive_ca_certificate[0]
+  id = "eddaeb90-…:ca:send-ca-cert:traefik:receive-ca-cert"
+}
+
+import {
+  to = module.cos_lite.juju_integration.traefik_self_monitoring_prometheus
+  id = "eddaeb90-…:traefik:metrics-endpoint:prometheus:metrics-endpoint"
+}
 
 # Optional: Offers (if your controller supports querying them)
-terraform import 'module.cos_lite.juju_offer.alertmanager_karma_dashboard'     'admin/demo.alertmanager-karma-dashboard'
-terraform import 'module.cos_lite.juju_offer.grafana_dashboards'               'admin/demo.grafana-dashboards'
-terraform import 'module.cos_lite.juju_offer.loki_logging'                     'admin/demo.loki-logging'
-terraform import 'module.cos_lite.juju_offer.prometheus_metrics_endpoint'      'admin/demo.prometheus-metrics-endpoint'
-terraform import 'module.cos_lite.juju_offer.prometheus_receive_remote_write'  'admin/demo.prometheus-receive-remote-write'
-terraform import 'module.cos_lite.module.ssc[0].juju_offer.certificates'       'admin/demo.certificates'
-terraform import 'module.cos_lite.module.ssc[0].juju_offer.send_ca_cert'       'admin/demo.send-ca-cert'
+import {
+  to = module.cos_lite.juju_offer.alertmanager_karma_dashboard
+  id = "admin/demo.alertmanager-karma-dashboard"
+}
+
+import {
+  to = module.cos_lite.juju_offer.grafana_dashboards
+  id = "admin/demo.grafana-dashboards"
+}
+
+import {
+  to = module.cos_lite.juju_offer.loki_logging
+  id = "admin/demo.loki-logging"
+}
+
+import {
+  to = module.cos_lite.juju_offer.prometheus_metrics_endpoint
+  id = "admin/demo.prometheus-metrics-endpoint"
+}
+
+import {
+  to = module.cos_lite.juju_offer.prometheus_receive_remote_write
+  id = "admin/demo.prometheus-receive-remote-write"
+}
+
+import {
+  to = module.cos_lite.module.ssc[0].juju_offer.certificates
+  id = "admin/demo.certificates"
+}
+
+import {
+  to = module.cos_lite.module.ssc[0].juju_offer.send_ca_cert
+  id = "admin/demo.send-ca-cert"
+}
 ```
 
 ```{note}
@@ -315,32 +497,67 @@ Replace `admin/demo.` with `admin/<your-model-name>.` as needed. You can find
 offer URLs by running `juju status` and looking at the `Offer` section.
 ```
 
-### 5. Post-import state normalisation
+```{warning}
+`terraform apply` with `import {}` blocks present executes the whole plan,
+not just the imports. If this file does not cover every resource the module
+declares, apply will **create** the ones it misses — duplicating live
+infrastructure. Check that `terraform plan` reports `0 to add` before
+applying.
+```
 
-After importing, Terraform may report diffs for optional attributes that the
-Juju provider stores as `null` but the module sets to `{}`:
+### 5. Plan and apply
+
+Run `terraform plan`:
 
 ```bash
 terraform plan
 ```
 
-Apply once to converge these attribute defaults:
+The plan should show a small delta:
+
+```
+Plan: 3 to add, 2 to change, 0 to destroy.
+```
+
+- **Resources to add** are typically `terraform_data` replace-triggers and
+  resources that had no live match (e.g. TLS components not present in the
+  original deployment).
+- **Resources to change** are attribute drift between the imported state and
+  the module's current defaults — storage directives, resources, and similar
+  optional fields that differ between the bundle's deployment and the
+  module's opinionated defaults. These are safe to apply.
+
+If the plan shows `0 to destroy`, run `terraform apply` to import and
+converge:
 
 ```bash
 terraform apply
 ```
 
-### 6. Verify the plan
+After applying, remove `imports.tf`. Leaving it in place would re-import on
+every plan:
 
 ```bash
-terraform plan
+rm imports.tf
 ```
 
-You should see a minimal delta:
+---
 
-```
-Plan: 3 to add, 2 to change, 0 to destroy.
-```
+## Safety properties
+
+- **Importing writes state only.** `terraform import` and `import {}` blocks
+  do not create or destroy infrastructure. A bad import produces a bad state
+  file, not a damaged deployment. That said, `terraform apply` with `import {}`
+  blocks present runs the full plan — not just the imports — so check
+  `terraform plan` reports `0 to add` before applying.
+- **Re-running is safe.** Resources already in state are skipped. The loop is:
+  run, read the report, fix variables, run again.
+- **Model mismatch is refused** (Atelier only). If the wrapper targets a
+  different model than the live resources, Atelier aborts. Proceeding would
+  destroy every imported resource on the next apply.
+- **Check the plan before applying.** `juju_application` resources must not
+  show `replace` or `create`. A clean import shows only attribute drift and
+  Terraform-internal resources with no live counterpart.
 
 ---
 
