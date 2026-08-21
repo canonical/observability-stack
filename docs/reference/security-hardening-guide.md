@@ -14,7 +14,7 @@ COS can only be as secure as what it is deployed on.  To ensure your substrate i
 
 * [Juju Security](https://documentation.ubuntu.com/juju/latest/user/explanation/juju-security/)
 * [Securing Canonical Kubernetes](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/security/hardening/)
-* [MicroCeph security overview](https://canonical-microceph.readthedocs-hosted.com/stable/snap/explanation/security/security-overview/)
+* [MicroCeph security overview](https://canonical.com/ceph/docs/stable/snap/explanation/security/security-overview/)
 
 ## Secure COS
 
@@ -53,6 +53,6 @@ For cases where:
 
 It may be possible to secure the entire ingress with authentication.  For example, see the [basic authentication](https://charmhub.io/traefik-k8s/configurations#basic_auth_user) and [`forward_auth`](https://charmhub.io/traefik-k8s/configurations#enable_experimental_forward_auth) integrations on the Traefik charm.
 
-## Secure configuation
+## Secure configuration
 Use Juju secrets where applicable. For example, the `opentelemetry-collector-integrator` can be used for forwarding exporter
 configuration to `opentelemetry-collector`. Do not pass secrets, such as token in cleartext; use Juju secrets instead.

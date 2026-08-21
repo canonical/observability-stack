@@ -12,6 +12,7 @@ Replace an older LMA deployment with the COS Lite stack.
 :maxdepth: 1
 
 Migrate from LMA to COS Lite <migrate-lma-to-cos-lite>
+Import a COS Lite deployment into Terraform <import-cos-lite-into-terraform>
 ```
 
 ## Agent migration
