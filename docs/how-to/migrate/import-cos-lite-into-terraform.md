@@ -20,6 +20,13 @@ supported tracks.
 ## Prerequisites
 
 - A running COS Lite deployment on a Juju `>= 3.6` controller.
+- The model UUID of your COS Lite deployment. Find it with:
+
+  ```bash
+  juju models --format json | jq -r '.models[] | select(.["short-name"] == "demo") | .["model-uuid"]'
+  eddaeb90-3115-4832-8bc4-ad4167df94dc
+  ```
+
 - [Atelier](https://github.com/MichaelThamm/atelier) `>= 0.4.5` (for the automated method)
 - [Terraform](https://developer.hashicorp.com/terraform/install) `>= 1.14` with the
   [Juju Terraform provider](https://registry.terraform.io/providers/juju/juju) `>= 1.4.0`.
@@ -40,12 +47,13 @@ mkdir cos-lite-import && cd cos-lite-import
 atelier import juju \
   --source https://github.com/canonical/observability-stack.git \
   --module terraform/cos-lite \
-  --ref track/2
+  --ref track/2 \
+  --query-var model_uuid=eddaeb90-3115-4832-8bc4-ad4167df94dc
 ```
 
-COS Lite gives every variable a default, so no `--var` flags are needed.
-Atelier picks up the model UUID from the live deployment (see
-"How model UUID is resolved").
+The Juju provider needs `model_uuid` to query live resources, so
+`--query-var model_uuid` is required. Atelier also seeds the module input
+from this value, so you do not need to pass `--var model_uuid` separately.
 
 | Flag | Purpose |
 |------|---------|
@@ -57,23 +65,17 @@ Atelier picks up the model UUID from the live deployment (see
 | `--preset` | Named variable sets from an `atelier.local.yaml` file |
 | `--dry-run` | Preview what would be imported without touching state |
 
-```{note}
-`--query-var model_uuid` is consumed by `terraform query` and is separate from
-module input variables. You only need to pass it when your model UUID is not
-automatically discoverable from live resources (e.g. a model with only offers).
-```
-
 #### How model UUID is resolved
 
-Atelier resolves the model UUID in this order:
+The Juju provider's list resources require `model_uuid` in their config to
+run `terraform query`. Atelier feeds `--query-var model_uuid` into those
+list blocks and also seeds the module input from the same value. For COS
+Lite, which uses a `model = { uuid = ... }` object variable, the UUID is
+injected into the wrapper automatically.
 
-1. **Live resource identities** — the most frequent UUID prefix among all
-   discovered objects is used.
-2. **`--query-var model_uuid`** — the value supplied to the query engine.
-3. **`--var model_uuid`** — a module input variable.
-
-For COS Lite, which uses a `model = { uuid = ... }` object variable, the UUID
-is injected into the wrapper automatically.
+After the query succeeds, Atelier also derives the UUID from the live
+resources' identity strings as a cross-check. If the wrapper already has the
+UUID set, it is never overwritten.
 
 ### 1a. Check coverage first (optional)
 
@@ -85,6 +87,7 @@ atelier import juju \
   --source https://github.com/canonical/observability-stack.git \
   --module terraform/cos-lite \
   --ref track/2 \
+  --query-var model_uuid=eddaeb90-3115-4832-8bc4-ad4167df94dc \
   --dry-run
 ```
 
