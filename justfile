@@ -4,6 +4,8 @@ set export  # Just variables are exported to the environment
 terraform := `which terraform || which tofu || echo ""` # require 'terraform' or 'opentofu'
 uv_flags := "--frozen --isolated"
 
+mod quality-gates
+
 [private]
 default:
   just --list

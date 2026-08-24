@@ -1,0 +1,91 @@
+name: Test and promote a branch's solutions
+
+# Reusable workflow: discovers every solution defined under tests/solution/
+# on a single branch, deploys and tests each one, and — only if all of them
+# pass — promotes every charm pinned by that branch's Terraform modules from
+# /beta to /candidate.
+#
+# Called once per supported branch/track from solution-tests.yaml, so adding
+# a new track only requires adding an entry to that workflow's branch
+# matrix, and adding a new solution only requires adding a directory under
+# tests/solution/ (each branch discovers its own set of solutions, so older
+# branches without a newer solution are unaffected).
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        description: 'The branch/track to check out and test (e.g. "main", "track/3.0").'
+        required: true
+        type: string
+    secrets:
+      CHARMCRAFT_AUTH:
+        required: true
+
+jobs:
+  discover-solutions:
+    name: Discover solutions
+    runs-on: ubuntu-latest
+    outputs:
+      solutions: ${{ steps.discover.outputs.solutions }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+
+      - name: List solutions with a Terraform wrapper module
+        id: discover
+        run: |
+          solutions=$(find tests/solution -mindepth 2 -maxdepth 2 -type d -name terraform -printf '%P\n' | sed 's|/terraform$||' | sort | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "solutions=$solutions" >> "$GITHUB_OUTPUT"
+
+  test-solutions:
+    name: Test ${{ matrix.solution }}
+    needs: [discover-solutions]
+    strategy:
+      fail-fast: false
+      matrix:
+        solution: ${{ fromJson(needs.discover-solutions.outputs.solutions) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+
+      - name: Install dependencies
+        run: |
+          sudo snap install concierge --classic
+          sudo concierge prepare -p k8s --extra-snaps just,astral-uv,terraform
+          # Configure Cilium for Istio ambient service mesh compatibility
+          sudo k8s kubectl patch configmap cilium-config -n kube-system --type merge -p '{"data":{"bpf-lb-sock-hostns-only":"true"}}'
+          sudo k8s kubectl rollout restart daemonset/cilium -n kube-system
+          sudo k8s kubectl rollout status daemonset/cilium -n kube-system --timeout=90s
+
+      - name: Run solution tests
+        run: just quality-gates test-solution ${{ matrix.solution }}
+
+  promote:
+    name: Promote ${{ matrix.solution }}
+    needs: [discover-solutions, test-solutions]
+    strategy:
+      matrix:
+        solution: ${{ fromJson(needs.discover-solutions.outputs.solutions) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+
+      - name: Install dependencies
+        run: |
+          sudo snap install terraform --classic
+          sudo snap install just --classic
+          sudo snap install charmcraft --classic
+
+      - name: Promote
+        env:
+          CHARMCRAFT_AUTH: ${{ secrets.CHARMCRAFT_AUTH }}
+        run: just quality-gates promote-solution ${{ matrix.solution }} ${{ inputs.branch }}
