@@ -11,6 +11,7 @@ bhat
 blackbox
 boolean
 Canonical('s)?
+CAs
 catalogue
 catalogue's
 Ceph

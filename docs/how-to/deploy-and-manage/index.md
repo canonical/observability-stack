@@ -21,6 +21,7 @@ Install <install>
 Configure strict reproducibility <configure-strict-reproducibility>
 Configure the Juju model <configure-juju-model>
 Configure the Grafana database <configure-grafana-database>
+Deploy Mimir on Juju <deploy-mimir-on-juju>
 ```
 
 ## Secure access
