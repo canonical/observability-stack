@@ -5,7 +5,7 @@ name: Test and promote a branch's solutions
 # pass — promotes every charm pinned by that branch's Terraform modules from
 # /beta to /candidate.
 #
-# Called once per supported branch/track from solution-tests.yaml, so adding
+# Called once per supported branch/track from quality-gates-candidate.yaml, so adding
 # a new track only requires adding an entry to that workflow's branch
 # matrix, and adding a new solution only requires adding a directory under
 # tests/solution/ (each branch discovers its own set of solutions, so older
