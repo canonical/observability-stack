@@ -13,6 +13,9 @@ to bring an existing one and connect it through the `s3-integrator` charm.
 Use this guide to connect an existing object store to a Mimir on Juju
 deployment.
 
+```{include} /reuse/mimir-on-juju-nav.md
+```
+
 ## Before you begin
 
 You should already have:
@@ -36,20 +39,20 @@ If you still need a local test object store, see
 Do this **before** wiring anything into Mimir; changing the answer to any of
 these later is disruptive.
 
-- **Use a dedicated bucket.** Keep Mimir in its own bucket unless you have a
+- Use a dedicated bucket. Keep Mimir in its own bucket unless you have a
   clear reason to share one.
-- **Use dedicated credentials** for that bucket, scoped so they can only
+- Use dedicated credentials for that bucket, scoped so they can only
   access what Mimir needs.
-- **Prefer HTTPS** for the S3 endpoint in shared or production environments,
+- Prefer HTTPS for the S3 endpoint in shared or production environments,
   and know in advance whether the endpoint uses a private CA (you will need
   to supply the CA chain during configuration).
-- **Do not use Minio in production.** The Minio charm is only for local or
+- Do not use Minio in production. The Minio charm is only for local or
   disposable test environments; production planning is covered in
   [Storage best practices](/reference/storage).
-- **Plan capacity** around your retention and ingestion rates, and avoid
+- Plan capacity around your retention and ingestion rates, and avoid
   local-only or node-bound storage for production deployments. Sizing details
   are in [Storage best practices](/reference/storage).
-- **Keep the S3 endpoint stable** before you start wiring producers to
+- Keep the S3 endpoint stable before you start wiring producers to
   `receive-remote-write`; changing it later forces a reconfiguration of
   Mimir workers.
 

@@ -23,6 +23,9 @@ For a full COS deployment (Grafana, Alertmanager, Loki, etc.) instead of a
 Mimir-focused one, see
 [Getting started with COS on Canonical K8s](/tutorial/cos-canonical-k8s-sandbox).
 
+```{include} /reuse/mimir-on-juju-nav.md
+```
+
 ```{important}
 This guide uses the Juju CLI because it is the clearest way to see how the
 deployment fits together. For repeatable environments and production-oriented
@@ -34,13 +37,13 @@ rollouts, prefer the
 
 Mimir infrastructure (required for Mimir to run):
 
-- `mimir-coordinator-k8s` — the public API and coordinator for the Mimir
+- `mimir-coordinator-k8s`: the public API and coordinator for the Mimir
   cluster.
-- `mimir-worker-k8s` — a single worker application configured to run all
+- `mimir-worker-k8s`: a single worker application configured to run all
   Mimir roles (`role-all=true`). In production, split this into dedicated
   `mimir-write`, `mimir-read`, and `mimir-backend` applications and scale each
   role independently.
-- `s3-integrator` (deployed as `mimir-s3`) — supplies Mimir with an S3
+- `s3-integrator` (deployed as `mimir-s3`): supplies Mimir with an S3
   endpoint and credentials. Mimir requires S3-compatible object storage; the
   charm does not provide the object store itself, only the connection
   details.
@@ -48,16 +51,14 @@ Mimir infrastructure (required for Mimir to run):
 Supporting infrastructure (not part of Mimir itself, but used here for a
 usable end-to-end flow):
 
-- `traefik-k8s` — gives Mimir a stable URL for ingestion and querying from
+- `traefik-k8s`: gives Mimir a stable URL for ingestion and querying from
   outside the cluster.
-- `opentelemetry-collector-k8s` (`otelcol`) — used only in the validation
+- `opentelemetry-collector-k8s` (`otelcol`): used only in the validation
   step to scrape a test workload and push metrics to Mimir over
-  `prometheus_remote_write`.
-- `avalanche-k8s` — a synthetic metrics generator used only in the
+  `prometheus_remote_write`. Note, however, that in most production deployments, Otelcol is the component responsible for scraping metrics provided by other workloads and remote writing them into Mimir.
+- `avalanche-k8s`: a synthetic metrics generator used only in the
   validation step.
 
-The worker also uses `role-query-frontend=true` so queries you run later go
-through the same frontend path as a real deployment.
 
 ## Prerequisites
 
@@ -97,8 +98,7 @@ juju deploy mimir-coordinator-k8s mimir --trust
 
 juju deploy mimir-worker-k8s mimir-worker \
     --trust \
-    --config role-all=true \
-    --config role-query-frontend=true
+    --config role-all=true
 
 juju deploy s3-integrator mimir-s3 --channel latest/stable --trust
 juju deploy traefik-k8s traefik --trust
@@ -163,8 +163,8 @@ At this point Mimir should expose at least:
 
 For a minimal smoke test, deploy:
 
-- `avalanche-k8s` — a small synthetic metrics generator.
-- `opentelemetry-collector-k8s` — a scraper and forwarder charm that
+- `avalanche-k8s`, which is a small synthetic metrics generator.
+- `opentelemetry-collector-k8s`, which is a scraper and forwarder charm that
   collects Avalanche's metrics and pushes them to Mimir over
   `prometheus_remote_write`.
 

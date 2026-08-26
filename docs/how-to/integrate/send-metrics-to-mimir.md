@@ -37,6 +37,9 @@ For a general primer on this pattern with the full COS Lite stack, see
 For the Mimir deployment itself, see
 [How to deploy Mimir on Juju](/how-to/deploy-and-manage/deploy-mimir-on-juju).
 
+```{include} /reuse/mimir-on-juju-nav.md
+```
+
 ## Prerequisites
 
 - A working Mimir on Juju deployment with ingress enabled (see
