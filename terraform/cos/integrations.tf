@@ -209,6 +209,10 @@ resource "juju_integration" "metrics_endpoint" {
       app_name = module.alertmanager.app_name
       endpoint = module.alertmanager.provides.self_metrics_endpoint
     }
+    grafana = {
+      app_name = module.grafana.app_name
+      endpoint = module.grafana.provides.metrics_endpoint
+    }
     mimir = {
       app_name = module.mimir.app_names.mimir_coordinator
       endpoint = module.mimir.provides.self_metrics_endpoint
@@ -299,6 +303,20 @@ resource "juju_integration" "charm_tracing_grafana" {
   }
 
   lifecycle { replace_triggered_by = [terraform_data.grafana_litestream_resource] }
+}
+
+resource "juju_integration" "charm_tracing_otelcol" {
+  model_uuid = local.model_uuid
+
+  application {
+    name     = module.tempo.app_names.tempo_coordinator
+    endpoint = module.tempo.provides.tracing
+  }
+
+  application {
+    name     = module.opentelemetry_collector.app_name
+    endpoint = module.opentelemetry_collector.requires.send_charm_traces
+  }
 }
 
 resource "juju_integration" "tempo_tracing_otelcol_tracing" {

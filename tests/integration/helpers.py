@@ -99,7 +99,7 @@ def get_tls_context(
     # Obtain certificate from external-ca
     cert_path = temp_path / "ca.pem"
 
-    task = juju.run(f"{ca_name}/0", "get-ca-certificate", {"format": "json"})
+    task = juju.run(f"{ca_name}/0", "get-ca-certificate")
     cert = task.results.get("ca-certificate")
     cert_path.write_text(cert)
 

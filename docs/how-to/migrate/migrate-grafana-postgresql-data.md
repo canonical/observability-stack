@@ -82,7 +82,7 @@ echo "New Database: $NEW_DB"
 
 If your Grafana application is not named `grafana`, replace `APP_NAME` with your deployed application name.
 
-## 2. Unrelate Grafana and PgBouncer
+## 2. Remove the Grafana-PgBouncer integration
 
 Before renaming the database, you must remove the relations to disconnect Grafana and PgBouncer. This ensures that no active connections hold a lock on the old database.
 

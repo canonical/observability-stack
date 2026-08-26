@@ -40,7 +40,7 @@ Additionally, charms supporting basic authentication, [such as Traefik](https://
 
 ### List of packages and cryptographic technology used
 
-To generate private keys for setting up TLS communication, we use the `rsa.generate_private_key` function from the [`rsa` package](https://stuvel.eu/software/rsa/). We use the following parameters, which are hard-coded and non-configurable:
+To generate private keys for setting up TLS communication, we use the `rsa.generate_private_key` function from the [`rsa` package](https://github.com/sybrenstuvel/python-rsa). We use the following parameters, which are hard-coded and non-configurable:
 
   - `key_size = 2048`
   - `public_exponent = 65537`
