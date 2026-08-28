@@ -316,6 +316,7 @@ copybutton_line_continuation_character = "\\"
 exclude_patterns = [
     "doc-cheat-sheet*",
     ".venv*",
+    "reuse/*.md",
 ]
 
 # Adds custom CSS files, located under 'html_static_path'
