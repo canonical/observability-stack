@@ -1,0 +1,27 @@
+name: Solution tests
+
+# Periodically (and on demand) deploy the COS and COS Lite solutions from
+# every supported branch and run their solution test suites
+# (tests/solution). For each branch, when both solutions pass, promote every
+# charm pinned by that branch's Terraform modules from /beta to /candidate.
+#
+# To support a new branch/track, add it to the `branch` matrix below; a
+# separate, independent test+promote pipeline is instantiated per branch.
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    # Once a month, on the 1st at 03:00 UTC.
+    - cron: "0 3 1 * *"
+
+jobs:
+  solutions:
+    name: ${{ matrix.branch }}
+    strategy:
+      fail-fast: false
+      matrix:
+        branch: [main, track/3.0]
+    uses: ./.github/workflows/_quality-gate-candidate-branch.yaml
+    secrets: inherit
+    with:
+      branch: ${{ matrix.branch }}
