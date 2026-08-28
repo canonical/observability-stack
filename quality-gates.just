@@ -28,8 +28,8 @@ promote-solution solution="cos-lite" ref="main":
   echo "==> Promoting solution: {{solution}} (ref: {{ref}})"
   charms_tracks=$(just charm-tracks "{{solution}}" "{{ref}}")
   if [ -z "$charms_tracks" ]; then
-    echo "No pinned charms found for solution '{{solution}}'; nothing to promote."
-    exit 0
+    echo "ERROR: no pinned charms found for solution '{{solution}}'; refusing to promote nothing."
+    exit 1
   fi
   while read -r charm track; do
     echo "--> Promoting $charm from ${track}/beta to ${track}/candidate"
@@ -45,22 +45,49 @@ charm-tracks module ref='main':
   upgrades=$(git show "{{ref}}:terraform/{{module}}/upgrades.tf")
   locals=$(git show "{{ref}}:terraform/{{module}}/locals.tf")
 
-  charm_keys=$(awk '
-    /data[[:space:]]*"juju_charm"[[:space:]]*"/ { in_block=1; next }
-    in_block && /^\}/ { in_block=0; charm=""; key=""; next }
-    in_block && match($0, /charm[[:space:]]*=[[:space:]]*"([^"]*)"/, m) { charm=m[1] }
-    in_block && match($0, /channel[[:space:]]*=[[:space:]]*local\.channels\.([a-zA-Z0-9_]+)/, m) { key=m[1] }
-    in_block && charm != "" && key != "" { print charm, key; charm=""; key="" }
-  ' <<< "$upgrades")
+  charm_keys=""
+  in_block=0
+  charm=""
+  key=""
+  while IFS= read -r line; do
+    if [[ "$line" =~ data[[:space:]]*\"juju_charm\"[[:space:]]*\" ]]; then
+      in_block=1
+      continue
+    fi
+    if [ "$in_block" -eq 1 ] && [[ "$line" =~ ^\} ]]; then
+      in_block=0
+      charm=""
+      key=""
+      continue
+    fi
+    if [ "$in_block" -eq 1 ] && [[ "$line" =~ charm[[:space:]]*=[[:space:]]*\"([^\"]*)\" ]]; then
+      charm="${BASH_REMATCH[1]}"
+    fi
+    if [ "$in_block" -eq 1 ] && [[ "$line" =~ channel[[:space:]]*=[[:space:]]*local\.channels\.([a-zA-Z0-9_]+) ]]; then
+      key="${BASH_REMATCH[1]}"
+    fi
+    if [ "$in_block" -eq 1 ] && [ -n "$charm" ] && [ -n "$key" ]; then
+      charm_keys+="$charm $key"$'\n'
+      charm=""
+      key=""
+    fi
+  done <<< "$upgrades"
 
   declare -A tracks
-  while read -r tkey tval; do
-    [ -n "$tkey" ] && tracks["$tkey"]="$tval"
-  done < <(awk '
-    /tracks[[:space:]]*=[[:space:]]*\{/ { in_tracks=1; next }
-    in_tracks && /^  \}/ { in_tracks=0; next }
-    in_tracks && match($0, /^[[:space:]]*([a-zA-Z0-9_]+)[[:space:]]*=[[:space:]]*"([^"]*)"/, m) { print m[1], m[2] }
-  ' <<< "$locals")
+  in_tracks=0
+  while IFS= read -r line; do
+    if [[ "$line" =~ tracks[[:space:]]*=[[:space:]]*\{ ]]; then
+      in_tracks=1
+      continue
+    fi
+    if [ "$in_tracks" -eq 1 ] && [[ "$line" =~ ^\ \ \} ]]; then
+      in_tracks=0
+      continue
+    fi
+    if [ "$in_tracks" -eq 1 ] && [[ "$line" =~ ^[[:space:]]*([a-zA-Z0-9_]+)[[:space:]]*=[[:space:]]*\"([^\"]*)\" ]]; then
+      tracks["${BASH_REMATCH[1]}"]="${BASH_REMATCH[2]}"
+    fi
+  done <<< "$locals"
 
   while read -r charm key; do
     [ -z "$charm" ] && continue
