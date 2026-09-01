@@ -8,7 +8,12 @@ terraform {
   }
 }
 
-# All defaults: creates its own model ("cos-lite"), edge risk, self-signed TLS.
+locals {
+  # Output below for the solution test to connect jubilant to.
+  model_name = "cos-lite"
+}
+
 module "cos-lite" {
   source = "../../../../terraform/cos-lite"
+  model  = { name = local.model_name }
 }

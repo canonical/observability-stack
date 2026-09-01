@@ -8,13 +8,16 @@ uv_flags := "--frozen --isolated"
 @default:
   just --list quality-gates
 
-# Init/apply a solution's Terraform module, then run its solution test suite
+# Deploys into whichever Juju controller is currently active -- `juju switch`
+# to the intended one first.
+# Init/apply a solution's Terraform module, then run its solution test suite.
 [group("test")]
 [working-directory("./tests/solution")]
 test-solution solution="cos-lite":
   #!/usr/bin/env bash
   set -euo pipefail
   echo "==> Testing solution: {{solution}}"
+  juju whoami
   if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
   $terraform -chdir="{{solution}}/terraform" init -upgrade
   $terraform -chdir="{{solution}}/terraform" apply -auto-approve

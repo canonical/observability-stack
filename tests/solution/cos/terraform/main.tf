@@ -8,28 +8,46 @@ terraform {
   }
 }
 
-resource "juju_model" "cos" {
-  name = "cos"
+locals {
+  # Output below for the solution test to connect jubilant to.
+  model_name = "cos"
+
+  # Must match terraform/seaweedfs's "app_name" default: used here as a
+  # literal to avoid a dependency cycle with module.seaweedfs below.
+  seaweedfs_app_name = "seaweedfs"
 }
 
-# SeaweedFS provides an in-cluster S3-compatible store, avoiding the need for
-# external S3 credentials/infrastructure in this smoke test. Its S3 gateway
-# uses fixed placeholder credentials (see the seaweedfs-k8s charm source),
-# and is reachable at its Juju unit's in-cluster Kubernetes service address.
-module "seaweedfs" {
-  source     = "../../../../terraform/seaweedfs"
-  model_uuid = juju_model.cos.uuid
-}
-
-# All other defaults: edge risk, self-signed internal TLS (no external CA
-# needed).
+# Creates its own model rather than depending on one created here, since a
+# model UUID known only after apply can't drive this module's internal
+# create-vs-lookup-by-UUID logic at plan time.
 module "cos" {
-  source     = "../../../../terraform/cos"
-  depends_on = [module.seaweedfs]
+  source = "../../../../terraform/cos"
+  model  = { name = local.model_name }
 
-  model = { uuid = juju_model.cos.uuid }
-
-  s3_endpoint   = "http://${module.seaweedfs.app_name}.cos.svc.cluster.local:8333"
+  # In-cluster S3-compatible store, avoiding external S3 credentials in this
+  # smoke test.
+  s3_endpoint   = "http://${local.seaweedfs_app_name}.cos.svc.cluster.local:8333"
   s3_access_key = "placeholder"
   s3_secret_key = "placeholder"
+
+  # Single unit: the default of 3 requires an external PostgreSQL offer
+  # (see terraform/cos/variables.tf) that this smoke test doesn't stand up.
+  grafana = { units = 1 }
+}
+
+# Looked up by name rather than passed as a module output, to avoid a
+# dependency cycle with module.seaweedfs below.
+data "juju_model" "cos" {
+  name  = local.model_name
+  owner = "admin"
+
+  depends_on = [module.cos]
+}
+
+module "seaweedfs" {
+  source     = "../../../../terraform/seaweedfs"
+  app_name   = local.seaweedfs_app_name
+  model_uuid = data.juju_model.cos.uuid
+
+  depends_on = [module.cos]
 }

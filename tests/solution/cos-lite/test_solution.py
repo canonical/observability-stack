@@ -1,14 +1,12 @@
-"""Copyright 2025 Canonical Ltd.
+"""Copyright 2026 Canonical Ltd.
 See LICENSE file for licensing details.
 
-Placeholder solution test for COS Lite.
+Smoke test for COS Lite.
 
-TODO: replace with real assertions against the deployed solution (e.g. via
-jubilant). Feature files / BDD steps / helpers can be introduced later; this
-smoke test only confirms the test harness (terraform apply -> pytest) wires
-up correctly.
+Loads every scenario under tests/solution/features/; see
+tests/solution/conftest.py for step definitions and tag filtering.
 """
 
+from pytest_bdd import scenarios
 
-def test_solution_test_harness_runs():
-    assert True
+scenarios("../features")
