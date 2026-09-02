@@ -5,7 +5,7 @@ solution's Terraform module and run a set of assertions on the resulting deploym
 all works as expected.
 
 CI discovers solutions dynamically (any directory under `tests/solution/` containing a
-`terraform/` subdirectory) and runs these tests on a schedule. See `quality-gates.just` for how
+`terraform/` subdirectory) and runs these tests on a schedule. See `solution.just` for how
 these tests are invoked.
 
 ## Prerequisites
@@ -17,7 +17,7 @@ these tests are invoked.
 Both the Juju Terraform provider and [jubilant](https://github.com/canonical/jubilant) deploy to
 whichever Juju controller is currently active (`juju switch`) -- run `juju switch <controller>`
 to your intended controller first if you have more than one registered, so you don't
-accidentally deploy into the wrong one. `just quality-gates test-solution` prints the current
+accidentally deploy into the wrong one. `just solution test` prints the current
 controller/model (`juju whoami`) as a sanity check before it does anything.
 
 ## Running a solution test
@@ -25,7 +25,7 @@ controller/model (`juju whoami`) as a sanity check before it does anything.
 From the repo root:
 
 ```bash
-just quality-gates test-solution cos-lite   # or: cos
+just solution test cos-lite   # or: cos
 ```
 
 This will:
@@ -74,5 +74,5 @@ deselects it everywhere else. Steps stay shared regardless of tags.
 
    scenarios("../features")
    ```
-4. Run `just quality-gates test-solution <name>` to verify it.
+4. Run `just solution test <name>` to verify it.
 
