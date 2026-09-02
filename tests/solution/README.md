@@ -1,12 +1,12 @@
 # Solution tests
 
 For a given solution (e.g. `cos`, `cos-lite`), the solution tests deploy that
-solution's Terraform module and verify it works as expected.
+solution's Terraform module and run a set of assertions on the resulting deployment, to verify
+all works as expected.
 
 CI discovers solutions dynamically (any directory under `tests/solution/` containing a
-`terraform/` subdirectory) and, on a schedule, uses these tests as a quality gate before
-promoting each solution's pinned charms from `/beta` to `/candidate`. See
-`.github/workflows/_quality-gate-candidate-branch.yaml` and `quality-gates.just`.
+`terraform/` subdirectory) and runs these tests on a schedule. See `quality-gates.just` for how
+these tests are invoked.
 
 ## Prerequisites
 
@@ -53,25 +53,6 @@ some other way reuse these same steps against its own model:
 cd tests/solution
 SOLUTION_MODEL="microk8s-localhost:cos-lite" uv run --frozen --isolated pytest -vv --capture=no cos-lite
 ```
-
-## Structure
-
-```
-tests/solution/
-├── features/                 # One .feature file per capability, shared by every solution
-├── steps/                     # common_steps.py (shared) + one module per feature-specific step set
-├── conftest.py                # Step registration + tag-based scenario filtering
-├── helpers.py                 # terraform_output(), wait_for_active_idle(), discover_solutions()
-└── <solution>/
-    ├── terraform/
-    │   ├── main.tf            # Wrapper module: deploys terraform/<solution> with test-friendly
-    │   └── outputs.tf         #   defaults (e.g. edge risk) into its own model; outputs model_name
-    ├── __init__.py            # Empty; keeps each solution's test_solution.py independently importable
-    └── test_solution.py       # from pytest_bdd import scenarios; scenarios("../features")
-```
-
-Step definitions live once under `steps/` (shared by every solution below this directory) rather
-than being duplicated per solution.
 
 ## Adding a new scenario
 

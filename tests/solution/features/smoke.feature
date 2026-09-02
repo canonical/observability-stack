@@ -8,4 +8,5 @@ Feature: Solution smoke test
 
   Scenario: A deployed solution settles into a healthy state
     Given the solution has been deployed
+    When no action is done
     Then the model settles into a healthy state
