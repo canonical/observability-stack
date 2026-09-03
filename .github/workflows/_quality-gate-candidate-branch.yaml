@@ -64,7 +64,7 @@ jobs:
           sudo k8s kubectl rollout status daemonset/cilium -n kube-system --timeout=90s
 
       - name: Run solution tests
-        run: just quality-gates test-solution ${{ matrix.solution }}
+        run: just solution test ${{ matrix.solution }}
 
   promote:
     name: Promote ${{ matrix.solution }}
@@ -88,4 +88,4 @@ jobs:
       - name: Promote
         env:
           CHARMCRAFT_AUTH: ${{ secrets.CHARMCRAFT_AUTH }}
-        run: just quality-gates promote-solution ${{ matrix.solution }} ${{ inputs.branch }}
+        run: just solution promote ${{ matrix.solution }} ${{ inputs.branch }}
