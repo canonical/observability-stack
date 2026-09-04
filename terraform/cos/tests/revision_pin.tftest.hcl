@@ -21,6 +21,8 @@ run "user_revision_pin_is_respected" {
     alertmanager            = { revision = 1 }
     catalogue               = { revision = 2 }
     grafana                 = { revision = 3, storage_directives = { "foo" = "1G" } }
+    istio_beacon            = { revision = 14 }
+    istio_ingress           = { revision = 15 }
     loki_coordinator        = { revision = 4 }
     loki_worker             = { revision = 5, write_storage_directives = { "foo" = "1G" } }
     mimir_coordinator       = { revision = 6 }
@@ -46,6 +48,16 @@ run "user_revision_pin_is_respected" {
   assert {
     condition     = local.revisions.grafana == 3
     error_message = "Expected grafana revision 3, got ${local.revisions.grafana}"
+  }
+
+  assert {
+    condition     = local.revisions.istio_beacon == 14
+    error_message = "Expected istio_beacon revision 14, got ${local.revisions.istio_beacon}"
+  }
+
+  assert {
+    condition     = local.revisions.istio_ingress == 15
+    error_message = "Expected istio_ingress revision 15, got ${local.revisions.istio_ingress}"
   }
 
   assert {
@@ -117,6 +129,16 @@ run "no_pin_uses_datasource" {
   assert {
     condition     = local.revisions.grafana == data.juju_charm.grafana_info.revision
     error_message = "grafana revision should come from datasource when no pin is set"
+  }
+
+  assert {
+    condition     = local.revisions.istio_beacon == data.juju_charm.istio_beacon_info.revision
+    error_message = "istio_beacon revision should come from datasource when no pin is set"
+  }
+
+  assert {
+    condition     = local.revisions.istio_ingress == data.juju_charm.istio_ingress_info.revision
+    error_message = "istio_ingress revision should come from datasource when no pin is set"
   }
 
   assert {
