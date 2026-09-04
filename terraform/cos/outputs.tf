@@ -17,6 +17,8 @@ output "components" {
     alertmanager            = module.alertmanager
     catalogue               = module.catalogue
     grafana                 = module.grafana
+    istio_beacon            = try(module.istio_beacon[0], null)
+    istio_ingress           = try(module.istio_ingress[0], null)
     opentelemetry_collector = module.opentelemetry_collector
     loki                    = module.loki
     mimir                   = module.mimir
