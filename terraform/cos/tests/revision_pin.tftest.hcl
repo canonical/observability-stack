@@ -21,18 +21,18 @@ run "user_revision_pin_is_respected" {
     alertmanager            = { revision = 1 }
     catalogue               = { revision = 2 }
     grafana                 = { revision = 3, storage_directives = { "foo" = "1G" } }
-    istio_beacon            = { revision = 14 }
-    istio_ingress           = { revision = 15 }
-    loki_coordinator        = { revision = 4 }
-    loki_worker             = { revision = 5, write_storage_directives = { "foo" = "1G" } }
-    mimir_coordinator       = { revision = 6 }
-    mimir_worker            = { revision = 7, write_storage_directives = { "foo" = "1G" }, backend_storage_directives = { "foo" = "1G" } }
-    opentelemetry_collector = { revision = 8, storage_directives = { "foo" = "1G" } }
-    ssc                     = { revision = 9 }
-    s3_integrator           = { revision = 10 }
-    tempo_coordinator       = { revision = 11 }
-    tempo_worker            = { revision = 12, ingester_worker_storage_directives = { "foo" = "1G" } }
-    traefik                 = { revision = 13 }
+    istio_beacon            = { revision = 4 }
+    istio_ingress           = { revision = 5 }
+    loki_coordinator        = { revision = 6 }
+    loki_worker             = { revision = 7, write_storage_directives = { "foo" = "1G" } }
+    mimir_coordinator       = { revision = 8 }
+    mimir_worker            = { revision = 9, write_storage_directives = { "foo" = "1G" }, backend_storage_directives = { "foo" = "1G" } }
+    opentelemetry_collector = { revision = 10, storage_directives = { "foo" = "1G" } }
+    ssc                     = { revision = 11 }
+    s3_integrator           = { revision = 12 }
+    tempo_coordinator       = { revision = 13 }
+    tempo_worker            = { revision = 14, ingester_worker_storage_directives = { "foo" = "1G" } }
+    traefik                 = { revision = 15 }
   }
 
   assert {
@@ -51,63 +51,63 @@ run "user_revision_pin_is_respected" {
   }
 
   assert {
-    condition     = local.revisions.istio_beacon == 14
-    error_message = "Expected istio_beacon revision 14, got ${local.revisions.istio_beacon}"
+    condition     = local.revisions.istio_beacon == 4
+    error_message = "Expected istio_beacon revision 4, got ${local.revisions.istio_beacon}"
   }
 
   assert {
-    condition     = local.revisions.istio_ingress == 15
-    error_message = "Expected istio_ingress revision 15, got ${local.revisions.istio_ingress}"
+    condition     = local.revisions.istio_ingress == 5
+    error_message = "Expected istio_ingress revision 5, got ${local.revisions.istio_ingress}"
   }
 
   assert {
-    condition     = local.revisions.loki_coordinator == 4
-    error_message = "Expected loki_coordinator revision 4, got ${local.revisions.loki_coordinator}"
+    condition     = local.revisions.loki_coordinator == 6
+    error_message = "Expected loki_coordinator revision 6, got ${local.revisions.loki_coordinator}"
   }
 
   assert {
-    condition     = local.revisions.loki_worker == 5
-    error_message = "Expected loki_worker revision 5, got ${local.revisions.loki_worker}"
+    condition     = local.revisions.loki_worker == 7
+    error_message = "Expected loki_worker revision 7, got ${local.revisions.loki_worker}"
   }
 
   assert {
-    condition     = local.revisions.mimir_coordinator == 6
-    error_message = "Expected mimir_coordinator revision 6, got ${local.revisions.mimir_coordinator}"
+    condition     = local.revisions.mimir_coordinator == 8
+    error_message = "Expected mimir_coordinator revision 8, got ${local.revisions.mimir_coordinator}"
   }
 
   assert {
-    condition     = local.revisions.mimir_worker == 7
-    error_message = "Expected mimir_worker revision 7, got ${local.revisions.mimir_worker}"
+    condition     = local.revisions.mimir_worker == 9
+    error_message = "Expected mimir_worker revision 9, got ${local.revisions.mimir_worker}"
   }
 
   assert {
-    condition     = local.revisions.otelcol == 8
-    error_message = "Expected otelcol revision 8, got ${local.revisions.otelcol}"
+    condition     = local.revisions.otelcol == 10
+    error_message = "Expected otelcol revision 10, got ${local.revisions.otelcol}"
   }
 
   assert {
-    condition     = local.revisions.ssc == 9
-    error_message = "Expected ssc revision 9, got ${local.revisions.ssc}"
+    condition     = local.revisions.ssc == 11
+    error_message = "Expected ssc revision 11, got ${local.revisions.ssc}"
   }
 
   assert {
-    condition     = local.revisions.s3_integrator == 10
-    error_message = "Expected s3_integrator revision 10, got ${local.revisions.s3_integrator}"
+    condition     = local.revisions.s3_integrator == 12
+    error_message = "Expected s3_integrator revision 12, got ${local.revisions.s3_integrator}"
   }
 
   assert {
-    condition     = local.revisions.tempo_coordinator == 11
-    error_message = "Expected tempo_coordinator revision 11, got ${local.revisions.tempo_coordinator}"
+    condition     = local.revisions.tempo_coordinator == 13
+    error_message = "Expected tempo_coordinator revision 13, got ${local.revisions.tempo_coordinator}"
   }
 
   assert {
-    condition     = local.revisions.tempo_worker == 12
-    error_message = "Expected tempo_worker revision 12, got ${local.revisions.tempo_worker}"
+    condition     = local.revisions.tempo_worker == 14
+    error_message = "Expected tempo_worker revision 14, got ${local.revisions.tempo_worker}"
   }
 
   assert {
-    condition     = local.revisions.traefik == 13
-    error_message = "Expected traefik revision 13, got ${local.revisions.traefik}"
+    condition     = local.revisions.traefik == 15
+    error_message = "Expected traefik revision 15, got ${local.revisions.traefik}"
   }
 }
 
