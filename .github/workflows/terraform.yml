@@ -8,56 +8,6 @@ on:
       - "tests/integration/**"
 
 jobs:
-  lint-terraform:
-    name: Terraform lint
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Install dependencies
-        run: |
-          sudo snap install terraform --classic
-          sudo snap install just --classic
-      - name: Lint the Terraform modules
-        run: just lint-terraform
-  lint-terraform-docs:
-    name: Lint terraform docs
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Install dependencies
-        run: |
-          sudo snap install terraform --classic
-          sudo snap install terraform-docs
-          sudo snap install just --classic
-      - name: Lint the Terraform docs
-        run: just lint-terraform-docs
-  validate-terraform:
-    name: Terraform validate
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Install dependencies
-        run: |
-          sudo snap install terraform --classic
-          sudo snap install just --classic
-      - name: Validate the Terraform modules
-        run: just validate-terraform
-  test-unit:
-    name: Terraform unit tests
-    needs: [lint-terraform, lint-terraform-docs, validate-terraform]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Install dependencies
-        run: |
-          sudo snap install terraform --classic
-          sudo snap install just --classic
-      - name: Unit test the Terraform modules
-        run: just unit
   changes:
     name: Detect changed products
     runs-on: ubuntu-latest
@@ -73,7 +23,7 @@ jobs:
         id: filter
         with:
           filters: |
-            # Shared paths affect *both* products, so they trigger both suites
+            # Shared paths affect *multiple* products, so they trigger as well
             shared: &shared
               - '.github/workflows/terraform.yml'
               - '.github/workflows/_integration.yml'
@@ -91,27 +41,11 @@ jobs:
               - *shared
               - 'terraform/cos-dev/**'
               - 'tests/integration/cos_dev/**'
-  test-integration-cos-lite:
-    name: COS Lite Terraform integration
-    needs: [test-unit, changes]
-    if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.cos_lite == 'true' }}
-    uses: canonical/observability-stack/.github/workflows/_integration.yml@main
-    with:
-      product: cos_lite
-      runner: self-hosted-linux-amd64-noble-large
   test-integration-cos:
     name: COS Terraform integration
-    needs: [test-unit, changes]
+
     if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.cos == 'true' }}
-    uses: canonical/observability-stack/.github/workflows/_integration.yml@main
+    uses: canonical/observability-stack/.github/workflows/_integration.yml@feat/ceph-charm
     with:
       product: cos
       runner: self-hosted-linux-amd64-noble-xlarge
-  test-integration-cos-dev:
-    name: COS Dev Terraform integration
-    needs: [test-unit, changes]
-    if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.cos_dev == 'true' }}
-    uses: canonical/observability-stack/.github/workflows/_integration.yml@main
-    with:
-      product: cos_dev
-      runner: self-hosted-linux-amd64-noble-large
