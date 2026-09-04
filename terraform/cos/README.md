@@ -6,6 +6,13 @@ This is a Terraform module facilitating the deployment of the COS solution, usin
 > `s3-integrator` itself doesn't act as an S3 object storage system. For the HA solution to be functional, `s3-integrator` needs to point to an S3-like storage. See [this guide](https://documentation.ubuntu.com/observability/latest/tutorial/installation/cos-canonical-k8s-sandbox/#set-up-s3) to learn how to connect to an S3-like storage. If you deploy the COS TF module with an s3-integrator from `channel=2/edge` and `>=rev243`, then the buckets are automatically created for you.
 
 <!-- BEGIN_TF_DOCS -->
+## Requirements
+
+| Name | Version |
+| ---- | ------- |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.11 |
+| <a name="requirement_juju"></a> [juju](#requirement\_juju) | >= 1.4.0 |
+
 ## Providers
 
 | Name | Version |
