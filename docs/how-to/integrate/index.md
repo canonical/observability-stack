@@ -19,6 +19,7 @@ Instrument machine charms <instrument-machine-charms>
 Use the Loki HTTP API <use-loki-http-api>
 Use Catalogue <use-catalogue>
 Send metrics to Mimir on Juju <send-metrics-to-mimir>
+Send logs to Loki on Juju <send-logs-to-loki>
 ```
 
 ## Extend the pipeline
@@ -49,4 +50,5 @@ Validate local object-storage integrations or wire existing storage into Mimir.
 
 Testing with Minio <deploy-s3-integrator-and-minio>
 Connect object storage to Mimir on Juju <configure-object-storage-for-mimir>
+Connect object storage to Loki on Juju <configure-object-storage-for-loki>
 ```
