@@ -572,23 +572,41 @@ pipeline, or Tempo on the traces pipeline) are *not* dropped and still reach Lok
 form a loop while the logs path is healthy, so their `Exporting failed` logs remain visible in
 Grafana.
 
-## `err-mimir-sample-out-of-order`
+## `err-mimir-sample-out-of-order` and `err-mimir-sample-timestamp-too-old`
 
-Mimir rejects samples that arrive out of order by default. If you see an error like:
+For any given series, Mimir requires each sample's timestamp to be newer than the last
+one already ingested. Samples that violate this are rejected by default:
 
 ```
 the sample has been rejected because another sample with a more recent timestamp
 has already been ingested and out-of-order samples are not allowed (err-mimir-sample-out-of-order)
 ```
 
-enable the `out_of_order_time_window` charm config option on the Mimir coordinator:
+Timestamps are assigned when telemetry is *collected*, but ordering is only checked when it
+is *written*. Anything that decouples the two produces this error, so identify the cause
+before widening the accepted window.
+
+### Common causes
+1. **More than one collector writing the same series**. Scaling up `opentelemetry-collector` does not shard scrape jobs: every unit scrapes every target, so all units emit identical series. Whenever one unit falls behind its peers its samples are older than what the others have already written.
+2. **A backlog flushed after an outage.** Collector queues hold telemetry with its original timestamps. When connectivity is restored, live data usually lands first and the backlog arrives behind it.
+3. **Concurrent writes from a single collector.** The OpenTelemetry Collector's `prometheusremotewrite` exporter sends multiple requests in parallel and provides no per-series ordering guarantee.
+4. **Clock skew between collector hosts.** Samples are timestamped with the collecting host's clock, so a host whose clock lags its peers writes samples that appear old.
+5. **Uneven pipeline delay.** A `batch` processor with a long `timeout`, or `memory_limiter` backpressure, applied to some collectors but not others creates the same asymmetry as cause 1.
+
+### Resolve
+
+If out-of-order writes are unavoidable, allow an out-of-order window on the Mimir coordinator:
 
 ```bash
 juju config mimir out_of_order_time_window=5m
 ```
 
 ```{note}
-Enabling out-of-order sample ingestion may lead to a CPU usage increase and a minor memory increase. See the [upstream documentation](https://grafana.com/docs/mimir/latest/configure/configure-out-of-order-samples-ingestion/#configure-out-of-order-samples-ingestion) for more details.
+The same setting raises the bound for `err-mimir-sample-timestamp-too-old`; there is no separate option for that error. Setting the value back to `0s` disables out-of-order ingestion again, while out-of-order samples already ingested remain queryable.
+```
+
+```{note}
+Enabling out-of-order sample ingestion may lead to a CPU usage increase and a minor memory increase. See the [upstream documentation](https://grafana.com/docs/mimir/latest/configure/configure-out-of-order-samples-ingestion/#configure-out-of-order-samples-ingestion) for more details on tradeoffs.
 ```
 
 The value is a duration string (e.g. `5m`, `10m`, `1h`). Choose a window that covers the expected delay between sample generation and ingestion.
