@@ -572,6 +572,27 @@ pipeline, or Tempo on the traces pipeline) are *not* dropped and still reach Lok
 form a loop while the logs path is healthy, so their `Exporting failed` logs remain visible in
 Grafana.
 
+## `err-mimir-sample-out-of-order`
+
+Mimir rejects samples that arrive out of order by default. If you see an error like:
+
+```
+the sample has been rejected because another sample with a more recent timestamp
+has already been ingested and out-of-order samples are not allowed (err-mimir-sample-out-of-order)
+```
+
+enable the `out_of_order_time_window` charm config option on the Mimir coordinator:
+
+```bash
+juju config mimir out_of_order_time_window=5m
+```
+
+```{note}
+Enabling out-of-order sample ingestion may lead to a CPU usage increase and a minor memory increase. See the [upstream documentation](https://grafana.com/docs/mimir/latest/configure/configure-out-of-order-samples-ingestion/#configure-out-of-order-samples-ingestion) for more details.
+```
+
+The value is a duration string (e.g. `5m`, `10m`, `1h`). Choose a window that covers the expected delay between sample generation and ingestion.
+
 ## `socket: too many open files`
 
 When deploying the Opentelemetry Collector or Prometheus charms in large environments,
