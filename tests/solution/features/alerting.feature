@@ -1,20 +1,19 @@
 @cos-lite
 Feature: Alerting
-  An alert rule supplied as configuration should reach Prometheus, fire when a
-  metric crosses its threshold, and be delivered on to Alertmanager.
+  Alert rules a workload ships over its metrics-endpoint integration are
+  loaded by Prometheus, and the alerts they raise reach Alertmanager.
 
-  The two scenarios are deliberately separate: a rule that fires in Prometheus
-  but never reaches Alertmanager is a real and distinct failure, and merging
-  them would hide which half broke.
-
-  Scenario: A configured alert rule fires in Prometheus
+  Background:
     Given the solution has been deployed
-    And an alert rule has been configured through cos-configuration
-    When a sample crossing the rule's threshold is written to Prometheus
-    Then Prometheus reports the alert as firing
+    And Avalanche is integrated with the solution
 
-  Scenario: The firing alert reaches Alertmanager
-    Given the solution has been deployed
-    And an alert rule has been configured through cos-configuration
-    When a sample crossing the rule's threshold is written to Prometheus
-    Then Alertmanager lists the alert as active
+  Scenario: Prometheus loads the alert rules of Avalanche
+    Then Prometheus has alert rules from avalanche
+
+  Scenario Outline: <alert> from Avalanche reaches Alertmanager
+    Then Alertmanager has the <alert> alert active
+
+    Examples:
+      | alert                         |
+      | AlwaysFiringDueToAbsentMetric |
+      | AlwaysFiringDueToNumericValue |

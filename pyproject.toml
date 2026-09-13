@@ -4,10 +4,12 @@
 [project]
 name = "observability-stack"
 version = "0.0.0"
+requires-python = ">=3.11"
 
 dependencies = [
-  "httpx",
   "jubilant",
+  "observability-clients>=0.1.1",
   "pytest",
   "pytest-bdd>=8.1.0",
+  "tenacity",
 ]

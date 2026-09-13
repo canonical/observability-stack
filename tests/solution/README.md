@@ -44,10 +44,9 @@ terraform -chdir=tests/solution/cos-lite/terraform destroy -auto-approve
 
 ### Running against an already-deployed model
 
-The `given` step (`the solution has been deployed`, defined in `steps/common_steps.py`) can skip
-discovering a model from Terraform output entirely: set `SOLUTION_MODEL` (optionally
-`<controller>:<model>`) and it's used as-is. This lets an external suite that deploys a solution
-some other way reuse these same steps against its own model:
+The `juju` fixture (`conftest.py`) can skip discovering a model from Terraform output entirely:
+set `SOLUTION_MODEL` (optionally `<controller>:<model>`) and it's used as-is. This lets an
+external suite that deploys a solution some other way reuse these same steps against its own model:
 
 ```bash
 cd tests/solution

@@ -1,14 +1,50 @@
 @cos-lite
 Feature: COS Lite monitors itself
-  A deployed COS Lite observes its own components: Prometheus scrapes them and
-  Loki holds the logs they emit. Both are read through the same query APIs the
-  signals scenarios use, so a failure here is about the deployment rather than
-  about the query path.
+  COS Lite components are scraped by Prometheus and ship their logs, alert
+  rules and dashboards to Loki, Prometheus and Grafana.
 
-  Scenario: Prometheus scrapes every COS Lite component
+  Background:
     Given the solution has been deployed
-    Then Prometheus reports every COS Lite component as up
 
-  Scenario: Loki holds the logs the components emit themselves
-    Given the solution has been deployed
-    Then Loki holds log lines emitted by the COS Lite components themselves
+  Scenario Outline: Prometheus scrapes <component>
+    Then Prometheus reports <component> as up
+
+    Examples:
+      | component    |
+      | alertmanager |
+      | grafana      |
+      | loki         |
+      | prometheus   |
+      | traefik      |
+
+  Scenario Outline: Loki holds the logs of <component>
+    Then Loki has log lines from <component>
+
+    Examples:
+      | component    |
+      | alertmanager |
+      | grafana      |
+      | prometheus   |
+
+  Scenario Outline: Prometheus has the alert rules of <component>
+    Then Prometheus has alert rules from <component>
+
+    Examples:
+      | component    |
+      | alertmanager |
+      | grafana      |
+      | loki         |
+      | traefik      |
+
+  Scenario Outline: Grafana has the dashboard of <component>
+    Then Grafana has a dashboard titled <title>
+
+    Examples:
+      | component    | title                          |
+      | alertmanager | Alertmanager Operator Overview |
+      | grafana      | Grafana Operator Overview      |
+      | loki         | Loki Operator Overview         |
+      | prometheus   | Prometheus Operator Overview   |
+
+  Scenario: The Watchdog alert from Alertmanager reaches Alertmanager
+    Then Alertmanager has the Watchdog alert active

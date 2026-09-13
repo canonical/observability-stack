@@ -1,24 +1,13 @@
 """Step definitions shared across feature files (deploy, wait, health checks)."""
 
-import os
-from pathlib import Path
-
 import jubilant
-from helpers import terraform_output, wait_for_active_idle
+from helpers import wait_for_active_idle
 from pytest_bdd import given, then, when
 
-# Points the "given" step at an already-deployed model instead of
-# discovering one from `terraform output` (see README.md).
-_MODEL_ENV_VAR = "SOLUTION_MODEL"
 
-
-@given("the solution has been deployed", target_fixture="juju")
-def the_solution_has_been_deployed(request) -> jubilant.Juju:
-    model_name = os.environ.get(_MODEL_ENV_VAR)
-    if model_name is None:
-        terraform_dir = Path(request.module.__file__).parent / "terraform"
-        model_name = terraform_output(terraform_dir)["model_name"]["value"]
-    return jubilant.Juju(model=model_name)
+@given("the solution has been deployed")
+def the_solution_has_been_deployed(juju: jubilant.Juju) -> None:
+    """The model comes from the `juju` fixture in conftest.py."""
 
 
 @when("no action is done")
