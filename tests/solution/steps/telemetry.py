@@ -10,11 +10,16 @@ parameterized over the backend name: each asks for its own client fixture, so a
 solution only ever builds clients for the components it actually deploys.
 """
 
+import time
 from contextlib import suppress
 
 from observability_clients import Loki, Prometheus
 from pytest_bdd import parsers, then
 from tenacity import RetryError, Retrying, retry_if_result, stop_after_delay, wait_fixed
+
+# How far back to look for logs. Components like Alertmanager and Prometheus are
+# quiet once running, so their only log lines may date to deployment time.
+_LOG_LOOKBACK_HOURS = 24
 
 
 @then(parsers.parse('Prometheus has metrics from the "{application}" application'))
@@ -35,6 +40,18 @@ def prometheus_has_metrics_from(prometheus: Prometheus, application: str):
 
 @then(parsers.parse('Loki has logs from the "{application}" application'))
 def loki_has_logs_from(loki: Loki, application: str):
-    assert loki.has_log_line(f'{{juju_application="{application}"}}'), (
-        f"Loki has no log streams labelled juju_application={application}"
+    """Uses a range query over a wide window, rather than `has_log_line`.
+
+    Loki rejects log selectors on the instant-query endpoint that
+    `has_log_line` uses, and quiet components only log around startup, which a
+    short lookback would miss.
+    """
+    end = time.time_ns()
+    start = end - _LOG_LOOKBACK_HOURS * 3600 * 1_000_000_000
+    result = loki.query_range(
+        f'{{juju_application="{application}"}}', start=str(start), end=str(end), limit=1
+    )
+    assert result.get("data", {}).get("result"), (
+        f"Loki has no log streams labelled juju_application={application} "
+        f"in the last {_LOG_LOOKBACK_HOURS}h"
     )
