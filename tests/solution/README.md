@@ -56,12 +56,70 @@ SOLUTION_MODEL="microk8s-localhost:cos-lite" uv run --frozen --isolated pytest -
 
 ## Adding a new scenario
 
-Add a new `.feature` file per capability (e.g. `features/tracing.feature`). 
-Reuse `steps/common_steps.py`'s steps (deploy, wait, health checks) where they
-apply. Every solution's `test_solution.py` loads all of `features/`, so an untagged
+Add a new `.feature` file per capability (e.g. `features/tracing.feature`). Reuse the existing
+steps where they apply -- most scenarios want the `Given the solution has been deployed` /
+`And the model is healthy` background. Every solution's `test_solution.py` loads all of
+`features/`, so an untagged
 scenario runs for every solution; tag a scenario with one or more solution names (e.g. `@cos`,
 matching the solution's directory name) to restrict it to those solutions -- `conftest.py`
 deselects it everywhere else. Steps stay shared regardless of tags.
+
+A `Feature:` describes a capability in solution-agnostic terms ("the metrics backend scrapes every
+component that exposes metrics"); the scenarios under it name the concrete workload. That way COS
+can reuse the same feature file by adding its own scenario (e.g. one driving Mimir alongside the
+COS Lite one driving Prometheus), each tagged for its solution.
+
+### Writing steps
+
+Steps are **declarative**: each one states a fact about the system and asserts it on its own, so
+it can be dropped into any scenario.
+
+```gherkin
+Then Prometheus has metrics from the "loki" application
+```
+
+Prefer this over splitting a check into a `When` that fetches and a `Then` that inspects the
+result: the pair is only meaningful in that exact order, which makes both halves unreusable. These
+suites deploy nothing (the deployment is external) and mutate nothing, so most scenarios are
+legitimately just a background plus one or more `Then`s, with no `When` at all.
+
+Step definitions live in `steps/`, grouped by **the domain concept they talk about** rather than
+by the feature file that uses them:
+
+| Module | Owns |
+| --- | --- |
+| `steps/deployment.py` | the model: which one, and whether it is healthy |
+| `steps/telemetry.py` | signals reaching their backend: metrics, logs |
+| `steps/grafana.py` | Grafana as a domain: dashboards, datasources |
+
+Grouping by domain (rather than one module per `.feature`) is what keeps steps reusable: two
+features already share `steps/grafana.py`, and `the model is healthy` serves as both the
+background of every feature and the assertion of the smoke test. Register new modules in
+`conftest.py`'s `pytest_plugins`.
+
+### Talking to workloads
+
+Assertions against running workloads go through
+[observability-clients](https://pypi.org/project/observability-clients/). `clients.py` provides one
+fixture per workload -- `prometheus`, `loki`, `grafana`, `alertmanager`, `mimir`, `tempo` -- each
+returning a client already pointed at that application (URL resolved from the unit address, scheme
+probed, Grafana authenticated as admin). A step just asks for the one it needs:
+
+```python
+@then(parsers.parse('Loki has logs from the "{application}" application'))
+def loki_has_logs_from(loki: Loki, application: str): ...
+```
+
+Fixtures are lazy, so a fixture is only built when a scenario actually requests it. `clients.py`
+can therefore hold fixtures for components no single solution deploys in full: COS Lite scenarios
+request `prometheus`, COS scenarios request `mimir`, and neither pays for the other. For the same
+reason, a backend gets one step definition per workload (`Prometheus has metrics from ...`,
+`Mimir has metrics from ...`) delegating to a shared helper, rather than one step parameterized
+over the backend name -- a parameterized step cannot know which fixture to request.
+
+Because the background already waits for active/idle, steps assert directly; only add retries
+where data genuinely trails that (e.g. the first Prometheus scrape, which uses `tenacity` in
+`steps/telemetry.py`).
 
 ## Adding a new solution
 

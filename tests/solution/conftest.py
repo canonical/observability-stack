@@ -3,15 +3,22 @@
 # See LICENSE file for licensing details.
 """Shared pytest config for solution tests: tag filtering + step registration.
 
-Step definitions live under steps/ (one module per feature, plus
-common_steps.py for steps shared across features), registered below via
-pytest_plugins so every solution shares them (see README.md).
+Step definitions live under steps/, grouped by the domain concept they talk
+about (deployment, telemetry, grafana) rather than by feature file, so a step
+can be reused by any feature. They are registered below via pytest_plugins so
+every solution shares them. API client fixtures live in clients.py
+(see README.md).
 """
 
 import pytest
 from helpers import discover_solutions
 
-pytest_plugins = ["steps.common_steps"]
+pytest_plugins = [
+    "clients",
+    "steps.deployment",
+    "steps.grafana",
+    "steps.telemetry",
+]
 
 _SOLUTIONS = discover_solutions()
 

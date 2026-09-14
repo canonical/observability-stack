@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any, Dict
 
 import jubilant
+import requests
 
 SOLUTION_ROOT = Path(__file__).parent
 
@@ -44,3 +45,21 @@ def wait_for_active_idle(juju: jubilant.Juju, timeout: int = 60 * 45):
         timeout=timeout,
         error=jubilant.any_error,
     )
+
+
+def unit_url(juju: jubilant.Juju, app: str, port: int) -> str:
+    """Base URL of an application's first unit, picking the scheme it actually serves.
+
+    Solutions enable internal TLS by default, but that is configurable, so the
+    scheme is probed rather than assumed.
+    """
+    status = juju.status()
+    address = next(iter(status.apps[app].units.values())).address
+    for scheme in ("https", "http"):
+        url = f"{scheme}://{address}:{port}"
+        try:
+            requests.get(url, timeout=30, verify=False)
+        except requests.RequestException:
+            continue
+        return url
+    raise AssertionError(f"no reachable {app} workload at {address}:{port}")
