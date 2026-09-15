@@ -16,6 +16,7 @@ locals {
     catalogue    = "${local.tracks.catalogue}/${var.risk}"
     grafana      = "${local.tracks.grafana}/${var.risk}"
     loki         = "${local.tracks.loki}/${var.risk}"
+    otelcol      = "${local.tracks.otelcol}/${var.risk}"
     prometheus   = "${local.tracks.prometheus}/${var.risk}"
     ssc          = "${local.tracks.ssc}/${var.risk}"
     traefik      = "${local.tracks.traefik}/${var.risk}"
@@ -25,6 +26,7 @@ locals {
     catalogue    = var.catalogue.revision != null ? var.catalogue.revision : data.juju_charm.catalogue_info.revision
     grafana      = var.grafana.revision != null ? var.grafana.revision : data.juju_charm.grafana_info.revision
     loki         = var.loki.revision != null ? var.loki.revision : data.juju_charm.loki_info.revision
+    otelcol      = var.opentelemetry_collector.revision != null ? var.opentelemetry_collector.revision : data.juju_charm.otelcol_info.revision
     prometheus   = var.prometheus.revision != null ? var.prometheus.revision : data.juju_charm.prometheus_info.revision
     ssc          = var.ssc.revision != null ? var.ssc.revision : data.juju_charm.ssc_info.revision
     traefik      = var.traefik.revision != null ? var.traefik.revision : data.juju_charm.traefik_info.revision
@@ -34,6 +36,7 @@ locals {
     catalogue    = "dev"
     grafana      = "dev"
     loki         = "dev"
+    otelcol      = "dev"
     prometheus   = "dev"
     # external charms
     ssc     = "1"

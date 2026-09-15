@@ -5,7 +5,7 @@ Any pytest file within this parent directory will be run against Juju v4."""
 from pathlib import Path
 
 import jubilant
-from helpers import generic_assertions
+from helpers import generic_assertions, no_errors_in_otelcol_logs
 
 TF_FILE = Path(__file__).parent.parent.resolve() / "tls_full/track-dev.tf"
 
@@ -18,3 +18,4 @@ def test_deploy_from_track(
     tf_manager.init(TF_FILE)
     tf_manager.apply(ca_model=ca_model.model, cos_model=cos_model.model)
     generic_assertions(cos_model, ca_model, tmp_path)
+    no_errors_in_otelcol_logs(cos_model)

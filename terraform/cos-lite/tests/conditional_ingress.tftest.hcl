@@ -1,9 +1,10 @@
 mock_provider "juju" {}
 
 variables {
-  grafana    = { storage_directives = { "foo" = "1G" } }
-  loki       = { storage_directives = { "foo" = "1G" } }
-  prometheus = { storage_directives = { "foo" = "1G" } }
+  grafana                 = { storage_directives = { "foo" = "1G" } }
+  loki                    = { storage_directives = { "foo" = "1G" } }
+  opentelemetry_collector = { storage_directives = { "foo" = "1G" } }
+  prometheus              = { storage_directives = { "foo" = "1G" } }
 }
 
 # --- traefik: all ingress enabled by default ---
@@ -30,6 +31,11 @@ run "traefik_ingress_enabled" {
     condition     = length(juju_integration.grafana_ingress) == 1
     error_message = "Unexpected grafana_ingress integrations when ingress is enabled"
   }
+
+  assert {
+    condition     = length(juju_integration.traefik_route) == 1
+    error_message = "Unexpected traefik_route integrations when ingress is enabled"
+  }
 }
 
 # --- traefik: all ingress disabled ---
@@ -39,11 +45,12 @@ run "traefik_ingress_disabled" {
 
   variables {
     ingress = {
-      alertmanager = false
-      catalogue    = false
-      grafana      = false
-      loki         = false
-      prometheus   = false
+      alertmanager            = false
+      catalogue               = false
+      grafana                 = false
+      loki                    = false
+      opentelemetry_collector = false
+      prometheus              = false
     }
   }
 
@@ -65,5 +72,10 @@ run "traefik_ingress_disabled" {
   assert {
     condition     = length(juju_integration.grafana_ingress) == 0
     error_message = "Unexpected grafana_ingress integrations when ingress is disabled"
+  }
+
+  assert {
+    condition     = length(juju_integration.traefik_route) == 0
+    error_message = "Unexpected traefik_route integrations when ingress is disabled"
   }
 }

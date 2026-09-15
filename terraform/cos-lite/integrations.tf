@@ -70,6 +70,10 @@ resource "juju_integration" "grafana_dashboards" {
       app_name = module.loki.app_name
       endpoint = module.loki.provides.grafana_dashboard
     }
+    otelcol = {
+      app_name = module.opentelemetry_collector.app_name
+      endpoint = module.opentelemetry_collector.provides.grafana_dashboards_provider
+    }
   }
   model_uuid = local.model_uuid
 
@@ -116,8 +120,7 @@ resource "juju_integration" "grafana_sources" {
 
 # -------------- # Logs ----------------------
 
-
-resource "juju_integration" "loki_logging" {
+resource "juju_integration" "otelcol_logging_provider" {
   for_each = {
     alertmanager = {
       app_name = module.alertmanager.app_name
@@ -140,8 +143,22 @@ resource "juju_integration" "loki_logging" {
   }
 
   application {
+    name     = module.opentelemetry_collector.app_name
+    endpoint = module.opentelemetry_collector.provides.receive_loki_logs
+  }
+}
+
+resource "juju_integration" "loki_logging_otelcol_logging_consumer" {
+  model_uuid = local.model_uuid
+
+  application {
     name     = module.loki.app_name
     endpoint = module.loki.provides.logging
+  }
+
+  application {
+    name     = module.opentelemetry_collector.app_name
+    endpoint = module.opentelemetry_collector.requires.send_loki_logs
   }
 }
 
@@ -161,6 +178,10 @@ resource "juju_integration" "metrics_endpoint" {
       app_name = module.loki.app_name
       endpoint = module.loki.provides.metrics_endpoint
     }
+    prometheus = {
+      app_name = module.prometheus.app_name
+      endpoint = module.prometheus.provides.self_metrics_endpoint
+    }
   }
   model_uuid = local.model_uuid
 
@@ -170,24 +191,38 @@ resource "juju_integration" "metrics_endpoint" {
   }
 
   application {
-    name     = module.prometheus.app_name
-    endpoint = module.prometheus.requires.metrics_endpoint
+    name     = module.opentelemetry_collector.app_name
+    endpoint = module.opentelemetry_collector.requires.metrics_endpoint
   }
 }
 
-resource "juju_integration" "traefik_self_monitoring_prometheus" {
+resource "juju_integration" "traefik_self_monitoring_otelcol" {
   count = local.traefik_enabled ? 1 : 0
 
   model_uuid = local.model_uuid
 
   application {
-    name     = module.prometheus.app_name
-    endpoint = module.prometheus.requires.metrics_endpoint
+    name     = module.opentelemetry_collector.app_name
+    endpoint = module.opentelemetry_collector.requires.metrics_endpoint
   }
 
   application {
     name     = module.traefik[0].app_name
     endpoint = module.traefik[0].endpoints.metrics_endpoint
+  }
+}
+
+resource "juju_integration" "receive_remote_write" {
+  model_uuid = local.model_uuid
+
+  application {
+    name     = module.opentelemetry_collector.app_name
+    endpoint = module.opentelemetry_collector.requires.send_remote_write
+  }
+
+  application {
+    name     = module.prometheus.app_name
+    endpoint = module.prometheus.provides.receive_remote_write
   }
 }
 
@@ -265,6 +300,29 @@ resource "juju_integration" "ingress_per_unit" {
   }
 }
 
+resource "juju_integration" "traefik_route" {
+  for_each = {
+    for k, v in {
+      opentelemetry_collector = {
+        app_name = module.opentelemetry_collector.app_name
+        endpoint = module.opentelemetry_collector.requires.ingress
+      }
+    } : k => v if local.traefik_enabled && var.ingress[k]
+  }
+
+  model_uuid = local.model_uuid
+
+  application {
+    name     = module.traefik[0].app_name
+    endpoint = module.traefik[0].endpoints.traefik_route
+  }
+
+  application {
+    name     = each.value.app_name
+    endpoint = each.value.endpoint
+  }
+}
+
 # -------------- # Certificates --------------
 
 resource "juju_integration" "internal_certificates" {
@@ -284,6 +342,10 @@ resource "juju_integration" "internal_certificates" {
     loki = {
       app_name = module.loki.app_name
       endpoint = module.loki.requires.certificates
+    }
+    opentelemetry_collector = {
+      app_name = module.opentelemetry_collector.app_name
+      endpoint = module.opentelemetry_collector.requires.receive_server_cert
     }
     prometheus = {
       app_name = module.prometheus.app_name
@@ -337,6 +399,10 @@ resource "juju_integration" "external_ca_cert" {
     grafana = {
       app_name = module.grafana.app_name
       endpoint = module.grafana.requires.receive_ca_cert
+    }
+    opentelemetry_collector = {
+      app_name = module.opentelemetry_collector.app_name
+      endpoint = module.opentelemetry_collector.requires.receive_ca_cert
     }
     prometheus = {
       app_name = module.prometheus.app_name

@@ -59,6 +59,21 @@ module "loki" {
   units              = var.loki.units
 }
 
+module "opentelemetry_collector" {
+  source = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform"
+
+  app_name           = var.opentelemetry_collector.app_name
+  base               = local.bases.o11y
+  channel            = local.channels.otelcol
+  config             = var.opentelemetry_collector.config
+  constraints        = var.opentelemetry_collector.constraints
+  model_uuid         = local.model_uuid
+  resources          = var.opentelemetry_collector.resources
+  revision           = local.revisions.otelcol
+  storage_directives = var.opentelemetry_collector.storage_directives
+  units              = var.opentelemetry_collector.units
+}
+
 module "prometheus" {
   source = "git::https://github.com/canonical/prometheus-k8s-operator//terraform"
 
