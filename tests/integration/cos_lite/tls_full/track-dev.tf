@@ -32,7 +32,7 @@ module "ssc" {
 }
 
 module "cos-lite" {
-  source     = "../../../../../terraform/cos-lite"
+  source     = "../../../../terraform/cos-lite"
   depends_on = [module.ssc] # Ensure the CA model's offers exist before COS consumes them.
 
   model                           = { uuid = data.juju_model.cos-model.uuid }
