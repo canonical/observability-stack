@@ -56,7 +56,7 @@ SOLUTION_MODEL="microk8s-localhost:cos-lite" uv run --frozen --isolated pytest -
 
 ## Adding a new scenario
 
-Add a new `.feature` file per capability (e.g. `features/tracing.feature`). Reuse the existing
+Add a new `.feature` file per capability (e.g. `features/alerting.feature`). Reuse the existing
 steps where they apply -- most scenarios want the `Given the solution has been deployed` /
 `And the model is healthy` background. Every solution's `test_solution.py` loads all of
 `features/`, so an untagged
@@ -89,7 +89,7 @@ by the feature file that uses them:
 | Module | Owns |
 | --- | --- |
 | `steps/deployment.py` | the model: which one, and whether it is healthy |
-| `steps/telemetry.py` | signals reaching their backend: metrics, logs |
+| `steps/telemetry.py` | signals reaching their backend: metrics, logs, traces |
 | `steps/grafana.py` | Grafana as a domain: dashboards, datasources |
 
 Grouping by domain (rather than one module per `.feature`) is what keeps steps reusable: two
@@ -120,6 +120,15 @@ over the backend name -- a parameterized step cannot know which fixture to reque
 Because the background already waits for active/idle, steps assert directly; only add retries
 where data genuinely trails that (e.g. the first Prometheus scrape, which uses `tenacity` in
 `steps/telemetry.py`).
+
+### Solutions that collect telemetry differently
+
+COS Lite has each component deliver its own telemetry, while COS routes everything through
+OpenTelemetry Collector. The assertions do not need to care: every scenario looks for a
+`juju_application` label, which names the component the telemetry *originated from*, not the one
+that delivered it. Keeping the collection path out of the assertion is what lets both solutions
+share `features/logs.feature` and one `Loki has logs from ...` step, differing only in the
+scenario name and the list of components in the `Examples:` table.
 
 ## Adding a new solution
 

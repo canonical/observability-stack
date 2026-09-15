@@ -17,3 +17,15 @@ Feature: Dashboard aggregation
       | alertmanager-k8s |
       | loki-k8s         |
       | prometheus-k8s   |
+
+  @cos
+  Scenario Outline: Grafana receives dashboards from a component
+    Then Grafana has a dashboard from the "<charm>" charm
+
+    Examples:
+      | charm                       |
+      | alertmanager-k8s            |
+      | loki-coordinator-k8s        |
+      | mimir-coordinator-k8s       |
+      | opentelemetry-collector-k8s |
+      | tempo-coordinator-k8s       |
