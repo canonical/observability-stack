@@ -16,4 +16,6 @@ locals {
 module "cos-lite" {
   source = "../../../../terraform/cos-lite"
   model  = { name = local.model_name }
+
+  internal_tls = false
 }
