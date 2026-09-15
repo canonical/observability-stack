@@ -42,7 +42,7 @@ There are two flavors available: COS and COS Lite. Each is suited to different d
 | Traces backend           | Tempo (distributed)                                          | Not included                                              |
 | Storage                  | S3 (managed independently)                                   | PVCs, e.g. `ceph-csi` (managed independently)            |
 | Resiliency               | Scalable microservices with node anti-affinity (HA-ready)    | Multi-node non-identical replication                      |
-| Self-monitoring          | Metrics, logs, and traces via OpenTelemetry Collector        | Metrics only, via direct relations                        |
+| Self-monitoring          | Metrics, logs, and traces via OpenTelemetry Collector        | Metrics and logs via OpenTelemetry Collector              |
 | Minimum system requirements | 3x 8cpu/16gb + storage nodes ([details](/reference/system-requirements)) | 1x 4cpu8gb (+storage nodes, if any) ([details](/reference/system-requirements))                  |
 
 ### Architecture

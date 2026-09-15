@@ -63,6 +63,16 @@ Grafana was previously limited to a single unit backed by local Juju storage. Su
 
 ### Telemetry pipelines
 
+#### OpenTelemetry Collector in COS Lite
+
+*Applies to: `cos-lite`.*
+
+COS Lite previously self-monitored by relating each component straight to Prometheus and Loki. It now deploys an `opentelemetry-collector` alongside the rest of the stack and funnels its own telemetry through it, matching how COS is wired: the collector scrapes every component's metrics endpoint and remote-writes into Prometheus, and receives every component's logs and forwards them to Loki. This applies processing, relabeling and topology injection uniformly, and adds Prometheus's own metrics to self-monitoring, which the direct relations could not cover.
+
+Tracing is not included: COS Lite has no trace backend. To add one, see [Add tracing to COS Lite](how-to/integrate/add-tracing-to-cos-lite.md).
+
+The Juju offers are unchanged and still front Prometheus and Loki directly, so external consumers are unaffected and no re-`consume` is needed. Two new inputs are available: `opentelemetry_collector` for application configuration, and `ingress.opentelemetry_collector` to toggle its Traefik route.
+
 #### OpenTelemetry Collector pinned to v0.130
 
 *Applies to: `cos`.*
@@ -112,6 +122,7 @@ Starting with COS 3.0, use [Pebble log forwarding](https://documentation.ubuntu.
 |-----------------------|--------------------|---------------------------------------------------------------|
 | **`ingress` added**   | `cos`, `cos-lite`  | New structured object to toggle ingress per component.        |
 | **`model` added**     | `cos`, `cos-lite`  | New structured object to configure the Juju model.            |
+| **`opentelemetry_collector` added** | `cos-lite` | New structured object to configure the OpenTelemetry Collector application. |
 
 ## Deprecations
 

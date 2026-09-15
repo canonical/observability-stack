@@ -95,11 +95,12 @@ variable "postgresql_offer_url" {
 variable "ingress" {
   description = "Per-component toggle for ingress integrations"
   type = object({
-    alertmanager = optional(bool, true)
-    catalogue    = optional(bool, true)
-    grafana      = optional(bool, true)
-    loki         = optional(bool, true)
-    prometheus   = optional(bool, true)
+    alertmanager            = optional(bool, true)
+    catalogue               = optional(bool, true)
+    grafana                 = optional(bool, true)
+    loki                    = optional(bool, true)
+    opentelemetry_collector = optional(bool, true)
+    prometheus              = optional(bool, true)
   })
   default = {}
 }
@@ -160,6 +161,20 @@ variable "loki" {
   })
   default     = {}
   description = "Application configuration for Loki. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
+}
+
+variable "opentelemetry_collector" {
+  type = object({
+    app_name           = optional(string, "otelcol")
+    config             = optional(map(string), {})
+    constraints        = optional(string, "arch=amd64")
+    resources          = optional(map(string), {})
+    revision           = optional(number, null)
+    storage_directives = optional(map(string), {})
+    units              = optional(number, 1)
+  })
+  default     = {}
+  description = "Application configuration for OpenTelemetry Collector. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
 variable "prometheus" {
