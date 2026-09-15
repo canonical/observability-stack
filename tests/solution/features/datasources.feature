@@ -26,3 +26,27 @@ Feature: Datasource configuration
       | application |
       | loki        |
       | prometheus  |
+
+  @cos
+  Scenario Outline: Grafana has a datasource for a component
+    Then Grafana has a datasource for the "<application>" application
+
+    Examples:
+      | application  |
+      | alertmanager |
+      | loki         |
+      | mimir        |
+      | tempo        |
+
+  # Alertmanager is absent for the same reason as above: its datasource plugin
+  # has no backend health check.
+  @cos
+  Scenario Outline: Grafana's datasource for a component is healthy
+    Then Grafana has a datasource for the "<application>" application
+    And that datasource is healthy
+
+    Examples:
+      | application |
+      | loki        |
+      | mimir       |
+      | tempo       |
