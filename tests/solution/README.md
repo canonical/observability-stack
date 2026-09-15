@@ -56,7 +56,7 @@ SOLUTION_MODEL="microk8s-localhost:cos-lite" uv run --frozen --isolated pytest -
 
 ## Adding a new scenario
 
-Add a new `.feature` file per capability (e.g. `features/tracing.feature`). Reuse the existing
+Add a new `.feature` file per capability (e.g. `features/alerting.feature`). Reuse the existing
 steps where they apply -- most scenarios want the `Given the solution has been deployed` /
 `And the model is healthy` background. Every solution's `test_solution.py` loads all of
 `features/`, so an untagged
@@ -85,6 +85,12 @@ Assertions against running workloads go through
 [observability-clients](https://pypi.org/project/observability-clients/) fixtures in `clients.py`,
 built lazily for each workload. Only
 add retries where data genuinely trails active/idle (e.g. the first Prometheus scrape).
+
+### Solutions that collect telemetry differently
+
+COS Lite has each component deliver its own telemetry, while COS routes everything through
+OpenTelemetry Collector. The assertions do not care: every scenario looks for a
+`juju_application` label, naming the component the telemetry originated from.
 
 ## Adding a new solution
 
