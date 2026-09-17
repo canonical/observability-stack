@@ -1,13 +1,10 @@
 # Copyright 2026 Canonical Ltd.
 # See LICENSE file for licensing details.
 #
-# Canonical K8s substrate for the Terraform product integration tests. To
-# provision a machine by hand:
-#
+# Canonical K8s substrate for the Terraform integration tests:
 #   sudo -E concierge prepare -c concierge-k8s.yaml
-#
-# `-E` matters: concierge expands $DOCKERHUB_MIRROR itself. It is only set on
-# IS-hosted runners; elsewhere the URL is empty and the mirror is skipped.
+# `-E` matters: concierge expands $DOCKERHUB_MIRROR itself, and it is only set
+# on IS-hosted runners (elsewhere the mirror is skipped).
 juju:
   extra-bootstrap-args: --config bootstrap-timeout=1800 --config model-logs-size=10G
   model-defaults:
@@ -21,9 +18,9 @@ providers:
     image-registry:
       url: $DOCKERHUB_MIRROR
     features:
-      network: {}
       local-storage: {}
+      # Traefik sets no external_hostname, so it needs a real external IP from
+      # MetalLB. One address suffices and the range is never routed on the wire.
       load-balancer:
         l2-mode: "true"
-        # Any unrouted range works; matches concierge's own k8s preset.
         cidrs: "10.43.45.0/28"
