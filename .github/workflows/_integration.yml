@@ -46,13 +46,7 @@ jobs:
       fail-fast: false
       matrix:
         juju-channel: ["3.6/stable"]
-        # Only the cheapest scenario runs while the Canonical K8s migration is
-        # being validated. Restore the full matrix below once it is green.
         scenario: ["tls_none"]
-        # scenario: ["tls_full", "tls_external", "tls_internal", "tls_none"]
-        # include:
-        # - juju-channel: "4.1/beta"
-        #   scenario: "juju_4"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -76,6 +70,27 @@ jobs:
           # address is what the previous MicroK8s setup used and is reachable
           # from the runner, which is all the tests require.
           IPADDR=$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc')
+
+          # CoreDNS forwards to the node's /etc/resolv.conf unless told otherwise,
+          # but on Ubuntu that is the systemd-resolved stub (127.0.0.53). Inside
+          # the CoreDNS pod that address is the pod's own loopback, where nothing
+          # is listening, so every external lookup returns SERVFAIL and Juju fails
+          # to reach api.charmhub.io. MicroK8s' dns addon probed the host's real
+          # resolvers for us; Canonical K8s does not, so pass them explicitly.
+          # The real upstreams live in /run/systemd/resolve/resolv.conf, not in
+          # /etc/resolv.conf.
+          DNS_SOURCES=""
+          for f in /run/systemd/resolve/resolv.conf /etc/resolv.conf; do
+            [ -r "$f" ] && DNS_SOURCES="$DNS_SOURCES $f"
+          done
+          # shellcheck disable=SC2086
+          UPSTREAM_DNS=$(awk '/^nameserver/ && $2 !~ /^127\./ {print $2}' $DNS_SOURCES \
+            | awk '!seen[$0]++' | paste -sd,)
+          if [ -z "$UPSTREAM_DNS" ]; then
+            echo "::error::Could not determine the node's upstream nameservers from:$DNS_SOURCES"
+            exit 1
+          fi
+          echo "CoreDNS will forward to: $UPSTREAM_DNS"
 
           # Canonical K8s still pulls workload images through containerd, so the
           # IS-hosted Docker Hub mirror is as necessary as it was for MicroK8s;
@@ -101,6 +116,8 @@ jobs:
               features:
                 network: {}
                 local-storage: {}
+                dns:
+                  upstream-nameservers: "${UPSTREAM_DNS}"
                 load-balancer:
                   l2-mode: "true"
                   cidrs: "${IPADDR}/32"
@@ -112,6 +129,28 @@ jobs:
             --config /tmp/concierge.yaml \
             --juju-channel ${{ matrix.juju-channel }} \
             --extra-snaps just,astral-uv,terraform
+
+      # Fail fast and unambiguously if pods cannot resolve external names. Without
+      # this the symptom only surfaces minutes later, as an opaque Terraform error
+      # from every charm at once.
+      - name: Verify in-cluster DNS resolves external names
+        timeout-minutes: 5
+        run: |
+          kubectl -n kube-system rollout status deployment/coredns --timeout=3m
+
+          kubectl run dns-check --restart=Never --image=busybox:1.36 \
+            --command -- sh -c 'nslookup api.charmhub.io'
+          kubectl wait --for=jsonpath='{.status.phase}'=Succeeded pod/dns-check --timeout=2m || true
+
+          echo "--- dns-check output ---"
+          kubectl logs dns-check || true
+          phase=$(kubectl get pod dns-check -o jsonpath='{.status.phase}' 2>/dev/null || echo Unknown)
+          kubectl delete pod dns-check --now --ignore-not-found
+
+          if [ "$phase" != "Succeeded" ]; then
+            echo "::error::Pods cannot resolve external names (dns-check phase=$phase). Check dns.upstream-nameservers."
+            exit 1
+          fi
 
       - name: Install and configure microceph
         if: ${{ inputs.product == 'cos' }}
