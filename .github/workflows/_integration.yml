@@ -51,10 +51,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # --- Substrate setup ---
-      # Canonical K8s ships and manages its own containerd. On IS-hosted runners
-      # the pre-installed docker.io/containerd packages conflict with it, so they
-      # are removed before bootstrapping.
       # https://documentation.ubuntu.com/self-hosted-runners/en/latest/usage/faq/how-to-setup-canonical-k8s/
       - name: Remove docker.io and containerd
         if: ${{ runner.environment == 'self-hosted' }}
@@ -73,30 +69,17 @@ jobs:
             --juju-channel ${{ matrix.juju-channel }} \
             --extra-snaps just,astral-uv,terraform
 
-      # These two settings cannot live in concierge-k8s.yaml: concierge expands
+      # The one setting that cannot live in concierge-k8s.yaml: concierge expands
       # environment variables only in the image-registry block, not in `features`,
-      # and both values are specific to the machine the job landed on.
-      - name: Configure node-specific K8s features
+      # and the right value depends on the machine the job landed on.
+      - name: Point CoreDNS at the node's resolvers
         timeout-minutes: 10
         run: |
-          echo "--- CoreDNS Corefile as bootstrapped ---"
-          kubectl -n kube-system get configmap coredns -o jsonpath='{.data.Corefile}' || true
-          echo
-
-          # Narrow MetalLB to the node's own address. The previous MicroK8s setup
-          # used `metallb:$IPADDR-$IPADDR`; keeping that keeps the load-balanced
-          # address reachable from the runner itself, which the tests rely on.
-          IPADDR=$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc')
-          echo "Setting load-balancer.cidrs to ${IPADDR}/32"
-          sudo k8s set load-balancer.cidrs="${IPADDR}/32"
-
           # CoreDNS forwards to the node's /etc/resolv.conf unless told otherwise,
-          # but on Ubuntu that file is the systemd-resolved stub (127.0.0.53), and
-          # inside the CoreDNS pod that address is the pod's own loopback where
-          # nothing is listening - so external lookups return SERVFAIL and Juju
-          # cannot reach api.charmhub.io. The real resolvers are only in
-          # /run/systemd/resolve/resolv.conf. MicroK8s' dns addon probed for these;
-          # Canonical K8s does not.
+          # but on Ubuntu that file is the systemd-resolved stub (127.0.0.53),
+          # which inside the CoreDNS pod is the pod's own loopback. The real
+          # resolvers are only in /run/systemd/resolve/resolv.conf. MicroK8s' dns
+          # addon probed for these; Canonical K8s does not.
           DNS_SOURCES=""
           for f in /run/systemd/resolve/resolv.conf /etc/resolv.conf; do
             [ -r "$f" ] && DNS_SOURCES="$DNS_SOURCES $f"
@@ -111,24 +94,46 @@ jobs:
           fi
           echo "Setting dns.upstream-nameservers to ${UPSTREAM_DNS}"
           sudo k8s set dns.upstream-nameservers="$UPSTREAM_DNS"
+          echo "UPSTREAM_DNS=${UPSTREAM_DNS}" >> "$GITHUB_ENV"
 
           sudo k8s status --wait-ready --timeout 5m
 
-          echo "--- CoreDNS Corefile after reconfiguration ---"
+      # Establishes *where* name resolution breaks before spending 5+ minutes on a
+      # deployment that would fail opaquely on every charm at once. The four probes
+      # separate the possible causes:
+      #   1 fails            -> pod cannot reach the CoreDNS ClusterIP (datapath)
+      #   1 ok, 2 fails      -> CoreDNS reachable, its upstream forwarding is broken
+      #   3 ok, 2 fails      -> upstream is reachable from pods; CoreDNS config wrong
+      #   3 fails, 4 ok      -> node's resolver unreachable from pods; use a public one
+      #   3 and 4 both fail  -> pod egress is blocked, not a DNS problem at all
+      - name: Diagnose in-cluster DNS
+        timeout-minutes: 6
+        run: |
+          echo "--- CoreDNS Corefile ---"
           kubectl -n kube-system get configmap coredns -o jsonpath='{.data.Corefile}' || true
           echo
+          echo "--- CoreDNS service and endpoints ---"
+          kubectl -n kube-system get svc,endpoints -l k8s-app=kube-dns -o wide || true
 
-      # Fail fast and unambiguously if pods cannot resolve external names. Without
-      # this the symptom only surfaces minutes later, as an opaque Terraform error
-      # from every charm at once.
-      - name: Verify in-cluster DNS resolves external names
-        timeout-minutes: 5
-        run: |
           kubectl -n kube-system rollout status deployment/coredns --timeout=3m
 
-          kubectl run dns-check --restart=Never --image=busybox:1.36 \
-            --command -- sh -c 'nslookup api.charmhub.io'
-          kubectl wait --for=jsonpath='{.status.phase}'=Succeeded pod/dns-check --timeout=2m || true
+          # nslookup takes a single server, so use the first of the list.
+          NODE_DNS="${UPSTREAM_DNS%%,*}"
+          echo "Probing with node resolver ${NODE_DNS}"
+
+          kubectl run dns-check --restart=Never --image=busybox:1.36 --command -- \
+            sh -c "
+              echo '== 1. internal name via cluster DNS =='
+              nslookup kubernetes.default.svc.cluster.local; echo \"rc=\$?\"
+              echo '== 2. external name via cluster DNS =='
+              nslookup api.charmhub.io; rc_cluster=\$?; echo \"rc=\$rc_cluster\"
+              echo '== 3. external name direct to node resolver ${NODE_DNS} =='
+              nslookup api.charmhub.io ${NODE_DNS}; echo \"rc=\$?\"
+              echo '== 4. external name direct to 8.8.8.8 =='
+              nslookup api.charmhub.io 8.8.8.8; echo \"rc=\$?\"
+              exit \$rc_cluster
+            "
+          kubectl wait --for=jsonpath='{.status.phase}'=Succeeded pod/dns-check --timeout=3m || true
 
           echo "--- dns-check output ---"
           kubectl logs dns-check || true
@@ -136,7 +141,7 @@ jobs:
           kubectl delete pod dns-check --now --ignore-not-found
 
           if [ "$phase" != "Succeeded" ]; then
-            echo "::error::Pods cannot resolve external names (dns-check phase=$phase). Check dns.upstream-nameservers."
+            echo "::error::Pods cannot resolve external names (phase=$phase). See the probe results above."
             exit 1
           fi
 
@@ -204,7 +209,7 @@ jobs:
           fi
 
       - name: Open SSH session on failure
-        if: ${{ failure() && (runner.debug == '1') }}
+        if: ${{ failure() && (inputs.debug-ssh || runner.debug == '1') }}
         uses: mxschmitt/action-tmate@v3
         with:
           timeout-minutes: 30
