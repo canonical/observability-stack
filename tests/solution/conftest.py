@@ -1,27 +1,32 @@
 #!/usr/bin/env python3
 # Copyright 2026 Canonical Ltd.
 # See LICENSE file for licensing details.
-"""Shared pytest config for solution tests: tag filtering + step registration.
-
-Step definitions live under steps/ (one module per feature, plus
-common_steps.py for steps shared across features), registered below via
-pytest_plugins so every solution shares them (see README.md).
-"""
+"""Shared pytest config for solution tests: tag filtering + step registration."""
 
 import pytest
+
 from helpers import discover_solutions
 
-pytest_plugins = ["steps.common_steps"]
+pytest_plugins = [
+    "clients",
+    "steps.deployment",
+    "steps.grafana",
+    "steps.telemetry",
+]
 
 _SOLUTIONS = discover_solutions()
 
 
 def pytest_configure(config: pytest.Config) -> None:
     for solution in _SOLUTIONS:
-        config.addinivalue_line("markers", f"{solution}: scenario only applies to the '{solution}' solution")
+        config.addinivalue_line(
+            "markers", f"{solution}: scenario only applies to the '{solution}' solution"
+        )
 
 
-def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:
+def pytest_collection_modifyitems(
+    config: pytest.Config, items: list[pytest.Item]
+) -> None:
     """Deselect scenarios tagged for a solution other than the one being tested.
 
     Every solution loads every feature file (see each test_solution.py); an
