@@ -1,23 +1,14 @@
 # Copyright 2026 Canonical Ltd.
 # See LICENSE file for licensing details.
 #
-# Concierge (https://github.com/canonical/concierge) configuration for the
-# Canonical K8s substrate used by the Terraform product integration tests in
-# tests/integration. To provision a machine by hand:
+# Canonical K8s substrate for the Terraform product integration tests. To
+# provision a machine by hand:
 #
 #   sudo -E concierge prepare -c concierge-k8s.yaml
 #
-# `sudo -E` matters: concierge expands $DOCKERHUB_MIRROR itself, so the variable
-# has to survive sudo. It is only set on IS-hosted runners; elsewhere concierge
-# sees an empty URL and skips the mirror.
-#
-# CI applies exactly one setting on top of this file - dns.upstream-nameservers,
-# which is specific to the machine the job lands on and cannot be expressed here
-# because concierge expands environment variables only in the image-registry
-# block, not in `features`. See .github/workflows/_integration.yml.
+# `-E` matters: concierge expands $DOCKERHUB_MIRROR itself. It is only set on
+# IS-hosted runners; elsewhere the URL is empty and the mirror is skipped.
 juju:
-  # The default 20-minute bootstrap timeout is too short for the controller pod
-  # to expose its API on busy CI runners.
   extra-bootstrap-args: --config bootstrap-timeout=1800 --config model-logs-size=10G
   model-defaults:
     logging-config: <root>=INFO; unit=DEBUG
@@ -26,13 +17,7 @@ providers:
   k8s:
     enable: true
     bootstrap: true
-    # The LTS track, matching concierge's own default and other Canonical repos.
     channel: 1.32-classic/stable
-    # Canonical K8s pulls workload images through containerd, so the Docker Hub
-    # mirror is as necessary as it was for MicroK8s; only the location of the
-    # config changes. Concierge writes it to
-    # /etc/containerd/hosts.d/docker.io/hosts.toml *before* bootstrapping, so
-    # even the bootstrap images come from the mirror.
     image-registry:
       url: $DOCKERHUB_MIRROR
     features:
@@ -40,10 +25,7 @@ providers:
       local-storage: {}
       load-balancer:
         l2-mode: "true"
-        # An arbitrary, deliberately unrouted range - the same one concierge's
-        # own k8s preset uses. The integration tests reach Traefik over HTTP from
-        # the host (see catalogue_apps_are_reachable in tests/integration/
-        # helpers.py), which works because traffic to a LoadBalancer address is
-        # redirected by the service datapath before it is ever routed, so the
-        # range never needs to be reachable on the wire.
+        # Arbitrary unrouted range, as in concierge's own k8s preset: traffic to
+        # a LoadBalancer address is redirected by the service datapath before it
+        # is ever routed, so this never needs to be reachable on the wire.
         cidrs: "10.43.45.0/28"

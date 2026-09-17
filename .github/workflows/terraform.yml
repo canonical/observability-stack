@@ -93,6 +93,9 @@ jobs:
               - *shared
               - 'terraform/cos-dev/**'
               - 'tests/integration/cos_dev/**'
+  # The COS and COS Dev suites are paused while the Canonical K8s migration
+  # settles; only COS Lite runs. Referenced relatively so a branch tests its own
+  # copy of the workflow rather than main's.
   test-integration-cos-lite:
     name: COS Lite Terraform integration
     uses: ./.github/workflows/_integration.yml
