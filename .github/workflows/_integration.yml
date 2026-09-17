@@ -59,6 +59,21 @@ jobs:
           sudo apt-get remove -y docker.io containerd
           sudo rm -rf /run/containerd
 
+      # dockerd sets `iptables -P FORWARD DROP` and compensates with its own
+      # ACCEPT rules. Removing the package tears out those rules but leaves the
+      # DROP policy as live kernel state, which silently blackholes all pod
+      # egress: pods can still reach each other on-node (no FORWARD needed) but
+      # nothing off the node, so the Juju controller cannot reach charmhub.
+      # MicroK8s used to set this for us - Canonical K8s does not.
+      - name: Allow forwarded traffic
+        run: |
+          echo "--- FORWARD policy before ---"
+          sudo iptables -S FORWARD | head -1
+          sudo iptables -P FORWARD ACCEPT
+          sudo ip6tables -P FORWARD ACCEPT || true
+          echo "--- FORWARD policy after ---"
+          sudo iptables -S FORWARD | head -1
+
       - name: Concierge prepare
         timeout-minutes: 30
         run: |
@@ -98,28 +113,40 @@ jobs:
 
           sudo k8s status --wait-ready --timeout 5m
 
-      # Establishes *where* name resolution breaks before spending 5+ minutes on a
-      # deployment that would fail opaquely on every charm at once. The four probes
-      # separate the possible causes:
+      # Establishes *where* connectivity breaks before spending 5+ minutes on a
+      # deployment that would fail opaquely on every charm at once:
       #   1 fails            -> pod cannot reach the CoreDNS ClusterIP (datapath)
       #   1 ok, 2 fails      -> CoreDNS reachable, its upstream forwarding is broken
-      #   3 ok, 2 fails      -> upstream is reachable from pods; CoreDNS config wrong
-      #   3 fails, 4 ok      -> node's resolver unreachable from pods; use a public one
-      #   3 and 4 both fail  -> pod egress is blocked, not a DNS problem at all
-      - name: Diagnose in-cluster DNS
-        timeout-minutes: 6
+      #   3 ok, 2 fails      -> upstream reachable from pods; CoreDNS config wrong
+      #   3 fails, 4 ok      -> node's resolver unreachable from pods
+      #   3 and 4 fail, 5 ok -> UDP/53 specifically is blocked off-node
+      #   3, 4 and 5 all fail-> all pod egress is blocked (check the FORWARD policy)
+      - name: Diagnose pod DNS and egress
+        timeout-minutes: 8
         run: |
-          echo "--- CoreDNS Corefile ---"
-          kubectl -n kube-system get configmap coredns -o jsonpath='{.data.Corefile}' || true
-          echo
-          echo "--- CoreDNS service and endpoints ---"
-          kubectl -n kube-system get svc,endpoints -l k8s-app=kube-dns -o wide || true
+          echo "--- FORWARD policy and masquerade rules ---"
+          sudo iptables -S FORWARD | head -3
+          sudo iptables -t nat -S POSTROUTING | grep -i -e masq -e cilium | head -10 || true
+
+          # CK8s does not use the upstream `coredns` configmap name or the
+          # k8s-app=kube-dns label, so discover them rather than assuming.
+          echo "--- kube-system services ---"
+          kubectl -n kube-system get svc -o wide || true
+          echo "--- DNS-related configmaps ---"
+          for cm in $(kubectl -n kube-system get cm -o name | grep -i dns); do
+            echo "### $cm"
+            kubectl -n kube-system get "$cm" -o jsonpath='{.data}' || true
+            echo
+          done
 
           kubectl -n kube-system rollout status deployment/coredns --timeout=3m
 
           # nslookup takes a single server, so use the first of the list.
           NODE_DNS="${UPSTREAM_DNS%%,*}"
-          echo "Probing with node resolver ${NODE_DNS}"
+          # Resolved on the node (whose DNS works) so probe 5 can test raw pod
+          # egress without depending on DNS at all.
+          CHARMHUB_IP=$(getent ahostsv4 api.charmhub.io | awk '{print $1; exit}')
+          echo "Probing with node resolver ${NODE_DNS}, charmhub IP ${CHARMHUB_IP:-unresolved}"
 
           kubectl run dns-check --restart=Never --image=busybox:1.36 --command -- \
             sh -c "
@@ -131,6 +158,8 @@ jobs:
               nslookup api.charmhub.io ${NODE_DNS}; echo \"rc=\$?\"
               echo '== 4. external name direct to 8.8.8.8 =='
               nslookup api.charmhub.io 8.8.8.8; echo \"rc=\$?\"
+              echo '== 5. raw TCP egress to ${CHARMHUB_IP:-none}:443 (no DNS) =='
+              nc -w 5 -z ${CHARMHUB_IP:-127.0.0.1} 443; echo \"rc=\$?\"
               exit \$rc_cluster
             "
           kubectl wait --for=jsonpath='{.status.phase}'=Succeeded pod/dns-check --timeout=3m || true
