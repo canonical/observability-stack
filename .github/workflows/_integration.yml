@@ -66,23 +66,42 @@ jobs:
       - name: Concierge prepare
         timeout-minutes: 30
         run: |
-          # MetalLB needs an address range it can answer ARP for. The node's own
-          # address is what the previous MicroK8s setup used and is reachable
-          # from the runner, which is all the tests require.
+          sudo snap install concierge --classic
+          # -E so concierge can expand $DOCKERHUB_MIRROR from the runner's env.
+          sudo -E concierge prepare \
+            --config concierge-k8s.yaml \
+            --juju-channel ${{ matrix.juju-channel }} \
+            --extra-snaps just,astral-uv,terraform
+
+      # These two settings cannot live in concierge-k8s.yaml: concierge expands
+      # environment variables only in the image-registry block, not in `features`,
+      # and both values are specific to the machine the job landed on.
+      - name: Configure node-specific K8s features
+        timeout-minutes: 10
+        run: |
+          echo "--- CoreDNS Corefile as bootstrapped ---"
+          kubectl -n kube-system get configmap coredns -o jsonpath='{.data.Corefile}' || true
+          echo
+
+          # Narrow MetalLB to the node's own address. The previous MicroK8s setup
+          # used `metallb:$IPADDR-$IPADDR`; keeping that keeps the load-balanced
+          # address reachable from the runner itself, which the tests rely on.
           IPADDR=$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc')
+          echo "Setting load-balancer.cidrs to ${IPADDR}/32"
+          sudo k8s set load-balancer.cidrs="${IPADDR}/32"
 
           # CoreDNS forwards to the node's /etc/resolv.conf unless told otherwise,
-          # but on Ubuntu that is the systemd-resolved stub (127.0.0.53). Inside
-          # the CoreDNS pod that address is the pod's own loopback, where nothing
-          # is listening, so every external lookup returns SERVFAIL and Juju fails
-          # to reach api.charmhub.io. MicroK8s' dns addon probed the host's real
-          # resolvers for us; Canonical K8s does not, so pass them explicitly.
-          # The real upstreams live in /run/systemd/resolve/resolv.conf, not in
-          # /etc/resolv.conf.
+          # but on Ubuntu that file is the systemd-resolved stub (127.0.0.53), and
+          # inside the CoreDNS pod that address is the pod's own loopback where
+          # nothing is listening - so external lookups return SERVFAIL and Juju
+          # cannot reach api.charmhub.io. The real resolvers are only in
+          # /run/systemd/resolve/resolv.conf. MicroK8s' dns addon probed for these;
+          # Canonical K8s does not.
           DNS_SOURCES=""
           for f in /run/systemd/resolve/resolv.conf /etc/resolv.conf; do
             [ -r "$f" ] && DNS_SOURCES="$DNS_SOURCES $f"
           done
+          # Word splitting of $DNS_SOURCES is intentional.
           # shellcheck disable=SC2086
           UPSTREAM_DNS=$(awk '/^nameserver/ && $2 !~ /^127\./ {print $2}' $DNS_SOURCES \
             | awk '!seen[$0]++' | paste -sd,)
@@ -90,45 +109,14 @@ jobs:
             echo "::error::Could not determine the node's upstream nameservers from:$DNS_SOURCES"
             exit 1
           fi
-          echo "CoreDNS will forward to: $UPSTREAM_DNS"
+          echo "Setting dns.upstream-nameservers to ${UPSTREAM_DNS}"
+          sudo k8s set dns.upstream-nameservers="$UPSTREAM_DNS"
 
-          # Canonical K8s still pulls workload images through containerd, so the
-          # IS-hosted Docker Hub mirror is as necessary as it was for MicroK8s;
-          # only the config location changes. Concierge writes it to
-          # /etc/containerd/hosts.d/docker.io/hosts.toml *before* bootstrapping,
-          # so even the bootstrap images come from the mirror.
-          # DOCKERHUB_MIRROR is unset on GitHub-hosted runners, in which case
-          # concierge sees an empty URL and skips the mirror entirely.
-          cat > /tmp/concierge.yaml << EOF
-          juju:
-            # The default 20-minute bootstrap timeout is too short for the
-            # controller pod to expose its API on busy CI runners.
-            extra-bootstrap-args: --config bootstrap-timeout=1800 --config model-logs-size=10G
-            model-defaults:
-              logging-config: '<root>=INFO; unit=DEBUG'
-          providers:
-            k8s:
-              enable: true
-              bootstrap: true
-              channel: 1.34-classic/stable
-              image-registry:
-                url: "${DOCKERHUB_MIRROR:-}"
-              features:
-                network: {}
-                local-storage: {}
-                dns:
-                  upstream-nameservers: "${UPSTREAM_DNS}"
-                load-balancer:
-                  l2-mode: "true"
-                  cidrs: "${IPADDR}/32"
-          EOF
-          cat /tmp/concierge.yaml
+          sudo k8s status --wait-ready --timeout 5m
 
-          sudo snap install concierge --classic
-          sudo concierge prepare \
-            --config /tmp/concierge.yaml \
-            --juju-channel ${{ matrix.juju-channel }} \
-            --extra-snaps just,astral-uv,terraform
+          echo "--- CoreDNS Corefile after reconfiguration ---"
+          kubectl -n kube-system get configmap coredns -o jsonpath='{.data.Corefile}' || true
+          echo
 
       # Fail fast and unambiguously if pods cannot resolve external names. Without
       # this the symptom only surfaces minutes later, as an opaque Terraform error

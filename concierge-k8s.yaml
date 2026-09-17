@@ -1,0 +1,48 @@
+# Copyright 2026 Canonical Ltd.
+# See LICENSE file for licensing details.
+#
+# Concierge (https://github.com/canonical/concierge) configuration for the
+# Canonical K8s substrate used by the Terraform product integration tests in
+# tests/integration. To provision a machine by hand:
+#
+#   sudo -E concierge prepare -c concierge-k8s.yaml
+#
+# `sudo -E` matters: concierge expands $DOCKERHUB_MIRROR itself, so the variable
+# has to survive sudo. It is only set on IS-hosted runners; elsewhere concierge
+# sees an empty URL and skips the mirror.
+#
+# Two host-specific settings deliberately live in the workflow rather than here,
+# because concierge only expands environment variables in the image-registry
+# block and not in `features`:
+#   - load-balancer.cidrs      - narrowed to the runner's own address
+#   - dns.upstream-nameservers - the node's real resolvers
+# See the "Configure node-specific K8s features" step in
+# .github/workflows/_integration.yml.
+juju:
+  # The default 20-minute bootstrap timeout is too short for the controller pod
+  # to expose its API on busy CI runners.
+  extra-bootstrap-args: --config bootstrap-timeout=1800 --config model-logs-size=10G
+  model-defaults:
+    logging-config: <root>=INFO; unit=DEBUG
+
+providers:
+  k8s:
+    enable: true
+    bootstrap: true
+    # The LTS track, matching concierge's own default and other Canonical repos.
+    channel: 1.32-classic/stable
+    # Canonical K8s pulls workload images through containerd, so the Docker Hub
+    # mirror is as necessary as it was for MicroK8s; only the location of the
+    # config changes. Concierge writes it to
+    # /etc/containerd/hosts.d/docker.io/hosts.toml *before* bootstrapping, so
+    # even the bootstrap images come from the mirror.
+    image-registry:
+      url: $DOCKERHUB_MIRROR
+    features:
+      network: {}
+      local-storage: {}
+      load-balancer:
+        l2-mode: "true"
+        # A safe default for local/VM use. CI overrides this with the node's own
+        # address so that the load-balanced address is reachable from the runner.
+        cidrs: "10.43.45.0/28"
