@@ -14,4 +14,5 @@ Feature: Metrics collection
       | alertmanager |
       | grafana      |
       | loki         |
+      | prometheus   |
       | traefik      |
