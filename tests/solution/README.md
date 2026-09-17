@@ -56,12 +56,35 @@ SOLUTION_MODEL="microk8s-localhost:cos-lite" uv run --frozen --isolated pytest -
 
 ## Adding a new scenario
 
-Add a new `.feature` file per capability (e.g. `features/tracing.feature`). 
-Reuse `steps/common_steps.py`'s steps (deploy, wait, health checks) where they
-apply. Every solution's `test_solution.py` loads all of `features/`, so an untagged
+Add a new `.feature` file per capability (e.g. `features/tracing.feature`). Reuse the existing
+steps where they apply -- most scenarios want the `Given the solution has been deployed` /
+`And the model is healthy` background. Every solution's `test_solution.py` loads all of
+`features/`, so an untagged
 scenario runs for every solution; tag a scenario with one or more solution names (e.g. `@cos`,
 matching the solution's directory name) to restrict it to those solutions -- `conftest.py`
 deselects it everywhere else. Steps stay shared regardless of tags.
+
+A `Feature:` describes a capability in solution-agnostic terms ("the metrics backend scrapes every
+component that exposes metrics"); the scenarios under it name the concrete workload. That way COS
+can reuse the same feature file by adding its own scenario (e.g. one driving Mimir alongside the
+COS Lite one driving Prometheus), each tagged for its solution.
+
+### Writing steps
+
+Steps are declarative: each one states a fact about the system and asserts it on its own, so it
+can be dropped into any scenario. These suites deploy and mutate nothing, so most scenarios are
+just a background plus one or more `Then`s.
+
+Step definitions live in `steps/`, grouped by the domain concept they talk about (e.g.
+`steps/deployment.py`, `steps/telemetry.py`, `steps/grafana.py`) rather than by the feature file
+that uses them. Register new modules in `conftest.py`'s `pytest_plugins`.
+
+### Talking to workloads
+
+Assertions against running workloads go through
+[observability-clients](https://pypi.org/project/observability-clients/) fixtures in `clients.py`,
+built lazily for each workload. Only
+add retries where data genuinely trails active/idle (e.g. the first Prometheus scrape).
 
 ## Adding a new solution
 
