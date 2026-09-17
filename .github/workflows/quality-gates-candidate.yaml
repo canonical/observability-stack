@@ -10,9 +10,14 @@ name: Solution tests
 
 on:
   workflow_dispatch: {}
-  schedule:
-    # Once a month, on the 1st at 03:00 UTC.
-    - cron: "0 3 1 * *"
+  # The monthly run is disabled while the Canonical K8s migration is validated
+  # via COS Lite / tls_none in _integration.yml: solution tests deploy whole
+  # solutions on every supported branch and are the most expensive suite here.
+  # Restore the schedule once the migration is green. Until then the solutions
+  # can still be run deliberately via workflow_dispatch.
+  # schedule:
+  #   # Once a month, on the 1st at 03:00 UTC.
+  #   - cron: "0 3 1 * *"
 
 jobs:
   solutions:

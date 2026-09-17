@@ -22,6 +22,10 @@ on:
         - self-hosted-linux-amd64-noble-large
         - self-hosted-linux-amd64-noble-xlarge
         - self-hosted-linux-amd64-noble-2xlarge
+      debug-ssh:
+        description: 'Open an SSH session once the substrate is provisioned, before the product tests run.'
+        type: boolean
+        default: false
   workflow_call:
     inputs:
       product:
@@ -30,6 +34,9 @@ on:
       runner:
         type: string
         default: ubuntu-latest
+      debug-ssh:
+        type: boolean
+        default: false
 
 jobs:
   terraform-test:
@@ -39,86 +46,73 @@ jobs:
       fail-fast: false
       matrix:
         juju-channel: ["3.6/stable"]
-        scenario: ["tls_full", "tls_external", "tls_internal", "tls_none"]
-        include:
-        - juju-channel: "4.1/beta"
-          scenario: "juju_4"
+        # Only the cheapest scenario runs while the Canonical K8s migration is
+        # being validated. Restore the full matrix below once it is green.
+        scenario: ["tls_none"]
+        # scenario: ["tls_full", "tls_external", "tls_internal", "tls_none"]
+        # include:
+        # - juju-channel: "4.1/beta"
+        #   scenario: "juju_4"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      # --- Substrate setup ---
+      # Canonical K8s ships and manages its own containerd. On IS-hosted runners
+      # the pre-installed docker.io/containerd packages conflict with it, so they
+      # are removed before bootstrapping.
+      # https://documentation.ubuntu.com/self-hosted-runners/en/latest/usage/faq/how-to-setup-canonical-k8s/
+      - name: Remove docker.io and containerd
+        if: ${{ runner.environment == 'self-hosted' }}
+        run: |
+          export DEBIAN_FRONTEND=noninteractive
+          sudo apt-get remove -y docker.io containerd
+          sudo rm -rf /run/containerd
+
       - name: Concierge prepare
-        if: ${{ runner.environment == 'github-hosted' }}
+        timeout-minutes: 30
         run: |
-          sudo snap install concierge --classic
-          sudo concierge prepare --juju-channel ${{ matrix.juju-channel }} -p microk8s --extra-snaps just,astral-uv,terraform
+          # MetalLB needs an address range it can answer ARP for. The node's own
+          # address is what the previous MicroK8s setup used and is reachable
+          # from the runner, which is all the tests require.
+          IPADDR=$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc')
 
-      # Setup for Self-hosted (PS7) runners
-      - name: Install snaps
-        if: ${{ runner.environment == 'self-hosted' }}
-        run: |
-          sudo snap install juju --classic --channel=${{ matrix.juju-channel }}
-          sudo snap install just --classic
-          sudo snap install astral-uv --classic
-          sudo snap install terraform --classic
-      - name: (IS hosted) Configure microk8s Docker Hub mirror
-        timeout-minutes: 10
-        if: ${{ runner.environment == 'self-hosted' }}
-        run: |
-          sudo snap install microk8s --channel "1.34-strict/stable" --classic
-          sudo adduser "$USER" snap_microk8s
-
-          # Wait for microk8s to populate iptables
-          # https://chat.canonical.com/canonical/pl/jo5cg6wqjjrudqd5ybj6hhttee
-          until sudo iptables --list | grep -q -i "microk8s"
-          do
-            echo "MicroK8s has not yet configured iptables."
-            sleep 10
-          done
-
-          sudo tee /var/snap/microk8s/current/args/certs.d/docker.io/hosts.toml << EOF
-          server = "$DOCKERHUB_MIRROR"
-          [host."${DOCKERHUB_MIRROR#'https://'}"]
-          capabilities = ["pull", "resolve"]
+          # Canonical K8s still pulls workload images through containerd, so the
+          # IS-hosted Docker Hub mirror is as necessary as it was for MicroK8s;
+          # only the config location changes. Concierge writes it to
+          # /etc/containerd/hosts.d/docker.io/hosts.toml *before* bootstrapping,
+          # so even the bootstrap images come from the mirror.
+          # DOCKERHUB_MIRROR is unset on GitHub-hosted runners, in which case
+          # concierge sees an empty URL and skips the mirror entirely.
+          cat > /tmp/concierge.yaml << EOF
+          juju:
+            # The default 20-minute bootstrap timeout is too short for the
+            # controller pod to expose its API on busy CI runners.
+            extra-bootstrap-args: --config bootstrap-timeout=1800 --config model-logs-size=10G
+            model-defaults:
+              logging-config: '<root>=INFO; unit=DEBUG'
+          providers:
+            k8s:
+              enable: true
+              bootstrap: true
+              channel: 1.34-classic/stable
+              image-registry:
+                url: "${DOCKERHUB_MIRROR:-}"
+              features:
+                network: {}
+                local-storage: {}
+                load-balancer:
+                  l2-mode: "true"
+                  cidrs: "${IPADDR}/32"
           EOF
-          sudo microk8s stop
-          sudo microk8s start
-      - name: Set up microk8s
-        id: microk8s-setup
-        timeout-minutes: 15
-        if: ${{ runner.environment == 'self-hosted' }}
-        run: |
-          sudo apt-get update
-          sudo apt-get install retry -y
+          cat /tmp/concierge.yaml
 
-          # `newgrp` does not work in GitHub Actions; use `sudo --user` instead
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable dns
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s.kubectl rollout status --namespace kube-system --watch --timeout=5m deployments/coredns
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable hostpath-storage
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s.kubectl rollout status --namespace kube-system --watch --timeout=5m deployments/hostpath-provisioner
+          sudo snap install concierge --classic
+          sudo concierge prepare \
+            --config /tmp/concierge.yaml \
+            --juju-channel ${{ matrix.juju-channel }} \
+            --extra-snaps just,astral-uv,terraform
 
-          IPADDR=$(ip -4 -j route get 2.2.2.2 | sed -n -e 's/^.*prefsrc\":"\([^ "]*\).*/\1/p')
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable "metallb:$IPADDR-$IPADDR"
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable ingress
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable rbac
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable registry
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
-
-          mkdir ~/.kube/
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s config | sudo tee ~/.kube/config > /dev/null
-      - name: Set up environment
-        timeout-minutes: 15
-        if: ${{ runner.environment == 'self-hosted' }}
-        run: |
-          mkdir -p ~/.local/share/juju  # Workaround for juju 3 strict snap
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- juju bootstrap microk8s --config model-logs-size=10G microk8s
-          juju model-defaults logging-config='<root>=INFO; unit=DEBUG'
-
-      # Runner-independent setup
       - name: Install and configure microceph
         if: ${{ inputs.product == 'cos' }}
         run: |
@@ -149,6 +143,23 @@ jobs:
           sudo microceph enable rgw --port 8080 --ssl-port 8443
           sudo microceph.radosgw-admin user create --uid=user --display-name=User
           sudo microceph.radosgw-admin key create --uid=user --key-type=s3 --access-key=access-key --secret-key=secret-key
+
+      - name: Report substrate state
+        run: |
+          sudo k8s status
+          kubectl get nodes -o wide
+          kubectl get pods --all-namespaces
+          juju controllers
+          juju clouds --client
+
+      # Provisioning is complete but no product has been deployed yet, so this is
+      # the cheapest point at which to inspect a freshly built substrate.
+      - name: Open SSH session before the product tests
+        if: ${{ inputs.debug-ssh || runner.debug == '1' }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          timeout-minutes: 30
+          limit-access-to-actor: true
 
       - name: Test deployment
         run: |

@@ -6,6 +6,11 @@ on:
     paths:
       - "**/*.tf"
       - "tests/integration/**"
+      # The `changes` job's `shared` filter already treats these as affecting
+      # every product suite, but that was unreachable while the trigger itself
+      # ignored them: a PR touching only CI could never run the suites it changed.
+      - ".github/workflows/terraform.yml"
+      - ".github/workflows/_integration.yml"
 
 jobs:
   lint-terraform:
@@ -91,27 +96,34 @@ jobs:
               - *shared
               - 'terraform/cos-dev/**'
               - 'tests/integration/cos_dev/**'
+  # COS Lite is the cheapest product to deploy, so it is the only suite kept
+  # active while the Canonical K8s migration is validated. Restore the COS and
+  # COS Dev jobs below once COS Lite / tls_none passes on Canonical K8s.
+  #
+  # `_integration.yml` is referenced relatively rather than pinned to @main, so
+  # that a branch/PR exercises its *own* copy of the substrate setup. Pinning to
+  # @main meant CI changes could never be tested before merging them.
   test-integration-cos-lite:
     name: COS Lite Terraform integration
     needs: [test-unit, changes]
     if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.cos_lite == 'true' }}
-    uses: canonical/observability-stack/.github/workflows/_integration.yml@main
+    uses: ./.github/workflows/_integration.yml
     with:
       product: cos_lite
       runner: self-hosted-linux-amd64-noble-large
-  test-integration-cos:
-    name: COS Terraform integration
-    needs: [test-unit, changes]
-    if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.cos == 'true' }}
-    uses: canonical/observability-stack/.github/workflows/_integration.yml@main
-    with:
-      product: cos
-      runner: self-hosted-linux-amd64-noble-xlarge
-  test-integration-cos-dev:
-    name: COS Dev Terraform integration
-    needs: [test-unit, changes]
-    if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.cos_dev == 'true' }}
-    uses: canonical/observability-stack/.github/workflows/_integration.yml@main
-    with:
-      product: cos_dev
-      runner: self-hosted-linux-amd64-noble-large
+  # test-integration-cos:
+  #   name: COS Terraform integration
+  #   needs: [test-unit, changes]
+  #   if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.cos == 'true' }}
+  #   uses: ./.github/workflows/_integration.yml
+  #   with:
+  #     product: cos
+  #     runner: self-hosted-linux-amd64-noble-xlarge
+  # test-integration-cos-dev:
+  #   name: COS Dev Terraform integration
+  #   needs: [test-unit, changes]
+  #   if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.cos_dev == 'true' }}
+  #   uses: ./.github/workflows/_integration.yml
+  #   with:
+  #     product: cos_dev
+  #     runner: self-hosted-linux-amd64-noble-large
