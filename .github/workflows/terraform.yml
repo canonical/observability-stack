@@ -4,7 +4,9 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - "**/*.tf"
+      # terraform/** rather than **/*.tf: the jobs below only ever act on
+      # terraform/*/, and *.tftest.hcl there drives the unit tests.
+      - "terraform/**"
       - "tests/integration/**"
       - ".github/workflows/terraform.yml"
       - ".github/workflows/_integration.yml"
@@ -93,9 +95,6 @@ jobs:
               - *shared
               - 'terraform/cos-dev/**'
               - 'tests/integration/cos_dev/**'
-  # The COS and COS Dev suites are paused while the Canonical K8s migration
-  # settles; only COS Lite runs. Referenced relatively so a branch tests its own
-  # copy of the workflow rather than main's.
   test-integration-cos-lite:
     name: COS Lite Terraform integration
     uses: ./.github/workflows/_integration.yml

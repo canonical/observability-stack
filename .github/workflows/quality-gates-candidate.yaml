@@ -9,7 +9,6 @@ name: Solution tests
 # separate, independent test+promote pipeline is instantiated per branch.
 
 on:
-  # The monthly schedule is paused while the Canonical K8s migration settles.
   workflow_dispatch: {}
 
 jobs:

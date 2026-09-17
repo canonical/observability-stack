@@ -22,10 +22,6 @@ on:
         - self-hosted-linux-amd64-noble-large
         - self-hosted-linux-amd64-noble-xlarge
         - self-hosted-linux-amd64-noble-2xlarge
-      debug-ssh:
-        description: 'Open an SSH session once the substrate is provisioned, before the product tests run.'
-        type: boolean
-        default: false
   workflow_call:
     inputs:
       product:
@@ -34,9 +30,6 @@ on:
       runner:
         type: string
         default: ubuntu-latest
-      debug-ssh:
-        type: boolean
-        default: false
 
 jobs:
   terraform-test:
@@ -46,7 +39,6 @@ jobs:
       fail-fast: false
       matrix:
         juju-channel: ["3.6/stable"]
-        # Only the cheapest scenario while the Canonical K8s migration settles.
         scenario: ["tls_none"]
     steps:
       - name: Checkout
@@ -76,44 +68,6 @@ jobs:
             --config concierge-k8s.yaml \
             --juju-channel ${{ matrix.juju-channel }} \
             --extra-snaps just,astral-uv,terraform
-
-      # Cannot live in concierge-k8s.yaml: concierge expands env vars only in
-      # the image-registry block, and the value is per-machine anyway. Without
-      # this CoreDNS forwards to the systemd-resolved stub (127.0.0.53), which
-      # inside the pod is its own loopback.
-      - name: Point CoreDNS at the node's resolvers
-        timeout-minutes: 10
-        run: |
-          DNS_SOURCES=""
-          for f in /run/systemd/resolve/resolv.conf /etc/resolv.conf; do
-            [ -r "$f" ] && DNS_SOURCES="$DNS_SOURCES $f"
-          done
-          # Word splitting of $DNS_SOURCES is intentional.
-          # shellcheck disable=SC2086
-          UPSTREAM_DNS=$(awk '/^nameserver/ && $2 !~ /^127\./ {print $2}' $DNS_SOURCES \
-            | awk '!seen[$0]++' | paste -sd,)
-          if [ -z "$UPSTREAM_DNS" ]; then
-            echo "::error::Could not determine the node's upstream nameservers"
-            exit 1
-          fi
-          sudo k8s set dns.upstream-nameservers="$UPSTREAM_DNS"
-          sudo k8s status --wait-ready --timeout 5m
-
-      # Fails in seconds if pods have no external DNS or egress; otherwise the
-      # symptom only surfaces minutes later, on every charm at once.
-      - name: Check pod egress
-        timeout-minutes: 5
-        run: |
-          kubectl run dns-check --restart=Never --image=busybox:1.36 \
-            --command -- nslookup api.charmhub.io
-          kubectl wait --for=jsonpath='{.status.phase}'=Succeeded pod/dns-check --timeout=2m || true
-          kubectl logs dns-check || true
-          phase=$(kubectl get pod dns-check -o jsonpath='{.status.phase}' 2>/dev/null || echo Unknown)
-          kubectl delete pod dns-check --now --ignore-not-found
-          if [ "$phase" != "Succeeded" ]; then
-            echo "::error::Pods cannot resolve external names (phase=$phase)"
-            exit 1
-          fi
 
       - name: Install and configure microceph
         if: ${{ inputs.product == 'cos' }}
@@ -146,13 +100,6 @@ jobs:
           sudo microceph.radosgw-admin user create --uid=user --display-name=User
           sudo microceph.radosgw-admin key create --uid=user --key-type=s3 --access-key=access-key --secret-key=secret-key
 
-      - name: Open SSH session before the product tests
-        if: ${{ inputs.debug-ssh || runner.debug == '1' }}
-        uses: mxschmitt/action-tmate@v3
-        with:
-          timeout-minutes: 30
-          limit-access-to-actor: true
-
       - name: Test deployment
         run: |
           if [[ "${{ inputs.product }}" == "cos" ]]; then
@@ -169,7 +116,7 @@ jobs:
           fi
 
       - name: Open SSH session on failure
-        if: ${{ failure() && (inputs.debug-ssh || runner.debug == '1') }}
+        if: ${{ failure() && (runner.debug == '1') }}
         uses: mxschmitt/action-tmate@v3
         with:
           timeout-minutes: 30

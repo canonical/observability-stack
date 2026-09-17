@@ -25,7 +25,5 @@ providers:
       local-storage: {}
       load-balancer:
         l2-mode: "true"
-        # Arbitrary unrouted range, as in concierge's own k8s preset: traffic to
-        # a LoadBalancer address is redirected by the service datapath before it
-        # is ever routed, so this never needs to be reachable on the wire.
+        # Any unrouted range works; matches concierge's own k8s preset.
         cidrs: "10.43.45.0/28"
