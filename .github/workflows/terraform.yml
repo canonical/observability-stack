@@ -103,10 +103,14 @@ jobs:
   # `_integration.yml` is referenced relatively rather than pinned to @main, so
   # that a branch/PR exercises its *own* copy of the substrate setup. Pinning to
   # @main meant CI changes could never be tested before merging them.
+  #
+  # The `needs: [test-unit, changes]` gate and the
+  # `if: ... needs.changes.outputs.cos_lite == 'true'` condition are dropped for
+  # now so the deployment starts immediately instead of queueing behind the lint
+  # and unit jobs. Those still run, just in parallel. Restore both when the
+  # migration is done (see the commented jobs below for the original form).
   test-integration-cos-lite:
     name: COS Lite Terraform integration
-    needs: [test-unit, changes]
-    if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.cos_lite == 'true' }}
     uses: ./.github/workflows/_integration.yml
     with:
       product: cos_lite
