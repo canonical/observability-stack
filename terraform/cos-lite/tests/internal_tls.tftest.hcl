@@ -1,9 +1,10 @@
 mock_provider "juju" {}
 
 variables {
-  grafana    = { storage_directives = { "foo" = "1G" } }
-  loki       = { storage_directives = { "foo" = "1G" } }
-  prometheus = { storage_directives = { "foo" = "1G" } }
+  grafana                 = { storage_directives = { "foo" = "1G" } }
+  loki                    = { storage_directives = { "foo" = "1G" } }
+  opentelemetry_collector = { storage_directives = { "foo" = "1G" } }
+  prometheus              = { storage_directives = { "foo" = "1G" } }
 }
 
 # --- default: internal_tls enabled ---
@@ -17,8 +18,13 @@ run "internal_tls_enabled" {
   }
 
   assert {
-    condition     = length(juju_integration.internal_certificates) == 5
+    condition     = length(juju_integration.internal_certificates) == 6
     error_message = "Unexpected internal_certificates integrations when internal_tls is enabled"
+  }
+
+  assert {
+    condition     = contains(keys(juju_integration.internal_certificates), "opentelemetry_collector")
+    error_message = "Expected otelcol to be served a certificate when internal_tls is enabled"
   }
 
   assert {

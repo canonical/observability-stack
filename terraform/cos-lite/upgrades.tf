@@ -44,6 +44,12 @@ data "juju_charm" "loki_info" {
   base    = local.bases.o11y
 }
 
+data "juju_charm" "otelcol_info" {
+  charm   = "opentelemetry-collector-k8s"
+  channel = local.channels.otelcol
+  base    = local.bases.o11y
+}
+
 data "juju_charm" "prometheus_info" {
   charm   = "prometheus-k8s"
   channel = local.channels.prometheus

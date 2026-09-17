@@ -7,7 +7,7 @@ https://documentation.ubuntu.com/observability/latest/how-to/configure-tls-encry
 from pathlib import Path
 
 import jubilant
-from helpers import generic_assertions
+from helpers import generic_assertions, no_errors_in_otelcol_logs
 
 TRACK_3_TF_FILE = Path(__file__).parent.resolve() / "track-3.0.tf"
 TRACK_DEV_TF_FILE = Path(__file__).parent.resolve() / "track-dev.tf"
@@ -31,3 +31,4 @@ def test_deploy_to_track_dev(
 
     # THEN the model is upgraded and is healthy
     generic_assertions(cos_model, ca_model, tmp_path)
+    no_errors_in_otelcol_logs(cos_model)
