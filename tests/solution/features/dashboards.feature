@@ -1,8 +1,7 @@
 Feature: Dashboard aggregation
   Grafana aggregates the dashboards shipped by the other components.
 
-  Every dashboard carries a `charm: <charm-name>` tag identifying the charm
-  that provided it, which is more stable than matching dashboard titles.
+  Every dashboard carries a `charm: <charm-name>` tag identifying the charm that provided it.
 
   Background:
     Given the solution has been deployed

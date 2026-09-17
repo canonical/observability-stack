@@ -20,7 +20,9 @@ TERRAFORM_BIN = os.environ.get("terraform") or "terraform"
 
 def discover_solutions() -> frozenset[str]:
     """Every solution name under tests/solution/ (any dir with a terraform/ subdir)."""
-    return frozenset(p.name for p in SOLUTION_ROOT.iterdir() if (p / "terraform").is_dir())
+    return frozenset(
+        p.name for p in SOLUTION_ROOT.iterdir() if (p / "terraform").is_dir()
+    )
 
 
 def terraform_output(terraform_dir: Path) -> Dict[str, Any]:
@@ -45,6 +47,14 @@ def wait_for_active_idle(juju: jubilant.Juju, timeout: int = 60 * 45):
         timeout=timeout,
         error=jubilant.any_error,
     )
+
+
+def leader_unit(juju: jubilant.Juju, app: str) -> str:
+    """Name of the leader unit of an application."""
+    for name, unit in juju.status().apps[app].units.items():
+        if unit.leader:
+            return name
+    raise AssertionError(f"no leader unit found for application '{app}'")
 
 
 def unit_url(juju: jubilant.Juju, app: str, port: int) -> str:

@@ -17,12 +17,10 @@ def grafana_has_a_dashboard_from(grafana: Grafana, charm: str):
     target_fixture="datasource",
 )
 def grafana_has_a_datasource_for(grafana: Grafana, application: str) -> dict:
-    """Grafana names charm-provided datasources `juju_<model>_<uuid>_<app>`.
-
-    Some charms append a unit number, so match the application name against the
-    trailing segments rather than a fixed position.
-    """
     for datasource in grafana.get_datasources():
+        # charms name datasources `juju_<model>_<uuid>_<app>`, sometimes with a
+        # trailing unit number, so match against the trailing segments rather
+        # than a fixed position.
         parts = datasource.get("name", "").split("_")
         if application in parts[-2:]:
             return datasource

@@ -1,8 +1,4 @@
-"""Steps about the deployment itself: which model, and whether it is healthy.
-
-The deployment is carried out externally (Terraform, or an outer suite), so
-these steps discover and inspect a model rather than create one.
-"""
+"""Steps about the deployment itself: which model, and whether it is healthy."""
 
 import os
 from pathlib import Path
@@ -28,9 +24,5 @@ def the_solution_has_been_deployed(request) -> jubilant.Juju:
 @given("the model is healthy")
 @then("the model is healthy")
 def the_model_is_healthy(juju: jubilant.Juju):
-    """Every application active and every agent idle, held stably.
-
-    Registered as both `given` and `then`: it is the precondition every other
-    feature builds on, and the assertion the smoke test exists to make.
-    """
+    """Every application active and every agent idle."""
     wait_for_active_idle(juju)
