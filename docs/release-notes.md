@@ -67,11 +67,7 @@ Grafana was previously limited to a single unit backed by local Juju storage. Su
 
 *Applies to: `cos-lite`.*
 
-COS Lite previously self-monitored by relating each component straight to Prometheus and Loki. It now deploys an `opentelemetry-collector` alongside the rest of the stack and funnels its own telemetry through it, matching how COS is wired: the collector scrapes every component's metrics endpoint and remote-writes into Prometheus, and receives every component's logs and forwards them to Loki. This applies processing, relabeling and topology injection uniformly, and adds Prometheus's own metrics to self-monitoring, which the direct relations could not cover.
-
-Tracing is not included: COS Lite has no trace backend. To add one, see [Add tracing to COS Lite](how-to/integrate/add-tracing-to-cos-lite.md).
-
-The Juju offers are unchanged and still front Prometheus and Loki directly, so external consumers are unaffected and no re-`consume` is needed. Two new inputs are available: `opentelemetry_collector` for application configuration, and `ingress.opentelemetry_collector` to toggle its Traefik route.
+COS Lite previously self-monitored by relating each component straight to Prometheus and Loki. It now deploys an `opentelemetry-collector` alongside the rest of the stack and funnels its own telemetry through it, matching how COS is wired: the collector scrapes every component's metrics endpoint and remote-writes into Prometheus, and receives every component's logs and forwards them to Loki. This applies processing, relabeling and topology injection uniformly. As a result, Prometheus no longer contains a "self monitoring" scrape job; instead, the collector is responsible for scraping Prometheus' metrics and remote writing them into Prometheus itself. This is consistent with COS, where Mimir's metrics are collected and remote written into Mimir.
 
 #### OpenTelemetry Collector pinned to v0.130
 
