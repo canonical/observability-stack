@@ -21,6 +21,13 @@ resource "juju_offer" "loki_logging" {
   endpoints        = [module.loki.provides.logging]
 }
 
+resource "juju_offer" "otelcol_receive_otlp" {
+  name             = "otelcol-receive-otlp"
+  model_uuid       = local.model_uuid
+  application_name = module.opentelemetry_collector.app_name
+  endpoints        = [module.opentelemetry_collector.provides.receive_otlp]
+}
+
 resource "juju_offer" "prometheus_receive_remote_write" {
   name             = "prometheus-receive-remote-write"
   model_uuid       = local.model_uuid
