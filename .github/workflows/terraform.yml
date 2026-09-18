@@ -4,8 +4,10 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - "**/*.tf"
+      - "terraform/**"
       - "tests/integration/**"
+      - ".github/workflows/terraform.yml"
+      - ".github/workflows/_integration.yml"
 
 jobs:
   lint-terraform:

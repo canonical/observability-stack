@@ -46,79 +46,31 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      # https://documentation.ubuntu.com/self-hosted-runners/en/latest/usage/faq/how-to-setup-canonical-k8s/
+      - name: Remove docker.io and containerd
+        if: ${{ runner.environment == 'self-hosted' }}
+        run: |
+          sudo apt-get remove -y docker.io containerd
+          sudo rm -rf /run/containerd
+
+      # Removing dockerd leaves `iptables -P FORWARD DROP` behind, which
+      # blackholes all pod egress. MicroK8s used to reset this; CK8s does not.
+      - name: Allow forwarded traffic
+        run: |
+          sudo iptables -P FORWARD ACCEPT
+          sudo ip6tables -P FORWARD ACCEPT || true
+
       - name: Concierge prepare
-        if: ${{ runner.environment == 'github-hosted' }}
+        timeout-minutes: 30
         run: |
           sudo snap install concierge --classic
-          sudo concierge prepare --juju-channel ${{ matrix.juju-channel }} -p microk8s --extra-snaps just,astral-uv,terraform
+          # -E so concierge can expand $DOCKERHUB_MIRROR from the runner's env.
+          sudo -E concierge prepare \
+            --config concierge-k8s.yaml \
+            --juju-channel ${{ matrix.juju-channel }} \
+            --extra-snaps just,astral-uv,terraform
 
-      # Setup for Self-hosted (PS7) runners
-      - name: Install snaps
-        if: ${{ runner.environment == 'self-hosted' }}
-        run: |
-          sudo snap install juju --classic --channel=${{ matrix.juju-channel }}
-          sudo snap install just --classic
-          sudo snap install astral-uv --classic
-          sudo snap install terraform --classic
-      - name: (IS hosted) Configure microk8s Docker Hub mirror
-        timeout-minutes: 10
-        if: ${{ runner.environment == 'self-hosted' }}
-        run: |
-          sudo snap install microk8s --channel "1.34-strict/stable" --classic
-          sudo adduser "$USER" snap_microk8s
-
-          # Wait for microk8s to populate iptables
-          # https://chat.canonical.com/canonical/pl/jo5cg6wqjjrudqd5ybj6hhttee
-          until sudo iptables --list | grep -q -i "microk8s"
-          do
-            echo "MicroK8s has not yet configured iptables."
-            sleep 10
-          done
-
-          sudo tee /var/snap/microk8s/current/args/certs.d/docker.io/hosts.toml << EOF
-          server = "$DOCKERHUB_MIRROR"
-          [host."${DOCKERHUB_MIRROR#'https://'}"]
-          capabilities = ["pull", "resolve"]
-          EOF
-          sudo microk8s stop
-          sudo microk8s start
-      - name: Set up microk8s
-        id: microk8s-setup
-        timeout-minutes: 15
-        if: ${{ runner.environment == 'self-hosted' }}
-        run: |
-          sudo apt-get update
-          sudo apt-get install retry -y
-
-          # `newgrp` does not work in GitHub Actions; use `sudo --user` instead
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable dns
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s.kubectl rollout status --namespace kube-system --watch --timeout=5m deployments/coredns
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable hostpath-storage
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s.kubectl rollout status --namespace kube-system --watch --timeout=5m deployments/hostpath-provisioner
-
-          IPADDR=$(ip -4 -j route get 2.2.2.2 | sed -n -e 's/^.*prefsrc\":"\([^ "]*\).*/\1/p')
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable "metallb:$IPADDR-$IPADDR"
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable ingress
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable rbac
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- retry --times 3 --delay 5 -- sudo microk8s enable registry
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s status --wait-ready
-
-          mkdir ~/.kube/
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- microk8s config | sudo tee ~/.kube/config > /dev/null
-      - name: Set up environment
-        timeout-minutes: 15
-        if: ${{ runner.environment == 'self-hosted' }}
-        run: |
-          mkdir -p ~/.local/share/juju  # Workaround for juju 3 strict snap
-          sudo --user "$USER" --preserve-env --preserve-env=PATH -- env -- juju bootstrap microk8s --config model-logs-size=10G microk8s
-          juju model-defaults logging-config='<root>=INFO; unit=DEBUG'
-
-      # Runner-independent setup
       - name: Install and configure microceph
         if: ${{ inputs.product == 'cos' }}
         run: |
