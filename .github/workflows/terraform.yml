@@ -97,7 +97,7 @@ jobs:
     name: COS Lite Terraform integration
     needs: [test-unit, changes]
     if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.cos_lite == 'true' }}
-    uses: ./.github/workflows/_integration.yml
+    uses: canonical/observability-stack/.github/workflows/_integration.yml@main
     with:
       product: cos_lite
       runner: self-hosted-linux-amd64-noble-large
@@ -105,7 +105,7 @@ jobs:
     name: COS Terraform integration
     needs: [test-unit, changes]
     if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.cos == 'true' }}
-    uses: ./.github/workflows/_integration.yml
+    uses: canonical/observability-stack/.github/workflows/_integration.yml@main
     with:
       product: cos
       runner: self-hosted-linux-amd64-noble-xlarge
@@ -113,7 +113,7 @@ jobs:
     name: COS Dev Terraform integration
     needs: [test-unit, changes]
     if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.cos_dev == 'true' }}
-    uses: ./.github/workflows/_integration.yml
+    uses: canonical/observability-stack/.github/workflows/_integration.yml@main
     with:
       product: cos_dev
       runner: self-hosted-linux-amd64-noble-large
