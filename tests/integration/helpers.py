@@ -13,6 +13,7 @@ from urllib.request import urlopen
 
 import jubilant
 import pytest
+from tenacity import retry, stop_after_attempt, wait_fixed
 
 logger = logging.getLogger(__name__)
 
@@ -108,6 +109,7 @@ def get_tls_context(
     return ctx
 
 
+@retry(wait=wait_fixed(20), stop=stop_after_attempt(6))
 def catalogue_apps_are_reachable(
     juju: jubilant.Juju, tls_context: Optional[ssl.SSLContext] = None
 ):
