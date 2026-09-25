@@ -54,6 +54,18 @@ cd tests/solution
 SOLUTION_MODEL="microk8s-localhost:cos-lite" uv run --frozen --isolated pytest -vv --capture=no cos-lite
 ```
 
+### Running a specific mode
+
+Some solutions support more than one **mode** (e.g. `cos-lite` supports `tls-internal` /
+`tls-none`). Pass it as a second argument:
+
+```bash
+just solution test cos-lite tls-none
+```
+
+In CI, modes and Juju channels are matrix dimensions instead
+(`.github/workflows/_solution-test-modes.yaml`).
+
 ## Adding a new scenario
 
 Add a new `.feature` file per capability (e.g. `features/alerting.feature`). Reuse the existing
@@ -68,6 +80,9 @@ A `Feature:` describes a capability in solution-agnostic terms ("the metrics bac
 component that exposes metrics"); the scenarios under it name the concrete workload. That way COS
 can reuse the same feature file by adding its own scenario (e.g. one driving Mimir alongside the
 COS Lite one driving Prometheus), each tagged for its solution.
+
+The same tagging mechanism restricts a scenario to a **mode** instead of (or as well as) a
+solution (e.g. `@tls-none`). New mode values also need adding to `_MODES` in `conftest.py`.
 
 ### Writing steps
 
@@ -91,6 +106,7 @@ by the feature file that uses them:
 | `steps/deployment.py` | the model: which one, and whether it is healthy |
 | `steps/telemetry.py` | signals reaching their backend: metrics, logs, traces |
 | `steps/grafana.py` | Grafana as a domain: dashboards, datasources |
+| `steps/tls.py` | which scheme (HTTP/HTTPS) a component is actually reachable over |
 
 Grouping by domain (rather than one module per `.feature`) is what keeps steps reusable: two
 features already share `steps/grafana.py`, and `the model is healthy` serves as both the
