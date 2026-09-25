@@ -72,7 +72,7 @@ juju status --format=json | jq -r '.applications["alertmanager"]["charm-rev"]'
 212
 ```
 
-with the hash of the specified image: [0.31-24.04_stable image](https://hub.docker.com/layers/ubuntu/alertmanager/0.31-24.04_stable/images/sha256-c7bb054a27fdad7412fcb401b1fde27598e4e65f1671d080f07b5fddfbe7d986)reflected in the charm's `alertmanager` container:
+with the hash of the specified image: [0.31-24.04_stable image](https://hub.docker.com/layers/ubuntu/alertmanager/0.31-24.04_stable/images/sha256-c7bb054a27fdad7412fcb401b1fde27598e4e65f1671d080f07b5fddfbe7d986) reflected in the charm's `alertmanager` container:
 ```shell
 kubectl describe pod -n cos alertmanager-0 | grep -A 50 "Containers" | grep -A 3 "alertmanager:"
 
