@@ -21,7 +21,7 @@ configuration, storage wiring, ingress, and inter-component relations.
 
 For a full COS deployment (Grafana, Alertmanager, Loki, etc.) instead of a
 Mimir-focused one, see
-[Getting started with COS on Canonical K8s](/tutorial/cos-canonical-k8s-sandbox).
+[Getting started with COS on Canonical Kubernetes](/tutorial/cos-canonical-k8s-sandbox).
 
 ```{include} /reuse/mimir-on-juju-nav.md
 ```
@@ -226,4 +226,4 @@ You should see a successful query response with a value greater than `0`.
   [How to send metrics to Mimir on Juju](../integrate/send-metrics-to-mimir).
 - To grow this into a full Canonical Observability Stack with Grafana, Loki,
   Alertmanager, and correlated telemetry, see
-  [Getting started with COS on Canonical K8s](/tutorial/cos-canonical-k8s-sandbox).
+  [Getting started with COS on Canonical Kubernetes](/tutorial/cos-canonical-k8s-sandbox).

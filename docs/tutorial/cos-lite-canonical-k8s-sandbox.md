@@ -4,7 +4,7 @@ myst:
   description: "Learn to deploy a single-node COS Lite appliance on Canonical Kubernetes with hostPath storage in this practical tutorial for lightweight observability." 
 ---
 
-# Getting started with COS Lite on Canonical K8s
+# Getting started with COS Lite on Canonical Kubernetes
 
 In this tutorial you deploy a single-node COS Lite appliance, backed by hostPath storage.
 
@@ -12,7 +12,7 @@ In this tutorial you deploy a single-node COS Lite appliance, backed by hostPath
 
 - A 4cpu8gb node or better, with at least 40Gi disk space (see [Sizing guide](../reference/system-requirements) for production deployments).
 - Juju v3.6 installed ([doc](https://documentation.ubuntu.com/juju/3.6/howto/manage-juju/#install-juju)).
-- Canonical K8s (snap) installed, with local-storage ([doc](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/tutorial/getting-started/))
+- Canonical Kubernetes (`k8s` snap) installed, with local-storage ([doc](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/tutorial/getting-started/))
   and load-balancer ([doc](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/networking/default-loadbalancer/)) enabled.
 - Proxy ([doc](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/networking/proxy/)) and
   DNS ([doc](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/networking/default-dns/)) for K8s are configured (if applicable).

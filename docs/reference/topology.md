@@ -128,5 +128,5 @@ end
 ```
 
 ## References
-- High availability: [Canonical K8s](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/explanation/high-availability/),
+- High availability: [Canonical Kubernetes](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/explanation/high-availability/),
   [MicroK8s](https://canonical.com/microk8s/docs/high-availability).

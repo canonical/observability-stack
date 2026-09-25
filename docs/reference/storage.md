@@ -18,11 +18,11 @@ and refer to the [sizing guide](system-requirements) for concrete numbers.
 Ensure data-intensive components have sufficient storage for telemetry by [configuring their storage options](/how-to/configure-and-tune/customize-storage-options.md).
 
 ## Set up distributed storage
-In production, do not use hostPath storage ([`hostpath-storage`](https://canonical.com/microk8s/docs/addon-hostpath-storage) in MicroK8s; `local-storage` in Canonical K8s):
+In production, do not use hostPath storage ([`hostpath-storage`](https://canonical.com/microk8s/docs/addon-hostpath-storage) in MicroK8s; `local-storage` in Canonical Kubernetes):
 - `PersistentVolumeClaims` created by the host path storage provisioner are bound to the local node, so it is *impossible to move them to a different node*.
 - A `hostpath` volume can *grow beyond the capacity set in the volume claim manifest*.
 
-### Canonical K8s
+### Canonical Kubernetes
 Use Ceph CSI. Refer to Canonical Kubernetes [snap](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/storage/ceph/)
 and [charm](https://documentation.ubuntu.com/canonical-kubernetes/latest/charm/howto/ceph-csi/) docs.
 
