@@ -46,7 +46,7 @@ promote solution="cos-lite" ref="main":
     charmcraft promote --name "$charm" --from-channel "${track}/beta" --to-channel "${track}/candidate" --yes
   done <<< "$charms_tracks"
 
-# List the charm name + track pinned by each charm in a product module
+# List the charm name and track pinned by each charm in a product module
 [group("promote")]
 charm-tracks module ref='main':
   #!/usr/bin/env bash
