@@ -30,6 +30,8 @@ data "juju_model" "cos-model" {
 module "ssc" {
   source     = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
   model_uuid = data.juju_model.ca-model.uuid
+
+  offered_endpoints = ["certificates", "send-ca-cert"]
 }
 
 module "cos-lite" {
@@ -39,6 +41,6 @@ module "cos-lite" {
   model                           = { uuid = data.juju_model.cos-model.uuid }
   risk                            = "stable"
   internal_tls                    = false
-  external_certificates_offer_url = "admin/${var.ca_model}.certificates"
-  external_ca_cert_offer_url      = "admin/${var.ca_model}.send-ca-cert"
+  external_certificates_offer_url = "admin/${var.ca_model}.self-signed-certificates-certificates"
+  external_ca_cert_offer_url      = "admin/${var.ca_model}.self-signed-certificates-send-ca-cert"
 }
