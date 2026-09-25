@@ -10,10 +10,11 @@ terraform {
 
 locals {
   # Output below for the solution test to connect jubilant to.
-  model_name = "cos-lite"
+  model_name = "cos-lite-tls-none"
 }
 
 module "cos-lite" {
-  source = "../../../../terraform/cos-lite"
-  model  = { name = local.model_name }
+  source       = "../../../../../terraform/cos-lite"
+  model        = { name = local.model_name }
+  internal_tls = false
 }

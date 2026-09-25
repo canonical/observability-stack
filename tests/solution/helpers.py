@@ -19,8 +19,35 @@ TERRAFORM_BIN = os.environ.get("terraform") or "terraform"
 
 
 def discover_solutions() -> frozenset[str]:
-    """Every solution name under tests/solution/ (any dir with a terraform/ subdir)."""
-    return frozenset(p.name for p in SOLUTION_ROOT.iterdir() if (p / "terraform").is_dir())
+    """Every solution name under tests/solution/.
+
+    A solution is a top-level dir with a terraform/ subdir, either directly
+    or one level down under per-mode dirs (tests/solution/<solution>/<mode>/terraform/).
+    """
+    return frozenset(
+        p.name
+        for p in SOLUTION_ROOT.iterdir()
+        if p.is_dir()
+        and (
+            (p / "terraform").is_dir()
+            or any((mode / "terraform").is_dir() for mode in p.iterdir() if mode.is_dir())
+        )
+    )
+
+
+def discover_modes() -> frozenset[str]:
+    """Every mode name under tests/solution/<solution>/<mode>/.
+
+    A mode is a dir one level under a solution dir with its own terraform/
+    subdir (tests/solution/<solution>/<mode>/terraform/), e.g. `tls_internal`.
+    """
+    return frozenset(
+        mode.name
+        for solution in SOLUTION_ROOT.iterdir()
+        if solution.is_dir()
+        for mode in solution.iterdir()
+        if mode.is_dir() and (mode / "terraform").is_dir()
+    )
 
 
 def terraform_output(terraform_dir: Path) -> Dict[str, Any]:
