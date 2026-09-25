@@ -18,6 +18,12 @@ crash.*.log
 *.tfvars
 *.tfvars.json
 
+# Exception: example value files committed under an examples/ directory are
+# intentional, non-secret inputs consumed by `terraform -var-file` and Atelier.
+# Keep them free of real credentials (placeholders only).
+!terraform/**/examples/*.tfvars
+!examples/**/*.tfvars
+
 # Ignore override files as they are usually used to override resources locally and so
 # are not checked in
 override.tf
