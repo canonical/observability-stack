@@ -27,6 +27,7 @@ jobs:
     name: Discover solutions
     runs-on: ubuntu-latest
     outputs:
+      test-paths: ${{ steps.discover.outputs.test-paths }}
       solutions: ${{ steps.discover.outputs.solutions }}
     steps:
       - name: Checkout
@@ -37,16 +38,21 @@ jobs:
       - name: List solutions with a Terraform wrapper module
         id: discover
         run: |
-          solutions=$(find tests/solution -mindepth 2 -maxdepth 2 -type d -name terraform -printf '%P\n' | sed 's|/terraform$||' | sort | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          # A terraform/ dir's parent is either a solution (tests/solution/cos)
+          # or a mode dir one level under one (tests/solution/cos-lite/tls_none).
+          leaves=$(find tests/solution -type d -name terraform -printf '%h\n' | sed 's|^tests/solution/||' | sort)
+          test_paths=$(echo "$leaves" | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          solutions=$(echo "$leaves" | sed -E 's#/.*##' | sort -u | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "test-paths=$test_paths" >> "$GITHUB_OUTPUT"
           echo "solutions=$solutions" >> "$GITHUB_OUTPUT"
 
   test-solutions:
-    name: Test ${{ matrix.solution }}
+    name: Test ${{ matrix.test-path }}
     needs: [discover-solutions]
     strategy:
       fail-fast: false
       matrix:
-        solution: ${{ fromJson(needs.discover-solutions.outputs.solutions) }}
+        test-path: ${{ fromJson(needs.discover-solutions.outputs.test-paths) }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -64,7 +70,7 @@ jobs:
           sudo k8s kubectl rollout status daemonset/cilium -n kube-system --timeout=90s
 
       - name: Run solution tests
-        run: just solution test ${{ matrix.solution }}
+        run: just solution test ${{ matrix.test-path }}
 
   promote:
     name: Promote ${{ matrix.solution }}

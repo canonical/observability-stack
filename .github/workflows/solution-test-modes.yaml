@@ -1,0 +1,25 @@
+name: Solution test modes
+
+# Runs cos-lite's solution tests across every mode dir and Juju channel, in
+# parallel, on PRs that touch the relevant files.
+
+on:
+  pull_request:
+    paths:
+      - 'tests/solution/cos-lite/**'
+      - 'tests/solution/conftest.py'
+      - 'tests/solution/helpers.py'
+      - 'tests/solution/features/**'
+      - 'tests/solution/steps/**'
+      - 'terraform/cos-lite/**'
+      - 'solution.just'
+      - '.github/workflows/solution-test-modes.yaml'
+      - '.github/workflows/_solution-test-modes.yaml'
+
+jobs:
+  cos-lite:
+    name: cos-lite
+    uses: ./.github/workflows/_solution-test-modes.yaml
+    with:
+      modes: '["cos-lite/tls_internal", "cos-lite/tls_none"]'
+      juju-channels: '["3.6/stable", "4.1/beta"]'
