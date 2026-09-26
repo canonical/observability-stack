@@ -16,7 +16,7 @@ lock:
 
 # Lint everything
 [group("Lint")]
-lint: lint-workflows lint-terraform lint-terraform-docs
+lint: lint-workflows lint-terraform lint-terraform-docs check-tfvars
 
 # Format everything
 [group("Format")]
@@ -42,6 +42,26 @@ lint-terraform:
 [group("Lint")]
 lint-terraform-docs:
   terraform-docs --config .tfdocs-config.yml --output-check .
+
+# Check that committed example .tfvars bind to their module's variables.
+# Terraform only *warns* on an undeclared variable, so a rotted example would
+# otherwise pass unnoticed; this turns that warning (and any console error)
+# into a hard failure. See terraform/*/examples/.
+[group("Lint")]
+[working-directory("./terraform")]
+check-tfvars:
+  if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
+  set -e; for repo in */; do \
+    [ -d "${repo}examples" ] || continue; \
+    ( cd "$repo" \
+      && echo "Checking ${repo}examples..." \
+      && $terraform init -upgrade >/dev/null \
+      && for f in examples/*.tfvars; do \
+           out=$($terraform console -var-file="$f" </dev/null 2>&1) || { echo "$out"; echo "FAIL: $repo$f errors"; exit 1; }; \
+           if echo "$out" | grep -q "Value for undeclared variable"; then echo "FAIL: $repo$f references an undeclared variable"; exit 1; fi; \
+           echo "OK: $repo$f"; \
+         done ) || exit 1; \
+  done
 
 # Format the Terraform modules
 [group("Format")]

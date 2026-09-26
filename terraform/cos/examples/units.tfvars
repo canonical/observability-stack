@@ -1,11 +1,4 @@
 # Single-unit deployment of every COS component: a dev/CI-sized topology.
-#
-# Apply with Atelier:
-#   atelier module add https://github.com/canonical/observability-stack.git \
-#     --module terraform/cos --tfvars --var-file units.tfvars
-#
-# Or with Terraform directly, from the module directory:
-#   terraform plan -var-file=examples/units.tfvars
 
 alertmanager = { units = 1 }
 grafana      = { units = 1 }
