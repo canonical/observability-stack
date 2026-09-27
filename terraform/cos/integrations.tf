@@ -380,7 +380,7 @@ resource "juju_integration" "ingress" {
         app_name = module.mimir.app_names.mimir_coordinator
         endpoint = module.mimir.requires.ingress
       }
-    } : k => v if local.traefik_enabled && var.ingress[k]
+    } : k => v if local.traefik_enabled && local.values.ingress[k]
   }
   model_uuid = local.model_uuid
 
@@ -396,7 +396,7 @@ resource "juju_integration" "ingress" {
 }
 
 resource "juju_integration" "grafana_ingress" {
-  count = local.traefik_enabled && var.ingress.grafana ? 1 : 0
+  count = local.traefik_enabled && local.values.ingress.grafana ? 1 : 0
 
   model_uuid = local.model_uuid
 
@@ -424,7 +424,7 @@ resource "juju_integration" "traefik_route" {
         app_name = module.tempo.app_names.tempo_coordinator
         endpoint = module.tempo.requires.ingress
       }
-    } : k => v if local.traefik_enabled && var.ingress[k]
+    } : k => v if local.traefik_enabled && local.values.ingress[k]
   }
   model_uuid = local.model_uuid
 
@@ -442,7 +442,7 @@ resource "juju_integration" "traefik_route" {
 # -------------- # Certificates --------------
 
 resource "juju_integration" "internal_certificates" {
-  for_each = var.internal_tls ? {
+  for_each = local.values.internal_tls ? {
     alertmanager = {
       app_name = module.alertmanager.app_name
       endpoint = module.alertmanager.requires.certificates
@@ -487,7 +487,7 @@ resource "juju_integration" "internal_certificates" {
 }
 
 resource "juju_integration" "traefik_receive_ca_certificate" {
-  count = local.traefik_enabled && var.internal_tls ? 1 : 0
+  count = local.traefik_enabled && local.values.internal_tls ? 1 : 0
 
   model_uuid = local.model_uuid
 

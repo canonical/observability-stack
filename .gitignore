@@ -18,6 +18,12 @@ crash.*.log
 *.tfvars
 *.tfvars.json
 
+# Exception: value presets committed under a module's presets/ directory are
+# intentional, non-secret inputs. They are consumed by the module's `preset`
+# input and are also valid `terraform -var-file` files. Keep them free of real
+# credentials.
+!terraform/**/presets/*.tfvars.json
+
 # Ignore override files as they are usually used to override resources locally and so
 # are not checked in
 override.tf

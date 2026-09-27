@@ -16,7 +16,7 @@ variables {
 run "default_grafana_requires_database_offer" {
   command = plan
 
-  expect_failures = [var.postgresql_offer_url]
+  expect_failures = [terraform_data.effective_input_constraints]
 }
 
 # --- grafana: scale > 1 with database offer integration ---

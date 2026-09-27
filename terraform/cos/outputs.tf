@@ -1,3 +1,10 @@
+# -------------- # Presets -------------- #
+
+output "presets" {
+  value       = [for f in fileset("${path.module}/presets", "*.tfvars.json") : trimsuffix(f, ".tfvars.json")]
+  description = "Names of the value presets available in this module (pass one to the `preset` input)"
+}
+
 # -------------- # Integration offers -------------- #
 
 output "offers" {

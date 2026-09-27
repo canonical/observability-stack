@@ -99,11 +99,9 @@ variable "postgresql_offer_url" {
   description = "A Juju offer URL (e.g. admin/postgresql.database) of a PostgreSQL service providing the 'postgresql_client' integration for applications to connect to the database."
   type        = string
   default     = null
-
-  validation {
-    condition     = !(var.postgresql_offer_url == null && var.grafana.units > 1)
-    error_message = "postgresql_offer_url must be supplied when Grafana is scaled > 1 due to its database requirements."
-  }
+  # The "required when grafana.units > 1" rule depends on the effective values
+  # (a preset may change `grafana.units`), so it lives in the effective-value
+  # guard in presets.tf rather than in a variable validation here.
 }
 
 # -------------- # Ingress configurations --------------
@@ -120,11 +118,9 @@ variable "ingress" {
     tempo                   = optional(bool, false)
   })
   default = {}
-
-  validation {
-    condition     = !(var.ingress.opentelemetry_collector == true && var.ingress.tempo == true)
-    error_message = "opentelemetry_collector and tempo cannot both be enabled. See https://github.com/canonical/observability-stack/issues/382"
-  }
+  # The otelcol/tempo mutual-exclusion rule depends on the effective values (a
+  # preset may change `ingress`), so it lives in the effective-value guard in
+  # presets.tf rather than in a variable validation here.
 }
 
 # -------------- # S3 storage configuration --------------
