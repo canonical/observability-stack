@@ -16,7 +16,7 @@ lock:
 
 # Lint everything
 [group("Lint")]
-lint: lint-workflows lint-terraform lint-terraform-docs
+lint: lint-workflows lint-terraform lint-terraform-docs check-presets
 
 # Format everything
 [group("Format")]
@@ -42,6 +42,33 @@ lint-terraform:
 [group("Lint")]
 lint-terraform-docs:
   terraform-docs --config .tfdocs-config.yml --output-check .
+
+# Check that committed preset value files bind to their module's variables.
+#
+# Presets live under terraform/*/presets/ and are consumed by tools (e.g.
+# Atelier) and by `terraform -var-file`; the module does not read them. Terraform
+# only *warns* on an undeclared top-level variable in a var-file, so a renamed or
+# removed variable would silently rot a preset. This turns that warning into a
+# hard failure. Nested typos are not caught: Terraform drops unknown attributes
+# during type conversion without complaint.
+[group("Lint")]
+[working-directory("./terraform")]
+check-presets:
+  if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
+  set -e; for repo in */; do \
+    [ -d "${repo}presets" ] || continue; \
+    ( cd "$repo" \
+      && echo "Checking ${repo}presets..." \
+      && $terraform init -upgrade >/dev/null \
+      && for f in presets/*.tfvars.json; do \
+           jq -e . "$f" >/dev/null || { echo "FAIL: $repo$f is not valid JSON"; exit 1; }; \
+           out=$($terraform console -no-color -var-file="$f" </dev/null 2>&1 || true); \
+           if echo "$out" | grep -q "Value for undeclared variable"; then \
+             echo "$out"; echo "FAIL: $repo$f references an undeclared variable"; exit 1; \
+           fi; \
+           echo "OK: $repo$f"; \
+         done ) || exit 1; \
+  done
 
 # Format the Terraform modules
 [group("Format")]

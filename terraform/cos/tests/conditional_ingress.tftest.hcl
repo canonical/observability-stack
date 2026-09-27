@@ -25,7 +25,7 @@ run "traefik_ingress_validates_conflicting_ingress" {
   }
 
   # https://github.com/canonical/observability-stack/issues/382
-  expect_failures = [terraform_data.effective_input_constraints]
+  expect_failures = [var.ingress]
 }
 
 # --- traefik: otelcol is ingressed by default, tempo is not ---

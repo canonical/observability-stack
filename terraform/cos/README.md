@@ -49,7 +49,6 @@ This is a Terraform module facilitating the deployment of the COS solution, usin
 | <a name="input_model"></a> [model](#input\_model) | Model configuration. When `uuid` is set, an existing model is looked up; otherwise a new model is created with the given fields. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/model | <pre>object({<br/>    uuid = optional(string)<br/>    name = optional(string, "cos")<br/>    cloud = optional(object({<br/>      name   = string<br/>      region = optional(string)<br/>    }))<br/>    annotations       = optional(map(string))<br/>    config            = optional(map(string))<br/>    constraints       = optional(string)<br/>    credential        = optional(string)<br/>    target_controller = optional(string)<br/>  })</pre> | `{}` | no |
 | <a name="input_opentelemetry_collector"></a> [opentelemetry\_collector](#input\_opentelemetry\_collector) | Application configuration for OpenTelemetry Collector. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    app_name           = optional(string, "otelcol")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    resources          = optional(map(string), {})<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
 | <a name="input_postgresql_offer_url"></a> [postgresql\_offer\_url](#input\_postgresql\_offer\_url) | A Juju offer URL (e.g. admin/postgresql.database) of a PostgreSQL service providing the 'postgresql\_client' integration for applications to connect to the database. | `string` | `null` | no |
-| <a name="input_preset"></a> [preset](#input\_preset) | Name of a preset under presets/ to apply. See the module README. | `string` | `null` | no |
 | <a name="input_risk"></a> [risk](#input\_risk) | Risk level that the applications are (unless overwritten by individual channels) deployed from | `string` | `"edge"` | no |
 | <a name="input_s3_access_key"></a> [s3\_access\_key](#input\_s3\_access\_key) | S3 access-key credential | `string` | n/a | yes |
 | <a name="input_s3_endpoint"></a> [s3\_endpoint](#input\_s3\_endpoint) | S3 endpoint | `string` | n/a | yes |
@@ -67,7 +66,6 @@ This is a Terraform module facilitating the deployment of the COS solution, usin
 | ---- | ----------- |
 | <a name="output_components"></a> [components](#output\_components) | All Terraform charm modules which make up this product module |
 | <a name="output_offers"></a> [offers](#output\_offers) | All Juju offers which are exposed by this product module |
-| <a name="output_presets"></a> [presets](#output\_presets) | Names of the value presets available in this module (pass one to the `preset` input) |
 <!-- END_TF_DOCS -->
 
 ## Usage
@@ -127,19 +125,19 @@ terraform init
 terraform apply
 ```
 
-### Using presets
+### Preset catalog
 
-A **preset** is a committed, named value file under [`presets/`](presets/). Select one with the `preset` input to apply a known-good deployment shape without setting each component by hand:
+The [`presets/`](presets/) directory contains named, committed value files — reusable deployment shapes such as a single-unit dev topology or a deployment with ingress disabled. They are plain Terraform JSON variable files. The module does not read them itself, so they are consumed outside it:
 
-```hcl
-module "cos" {
-  source        = "git::https://github.com/canonical/observability-stack//terraform/cos"
-  preset        = "units"
-  s3_endpoint   = "http://S3_HOST_IP:8080"
-  s3_secret_key = "secret-key"
-  s3_access_key = "access-key"
-}
-```
+- **When this module is applied as a root**, pass one with `-var-file`:
+
+  ```shell
+  terraform apply \
+    -var-file=presets/units.tfvars.json \
+    -var s3_endpoint=... -var s3_access_key=... -var s3_secret_key=...
+  ```
+
+- **When this module is a child module**, resolve the preset into the module's arguments — either by hand, or with a tool such as Atelier, which treats `presets/<name>` as a named value bundle and writes the values into the wrapper. Do not pass `-var-file` at the parent: `-var-file` only sets root-module variables, and a child module's arguments are set in its `module` block.
 
 Available presets:
 
@@ -148,15 +146,7 @@ Available presets:
 | `units` | Scale every high-availability component (Alertmanager, Grafana, Loki, Mimir, Tempo) to a single unit — a dev/CI-sized topology. Grafana at 1 unit also no longer requires a PostgreSQL offer. |
 | `no-ingress` | Disable Traefik and every ingress integration. |
 
-A preset overrides the module defaults for the fields it declares; every other field keeps the value you pass (or the module default). Objects merge field-by-field, so a preset that sets `units` leaves your `config`, `resources`, and `storage_directives` untouched. The preset surface is limited to deployment shape: credentials, endpoints, offer URLs, buckets, and the model are **not** preset-addressable, because they are environment-specific or sensitive.
-
-The preset files are also plain Terraform JSON variable files, so when this module is applied as a root they can be used directly:
-
-```shell
-terraform apply -var-file=presets/units.tfvars.json
-```
-
-The `presets` output lists the available names.
+Presets are intentionally non-secret: keep credentials, endpoints, and offer URLs in the caller's arguments (or a gitignored var-file), never in a preset. `just check-presets` verifies that each committed preset still binds to the module's variables.
 
 #### Known Juju issue.
 

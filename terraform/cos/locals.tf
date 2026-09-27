@@ -3,7 +3,7 @@ locals {
   create_model               = var.model.uuid == null
   grafana_db_enabled         = var.postgresql_offer_url != null
   model_uuid                 = local.create_model ? juju_model.cos[0].uuid : data.juju_model.cos[0].uuid
-  reverse_proxy_enabled      = anytrue(values(local.values.ingress))
+  reverse_proxy_enabled      = anytrue(values(var.ingress))
   storage_directives_warning = "is unset, so it will use the default 1G volume. Set a size before deploying to production; resizing a persistent volume after deployment requires manual steps. See https://documentation.ubuntu.com/observability/latest/how-to/configure-and-tune/customize-storage-options/"
   tls_termination            = var.external_certificates_offer_url != null ? true : false
   traefik_enabled            = local.reverse_proxy_enabled
@@ -26,19 +26,19 @@ locals {
     traefik       = "${local.tracks.traefik}/${var.risk}"
   }
   revisions = {
-    alertmanager      = local.values.alertmanager.revision != null ? local.values.alertmanager.revision : data.juju_charm.alertmanager_info.revision
-    catalogue         = local.values.catalogue.revision != null ? local.values.catalogue.revision : data.juju_charm.catalogue_info.revision
-    grafana           = local.values.grafana.revision != null ? local.values.grafana.revision : data.juju_charm.grafana_info.revision
-    loki_coordinator  = local.values.loki_coordinator.revision != null ? local.values.loki_coordinator.revision : data.juju_charm.loki_coordinator_info.revision
-    loki_worker       = local.values.loki_worker.revision != null ? local.values.loki_worker.revision : data.juju_charm.loki_worker_info.revision
-    mimir_coordinator = local.values.mimir_coordinator.revision != null ? local.values.mimir_coordinator.revision : data.juju_charm.mimir_coordinator_info.revision
-    mimir_worker      = local.values.mimir_worker.revision != null ? local.values.mimir_worker.revision : data.juju_charm.mimir_worker_info.revision
-    otelcol           = local.values.opentelemetry_collector.revision != null ? local.values.opentelemetry_collector.revision : data.juju_charm.otelcol_info.revision
-    s3_integrator     = local.values.s3_integrator.revision != null ? local.values.s3_integrator.revision : data.juju_charm.s3_integrator_info.revision
-    ssc               = local.values.ssc.revision != null ? local.values.ssc.revision : data.juju_charm.ssc_info.revision
-    tempo_coordinator = local.values.tempo_coordinator.revision != null ? local.values.tempo_coordinator.revision : data.juju_charm.tempo_coordinator_info.revision
-    tempo_worker      = local.values.tempo_worker.revision != null ? local.values.tempo_worker.revision : data.juju_charm.tempo_worker_info.revision
-    traefik           = local.values.traefik.revision != null ? local.values.traefik.revision : data.juju_charm.traefik_info.revision
+    alertmanager      = var.alertmanager.revision != null ? var.alertmanager.revision : data.juju_charm.alertmanager_info.revision
+    catalogue         = var.catalogue.revision != null ? var.catalogue.revision : data.juju_charm.catalogue_info.revision
+    grafana           = var.grafana.revision != null ? var.grafana.revision : data.juju_charm.grafana_info.revision
+    loki_coordinator  = var.loki_coordinator.revision != null ? var.loki_coordinator.revision : data.juju_charm.loki_coordinator_info.revision
+    loki_worker       = var.loki_worker.revision != null ? var.loki_worker.revision : data.juju_charm.loki_worker_info.revision
+    mimir_coordinator = var.mimir_coordinator.revision != null ? var.mimir_coordinator.revision : data.juju_charm.mimir_coordinator_info.revision
+    mimir_worker      = var.mimir_worker.revision != null ? var.mimir_worker.revision : data.juju_charm.mimir_worker_info.revision
+    otelcol           = var.opentelemetry_collector.revision != null ? var.opentelemetry_collector.revision : data.juju_charm.otelcol_info.revision
+    s3_integrator     = var.s3_integrator.revision != null ? var.s3_integrator.revision : data.juju_charm.s3_integrator_info.revision
+    ssc               = var.ssc.revision != null ? var.ssc.revision : data.juju_charm.ssc_info.revision
+    tempo_coordinator = var.tempo_coordinator.revision != null ? var.tempo_coordinator.revision : data.juju_charm.tempo_coordinator_info.revision
+    tempo_worker      = var.tempo_worker.revision != null ? var.tempo_worker.revision : data.juju_charm.tempo_worker_info.revision
+    traefik           = var.traefik.revision != null ? var.traefik.revision : data.juju_charm.traefik_info.revision
   }
   tracks = {
     alertmanager = "dev"
