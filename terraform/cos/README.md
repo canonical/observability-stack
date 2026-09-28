@@ -135,11 +135,12 @@ terraform apply
 
 ### Preset catalog
 
-The [`presets/`](presets/) directory contains reusable deployment shapes such as a single-unit dev topology or a deployment with ingress disabled. They are plain Terraform JSON variable files. When this module is applied as a root (e.g.,`/terraform/cos`), pass one with `-var-file`:
+The [`presets/`](presets/) directory contains reusable deployment shapes such as a single-unit dev topology or a deployment with ingress disabled. They are plain Terraform variable files (`.tfvars`), so they can be applied directly or copied as-is into a `module "cos"` block.
+
+When this module is applied as a root (e.g. `cd observability-stack/terraform/cos`), pass one with `-var-file`:
 
 ```shell
-cd observability-stack/terraform/cos
-terraform apply -var-file=presets/single-unit.tfvars.json
+terraform apply -var-file=presets/single-unit.tfvars
 ```
 
 #### Known Juju issue.

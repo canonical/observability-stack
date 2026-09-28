@@ -48,7 +48,7 @@ lint-terraform-docs:
 [working-directory("./terraform")]
 check-presets:
   if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
-  set -e; for f in */presets/*.tfvars.json; do \
+  set -e; for f in */presets/*.tfvars; do \
     [ -f "$f" ] || continue; \
     abs="$(cd "$(dirname "$f")" && pwd)/$(basename "$f")"; \
     module=$(dirname "$(dirname "$f")"); tmp=$(mktemp -d); \
