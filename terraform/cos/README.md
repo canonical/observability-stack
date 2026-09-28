@@ -104,8 +104,6 @@ terraform apply \
 
 ### Deploy as a child module
 
----
-
 By default, this Terraform module will deploy each worker with `3` unit. If you want to scale each Loki, Mimir or Tempo worker unit please check the variables available for that purpose in `variables.tf`.
 
 To deploy the COS HA solution in a model named `cos`, create this root module:
