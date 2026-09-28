@@ -16,7 +16,7 @@ lock:
 
 # Lint everything
 [group("Lint")]
-lint: lint-workflows lint-terraform lint-terraform-docs
+lint: lint-workflows lint-terraform lint-terraform-docs check-presets
 
 # Format everything
 [group("Format")]
@@ -42,6 +42,25 @@ lint-terraform:
 [group("Lint")]
 lint-terraform-docs:
   terraform-docs --config .tfdocs-config.yml --output-check .
+
+# Test presets under terraform/*/presets/
+[group("Lint")]
+[working-directory("./terraform")]
+check-presets:
+  if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
+  set -e; for f in */presets/*.tfvars; do \
+    [ -f "$f" ] || continue; \
+    abs="$(cd "$(dirname "$f")" && pwd)/$(basename "$f")"; \
+    module=$(dirname "$(dirname "$f")"); tmp=$(mktemp -d); \
+    cp "$module/variables.tf" "$tmp/"; \
+    out=$(cd "$tmp" && $terraform init -no-color >/dev/null 2>&1 && $terraform validate -no-color -var-file="$abs" 2>&1) \
+      || { echo "$out"; echo "FAIL: $f is malformed or could not be validated"; rm -rf "$tmp"; exit 1; }; \
+    rm -rf "$tmp"; \
+    if echo "$out" | grep -q "Value for undeclared variable"; then \
+      echo "$out"; echo "FAIL: $f references an undeclared variable"; exit 1; \
+    fi; \
+    echo "OK: $f"; \
+  done
 
 # Format the Terraform modules
 [group("Format")]

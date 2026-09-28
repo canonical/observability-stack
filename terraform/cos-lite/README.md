@@ -78,7 +78,14 @@ module "cos-lite" {
 }
 ```
 
-### Basic usage
+### Deploy from the module root
+
+```bash
+cd observability-stack/terraform/cos-lite
+terraform apply
+```
+
+### Deploy as a child module
 
 The minimum version of Terraform Juju provider required is `1.5`.
 
