@@ -4,7 +4,7 @@ myst:
   description: "Learn to deploy a single-node Canonical Observability Stack on Canonical Kubernetes with S3-backed storage using this reproducible, step-by-step tutorial."
 ---
 
-# Getting started with COS on Canonical K8s
+# Getting started with COS on Canonical Kubernetes
 
 In this tutorial you deploy a single-node, multi-unit COS, backed by S3 storage.
 
@@ -15,7 +15,7 @@ You can reproduce the COS deployment in this tutorial with a [cloud-config](cos-
 
 - A 8cpu16gb node or better, with at least 100GB disk space (see [Sizing guide](../reference/system-requirements) for production deployments).
 - Juju v3.6 installed ([doc](https://documentation.ubuntu.com/juju/3.6/howto/manage-juju/#install-juju)).
-- Canonical K8s (snap) installed, with local-storage ([doc](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/tutorial/getting-started/))
+- Canonical Kubernetes (`k8s` snap) installed, with local-storage ([doc](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/tutorial/getting-started/))
   and load-balancer ([doc](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/networking/default-loadbalancer/)) enabled.
   Proxy ([doc](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/networking/proxy/)) and
   DNS ([doc](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/networking/default-dns/)) for K8s are configured (if applicable).
