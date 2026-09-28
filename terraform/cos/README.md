@@ -94,15 +94,15 @@ module "cos" {
 }
 ```
 
-### Basic usage
+### From the module root
 
 ```bash
+cd observability-stack/terraform/cos
 terraform apply \
-    -var-file=presets/units.tfvars.json \
-    -var s3_endpoint=http://IP:PORT -var s3_access_key=placeholder -var s3_secret_key=placeholder
+    -var s3_endpoint=http://S3_HOST_IP:808 -var s3_access_key=access-key -var s3_secret_key=secret-key
 ```
 
-### Basic usage
+### As a child module
 
 ---
 
@@ -141,9 +141,7 @@ The [`presets/`](presets/) directory contains reusable deployment shapes such as
 
 ```shell
 cd observability-stack/terraform/cos
-terraform apply \
-  -var-file=presets/units.tfvars.json \
-  -var s3_endpoint=... -var s3_access_key=... -var s3_secret_key=...
+terraform apply -var-file=presets/single-unit.tfvars.json
 ```
 
 #### Known Juju issue.
