@@ -81,9 +81,8 @@ module "cos-lite" {
 ### Deploy from the module root
 
 ```bash
-cd observability-stack/terraform/cos-lite \
-  terraform init \
-  terraform apply
+cd observability-stack/terraform/cos-lite
+terraform apply
 ```
 
 ### Deploy as a child module
