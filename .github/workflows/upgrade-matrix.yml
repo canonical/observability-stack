@@ -1,0 +1,29 @@
+name: Upgrade test matrix
+
+# Check that each product release has an integration test for the release it
+# upgrades from, using canonical/observability's manifest as the source of
+# truth. See canonical/observability#503.
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - 'track/**'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        run: sudo snap install astral-uv --classic
+
+      - name: Check
+        run: uv run --no-project --with pyyaml python scripts/check_upgrade_matrix.py

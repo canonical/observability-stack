@@ -22,6 +22,11 @@ lint: lint-workflows lint-terraform lint-terraform-docs check-presets
 [group("Format")]
 fmt: format-terraform format-terraform-docs
 
+# Check upgrade tests against the product manifest
+[group("Lint")]
+check-upgrade-tests:
+  uv run --no-project --with pyyaml python scripts/check_upgrade_matrix.py
+
 # Run unit tests
 [group("Unit")]
 unit: (unit-test "cos") (unit-test "cos-lite") (unit-test "cos-dev")
