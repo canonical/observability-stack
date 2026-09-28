@@ -55,14 +55,18 @@ The Juju provider needs `model_uuid` to query live resources, so
 `--query-var model_uuid` is required. Atelier also seeds the module input
 from this value, so you do not need to pass `--var model_uuid` separately.
 
+Pass each remaining module input with `--var KEY=VALUE`. If you have
+aggregated them into a single `atelier.presets/*.tfvars` file, pass that file
+with `--var-file` instead. `--var` wins over `--var-file`.
+
 | Flag | Purpose |
 |------|---------|
 | `--source` | Upstream repository that contains the module |
 | `--module` | Path to the Terraform module inside the repository |
 | `--ref` | Git ref (branch or tag) matching your deployment track |
 | `--query-var` | Variables the Juju provider needs to query live resources |
-| `--var` | Module input variables the module requires |
-| `--preset` | Named variable sets from an `atelier.local.yaml` file |
+| `--var` | Module input variables the module requires (`KEY=VALUE`, repeatable) |
+| `--var-file` | Seed module inputs from a `.tfvars` bundle, such as an `atelier.presets/*.tfvars` file (repeatable; later files win) |
 | `--dry-run` | Preview what would be imported without touching state |
 
 #### How model UUID is resolved
@@ -241,6 +245,7 @@ terraform query -json > live-resources.json
 
 This produces a JSON stream with one `list_resource_found` event per live
 object. Each event carries:
+
 - `resource_type` — e.g. `juju_application`
 - `display_name` — the application name, e.g. `alertmanager`
 - `identity` — provider-specific identity, e.g. `{"id": "eddaeb90-…:alertmanager"}`
