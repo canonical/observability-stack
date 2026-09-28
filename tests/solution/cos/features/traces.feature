@@ -11,7 +11,6 @@ Feature: Trace collection
     And the model is healthy
 
   # COS Lite ships no traces backend, so this feature is COS-only.
-  @cos
   Scenario Outline: Tempo collects traces from a component
     Then Tempo has traces from the "<application>" application
 

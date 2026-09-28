@@ -56,18 +56,13 @@ SOLUTION_MODEL="microk8s-localhost:cos-lite" uv run --frozen --isolated pytest -
 
 ## Adding a new scenario
 
-Add a new `.feature` file per capability (e.g. `features/alerting.feature`). Reuse the existing
+Feature files live under each solution's own `<name>/features/`, plus `features/smoke.feature`
+at the top level, shared by every solution since it names no concrete workload. Add a new
+`.feature` file to the solution(s) it applies to; if two solutions want the same capability
+(e.g. both scrape a metrics backend), give each its own scenario naming its own workload rather
+than sharing a file -- there is no cross-solution tagging to keep in sync. Reuse the existing
 steps where they apply -- most scenarios want the `Given the solution has been deployed` /
-`And the model is healthy` background. Every solution's `test_solution.py` loads all of
-`features/`, so an untagged
-scenario runs for every solution; tag a scenario with one or more solution names (e.g. `@cos`,
-matching the solution's directory name) to restrict it to those solutions -- `conftest.py`
-deselects it everywhere else. Steps stay shared regardless of tags.
-
-A `Feature:` describes a capability in solution-agnostic terms ("the metrics backend scrapes every
-component that exposes metrics"); the scenarios under it name the concrete workload. That way COS
-can reuse the same feature file by adding its own scenario (e.g. one driving Mimir alongside the
-COS Lite one driving Prometheus), each tagged for its solution.
+`And the model is healthy` background.
 
 ### Writing steps
 
@@ -86,22 +81,18 @@ Assertions against running workloads go through
 built lazily for each workload. Only
 add retries where data genuinely trails active/idle (e.g. the first Prometheus scrape).
 
-### Solutions that collect telemetry differently
-
-COS Lite has each component deliver its own telemetry, while COS routes everything through
-OpenTelemetry Collector. The assertions do not care: every scenario looks for a
-`juju_application` label, naming the component the telemetry originated from.
-
 ## Adding a new solution
 
 1. Create `tests/solution/<name>/terraform/main.tf` wrapping `terraform/<name>`, and
    `outputs.tf` exposing `model_name`.
 2. Add an empty `tests/solution/<name>/__init__.py`.
-3. Add `tests/solution/<name>/test_solution.py` containing:
+3. Add `tests/solution/<name>/features/` with that solution's own scenarios.
+4. Add `tests/solution/<name>/test_solution.py` containing:
    ```python
    from pytest_bdd import scenarios
 
-   scenarios("../features")
+   scenarios("../features", "features")
    ```
-4. Run `just solution test <name>` to verify it.
+5. Run `just solution test <name>` to verify it.
+
 
