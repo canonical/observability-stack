@@ -1,0 +1,38 @@
+name: Release invariants
+
+# Cheap guard rails for two recurring release rules:
+# - a released track's upgrade tests target the released risk, not edge;
+# - docs on a versioned branch link to their own version, not latest.
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - 'track/**'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Upgrade tests target the released risk
+        run: |
+          if grep -rn --include='track-[0-9]*.tf' -E 'risk[[:space:]]*=[[:space:]]*"edge"' tests/integration; then
+            echo "::error::released-track upgrade tests must use risk = \"stable\""
+            exit 1
+          fi
+
+      - name: Versioned docs do not link to latest
+        if: startsWith(github.base_ref || github.ref_name, 'track/')
+        run: |
+          if grep -rn --include='*.md' 'documentation.ubuntu.com/observability/latest/' docs; then
+            echo "::error::versioned docs must not link to /latest/"
+            exit 1
+          fi
