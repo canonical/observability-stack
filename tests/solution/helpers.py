@@ -11,18 +11,9 @@ from typing import Any, Dict
 import jubilant
 import requests
 
-SOLUTION_ROOT = Path(__file__).parent
-
 # Resolved terraform/tofu binary, set by quality-gates.just; falls back to
 # "terraform" when running pytest directly.
 TERRAFORM_BIN = os.environ.get("terraform") or "terraform"
-
-
-def discover_solutions() -> frozenset[str]:
-    """Every solution name under tests/solution/ (any dir with a terraform/ subdir)."""
-    return frozenset(
-        p.name for p in SOLUTION_ROOT.iterdir() if (p / "terraform").is_dir()
-    )
 
 
 def terraform_output(terraform_dir: Path) -> Dict[str, Any]:
