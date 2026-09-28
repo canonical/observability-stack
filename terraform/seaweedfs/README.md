@@ -6,7 +6,7 @@ This is a Terraform module facilitating the deployment of the [seaweedfs-k8s](ht
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_juju"></a> [juju](#provider\_juju) | >= 1.0 |
 
 ## Modules
@@ -16,7 +16,7 @@ No modules.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_app_name"></a> [app\_name](#input\_app\_name) | Application name for the SeaweedFS deployment | `string` | `"seaweedfs"` | no |
 | <a name="input_channel"></a> [channel](#input\_channel) | Channel that SeaweedFS is deployed from | `string` | `"latest/edge"` | no |
 | <a name="input_config"></a> [config](#input\_config) | Map of SeaweedFS configuration options | `map(string)` | `{}` | no |
@@ -29,7 +29,7 @@ No modules.
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_app_name"></a> [app\_name](#output\_app\_name) | The name of the deployed SeaweedFS application |
 | <a name="output_provides"></a> [provides](#output\_provides) | All Juju integration endpoints where the charm is the provider |
 | <a name="output_requires"></a> [requires](#output\_requires) | All Juju integration endpoints where the charm is the requirer |
