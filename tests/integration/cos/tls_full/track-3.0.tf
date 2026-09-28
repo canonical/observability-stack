@@ -70,5 +70,4 @@ module "cos" {
 # This is used by ../risk_upgrades
 variable "risk" {
   type    = string
-  default = "stable"
 }
