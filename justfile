@@ -16,7 +16,7 @@ lock:
 
 # Lint everything
 [group("Lint")]
-lint: lint-workflows lint-terraform lint-terraform-docs check-presets
+lint: lint-workflows lint-terraform lint-terraform-docs lint-docs check-presets
 
 # Format everything
 [group("Format")]
@@ -42,6 +42,21 @@ lint-terraform:
 [group("Lint")]
 lint-terraform-docs:
   terraform-docs --config .tfdocs-config.yml --output-check .
+
+# Lint the docs for hardcoded versioned links
+[group("Lint")]
+lint-docs:
+  #!/usr/bin/env bash
+  # Each versioned branch is published under its own docs path (track-2,
+  # track-3.0, ...), so a link to /latest/, /stable/, or another track sends
+  # readers to the wrong version. In-version references stay branch-relative.
+  # release-policy.md is exempt: it intentionally links each release's own docs.
+  set -euo pipefail
+  pattern='documentation\.ubuntu\.com/observability/(latest|stable|track[-/][^/)]*)/'
+  if grep -rn --include='*.md' --exclude='release-policy.md' -E "$pattern" docs; then
+    echo "FAIL: use a branch-relative link instead of a versioned observability docs URL" >&2
+    exit 1
+  fi
 
 # Test presets under terraform/*/presets/
 [group("Lint")]
