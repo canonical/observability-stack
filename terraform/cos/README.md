@@ -94,7 +94,7 @@ module "cos" {
 }
 ```
 
-### From the module root
+### Deploy from the module root
 
 ```bash
 cd observability-stack/terraform/cos
@@ -102,7 +102,7 @@ terraform apply \
     -var s3_endpoint=http://S3_HOST_IP:808 -var s3_access_key=access-key -var s3_secret_key=secret-key
 ```
 
-### As a child module
+### Deploy as a child module
 
 ---
 
