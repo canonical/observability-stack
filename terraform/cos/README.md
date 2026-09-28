@@ -96,6 +96,16 @@ module "cos" {
 
 ### Basic usage
 
+```bash
+terraform apply \
+    -var-file=presets/units.tfvars.json \
+    -var s3_endpoint=http://IP:PORT -var s3_access_key=placeholder -var s3_secret_key=placeholder
+```
+
+### Basic usage
+
+---
+
 By default, this Terraform module will deploy each worker with `3` unit. If you want to scale each Loki, Mimir or Tempo worker unit please check the variables available for that purpose in `variables.tf`.
 
 To deploy the COS HA solution in a model named `cos`, create this root module:
@@ -127,26 +137,14 @@ terraform apply
 
 ### Preset catalog
 
-The [`presets/`](presets/) directory contains named, committed value files — reusable deployment shapes such as a single-unit dev topology or a deployment with ingress disabled. They are plain Terraform JSON variable files. The module does not read them itself, so they are consumed outside it:
+The [`presets/`](presets/) directory contains reusable deployment shapes such as a single-unit dev topology or a deployment with ingress disabled. They are plain Terraform JSON variable files. When this module is applied as a root (e.g.,`/terraform/cos`), pass one with `-var-file`:
 
-- **When this module is applied as a root**, pass one with `-var-file`:
-
-  ```shell
-  terraform apply \
-    -var-file=presets/units.tfvars.json \
-    -var s3_endpoint=... -var s3_access_key=... -var s3_secret_key=...
-  ```
-
-- **When this module is a child module**, resolve the preset into the module's arguments — either by hand, or with a tool such as Atelier, which treats `presets/<name>` as a named value bundle and writes the values into the wrapper. Do not pass `-var-file` at the parent: `-var-file` only sets root-module variables, and a child module's arguments are set in its `module` block.
-
-Available presets:
-
-| Preset | Effect |
-| --- | --- |
-| `units` | Scale every high-availability component (Alertmanager, Grafana, Loki, Mimir, Tempo) to a single unit — a dev/CI-sized topology. Grafana at 1 unit also no longer requires a PostgreSQL offer. |
-| `no-ingress` | Disable Traefik and every ingress integration. |
-
-Presets are intentionally non-secret: keep credentials, endpoints, and offer URLs in the caller's arguments (or a gitignored var-file), never in a preset. `just check-presets` verifies that each committed preset still binds to the module's variables.
+```shell
+cd observability-stack/terraform/cos
+terraform apply \
+  -var-file=presets/units.tfvars.json \
+  -var s3_endpoint=... -var s3_access_key=... -var s3_secret_key=...
+```
 
 #### Known Juju issue.
 
