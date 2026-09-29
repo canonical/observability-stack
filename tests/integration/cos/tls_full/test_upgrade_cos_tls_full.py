@@ -14,7 +14,7 @@ from helpers import (
     xfail_otelcol_logs,
 )
 
-TRACK_3_TF_FILE = Path(__file__).parent.resolve() / "track-3.0.tf"
+TRACK_3_1_TF_FILE = Path(__file__).parent.resolve() / "track-3.1.tf"
 TRACK_DEV_TF_FILE = Path(__file__).parent.resolve() / "track-dev.tf"
 S3_ENDPOINT = {
     "s3_endpoint": os.getenv("S3_ENDPOINT"),
@@ -33,7 +33,7 @@ def test_deploy_from_track(
     tmp_path, tf_manager, ca_model: jubilant.Juju, cos_model: jubilant.Juju
 ):
     # GIVEN a module deployed from the previous track
-    tf_manager.init(TRACK_3_TF_FILE)
+    tf_manager.init(TRACK_3_1_TF_FILE)
     tf_manager.apply(ca_model=ca_model.model, cos_model=cos_model.model, **S3_ENDPOINT)
 
     # THEN the model is upgraded and is healthy

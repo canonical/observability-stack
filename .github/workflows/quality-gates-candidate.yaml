@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        branch: [main, track/3.0]
+        branch: [main, track/3.0, track/3.1]
     uses: ./.github/workflows/_quality-gate-candidate-branch.yaml
     secrets: inherit
     with:

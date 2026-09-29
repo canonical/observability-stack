@@ -9,7 +9,7 @@ from pathlib import Path
 import jubilant
 from helpers import generic_assertions, no_errors_in_otelcol_logs
 
-TRACK_3_TF_FILE = Path(__file__).parent.resolve() / "track-3.0.tf"
+TRACK_3_1_TF_FILE = Path(__file__).parent.resolve() / "track-3.1.tf"
 TRACK_DEV_TF_FILE = Path(__file__).parent.resolve() / "track-dev.tf"
 
 
@@ -17,7 +17,7 @@ def test_deploy_from_track(
     tmp_path, tf_manager, ca_model: jubilant.Juju, cos_model: jubilant.Juju
 ):
     # GIVEN a module deployed from the previous track
-    tf_manager.init(TRACK_3_TF_FILE)
+    tf_manager.init(TRACK_3_1_TF_FILE)
     tf_manager.apply(ca_model=ca_model.model, cos_model=cos_model.model)
     generic_assertions(cos_model, ca_model, tmp_path)
 

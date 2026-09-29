@@ -30,10 +30,10 @@ variable "s3_access_key" {
 }
 
 module "cos" {
-  source       = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=track/3.0"
+  source       = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=track/3.1"
   model        = { uuid = data.juju_model.model.uuid }
   risk         = "stable"
-  internal_tls = true
+  internal_tls = false
 
   s3_endpoint   = var.s3_endpoint
   s3_secret_key = var.s3_secret_key
