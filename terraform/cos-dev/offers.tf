@@ -1,10 +1,3 @@
-resource "juju_offer" "alertmanager_karma_dashboard" {
-  name             = "alertmanager-karma-dashboard"
-  model_uuid       = var.model_uuid
-  application_name = module.alertmanager.app_name
-  endpoints        = [module.alertmanager.provides.karma_dashboard]
-}
-
 resource "juju_offer" "grafana_dashboards" {
   name             = "grafana-dashboards"
   model_uuid       = var.model_uuid

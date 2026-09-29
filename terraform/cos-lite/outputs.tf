@@ -7,7 +7,6 @@ output "model_uuid" {
 
 output "offers" {
   value = {
-    alertmanager_karma_dashboard    = juju_offer.alertmanager_karma_dashboard
     grafana_dashboards              = juju_offer.grafana_dashboards
     loki_logging                    = juju_offer.loki_logging
     otelcol_receive_otlp            = juju_offer.otelcol_receive_otlp

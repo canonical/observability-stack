@@ -2,11 +2,10 @@
 
 output "offers" {
   value = {
-    alertmanager_karma_dashboard = juju_offer.alertmanager_karma_dashboard
-    grafana_dashboards           = juju_offer.grafana_dashboards
-    loki_logging                 = juju_offer.loki_logging
-    mimir_receive_remote_write   = juju_offer.mimir_receive_remote_write
-    tempo_tracing                = juju_offer.tempo_tracing
+    grafana_dashboards         = juju_offer.grafana_dashboards
+    loki_logging               = juju_offer.loki_logging
+    mimir_receive_remote_write = juju_offer.mimir_receive_remote_write
+    tempo_tracing              = juju_offer.tempo_tracing
   }
   description = "All Juju offers which are exposed by this product module"
 }

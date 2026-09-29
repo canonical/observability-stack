@@ -278,7 +278,7 @@ identity objects with an `"id"` field in the format:
 
 - `juju_application`: `<model_uuid>:<app_name>`
 - `juju_integration`: `<model_uuid>:<provider_app>:<provider_endpoint>:<requirer_app>:<requirer_endpoint>`
-- `juju_offer`: `<offer_url>` (e.g. `admin/demo.alertmanager-karma-dashboard`)
+- `juju_offer`: `<offer_url>` (e.g. `admin/demo.grafana-dashboards`)
 
 ### 4. Write an `imports.tf` file
 
@@ -454,11 +454,6 @@ import {
 }
 
 # Optional: Offers (if your controller supports querying them)
-import {
-  to = module.cos_lite.juju_offer.alertmanager_karma_dashboard
-  id = "admin/demo.alertmanager-karma-dashboard"
-}
-
 import {
   to = module.cos_lite.juju_offer.grafana_dashboards
   id = "admin/demo.grafana-dashboards"
