@@ -94,7 +94,7 @@ html_context = {
         # https://spdx.org/licenses
         "name": "CC-BY-SA-3.0",
         # TODO: Link directly to your project's license statement.
-        "url": "https://github.com/canonical/sphinx-docs-starter-pack/blob/main/LICENSE",
+        "url": "",
     },
 }
 
