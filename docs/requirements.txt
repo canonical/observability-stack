@@ -32,3 +32,6 @@ sphinx-llm~=0.4
 # Vale dependencies
 rst2html
 vale~=3.13
+
+# Project specific
+sphinxcontrib-mermaid
