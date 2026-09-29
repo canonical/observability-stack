@@ -16,7 +16,7 @@ lock:
 
 # Lint everything
 [group("Lint")]
-lint: lint-workflows lint-terraform lint-terraform-docs lint-docs check-presets
+lint: lint-workflows lint-terraform lint-terraform-docs lint-docs lint-presets
 
 # Format everything
 [group("Format")]
@@ -61,7 +61,7 @@ lint-docs:
 # Test presets under terraform/*/presets/
 [group("Lint")]
 [working-directory("./terraform")]
-check-presets:
+lint-presets:
   if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
   set -e; for f in */presets/*.tfvars; do \
     [ -f "$f" ] || continue; \
