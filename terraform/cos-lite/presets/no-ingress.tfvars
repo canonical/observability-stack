@@ -5,7 +5,6 @@ ingress = {
   catalogue               = false
   grafana                 = false
   loki                    = false
-  mimir                   = false
+  prometheus              = false
   opentelemetry_collector = false
-  tempo                   = false
 }
