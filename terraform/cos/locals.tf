@@ -41,16 +41,15 @@ locals {
     traefik           = var.traefik.revision != null ? var.traefik.revision : data.juju_charm.traefik_info.revision
   }
   tracks = {
-    alertmanager = "dev"
-    catalogue    = "dev"
-    grafana      = "dev"
-    loki         = "dev"
-    mimir        = "dev"
-    otelcol      = "dev"
-    tempo        = "dev"
-    # external charms
+    alertmanager  = "0.33"
+    catalogue     = "3.0"
+    grafana       = "12.4"
+    loki          = "3.7"
+    mimir         = "2.17"
+    otelcol       = "0.130"
     s3_integrator = "2"
     ssc           = "1"
+    tempo         = "2.10"
     traefik       = "latest"
   }
 }

@@ -10,7 +10,7 @@ import jubilant
 from helpers import generic_assertions, no_errors_in_otelcol_logs
 
 TRACK_3_TF_FILE = Path(__file__).parent.resolve() / "track-3.0.tf"
-TRACK_DEV_TF_FILE = Path(__file__).parent.resolve() / "track-dev.tf"
+TRACK_3_1_TF_FILE = Path(__file__).parent.resolve() / "track-3.1.tf"
 
 
 def test_deploy_from_track(tf_manager, cos_model: jubilant.Juju):
@@ -22,9 +22,9 @@ def test_deploy_from_track(tf_manager, cos_model: jubilant.Juju):
     generic_assertions(cos_model)
 
 
-def test_deploy_to_track_dev(tf_manager, cos_model: jubilant.Juju):
-    # WHEN upgraded to track dev
-    tf_manager.init(TRACK_DEV_TF_FILE)
+def test_deploy_to_track(tf_manager, cos_model: jubilant.Juju):
+    # WHEN upgraded to the next track
+    tf_manager.init(TRACK_3_1_TF_FILE)
     tf_manager.apply(model=cos_model.model)
 
     # THEN the model is upgraded and is healthy
