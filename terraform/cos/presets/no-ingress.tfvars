@@ -1,4 +1,4 @@
-# Disable ingress for every COS component and the ingress provider app.
+# Disable ingress (and Traefik) for every COS component.
 
 ingress = {
   alertmanager            = false
