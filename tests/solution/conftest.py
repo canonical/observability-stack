@@ -10,6 +10,8 @@ every solution shares them. API client fixtures live in clients.py
 (see README.md).
 """
 
+import os
+
 import pytest
 from helpers import discover_solutions
 
@@ -18,28 +20,33 @@ pytest_plugins = [
     "steps.deployment",
     "steps.grafana",
     "steps.telemetry",
+    "steps.tls",
 ]
 
 _SOLUTIONS = discover_solutions()
+
+# Which mode the wrapper Terraform was applied with; set by solution.just,
+# same value the spread task variant used to pick a tfvar (see spread.yaml).
+_MODES = frozenset({"tls_internal", "tls_none"})
+_ACTIVE_MODE = os.environ.get("SOLUTION_MODE", "tls_internal")
 
 
 def pytest_configure(config: pytest.Config) -> None:
     for solution in _SOLUTIONS:
         config.addinivalue_line("markers", f"{solution}: scenario only applies to the '{solution}' solution")
+    for mode in _MODES:
+        config.addinivalue_line("markers", f"{mode}: scenario only applies to the '{mode}' mode")
 
 
 def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:
-    """Deselect scenarios tagged for a solution other than the one being tested.
-
-    Every solution loads every feature file (see each test_solution.py); an
-    untagged scenario runs for all of them, one tagged e.g. `@cos-lite` runs
-    only under tests/solution/cos-lite/.
-    """
+    """Deselect scenarios tagged for a solution or mode other than the one under test."""
     kept, deselected = [], []
     for item in items:
         solution = item.path.parent.name
-        tags = {mark.name for mark in item.iter_markers()} & _SOLUTIONS
-        (deselected if tags and solution not in tags else kept).append(item)
+        tags = {mark.name for mark in item.iter_markers()}
+        wrong_solution = bool(tags & _SOLUTIONS) and solution not in tags
+        wrong_mode = bool(tags & _MODES) and _ACTIVE_MODE not in tags
+        (deselected if wrong_solution or wrong_mode else kept).append(item)
     if deselected:
         config.hook.pytest_deselected(items=deselected)
         items[:] = kept

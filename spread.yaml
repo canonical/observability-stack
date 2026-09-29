@@ -1,0 +1,38 @@
+project: observability-stack
+
+# Spread's variants expand each task's environment into one job per
+# combination (see tests/solution/spread/*/task.yaml); the k8s cloud +
+# Juju controller are still provisioned by the calling GitHub Actions job via
+# concierge, same as the non-spread solution tests. Each job just shells out
+# to `just solution test`.
+
+backends:
+  github-ci:
+    type: adhoc
+    # Only selected explicitly (`spread github-ci:...`); spread cannot
+    # provision GitHub Actions runners, so the workflow provisions one runner
+    # per job and this backend points spread at that same machine.
+    manual: true
+    allocate: |
+      echo "runner:$SPREAD_PASSWORD" | sudo chpasswd
+      echo "PasswordAuthentication yes" | sudo tee /etc/ssh/sshd_config.d/10-spread.conf
+      sudo systemctl restart ssh
+      ADDRESS localhost
+    systems:
+      - ubuntu-24.04:
+          username: runner
+
+suites:
+  tests/solution/spread/:
+    summary: Solution tests, expanded across modes
+
+path: /home/runner/spread-project
+kill-timeout: 90m
+
+exclude:
+  - .git
+  - .terraform
+  - "*/.terraform"
+
+restore: |
+  rm -rf "$SPREAD_PATH"

@@ -1,0 +1,68 @@
+name: Test a solution across modes
+
+# Reusable workflow: spread expands one task's environment variants into a
+# job per mode (see spread.yaml, tests/solution/spread/<solution>/task.yaml).
+# `discover` lists those jobs; `test` runs one per matrix entry, crossed with
+# `juju-channels` (a plain GitHub Actions matrix dimension -- Juju version is
+# a CI-channel concern only, not a spread variant).
+
+on:
+  workflow_call:
+    inputs:
+      solution:
+        description: 'The solution to deploy, e.g. "cos-lite" (a directory under tests/solution/spread/).'
+        required: true
+        type: string
+      juju-channels:
+        description: 'JSON array of Juju snap channels, e.g. ["3.6/stable", "4.1/beta"].'
+        required: false
+        type: string
+        default: '["3.6/stable"]'
+
+jobs:
+  discover:
+    name: List spread jobs
+    runs-on: ubuntu-latest
+    outputs:
+      jobs: ${{ steps.list.outputs.jobs }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install spread
+        run: |
+          sudo snap install go --classic
+          go install github.com/canonical/spread/cmd/spread@latest
+
+      - name: List jobs
+        id: list
+        run: |
+          jobs=$(~/go/bin/spread -list "github-ci:...tests/solution/spread/${{ inputs.solution }}:..." | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "jobs=$jobs" >> "$GITHUB_OUTPUT"
+
+  test:
+    name: Test ${{ matrix.job }} (juju ${{ matrix.juju-channel }})
+    needs: [discover]
+    strategy:
+      fail-fast: false
+      matrix:
+        job: ${{ fromJson(needs.discover.outputs.jobs) }}
+        juju-channel: ${{ fromJson(inputs.juju-channels) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo snap install go --classic
+          go install github.com/canonical/spread/cmd/spread@latest
+          sudo snap install concierge --classic
+          sudo concierge prepare --juju-channel ${{ matrix.juju-channel }} -p k8s --extra-snaps just,astral-uv,terraform
+          # Configure Cilium for Istio ambient service mesh compatibility
+          sudo k8s kubectl patch configmap cilium-config -n kube-system --type merge -p '{"data":{"bpf-lb-sock-hostns-only":"true"}}'
+          sudo k8s kubectl rollout restart daemonset/cilium -n kube-system
+          sudo k8s kubectl rollout status daemonset/cilium -n kube-system --timeout=90s
+
+      - name: Run solution test
+        run: ~/go/bin/spread -v "${{ matrix.job }}"
