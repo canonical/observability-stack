@@ -1,6 +1,7 @@
 # Leave a blank line at the end of this file to support concatenation
 aggregator
 alerter
+Alertmanager
 alertmanager
 backend
 backend's
@@ -10,6 +11,7 @@ BCrypt
 bhat
 blackbox
 boolean
+BotFather
 Canonical('s)?
 CAs
 catalogue
@@ -175,6 +177,7 @@ protobuf
 provisioner
 proxied
 psql
+Pushover
 PVC
 PVCs
 PVs
@@ -235,6 +238,7 @@ SVG
 syslog
 systemd
 tanmay
+Telegram
 Terraform
 tex
 texlive
