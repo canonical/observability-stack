@@ -104,3 +104,4 @@ If you are not deploying the full Canonical Observability Stack and only need a
 specific COS component on Juju, see the component-focused guides:
 
 - [How to deploy Mimir on Juju](deploy-mimir-on-juju)
+- [How to deploy Loki on Juju](deploy-loki-on-juju)
