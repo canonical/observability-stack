@@ -361,8 +361,8 @@ resource "juju_integration" "internal_certificates" {
   }
 
   application {
-    name     = module.ssc[0].app_name
-    endpoint = module.ssc[0].provides.certificates
+    name     = module.ssc[0].provides.certificates.name
+    endpoint = module.ssc[0].provides.certificates.endpoint
   }
 }
 
@@ -372,8 +372,8 @@ resource "juju_integration" "traefik_receive_ca_certificate" {
   model_uuid = local.model_uuid
 
   application {
-    name     = module.ssc[0].app_name
-    endpoint = module.ssc[0].provides.send-ca-cert
+    name     = module.ssc[0].provides.send-ca-cert.name
+    endpoint = module.ssc[0].provides.send-ca-cert.endpoint
   }
 
   application {
