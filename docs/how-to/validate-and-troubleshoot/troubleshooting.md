@@ -7,12 +7,12 @@ myst:
 # Troubleshooting
 
 ## Ceph unhealthy
+
 If using (micro)ceph for storage, is it healthy?
 
 | Check                | Output                                                                                       | Potential cause                                                                | Remediation                                                                                                                     |
 | -------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
 | `ceph health detail` | `HEALTH_WARN There are daemons running an older version of ceph; Reduced data availability:` | Some OSDs restarted and were running a newer version than the rest of the OSDs | Restart the other OSDs using the command for your deployment: classic Ceph: `systemctl restart ceph-osd@<id>`; MicroCeph: restart the corresponding MicroCeph snap service for the affected OSD(s). |
-
 
 ## `Gateway address unavailable`
 
@@ -132,7 +132,6 @@ curl http://10.70.43.245/cos-catalogue/
 
 This command should return a long HTML code block if everything works as expected.
 
-
 ## Grafana admin password
 
 Compare the output of:
@@ -147,7 +146,6 @@ All 3 should be identical. If they are not identical,
    `juju ssh --container grafana graf/0 grafana cli --config /etc/grafana/grafana-config.ini admin reset-admin-password pa55w0rd`
 2. Update the secret with the same: `juju update-secret d6buvufmp25c7am9qqtg password=pa55w0rd`
 3. Run the action so the charm updates the pebble service environment variable: `juju run graf/0 get-admin-password`
-
 
 ## Integrations
 
@@ -322,8 +320,8 @@ If there is a problem, you would see output such as:
 openstack-exporter/19 is related to more than one opentelemetry-collector subordinate: {'opentelemetry-collector-container', 'opentelemetry-collector-vm'}
 ```
 
-
 ### Additional thoughts
+
 - A rock's CI could dump a record of the `/metrics` endpoint each time the rock is built. This
   way some integration tests could turn into unit tests.
 
@@ -332,20 +330,19 @@ openstack-exporter/19 is related to more than one opentelemetry-collector subord
 - [Troubleshooting Prometheus Integrations](https://discourse.charmhub.io/t/prometheus-k8s-docs-troubleshooting-integrations/14351)
 - [Troubleshooting missing logs](https://discourse.charmhub.io/t/loki-k8s-docs-troubleshooting-missing-logs/14187)
 
-
 ## `No data` in Grafana panels
 
 Data in Grafana panels is obtained by querying datasources.
 
-
 ### Adjust the time range
+
 Check if there is any data when you change the
 [time range](https://grafana.com/docs/grafana-cloud/visualizations/dashboards/use-dashboards/#set-dashboard-time-range)
 to `1d`, `7d`, etc.
 Perhaps you had "no data" all along or it started happening only recently.
 
-
 ### Inspect variable values
+
 Drop-down [variables](https://grafana.com/docs/grafana/latest/visualizations/dashboards/variables/)
 could be filtering out data incorrectly.
 Under dashboard settings, inspect the current values of the variables.
@@ -354,8 +351,8 @@ Under dashboard settings, inspect the current values of the variables.
 - If the options listed in the dropdown are missing items you expect to be there, then the datasource might be
   missing some telemetry, or perhaps we refer to a metric that does not exist, or apply a combination of labels that does not produce a result.
 
-
 ### Confirm the query is valid
+
 [Edit the panel](https://grafana.com/docs/grafana/latest/visualizations/panels-visualizations/panel-editor-overview/)
 and incrementally simplify the faulty query, until data shows up.
 For example,
@@ -369,8 +366,8 @@ Open the query inspector panel and check the response.
 
 If only some of the telemetry you expect to have does not exist, then perhaps a relation is missing (or duplicated).
 
-
 ### Check datasource connection
+
 Test the datasource connection.
 - URL correct?
 - For TLS, does grafana trust the CA that signed the datasource? Perhaps there's a missing certificate-transfer relation?
@@ -379,29 +376,28 @@ Test the datasource connection.
 - Datasource (backend) errors in the logs?
 - Errors in grafana server logs?
 
-
 ### Test the query in the datasource UI
+
 Some datasources (backends, e.g. Prometheus) have their own UI where you can paste the query
 from the faulty Grafana panel. If the query works in the backend UI but not in Grafana,
 check datasource connection.
 
-
 ### Confirm that the relevant juju relations are in place
+
 - Grafana should be related over the [grafana-source](https://charmhub.io/integrations/grafana_datasource) relation to all relevant datasources.
 - In typical deployments, telemetry is pushed from outside the model. Make sure the backends have an ingress relation.
 - For deployment that are TLS-terminated, Grafana needs a `recieve-ca-cert` relation from Traefik.
 
-
 ### Confirm backends are not out of disk space
+
 If a backend (e.g. Prometheus) runs out of disk space, then it will not ingest new
 telemetry.
 
-
 ### Confirm you can curl the backend via its ingress URL
+
 - Can grafana reach the datasource URL?
 - Can opentelemetry-collector (or any other telemetry producer or aggregator) reach its backend?
   For example, can opentelemetry-collector reach prometheus? Pay attention to http vs. https.
-
 
 ## OpenTelemetry Collector
 
@@ -448,7 +444,9 @@ the signal it was processing (`logs` / `metrics` / `traces`) are rendered into t
 ```text
 {job="otelcol-internal"} | logfmt | instrumentation_scope_attribute_otelcol_component_id=`prometheus/metrics-endpoint/otelcol/0`
 ```
+
 or, to filter by signal:
+
 ```text
 {job="otelcol-internal"} | logfmt | instrumentation_scope_attribute_otelcol_signal=`metrics`
 ```
@@ -587,6 +585,7 @@ is *written*. Anything that decouples the two produces this error, so identify t
 before widening the accepted window.
 
 ### Common causes
+
 1. **More than one collector writing the same series**. Scaling up `opentelemetry-collector` does not shard scrape jobs: every unit scrapes every target, so all units emit identical series. Whenever one unit falls behind its peers its samples are older than what the others have already written.
 2. **A backlog flushed after an outage.** Collector queues hold telemetry with its original timestamps. When connectivity is restored, live data usually lands first and the backlog arrives behind it.
 3. **Concurrent writes from a single collector.** The OpenTelemetry Collector's `prometheusremotewrite` exporter sends multiple requests in parallel and provides no per-series ordering guarantee.
@@ -692,12 +691,15 @@ ulimit -l 16384 || true
 ```
 
 ## Firing alert rules
+
 This guide describes how to troubleshoot firing generic alert rules. For detailed explanations on the design and goals of these rules, refer to the [explanation page](/explanation/alerting/generic-rules).
 
 ### How to troubleshoot the `HostDown` alert
+
 The `HostDown` alert is a sign that Prometheus is unable to scrape the metrics endpoint of the charm for whom this alert is firing. The methods below can help pinpoint the issue.
 
 #### Ensure the workload is running
+
 It is possible that the charm being scraped by Prometheus is not running. Shell into the workload container and check the service status:
 
 ```shell
@@ -705,11 +707,13 @@ juju ssh <the rest of the commands including `pebble services`>
 ```
 
 #### Ensure Prometheus is scraping the correct endpoint
+
 It is possible that Prometheus is not scraping the correct address, endpoint, or port. When a charm is related to Prometheus for scraping of metrics, the Prometheus config file appends the related charm's metrics endpoint address and port into its list of targets. For K8s charms, this address can be the pod's FQDN or the ingress address (if using Traefik for example). If the charm being scraped does not write the address correctly, then Prometheus will be unable to reach it.
 
 Another possibility is that the charm does not specify the correct port or endpoint for its metrics. When a charm instantiates the `MetricsEndpointProvider` object, it needs to set the correct port and metrics endpoint. For example, Alertmanager exposes its metrics at the `/metrics` endpoint on port 9093. Charm authors should ensure these values are correctly set, otherwise Prometheus may not have the correct information when attempting to scrape. Use the `ss` command to determine which ports are exposed by your workload.
 
 #### Ensure the correct firewall and SSL/TLS configurations are applied
+
 From inside the Prometheus container:
 
 1. View the Prometheus configuration file located at `/etc/prometheus/prometheus.yml`
@@ -733,8 +737,11 @@ A failed request can be due to a firewall issue. Ensure your firewall rules allo
 If your workload uses TLS communication, Prometheus needs to trust that CA that signed that workload to be able to reach it. For example, if your charm is signed through an integration to Lego, Prometheus needs to have the CA cert in its root store (through a `receive-ca-cert` relation) so it can communicate in HTTPS with your charm.
 
 ### How to troubleshoot the `AggregatorHostHealth` alerts
+
 The `HostMetricsMissing` and `AggregatorMetricsMissing` alerts under the `AggregatorHostHealth` group are similar, with only differences in their severity and the units they are responsible for. As such, the methods to troubleshoot them are identical.
+
 #### Confirm the aggregator is running
+
 For machine charms, ensure the snap is running by checking its status in the machine hosting it. In this example, we'll assume that our aggregator is `opentelemetry-collector` on a machine with ID 0.
 
 1. Shell into the machine:
@@ -770,6 +777,7 @@ pebble services otelcol
 ```
 
 #### Confirm the backend is reachable
+
 It is possible that the aggregator is running, but failing to remote write metrics into the metrics backend. This can occur if there are network or firewall issues, leaving the aggregator unable to successfully hit the metrics backend's remote write endpoint.
 
 The causes in these cases can often be revealed by looking at the workload logs and looking for logs that suggest issues in reaching a host. The logs will often mention timeouts, DNS name resolution failures, TLS certificate issues, or more broadly "export failures".
@@ -789,8 +797,8 @@ juju ssh --container otelcol opentelemetry-collector/0 pebble logs
 In some cases, the backend may be unreachable due to SSL/TLS related issues. This often happens when your aggregator is located outside the Juju model where your COS instance lives and you are using TLS communication when the aggregator tries to reach the backend (external or full TLS). If you are using ingress, it is required for the aggregator to trust the CA that signed the backend or ingress provider (e.g. Traefik).
 
 #### Inspect existing `up` time series
-Perhaps the metrics *do* reach Prometheus, but the `expr` labels we have rendered in the alert do not match the actual metric labels. You can confirm by going to the Prometheus (or Grafana) UI and querying for `up`. Compare the set of labels you get for the returned `up` time series.
 
+Perhaps the metrics *do* reach Prometheus, but the `expr` labels we have rendered in the alert do not match the actual metric labels. You can confirm by going to the Prometheus (or Grafana) UI and querying for `up`. Compare the set of labels you get for the returned `up` time series.
 
 ## Compressed rules in relation databags
 

@@ -7,6 +7,7 @@ myst:
 # Deployment topology best practices
 
 ## Deploy in isolation
+
 COS (or COS Lite) should be deployed in its own Juju model, and preferably on a separate substrate with a dedicated Juju controller.
 
 
@@ -53,8 +54,8 @@ Start with three units for each of the following:
 
 Set pod anti-affinity to hostname.
 
-
 ## COS Lite - scaled
+
 Scale all COS Lite applications to three units, with pod anti-affinity set to hostname.
 A storage unit may be co-located on each node.
 
@@ -112,8 +113,8 @@ applications:
     constraints: tags=anti-pod.app.kubernetes.io/name=loki,anti-pod.topology-key=kubernetes.io/hostname
 ```
 
-
 ## COS Lite - single node
+
 This is the most light-weight deployment, which requires a minimum of a 4cpu8gb node to run.
 (see the [sizing guide](system-requirements) for workload-specific requirements).
 
@@ -128,5 +129,6 @@ end
 ```
 
 ## References
+
 - High availability: [Canonical Kubernetes](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/explanation/high-availability/),
   [MicroK8s](https://canonical.com/microk8s/docs/high-availability).
