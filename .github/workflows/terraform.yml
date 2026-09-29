@@ -23,7 +23,7 @@ jobs:
       - name: Lint the Terraform modules
         run: just lint-terraform
   lint-terraform-docs:
-    name: Lint terraform docs
+    name: Terraform docs
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
