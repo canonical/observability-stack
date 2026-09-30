@@ -56,18 +56,32 @@ SOLUTION_MODEL="microk8s-localhost:cos-lite" uv run --frozen --isolated pytest -
 
 ### Running a specific mode
 
-`cos-lite` also supports **modes** -- deployment variants of the same solution, e.g. `tls_internal`
-/ `tls_none` for whether internal TLS is enabled. Pass one as a second argument:
+`cos-lite` also supports **modes** -- deployment variants of the same solution, along two
+independent axes, each an optional positional argument:
 
 ```bash
-just solution test cos-lite tls_none
+just solution test cos-lite tls_none no_ingress
 ```
 
-There is no separate mode tag or env var to keep in sync with this: steps read the deployed value
-back from the wrapper's own Terraform output instead (`internal_tls` in
-`tests/solution/cos-lite/terraform/outputs.tf`, `tests/solution/steps/tls.py`), so a scenario just
-asks the deployment which mode is live. In CI, `.github/workflows/_solution-test-modes.yaml` picks
-the mode/Juju channel per matrix job the same way.
+- `mode` (`tls_none`): whether internal TLS is enabled. Assertions depend on this, so there *is*
+  a wrapper output for it: steps read the deployed value back from Terraform instead of a separate
+  mode tag or env var (`internal_tls` in `tests/solution/cos-lite/terraform/outputs.tf`,
+  `tests/solution/steps/tls.py`) -- a scenario just asks the deployment which mode is live.
+- `ingress` (`no_ingress`): whether Traefik gets deployed at all, via
+  `tests/solution/cos-lite/terraform/presets/no-ingress.tfvars`. Deployment-shape only -- no
+  assertion depends on it, so unlike `mode` there's no output or step reading it back; existing
+  scenarios run unchanged against whichever topology got deployed.
+
+Both compose and are independent of each other -- adding a new value doesn't touch any of this. In
+CI, `.github/workflows/_solution-test-modes.yaml` picks a `{mode, ingress}` combination plus Juju
+channel per matrix job the same way; `.github/workflows/solution-test-modes.yaml` curates which
+combinations actually run (see its own comment for why it isn't a full cross product).
+
+(A third axis, upgrading in-place from `risk=candidate` to `risk=edge` against the same model, is
+deliberately not wired up here: candidate-risk charm revisions don't exist on the `dev` track this
+repo's main-branch wrapper deploys from -- only `track/*` branches have real released revisions
+across every risk level, via a `tf-<solution>-X.Y.Z` tag pinned as the "previous" module source.
+That's a different, track-branch-only mechanism, out of scope for this worked example.)
 
 ## Adding a new scenario
 

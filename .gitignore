@@ -18,8 +18,10 @@ crash.*.log
 *.tfvars
 *.tfvars.json
 
-# Exception: module presets committed under a module's presets/ directory
+# Exception: presets committed under a module's, or a solution test's own,
+# presets/ directory
 !terraform/**/presets/*.tfvars
+!tests/solution/**/presets/*.tfvars
 
 # Ignore override files as they are usually used to override resources locally and so
 # are not checked in

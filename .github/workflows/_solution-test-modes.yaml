@@ -1,9 +1,25 @@
 name: Test a solution across modes
 
-# Reusable workflow: one job per (mode, juju-channel) combination. Modes map
-# straight to Terraform variables on the solution's own wrapper -- no mode
-# tag or env var needs to match what CI deploys, since steps read the
-# deployed value back from the wrapper's own output instead.
+# Reusable workflow: one job per (combination, juju-channel) pair. Each
+# combination is just a {mode, ingress} tuple of Terraform variable values
+# for the solution's own wrapper -- no mode tag or env var needs to match
+# what CI deploys, since steps read the deployed value back from the
+# wrapper's own output where an assertion depends on it, and don't need to
+# know at all for the deployment-shape-only ingress axis. Adding a new
+# combination (or crossing in another axis) is purely a data change here --
+# no test code to touch.
+#
+# (The upgrade axis -- candidate risk re-applied to edge against the same
+# model -- isn't exercised here: candidate-risk charm revisions don't exist
+# on the `dev` track this repo's main-branch wrapper deploys from, only on
+# `track/*` branches, which pin a released `tf-<solution>-X.Y.Z` tag instead.
+# That's a separate, track-branch-only mechanism, out of scope for this PR.)
+#
+# `combinations` is an explicit list rather than separate `modes`/
+# `ingresses` matrix dimensions crossed automatically, so the (currently
+# empty) set of nonsensical pairings -- e.g. `no_ingress` with a TLS value
+# that requires an external CA -- can be curated by omission rather than an
+# exclude rule. See SPIKE_modes.md's "Note on combinatorics".
 
 on:
   workflow_call:
@@ -12,8 +28,11 @@ on:
         description: 'The solution to deploy, e.g. "cos-lite" (a directory under tests/solution/).'
         required: true
         type: string
-      modes:
-        description: 'JSON array of modes to run, e.g. ["tls_internal", "tls_none"].'
+      combinations:
+        description: >
+          JSON array of {mode, ingress} objects, each passed straight through as
+          `just solution test <solution> <mode> <ingress>` args (empty string picks that axis'
+          default). E.g. [{"mode": "tls_none", "ingress": "no_ingress"}].
         required: true
         type: string
       juju-channels:
@@ -24,11 +43,15 @@ on:
 
 jobs:
   test:
-    name: Test ${{ inputs.solution }} (${{ matrix.mode }}, juju ${{ matrix.juju-channel }})
+    name: >-
+      Test ${{ inputs.solution }}
+      (${{ matrix.combo.mode || 'tls_internal' }},
+      ${{ matrix.combo.ingress || 'ingress' }},
+      juju ${{ matrix.juju-channel }})
     strategy:
       fail-fast: false
       matrix:
-        mode: ${{ fromJson(inputs.modes) }}
+        combo: ${{ fromJson(inputs.combinations) }}
         juju-channel: ${{ fromJson(inputs.juju-channels) }}
     runs-on: ubuntu-latest
     steps:
@@ -45,4 +68,6 @@ jobs:
           sudo k8s kubectl rollout status daemonset/cilium -n kube-system --timeout=90s
 
       - name: Run solution tests
-        run: just solution test ${{ inputs.solution }} ${{ matrix.mode }}
+        run: >-
+          just solution test "${{ inputs.solution }}" "${{ matrix.combo.mode }}"
+          "${{ matrix.combo.ingress }}"

@@ -1,7 +1,10 @@
 name: Solution test modes
 
-# Runs cos-lite's solution tests across every TLS mode, in parallel, on PRs
-# that touch the relevant files.
+# Runs cos-lite's solution tests across the TLS and ingress axes, in
+# parallel, on PRs that touch the relevant files. Not a full cross product
+# of both (that's 4 combinations here) -- just enough to exercise the new
+# ingress axis once, plus the two TLS values that already existed. See
+# SPIKE_modes.md's "Note on combinatorics".
 
 on:
   pull_request:
@@ -21,4 +24,9 @@ jobs:
     uses: ./.github/workflows/_solution-test-modes.yaml
     with:
       solution: cos-lite
-      modes: '["tls_internal", "tls_none"]'
+      combinations: |
+        [
+          {"mode": "tls_internal", "ingress": ""},
+          {"mode": "tls_none", "ingress": ""},
+          {"mode": "tls_internal", "ingress": "no_ingress"}
+        ]
