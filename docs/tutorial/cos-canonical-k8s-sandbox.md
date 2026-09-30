@@ -10,7 +10,6 @@ In this tutorial you deploy a single-node, multi-unit COS, backed by S3 storage.
 
 You can reproduce the COS deployment in this tutorial with a [cloud-config](cos-canonical-k8s-sandbox.conf) script.
 
-
 ## Prerequisites
 
 - A 8cpu16gb node or better, with at least 100GB disk space (see [Sizing guide](../reference/system-requirements) for production deployments).
@@ -22,8 +21,8 @@ You can reproduce the COS deployment in this tutorial with a [cloud-config](cos-
 - K8s cloud added to Juju ([doc](https://documentation.ubuntu.com/juju/3.6/howto/manage-clouds/#add-a-kubernetes-cloud)).
 - A Juju Kubernetes controller is bootstrapped and ready.
 
-
 ## Set up S3
+
 For S3, we will install the Microceph snap ([doc](https://canonical.com/ceph/docs/stable/snap/tutorial/get-started/))
 and configure RadosGW to listen on port 8080 ([doc](https://canonical.com/ceph/docs/stable/snap/reference/commands/enable/)).
 

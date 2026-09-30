@@ -52,4 +52,5 @@ The coordinator solves several problems that would otherwise require complex dis
 - Consistency checking: the coordinator can verify that the cluster has all required roles covered before marking the deployment as ready, without requiring workers to cross-relate with each other.
 
 ## References
+
 - [Coordinated worker roles and meta-roles](/reference/coordinated-workers-meta-roles.md)

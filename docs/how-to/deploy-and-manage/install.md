@@ -67,6 +67,7 @@ Production deployments should use TLS.
 See [How to configure TLS encryption](/how-to/deploy-and-manage/configure-tls-encryption) for the available modes and what you need to prepare (for example, an external certificates provider).
 
 ### Authentication and authorization
+
 Only the Grafana and Traefik charms support authentication.
 To expose Grafana publicly, deploy two Traefik charms: one for internal connections and another for external access to provide ingress.
 

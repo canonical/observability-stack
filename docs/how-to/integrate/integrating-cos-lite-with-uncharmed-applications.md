@@ -99,6 +99,7 @@ See [this guide](https://github.com/canonical/cos-configuration-k8s-operator#dep
 You can follow [this guide](../deploy-and-manage/configure-tls-encryption.md) to enable TLS in COS and COS Lite.
 
 ### Opentelemetry Collector snap as a client
+
 As a client (e.g. scraping `/metrics` endpoint), Opentelemetry Collector must trust the CA that signed the COS charms (or the COS
 ingress charm).
 
@@ -116,8 +117,8 @@ Next, you need to [add the certificate to the root store](https://ubuntu.com/ser
 >
 > `2026-04-15T22:46:14.218Z [otelcol] 2026-04-15T22:46:14.218Z info internal/retry_sender.go:133 Exporting failed. Will retry the request after interval. {"resource": {"service.instance.id": "14b8806b-d9e6-48f9-8233-37440ae6237b", "service.name": "otelcol", "service.version": "0.130.1"}, "otelcol.component.id": "otlp/rel-9/otelcol-push/0", "otelcol.component.kind": "exporter", "otelcol.signal": "metrics", "error": "rpc error: code = Unavailable desc = connection error: desc = "transport: authentication handshake failed: tls: first record does not look like a TLS handshake"", "interval": "39.096270371s"}`
 
-
 ### Opentelemetry Collector as a server
+
 To have a TLS handshake with incoming connections (e.g. if you push to Opentelemetry Collector via remote-write), you need to have
 a private key and a certificate, and add to the [Opentelemetry Collector config](https://github.com/open-telemetry/opentelemetry-collector/blob/main/config/configtls/README.md#server-configuration) as follows:
 
@@ -131,7 +132,6 @@ receivers:
           cert_file: server.crt
           key_file: server.key
 ```
-
 
 ### Using the Prometheus Scrape Target charm
 
