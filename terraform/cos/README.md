@@ -3,7 +3,7 @@
 This is a Terraform module facilitating the deployment of the COS solution, using the [Terraform juju provider](https://github.com/juju/terraform-provider-juju/). For more information, refer to the provider [documentation](https://registry.terraform.io/providers/juju/juju/latest/docs). This Terraform module deploys COS with Mimir, Tempo and Loki in their microservices modes, and other charms in monolithic mode.
 
 > [!NOTE]
-> `s3-integrator` itself doesn't act as an S3 object storage system. For the HA solution to be functional, `s3-integrator` needs to point to an S3-like storage. See [this guide](https://documentation.ubuntu.com/observability/latest/tutorial/installation/cos-canonical-k8s-sandbox/#set-up-s3) to learn how to connect to an S3-like storage. If you deploy the COS TF module with an s3-integrator from `channel=2/edge` and `>=rev243`, then the buckets are automatically created for you.
+> `s3-integrator` itself doesn't act as an S3 object storage system. For the HA solution to be functional, `s3-integrator` needs to point to an S3-like storage. See [this guide](../../docs/tutorial/installation/cos-canonical-k8s-sandbox.md#set-up-s3) to learn how to connect to an S3-like storage. If you deploy the COS TF module with an s3-integrator from `channel=2/edge` and `>=rev243`, then the buckets are automatically created for you.
 
 <!-- BEGIN_TF_DOCS -->
 ## Providers

@@ -243,6 +243,7 @@ linkcheck_retries = 3
 #       substitution, deflist, linkify
 
 myst_enable_extensions = {"colon_fence"}
+myst_heading_anchors = 3
 
 
 # Custom Sphinx extensions; see
