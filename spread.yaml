@@ -1,0 +1,59 @@
+project: observability-stack
+
+# Unlike spike/spread-matrix-only, spread owns environment provisioning here
+# too: prepare-each below runs concierge itself, instead of the calling
+# GitHub Actions job doing it. The workflow's only job is to install spread
+# and hand it a job name -- see .github/workflows/_solution-test-modes.yaml.
+#
+# Juju channel isn't wired up as a mode here (see SPIKE_modes.md) -- spread's
+# variants are a single flat namespace, not a cartesian product, so crossing
+# it with tests/solution/spread/cos-lite/task.yaml's TLS_MODE variants would
+# mean combined variant names there (e.g. `TLS_MODE/tls_internal_juju41`)
+# rather than another independent `JUJU_CHANNEL/juju41` key here.
+
+backends:
+  github-ci:
+    type: adhoc
+    # Only selected explicitly (`spread github-ci:...`); spread cannot
+    # provision GitHub Actions runners, so the workflow provisions one runner
+    # per job and this backend points spread at that same machine.
+    manual: true
+    allocate: |
+      echo "runner:$SPREAD_PASSWORD" | sudo chpasswd
+      echo "PasswordAuthentication yes" | sudo tee /etc/ssh/sshd_config.d/10-spread.conf
+      sudo systemctl restart ssh
+      ADDRESS localhost
+    systems:
+      - ubuntu-24.04:
+          username: runner
+
+suites:
+  tests/solution/spread/:
+    summary: Solution tests, expanded across modes
+
+path: /home/runner/spread-project
+kill-timeout: 90m
+
+exclude:
+  - .git
+  - .terraform
+  - "*/.terraform"
+
+environment:
+  JUJU_CHANNEL: 3.6/stable
+
+prepare: |
+  sudo snap install concierge --classic
+
+prepare-each: |
+  sudo concierge prepare --juju-channel "$JUJU_CHANNEL" -p k8s --extra-snaps just,astral-uv,terraform
+  # Configure Cilium for Istio ambient service mesh compatibility
+  sudo k8s kubectl patch configmap cilium-config -n kube-system --type merge -p '{"data":{"bpf-lb-sock-hostns-only":"true"}}'
+  sudo k8s kubectl rollout restart daemonset/cilium -n kube-system
+  sudo k8s kubectl rollout status daemonset/cilium -n kube-system --timeout=90s
+
+restore-each: |
+  sudo concierge restore
+
+restore: |
+  rm -rf "$SPREAD_PATH"

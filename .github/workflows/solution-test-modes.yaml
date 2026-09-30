@@ -1,0 +1,27 @@
+name: Solution test modes
+
+# Runs cos-lite's solution tests across every TLS mode, in parallel, on PRs
+# that touch the relevant files. The mode axis is a spread variant
+# (spread.yaml, tests/solution/spread/cos-lite/task.yaml), so unlike
+# spike/spread-matrix-only this workflow doesn't set anything up itself.
+
+on:
+  pull_request:
+    paths:
+      - 'tests/solution/cos-lite/**'
+      - 'tests/solution/spread/**'
+      - 'tests/solution/conftest.py'
+      - 'tests/solution/helpers.py'
+      - 'tests/solution/steps/**'
+      - 'terraform/cos-lite/**'
+      - 'solution.just'
+      - 'spread.yaml'
+      - '.github/workflows/solution-test-modes.yaml'
+      - '.github/workflows/_solution-test-modes.yaml'
+
+jobs:
+  cos-lite:
+    name: cos-lite
+    uses: ./.github/workflows/_solution-test-modes.yaml
+    with:
+      solution: cos-lite

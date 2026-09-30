@@ -1,0 +1,8 @@
+summary: cos-lite across TLS modes
+
+environment:
+  TLS_MODE/tls_internal: tls_internal
+  TLS_MODE/tls_none: tls_none
+
+execute: |
+  just solution test cos-lite "$TLS_MODE"

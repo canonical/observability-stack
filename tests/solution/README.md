@@ -54,6 +54,20 @@ cd tests/solution
 SOLUTION_MODEL="microk8s-localhost:cos-lite" uv run --frozen --isolated pytest -vv --capture=no cos-lite
 ```
 
+### Running a specific mode
+
+`cos-lite` also supports **modes** -- deployment variants of the same solution, e.g. `tls_internal`
+/ `tls_none` for whether internal TLS is enabled. Pass one as a second argument:
+
+```bash
+just solution test cos-lite tls_none
+```
+
+In CI, `spread.yaml` owns provisioning (concierge, the Juju controller, the k8s cloud) as well as
+expanding each mode into its own job (`tests/solution/spread/cos-lite/task.yaml`);
+`.github/workflows/_solution-test-modes.yaml` just discovers those jobs and runs one per matrix
+entry.
+
 ## Adding a new scenario
 
 Feature files live under each solution's own `<name>/features/`, plus `features/smoke.feature`
@@ -64,6 +78,9 @@ than sharing a file -- there is no cross-solution tagging to keep in sync. Reuse
 steps where they apply -- most scenarios want the `Given the solution has been deployed` /
 `And the model is healthy` background.
 
+A scenario can also be restricted to a mode (e.g. `@tls_none`); `conftest.py` deselects it unless
+`SOLUTION_MODE` matches. New mode values also need adding to `_MODES` there.
+
 ### Writing steps
 
 Steps are declarative: each one states a fact about the system and asserts it on its own, so it
@@ -71,8 +88,8 @@ can be dropped into any scenario. These suites deploy and mutate nothing, so mos
 just a background plus one or more `Then`s.
 
 Step definitions live in `steps/`, grouped by the domain concept they talk about (e.g.
-`steps/deployment.py`, `steps/telemetry.py`, `steps/grafana.py`) rather than by the feature file
-that uses them. Register new modules in `conftest.py`'s `pytest_plugins`.
+`steps/deployment.py`, `steps/telemetry.py`, `steps/grafana.py`, `steps/tls.py`) rather than by
+the feature file that uses them. Register new modules in `conftest.py`'s `pytest_plugins`.
 
 ### Talking to workloads
 

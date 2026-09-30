@@ -1,0 +1,57 @@
+name: Test a solution across modes
+
+# Reusable workflow: spread owns environment provisioning end to end (see
+# spread.yaml's prepare/prepare-each) as well as which modes/Juju channels
+# get expanded into jobs (tests/solution/spread/<solution>/task.yaml), so
+# this workflow only needs to discover those jobs and run one per matrix
+# entry -- unlike spike/spread-matrix-only, where concierge/k8s/Juju setup
+# lived here instead.
+
+on:
+  workflow_call:
+    inputs:
+      solution:
+        description: 'The solution to deploy, e.g. "cos-lite" (a directory under tests/solution/spread/).'
+        required: true
+        type: string
+
+jobs:
+  discover:
+    name: List spread jobs
+    runs-on: ubuntu-latest
+    outputs:
+      jobs: ${{ steps.list.outputs.jobs }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install spread
+        run: |
+          sudo snap install go --classic
+          go install github.com/canonical/spread/cmd/spread@latest
+
+      - name: List jobs
+        id: list
+        run: |
+          jobs=$(~/go/bin/spread -list "github-ci:...tests/solution/spread/${{ inputs.solution }}:..." | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "jobs=$jobs" >> "$GITHUB_OUTPUT"
+
+  test:
+    name: Test ${{ matrix.job }}
+    needs: [discover]
+    strategy:
+      fail-fast: false
+      matrix:
+        job: ${{ fromJson(needs.discover.outputs.jobs) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install spread
+        run: |
+          sudo snap install go --classic
+          go install github.com/canonical/spread/cmd/spread@latest
+
+      - name: Run solution test
+        run: ~/go/bin/spread -v "${{ matrix.job }}"
