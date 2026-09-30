@@ -35,14 +35,10 @@ For *product* modules, we use an artificial track to identify a certain release.
 
 Track branches are **feature-frozen**: they only receive bug fixes and non-breaking improvements. New features and breaking changes go to a new track branch. This applies to everything: charms, components, products, and their Terraform modules.
 
-For **charm** and **component** modules, given that the `major.minor` is tied to the workload the charm operates, the patch version is reserved for non-breaking changes. Moving from one charm track to the next (for example, `12.4.x` to `12.6.x`) may therefore include breaking changes even when the workload's major version did not change; this is common for new or slow-moving projects.
+This approach follows the release model adopted from charms, but **it deviates from semantic versioning in terms of guarantees**. Specifically. a new *minor* version could contain breaking changes, while a new *major* version might not. To summarize:
 
-For **product** modules, which have no upstream workload, versioning follows strict semantic versioning. A breaking change to a module's API (for example, the COS API) must bump its major version, while non-breaking changes may be released as a minor bump.
-
-To summarize:
-- Upgrading a charm (or component) module across patch versions (e.g., `12.4.0` to `12.4.5`) contains only non-breaking changes;
-- Upgrading a charm (or component) module across tracks (e.g., `12.4.x` → `12.6.x`) may include breaking changes; please check our documentation and release notes;
-- Upgrading a product module across major versions contains breaking changes, while a minor upgrade does not.
+- Upgrading across patch versions (e.g., `12.4.0` to `12.4.5`) contains only non-breaking changes;
+- Upgrading across minor or major versions (e.g., `12.4.x` → `12.6.x`) may include breaking changes; please check our documentation and release notes.
 
 ## Tagging Strategy
 

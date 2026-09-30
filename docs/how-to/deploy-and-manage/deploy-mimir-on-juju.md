@@ -59,7 +59,6 @@ usable end-to-end flow):
 - `avalanche-k8s`: a synthetic metrics generator used only in the
   validation step.
 
-
 ## Prerequisites
 
 - Juju 3.6 or later, with a Kubernetes cloud added and a controller
