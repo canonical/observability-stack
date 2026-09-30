@@ -44,7 +44,7 @@ terraform -chdir=tests/solution/cos-lite/terraform destroy -auto-approve
 
 ### Running against an already-deployed model
 
-The `given` step (`the solution has been deployed`, defined in `steps/common_steps.py`) can skip
+The `given` step (`the solution has been deployed`, defined in `steps/deployment.py`) can skip
 discovering a model from Terraform output entirely: set `SOLUTION_MODEL` (optionally
 `<controller>:<model>`) and it's used as-is. This lets an external suite that deploys a solution
 some other way reuse these same steps against its own model:
@@ -53,6 +53,18 @@ some other way reuse these same steps against its own model:
 cd tests/solution
 SOLUTION_MODEL="microk8s-localhost:cos-lite" uv run --frozen --isolated pytest -vv --capture=no cos-lite
 ```
+
+### Running a specific mode
+
+Some solutions support more than one **mode** (e.g. `cos-lite` supports `tls-internal` /
+`tls-none`). Pass it as a second argument:
+
+```bash
+just solution test cos-lite tls-none
+```
+
+In CI, modes and Juju channels are matrix dimensions instead
+(`.github/workflows/_solution-test-modes.yaml`).
 
 ## Adding a new scenario
 
@@ -64,6 +76,10 @@ than sharing a file -- there is no cross-solution tagging to keep in sync. Reuse
 steps where they apply -- most scenarios want the `Given the solution has been deployed` /
 `And the model is healthy` background.
 
+A scenario can also be restricted to a **mode** by tagging it (e.g. `@tls-none`) -- `conftest.py`
+deselects it when that mode isn't active; an untagged scenario runs under every mode. New mode
+values also need adding to `_MODES` in `conftest.py`.
+
 ### Writing steps
 
 Steps are declarative: each one states a fact about the system and asserts it on its own, so it
@@ -71,8 +87,8 @@ can be dropped into any scenario. These suites deploy and mutate nothing, so mos
 just a background plus one or more `Then`s.
 
 Step definitions live in `steps/`, grouped by the domain concept they talk about (e.g.
-`steps/deployment.py`, `steps/telemetry.py`, `steps/grafana.py`) rather than by the feature file
-that uses them. Register new modules in `conftest.py`'s `pytest_plugins`.
+`steps/deployment.py`, `steps/telemetry.py`, `steps/grafana.py`, `steps/tls.py`) rather than by
+the feature file that uses them. Register new modules in `conftest.py`'s `pytest_plugins`.
 
 ### Talking to workloads
 

@@ -1,0 +1,45 @@
+name: Test a solution across modes
+
+# Reusable workflow: one job per (mode, juju-channel) combination.
+
+on:
+  workflow_call:
+    inputs:
+      solution:
+        description: 'The solution to deploy, e.g. "cos-lite" (a directory under tests/solution/).'
+        required: true
+        type: string
+      modes:
+        description: 'JSON array of mode tags to run, e.g. ["tls-internal", "tls-none"].'
+        required: true
+        type: string
+      juju-channels:
+        description: 'JSON array of Juju snap channels, e.g. ["3.6/stable", "4.1/beta"].'
+        required: false
+        type: string
+        default: '["3.6/stable"]'
+
+jobs:
+  test:
+    name: Test ${{ inputs.solution }} (${{ matrix.mode }}, juju ${{ matrix.juju-channel }})
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: ${{ fromJson(inputs.modes) }}
+        juju-channel: ${{ fromJson(inputs.juju-channels) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo snap install concierge --classic
+          sudo concierge prepare --juju-channel ${{ matrix.juju-channel }} -p k8s --extra-snaps just,astral-uv,terraform
+          # Configure Cilium for Istio ambient service mesh compatibility
+          sudo k8s kubectl patch configmap cilium-config -n kube-system --type merge -p '{"data":{"bpf-lb-sock-hostns-only":"true"}}'
+          sudo k8s kubectl rollout restart daemonset/cilium -n kube-system
+          sudo k8s kubectl rollout status daemonset/cilium -n kube-system --timeout=90s
+
+      - name: Run solution tests
+        run: just solution test ${{ inputs.solution }} ${{ matrix.mode }}
