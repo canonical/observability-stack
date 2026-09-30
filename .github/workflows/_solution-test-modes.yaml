@@ -1,6 +1,6 @@
 name: Test a solution across modes
 
-# Reusable workflow: one job per (mode, juju-channel) combination.
+# Reusable workflow: one job per (mode, ingress, juju-channel) combination.
 
 on:
   workflow_call:
@@ -10,9 +10,14 @@ on:
         required: true
         type: string
       modes:
-        description: 'JSON array of mode tags to run, e.g. ["tls-internal", "tls-none"].'
+        description: 'JSON array of TLS mode tags to run, e.g. ["tls-internal", "tls-none"].'
         required: true
         type: string
+      ingress-modes:
+        description: 'JSON array of ingress mode tags to run, e.g. ["ingress", "no-ingress"].'
+        required: false
+        type: string
+        default: '["ingress"]'
       juju-channels:
         description: 'JSON array of Juju snap channels, e.g. ["3.6/stable", "4.1/beta"].'
         required: false
@@ -21,11 +26,12 @@ on:
 
 jobs:
   test:
-    name: Test ${{ inputs.solution }} (${{ matrix.mode }}, juju ${{ matrix.juju-channel }})
+    name: Test ${{ inputs.solution }} (${{ matrix.mode }}, ${{ matrix.ingress }}, juju ${{ matrix.juju-channel }})
     strategy:
       fail-fast: false
       matrix:
         mode: ${{ fromJson(inputs.modes) }}
+        ingress: ${{ fromJson(inputs.ingress-modes) }}
         juju-channel: ${{ fromJson(inputs.juju-channels) }}
     runs-on: ubuntu-latest
     steps:
@@ -42,4 +48,4 @@ jobs:
           sudo k8s kubectl rollout status daemonset/cilium -n kube-system --timeout=90s
 
       - name: Run solution tests
-        run: just solution test ${{ inputs.solution }} ${{ matrix.mode }}
+        run: just solution test ${{ inputs.solution }} ${{ matrix.mode }} ${{ matrix.ingress }}

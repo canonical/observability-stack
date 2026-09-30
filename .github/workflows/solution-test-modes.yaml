@@ -1,6 +1,6 @@
 name: Solution test modes
 
-# Runs cos-lite's solution tests across every (mode, juju-channel)
+# Runs cos-lite's solution tests across every (mode, ingress, juju-channel)
 # combination, in parallel, on PRs that touch the relevant files.
 
 on:
@@ -23,4 +23,5 @@ jobs:
     with:
       solution: cos-lite
       modes: '["tls-internal", "tls-none"]'
+      ingress-modes: '["ingress", "no-ingress"]'
       juju-channels: '["3.6/stable", "4.1/beta"]'

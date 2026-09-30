@@ -18,15 +18,20 @@ pytest_plugins = [
     "clients",
     "steps.deployment",
     "steps.grafana",
+    "steps.ingress",
     "steps.telemetry",
     "steps.tls",
 ]
 
-# Mode tags aren't discovered from a directory layout; add new values here.
-_MODES = frozenset({"tls-internal", "tls-none"})
+# Independent mode axes: a scenario can be tagged with a value from more than
+# one axis (e.g. `@tls-none` and `@no-ingress` together), or from just one --
+# tags aren't discovered from a directory layout, so add new values here.
+_MODES = frozenset({"tls-internal", "tls-none", "ingress", "no-ingress"})
 
-_DEFAULT_MODE = "tls-internal"
-_ACTIVE_MODES = frozenset((os.environ.get("SOLUTION_MODES") or _DEFAULT_MODE).split(","))
+# One default per axis, so running without SOLUTION_MODES set (e.g. straight
+# `pytest`) exercises the same defaults each product Terraform module uses.
+_DEFAULT_MODES = "tls-internal,ingress"
+_ACTIVE_MODES = frozenset((os.environ.get("SOLUTION_MODES") or _DEFAULT_MODES).split(","))
 
 
 def pytest_configure(config: pytest.Config) -> None:
@@ -35,7 +40,12 @@ def pytest_configure(config: pytest.Config) -> None:
 
 
 def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:
-    """Deselect scenarios tagged for a mode other than the one under test."""
+    """Deselect scenarios tagged for a mode other than the one(s) under test.
+
+    A scenario untagged for a given axis runs under every value of that axis;
+    one tagged e.g. `@tls-none` only runs when `tls-none` is in
+    `SOLUTION_MODES`, regardless of what the other axis is set to.
+    """
     kept, deselected = [], []
     for item in items:
         mode_tags = {mark.name for mark in item.iter_markers()} & _MODES

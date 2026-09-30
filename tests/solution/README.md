@@ -56,15 +56,16 @@ SOLUTION_MODEL="microk8s-localhost:cos-lite" uv run --frozen --isolated pytest -
 
 ### Running a specific mode
 
-Some solutions support more than one **mode** (e.g. `cos-lite` supports `tls-internal` /
-`tls-none`). Pass it as a second argument:
+Some solutions support one or more independent **mode** axes (e.g. `cos-lite` supports
+`tls-internal`/`tls-none`, crossed with `ingress`/`no-ingress`). Pass whichever axes apply as
+extra arguments:
 
 ```bash
-just solution test cos-lite tls-none
+just solution test cos-lite tls-none no-ingress
 ```
 
-In CI, modes and Juju channels are matrix dimensions instead
-(`.github/workflows/_solution-test-modes.yaml`).
+In CI, each axis and the Juju channel are matrix dimensions instead
+(`.github/workflows/_solution-test-modes.yaml`), so every combination runs in parallel.
 
 ## Adding a new scenario
 
@@ -76,9 +77,9 @@ than sharing a file -- there is no cross-solution tagging to keep in sync. Reuse
 steps where they apply -- most scenarios want the `Given the solution has been deployed` /
 `And the model is healthy` background.
 
-A scenario can also be restricted to a **mode** by tagging it (e.g. `@tls-none`) -- `conftest.py`
-deselects it when that mode isn't active; an untagged scenario runs under every mode. New mode
-values also need adding to `_MODES` in `conftest.py`.
+A scenario can also be restricted to a **mode** by tagging it (e.g. `@tls-none`, `@no-ingress`)
+-- `conftest.py` deselects it when that mode isn't active; an untagged scenario runs under every
+value of every axis. New mode values also need adding to `_MODES` in `conftest.py`.
 
 ### Writing steps
 
@@ -87,8 +88,9 @@ can be dropped into any scenario. These suites deploy and mutate nothing, so mos
 just a background plus one or more `Then`s.
 
 Step definitions live in `steps/`, grouped by the domain concept they talk about (e.g.
-`steps/deployment.py`, `steps/telemetry.py`, `steps/grafana.py`, `steps/tls.py`) rather than by
-the feature file that uses them. Register new modules in `conftest.py`'s `pytest_plugins`.
+`steps/deployment.py`, `steps/telemetry.py`, `steps/grafana.py`, `steps/tls.py`,
+`steps/ingress.py`) rather than by the feature file that uses them. Register new modules in
+`conftest.py`'s `pytest_plugins`.
 
 ### Talking to workloads
 

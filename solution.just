@@ -11,20 +11,30 @@ uv_flags := "--frozen --isolated"
 # Deploys into whichever Juju controller is currently active -- `juju switch`
 # to the intended one first.
 # Init/apply a solution's Terraform module, then run its solution test suite.
-# `mode` (e.g. `tls-none`) is optional: sets the wrapper's `tls_mode` variable
-# and exports SOLUTION_MODES.
+# `tls_mode` (e.g. `tls-none`) and `ingress_mode` (e.g. `no-ingress`) are
+# independent, optional mode axes: each sets its matching wrapper variable and
+# is added to the exported SOLUTION_MODES.
 [group("test")]
 [working-directory("./tests/solution")]
-test solution="cos-lite" mode="":
+test solution="cos-lite" tls_mode="" ingress_mode="":
   #!/usr/bin/env bash
   set -euo pipefail
-  echo "==> Testing solution: {{solution}}${mode:+ (mode: $mode)}"
+  echo "==> Testing solution: {{solution}}${tls_mode:+ (tls_mode: $tls_mode)}${ingress_mode:+ (ingress_mode: $ingress_mode)}"
   juju whoami
   if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
   mode_args=()
-  if [ -n "{{mode}}" ]; then
-    mode_args=(-var "tls_mode={{mode}}")
-    export SOLUTION_MODES="{{mode}}"
+  modes=()
+  if [ -n "{{tls_mode}}" ]; then
+    mode_args+=(-var "tls_mode={{tls_mode}}")
+    modes+=("{{tls_mode}}")
+  fi
+  if [ -n "{{ingress_mode}}" ]; then
+    mode_args+=(-var "ingress_mode={{ingress_mode}}")
+    modes+=("{{ingress_mode}}")
+  fi
+  if [ "${#modes[@]}" -gt 0 ]; then
+    SOLUTION_MODES=$(IFS=,; echo "${modes[*]}")
+    export SOLUTION_MODES
   fi
   $terraform -chdir="{{solution}}/terraform" init -upgrade
   $terraform -chdir="{{solution}}/terraform" apply -auto-approve "${mode_args[@]}"
