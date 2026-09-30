@@ -8,19 +8,26 @@ uv_flags := "--frozen --isolated"
 @default:
   just --list solution
 
+# `mode` (e.g. `tls_none`) is optional: sets the wrapper's `internal_tls`
+# variable. Nothing else needs telling which one was picked -- steps read it
+# back from the wrapper's own output (see tests/solution/steps/tls.py).
 # Deploys into whichever Juju controller is currently active -- `juju switch`
 # to the intended one first.
 # Init/apply a solution's Terraform module, then run its solution test suite.
 [group("test")]
 [working-directory("./tests/solution")]
-test solution="cos-lite":
+test solution="cos-lite" mode="":
   #!/usr/bin/env bash
   set -euo pipefail
-  echo "==> Testing solution: {{solution}}"
+  echo "==> Testing solution: {{solution}}${mode:+ (mode: $mode)}"
   juju whoami
   if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
+  mode_args=()
+  if [ "{{mode}}" = tls_none ]; then
+    mode_args=(-var "internal_tls=false")
+  fi
   $terraform -chdir="{{solution}}/terraform" init -upgrade
-  $terraform -chdir="{{solution}}/terraform" apply -auto-approve
+  $terraform -chdir="{{solution}}/terraform" apply -auto-approve "${mode_args[@]}"
   uv run ${uv_flags} pytest -vv -ra --capture=no "{{solution}}"
 
 # Promote every charm in a solution from /beta to /candidate

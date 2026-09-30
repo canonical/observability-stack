@@ -16,6 +16,11 @@ import requests
 TERRAFORM_BIN = os.environ.get("terraform") or "terraform"
 
 
+def terraform_dir(request) -> Path:
+    """Terraform wrapper directory for the currently running solution."""
+    return Path(request.module.__file__).parent / "terraform"
+
+
 def terraform_output(terraform_dir: Path) -> Dict[str, Any]:
     """Return `terraform output -json` for an already-applied module."""
     result = subprocess.run(

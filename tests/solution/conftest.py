@@ -8,4 +8,5 @@ pytest_plugins = [
     "steps.deployment",
     "steps.grafana",
     "steps.telemetry",
+    "steps.tls",
 ]

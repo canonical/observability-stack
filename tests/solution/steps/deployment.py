@@ -1,10 +1,9 @@
 """Steps about the deployment itself: which model, and whether it is healthy."""
 
 import os
-from pathlib import Path
 
 import jubilant
-from helpers import terraform_output, wait_for_active_idle
+from helpers import terraform_dir, terraform_output, wait_for_active_idle
 from pytest_bdd import given, then
 
 # Points the "given" step at an already-deployed model instead of
@@ -16,8 +15,7 @@ _MODEL_ENV_VAR = "SOLUTION_MODEL"
 def the_solution_has_been_deployed(request) -> jubilant.Juju:
     model_name = os.environ.get(_MODEL_ENV_VAR)
     if model_name is None:
-        terraform_dir = Path(request.module.__file__).parent / "terraform"
-        model_name = terraform_output(terraform_dir)["model_name"]["value"]
+        model_name = terraform_output(terraform_dir(request))["model_name"]["value"]
     return jubilant.Juju(model=model_name)
 
 
