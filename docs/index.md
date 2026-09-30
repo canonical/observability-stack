@@ -14,7 +14,6 @@ By leveraging the topology model of Juju to contextualize the data, and charm re
 
 For Site Reliability Engineers, COS provides a turn-key, out-of-the-box solution for improved day-2 operational insight.
 
-
 ## In this documentation
 
 |                        |                                                                             |
@@ -39,7 +38,6 @@ For Site Reliability Engineers, COS provides a turn-key, out-of-the-box solution
 [Add alert rules]: how-to/integrate/adding-alert-rules
 [Data integrity]: explanation/operations/data-integrity
 [COS components]: reference/cos-components/index
-
 
 ## How this documentation is organized
 
@@ -66,7 +64,6 @@ reference/index
 Release notes <release-notes>
 ```
 
-
 ## Project and community
 
 The Canonical Observability Stack is a member of the Canonical family. It's an open source project
@@ -74,16 +71,17 @@ that warmly welcomes community projects, contributions, suggestions, fixes
 and constructive feedback.
 
 ### Get involved
+
 - [Join the Discourse community forum](https://discourse.charmhub.io/c/charm/observability/62)
 - [Join the Matrix community chat](https://matrix.to/#/#cos:ubuntu.com)
 - [Contribute on GitHub](https://github.com/canonical/observability-stack)
 
-
 ### Releases
+
 - [Release notes](release-notes)
 - [Release policy](reference/release-policy)
 
-
 ### Project governance
+
 - [Code of conduct](https://ubuntu.com/community/docs/ethos/code-of-conduct)
 - [Canonical contributor license agreement](https://canonical.com/legal/contributors)

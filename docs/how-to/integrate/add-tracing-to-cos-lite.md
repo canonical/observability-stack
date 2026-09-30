@@ -52,7 +52,6 @@ juju integrate tempo s3
 
 And wait for the `tempo` application to go to `active/idle`.
 
-
 ## Integrate coordinator and workers
 
 ```bash    
