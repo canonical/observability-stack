@@ -6,7 +6,7 @@
 
 These release notes cover both **COS 3.1** and **COS Lite 3.1**. COS and COS Lite are distinct products with separate Terraform modules and different component sets; sections below apply to both unless noted otherwise, via a `Scope` column or an *Applies to* note.
 
-3.1 is a **short-term release** on the interim track between the COS 3.0 LTS and the next LTS. It is a small, focused release: most components keep the tracks they shipped on in 3.0, and the changes below are deliberate and narrow. Short-term releases receive security updates and critical bug fixes for nine months. If you need a longer support window, stay on [COS 3.0](https://documentation.ubuntu.com/observability/track-3.0/release-notes/). See the [release policy](reference/release-policy) for the full support window and cadence.
+3.1 is a **short-term release** on the interim track between the COS 3.0 LTS and the next LTS. It is a small, focused release: most components keep the tracks they shipped on in 3.0, and the changes below are deliberate and narrow. Short-term releases receive security updates and critical bug fixes for nine months. If you need a longer support window, stay on the COS 3.0 LTS; see the [release policy](reference/release-policy) for the full support window, cadence, and links to each release's notes.
 
 ```{note}
 COS `3.1` is a product version, not a single Charmhub track shared by every component. Most charms retain their own versioning; see [Component versions](#component-versions) for the exact track each charm uses in this release.
