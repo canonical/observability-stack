@@ -34,3 +34,5 @@ terraform.rc
 .terraform.lock.hcl
 
 terraform/testing/**
+# SolQA test output (see sqa_tests)
+test_results.xml

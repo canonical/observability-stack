@@ -1,0 +1,117 @@
+name: Test and promote a product to stable
+
+# For one release track and one product: snapshot candidate, run the solution
+# tests on SolQA, and promote candidate to stable if they passed and candidate
+# did not change during the run.
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        description: "Release track branch whose Terraform SolQA deploys (e.g. track/3.0)"
+        required: true
+        type: string
+      product:
+        description: "cos or cos-lite"
+        required: true
+        type: string
+      cluster:
+        description: "SolQA cluster"
+        required: true
+        type: string
+      dry_run:
+        description: "Run the quality gate without triggering promotions"
+        required: true
+        type: boolean
+    secrets:
+      # GitHub token of observability-noctua-bot, which can start workflows in
+      # canonical/terragrunt-deployment-pipelines (SolQA's private repo) and read its runs.
+      # Rotation: see how-to/managing-team-secrets.md in canonical/observability-team.
+      OBSERVABILITY_NOCTUA_TOKEN:
+        required: true
+      CHARMHUB_TOKEN:
+        required: true
+
+jobs:
+  test-and-promote:
+    name: Test on SolQA and promote
+    runs-on: ubuntu-latest
+    # GitHub-hosted jobs can't run longer than 6 hours; most of it is waiting
+    # for the SolQA cluster. If this job stops, the SolQA run keeps going: the
+    # executor doesn't cancel it.
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The recipes read the branch's Terraform modules through git
+          fetch-depth: 0
+
+      - name: Install dependencies
+        run: |
+          sudo snap install just --classic
+          sudo snap install charmcraft --classic
+          # Only for SolQA's executor action, which runs its helper programs with `go run`
+          sudo snap install go --classic
+
+      - name: Snapshot candidate
+        id: snapshot
+        env:
+          BRANCH: ${{ inputs.branch }}
+          PRODUCT: ${{ inputs.product }}
+        run: |
+          just solution pin "$PRODUCT" "origin/$BRANCH" candidate > candidate.json
+          echo "artifact=candidate-${PRODUCT}-${BRANCH//\//-}" >> "$GITHUB_OUTPUT"
+
+      - name: Build SolQA inputs
+        id: inputs
+        env:
+          BRANCH: ${{ inputs.branch }}
+          PRODUCT: ${{ inputs.product }}
+          CLUSTER: ${{ inputs.cluster }}
+        run: |
+          echo "json=$(just solution solqa-inputs "$PRODUCT" "$BRANCH" "$CLUSTER" "$GITHUB_SHA" "$GITHUB_REPOSITORY")" >> "$GITHUB_OUTPUT"
+          # Allow for clock differences when checking the run is ours.
+          echo "not_before=$(date -u -d '-1 minute' +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+
+      - name: Run on SolQA
+        id: solqa
+        # The next step explains why a run failed.
+        continue-on-error: true
+        uses: canonical/sqa-shared-ci/.github/actions/remote_github_workflow_executor@29bf1458526c8b6619bd98a1c0f2d272ee1f7216
+        with:
+          github_token: ${{ secrets.OBSERVABILITY_NOCTUA_TOKEN }}
+          target_repo_owner: canonical
+          target_repo_name: terragrunt-deployment-pipelines
+          target_workflow: deploy.yaml
+          target_ref: main
+          workflow_inputs_json: ${{ steps.inputs.outputs.json }}
+
+      - name: Check that our tests passed
+        env:
+          GH_TOKEN: ${{ secrets.OBSERVABILITY_NOCTUA_TOKEN }}
+          RUN_ID: ${{ steps.solqa.outputs.run_id }}
+          EXPECTED_TITLE: "${{ inputs.product }} on maas_physical (${{ inputs.cluster }})"
+          NOT_BEFORE: ${{ steps.inputs.outputs.not_before }}
+        run: |
+          set -o pipefail
+          if [ -z "$RUN_ID" ]; then
+            echo "ERROR: the SolQA run was not started." | tee -a "$GITHUB_STEP_SUMMARY" >&2
+            exit 1
+          fi
+          just solution solqa-passed "$RUN_ID" "$EXPECTED_TITLE" "$NOT_BEFORE" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Promote to stable
+        env:
+          BRANCH: ${{ inputs.branch }}
+          PRODUCT: ${{ inputs.product }}
+          DRY_RUN: ${{ inputs.dry_run }}
+          CHARMCRAFT_AUTH: ${{ secrets.CHARMHUB_TOKEN }}
+        run: |
+          set -o pipefail
+          just solution promote-to-stable "$PRODUCT" "origin/$BRANCH" candidate.json "$DRY_RUN" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload the promoted revisions
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.snapshot.outputs.artifact }}
+          path: candidate.json
