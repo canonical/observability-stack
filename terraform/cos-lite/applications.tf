@@ -1,5 +1,7 @@
 module "alertmanager" {
-  source = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform"
+  # Pinned: the TF module dropped the karma_dashboard output after this commit, breaking our offer.
+  # TODO: unpin once the module's replacement (or a fix) is available upstream.
+  source = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform?ref=a1361e949152a6f1f3fea163655bdd585786f717"
 
   app_name           = var.alertmanager.app_name
   base               = local.bases.o11y
@@ -90,7 +92,9 @@ module "prometheus" {
 }
 
 module "ssc" {
-  source = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
+  # Pinned: the TF module reshaped provides/requires outputs and made model_uuid non-nullable after this
+  # commit, breaking our usage. TODO: unpin once we've adapted to the new interface.
+  source = "git::https://github.com/canonical/self-signed-certificates-operator//terraform?ref=6abc270d376396e0b333c2b3bfdd0e22fb8cded7"
   count  = var.internal_tls ? 1 : 0
 
   app_name    = var.ssc.app_name
