@@ -69,10 +69,8 @@ variable "anti_affinity" {
 
 # -------------- # Network configurations --------------
 
-# TODO: Replace the placeholder link in the description below once the service mesh how-to guide is
-# published on https://documentation.ubuntu.com/observability/
 variable "mesh_enabled" {
-  description = "Route COS traffic through the Istio service mesh, which provides mTLS between COS components. This module does NOT deploy the Istio control plane: before enabling this, you must have already satisfied the istio-k8s dependency by deploying it in another Juju model (e.g. `istio-system`). See https://documentation.ubuntu.com/observability/latest/how-to/PLACEHOLDER-service-mesh/"
+  description = "Route COS traffic through the Istio service mesh, which provides mTLS between COS components. This module does NOT deploy the Istio control plane: before enabling this, you must have already satisfied the istio-k8s dependency by deploying it in another Juju model (e.g. `istio-system`). See https://canonical-service-mesh-documentation.readthedocs-hosted.com/latest/istio/how-to/"
   type        = bool
   default     = false
 
