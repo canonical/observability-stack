@@ -27,7 +27,7 @@ COS `3.1` is a product version, not a single Charmhub track shared by every comp
 
 COS can now route its traffic through an [Istio service mesh](https://istio.io/), giving mutual TLS (mTLS) between components. This is opt-in and disabled by default: set `mesh_enabled = true` to turn it on.
 
-When enabled, the module deploys an `istio-beacon` and wires it to every COS component, and — when ingress is on — deploys an `istio-ingress` that replaces Traefik as the reverse proxy. `istio-ingress` can also terminate TLS for an external CA, mirroring the Traefik path.
+When enabled, the module deploys an `istio-beacon` and wires it to every COS component, and — when ingress is on — deploys an `istio-ingress` that replaces Traefik as the reverse proxy. `istio-ingress` can also terminate TLS for an external CA, mirroring the Traefik path. If you have built automation or monitoring around the Traefik applications and routes, it will not apply to a mesh-enabled deployment; leave `mesh_enabled` at its default to keep the Traefik-based topology.
 
 Two important constraints:
 
@@ -47,29 +47,6 @@ Two components move to newer upstream workloads in 3.1. Both bumps are per the 2
 
 Everything else ships on the same track as 3.0; see [Component versions](#component-versions) for the exact track each charm uses.
 
-## Breaking changes
-
-The following changes apply when upgrading from COS 3.0 or COS Lite 3.0. 3.1 is a short-term release and, like any minor version bump, may include breaking changes; review this section before upgrading.
-
-### Terraform inputs
-
-| Change                          | Scope         | Details                                                                                                                                                                     |
-|---------------------------------|---------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **`mesh_enabled` validation**   | `cos`         | `mesh_enabled` and `internal_tls` cannot both be `true`. If you enable the mesh, you must also set `internal_tls = false` (or leave it at its non-TLS value).                |
-
-### Terraform outputs
-
-| Change                     | Scope   | Details                                                                                                 |
-|----------------------------|---------|---------------------------------------------------------------------------------------------------------|
-| **`components.istio_beacon`**  | `cos`   | Added, `try(module.istio_beacon[0], null)`: the beacon is conditional, so this output may be `null`.    |
-| **`components.istio_ingress`** | `cos`   | Added, `try(module.istio_ingress[0], null)`: istio-ingress is conditional, so this output may be `null`. |
-
-### Service mesh replaces Traefik
-
-*Applies to: `cos`.*
-
-When `mesh_enabled = true`, `istio-ingress` replaces Traefik as the reverse proxy for every ingressed component. If you have built automation or monitoring around the Traefik applications and routes, it will not apply to a mesh-enabled deployment. Leave `mesh_enabled` at its default (`false`) to keep the Traefik-based topology.
-
 ## Non-breaking additions
 
 ### Terraform inputs
@@ -79,6 +56,13 @@ When `mesh_enabled = true`, `istio-ingress` replaces Traefik as the reverse prox
 | **`mesh_enabled` added**   | `cos`   | New boolean (default `false`) to route COS traffic through Istio.                        |
 | **`istio_beacon` added**   | `cos`   | New structured object to configure the `istio-beacon` application.                       |
 | **`istio_ingress` added**  | `cos`   | New structured object to configure the `istio-ingress` application.                      |
+
+### Terraform outputs
+
+| Change                     | Scope   | Details                                                                                                 |
+|----------------------------|---------|---------------------------------------------------------------------------------------------------------|
+| **`components.istio_beacon`**  | `cos`   | Added, `try(module.istio_beacon[0], null)`: the beacon is conditional, so this output may be `null`.    |
+| **`components.istio_ingress`** | `cos`   | Added, `try(module.istio_ingress[0], null)`: istio-ingress is conditional, so this output may be `null`. |
 
 ## Deprecations
 
