@@ -51,7 +51,7 @@ lint-doc-refs:
   set -euo pipefail
   pattern='documentation\.ubuntu\.com/observability/(latest|stable|track[-/][^/)]*)/'
   if grep -rn --include='*.md' --exclude='release-policy.md' -E "$pattern" docs; then
-    echo "FAIL: use a branch-relative link instead of a versioned observability docs URL" >&2
+    echo "FAIL: detected an internal link that references a branch; correct internal links to be relative (../link) instead of a versioned observability docs URL" >&2
     exit 1
   fi
 
