@@ -1,10 +1,13 @@
 name: Solution test modes
 
-# Runs cos-lite's solution tests across the TLS and ingress axes, in
-# parallel, on PRs that touch the relevant files. Not a full cross product
-# of both (that's 4 combinations here) -- just enough to exercise the new
-# ingress axis once, plus the two TLS values that already existed. See
-# SPIKE_modes.md's "Note on combinatorics".
+# Runs cos-lite's solution tests across every combination of the TLS axis,
+# the ingress axis, and the Juju channel, in parallel, on PRs that touch the
+# relevant files -- the same coverage as PR #502 (2 TLS values x 2 ingress
+# values x 2 Juju channels = 8 jobs), just expressed as an explicit
+# `combinations` list crossed with `juju-channels` instead of two separate
+# matrix dimensions crossed automatically. See SPIKE_modes.md's "Note on
+# combinatorics" for why a curated list (rather than every axis crossed
+# automatically) matters once more axes (mesh, upgrade) are added.
 
 on:
   pull_request:
@@ -27,6 +30,8 @@ jobs:
       combinations: |
         [
           {"mode": "tls_internal", "ingress": ""},
+          {"mode": "tls_internal", "ingress": "no_ingress"},
           {"mode": "tls_none", "ingress": ""},
-          {"mode": "tls_internal", "ingress": "no_ingress"}
+          {"mode": "tls_none", "ingress": "no_ingress"}
         ]
+      juju-channels: '["3.6/stable", "4.1/beta"]'
