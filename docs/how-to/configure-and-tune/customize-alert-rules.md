@@ -167,6 +167,7 @@ patch:
 ```
 
 ### Replace the expression
+
 ```{warning}
 Replacing `expr` requires retyping the full PromQL or LogQL expression,
 including all Juju topology matchers that the charm injects automatically.
