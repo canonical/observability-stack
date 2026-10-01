@@ -1,0 +1,33 @@
+name: Docs refs
+
+# Repo-specific check: each branch is published under its own docs path
+# (latest, track-3.0, ...), so in-version references must stay branch-relative.
+# The reusable documentation-checks workflow has no hook for extra checks, so
+# this one runs the `lint-doc-refs` just recipe from a local workflow.
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/**'
+      - 'justfile'
+      - '.github/workflows/lint-doc-refs.yml'
+  pull_request:
+    paths:
+      - 'docs/**'
+      - 'justfile'
+      - '.github/workflows/lint-doc-refs.yml'
+  workflow_dispatch:
+
+jobs:
+  lint-doc-refs:
+    name: Versioned docs links
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: sudo snap install just --classic
+      - name: Check for versioned docs links
+        run: just lint-doc-refs
