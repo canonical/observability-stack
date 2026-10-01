@@ -15,7 +15,7 @@ variable "internal_tls" {
 }
 
 variable "ingress" {
-  description = "Passed straight through to the cos-lite module; overridden (via presets/no-ingress.tfvars) to exercise the ingress-off topology. Deployment-shape only -- no step reads this back."
+  description = "Passed straight through to the cos-lite module; overridden (via presets/no-ingress.tfvars) to exercise the ingress-off topology. Read back via the ingress_enabled output by steps/ingress.py."
   type = object({
     alertmanager            = optional(bool, true)
     catalogue               = optional(bool, true)

@@ -10,10 +10,9 @@ uv_flags := "--frozen --isolated"
 
 # `mode` (e.g. `tls_none`) and `ingress` (`no_ingress`) are both optional,
 # independent axes -- each sets one variable on the wrapper. Nothing else
-# needs telling which combination was picked -- steps either read the value
-# back from the wrapper's own output where an assertion depends on it (see
-# tests/solution/steps/tls.py), or don't need to know at all, for the
-# deployment-shape-only ingress axis.
+# needs telling which combination was picked -- steps read the deployed value
+# back from the wrapper's own output instead (see tests/solution/steps/tls.py,
+# tests/solution/steps/ingress.py).
 # Deploys into whichever Juju controller is currently active -- `juju switch`
 # to the intended one first.
 # Init/apply a solution's Terraform module, then run its solution test suite.

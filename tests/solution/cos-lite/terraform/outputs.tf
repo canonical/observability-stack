@@ -7,3 +7,8 @@ output "internal_tls" {
   value       = var.internal_tls
   description = "Which TLS mode this wrapper was applied with, read back by steps/tls.py instead of a separate mode tag"
 }
+
+output "ingress_enabled" {
+  value       = anytrue(values(var.ingress))
+  description = "Whether any component has ingress enabled (and therefore whether Traefik is deployed at all), read back by steps/ingress.py instead of a separate mode tag"
+}

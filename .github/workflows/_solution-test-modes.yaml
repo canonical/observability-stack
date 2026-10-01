@@ -4,10 +4,10 @@ name: Test a solution across modes
 # combination is just a {mode, ingress} tuple of Terraform variable values
 # for the solution's own wrapper -- no mode tag or env var needs to match
 # what CI deploys, since steps read the deployed value back from the
-# wrapper's own output where an assertion depends on it, and don't need to
-# know at all for the deployment-shape-only ingress axis. Adding a new
-# combination (or crossing in another axis) is purely a data change here --
-# no test code to touch.
+# wrapper's own output instead (`internal_tls`/`ingress_enabled` in
+# tests/solution/cos-lite/terraform/outputs.tf). Adding a new combination (or
+# crossing in another axis) is purely a data change here -- no test code to
+# touch.
 #
 # (The upgrade axis -- candidate risk re-applied to edge against the same
 # model -- isn't exercised here: candidate-risk charm revisions don't exist

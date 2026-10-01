@@ -68,9 +68,10 @@ just solution test cos-lite tls_none no_ingress
   mode tag or env var (`internal_tls` in `tests/solution/cos-lite/terraform/outputs.tf`,
   `tests/solution/steps/tls.py`) -- a scenario just asks the deployment which mode is live.
 - `ingress` (`no_ingress`): whether Traefik gets deployed at all, via
-  `tests/solution/cos-lite/terraform/presets/no-ingress.tfvars`. Deployment-shape only -- no
-  assertion depends on it, so unlike `mode` there's no output or step reading it back; existing
-  scenarios run unchanged against whichever topology got deployed.
+  `tests/solution/cos-lite/terraform/presets/no-ingress.tfvars`. Same pattern as `mode`: a wrapper
+  output (`ingress_enabled`) and a step (`tests/solution/steps/ingress.py`) ask the deployment
+  whether ingress is live and assert Traefik is deployed iff it is -- no separate mode tag or env
+  var to keep in sync.
 
 Both compose and are independent of each other -- adding a new value doesn't touch any of this. In
 CI, `.github/workflows/_solution-test-modes.yaml` picks a `{mode, ingress}` combination plus Juju
@@ -100,8 +101,9 @@ can be dropped into any scenario. These suites deploy and mutate nothing, so mos
 just a background plus one or more `Then`s.
 
 Step definitions live in `steps/`, grouped by the domain concept they talk about (e.g.
-`steps/deployment.py`, `steps/telemetry.py`, `steps/grafana.py`, `steps/tls.py`) rather than by
-the feature file that uses them. Register new modules in `conftest.py`'s `pytest_plugins`.
+`steps/deployment.py`, `steps/telemetry.py`, `steps/grafana.py`, `steps/tls.py`,
+`steps/ingress.py`) rather than by the feature file that uses them. Register new modules in
+`conftest.py`'s `pytest_plugins`.
 
 ### Talking to workloads
 

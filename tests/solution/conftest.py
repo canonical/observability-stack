@@ -7,6 +7,7 @@ pytest_plugins = [
     "clients",
     "steps.deployment",
     "steps.grafana",
+    "steps.ingress",
     "steps.telemetry",
     "steps.tls",
 ]
