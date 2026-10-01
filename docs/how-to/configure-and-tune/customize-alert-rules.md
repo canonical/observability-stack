@@ -31,6 +31,10 @@ The configuration is a YAML mapping that supports two optional top-level keys:
 Each operation contains a `where` block that selects which rules to act on.
 `patch` operations also contain a `set` block that describes what to change.
 
+All fields in a single `where` block are ANDed: a rule must satisfy every
+selector to match. Multiple `where` entries in the `remove` or `patch` list
+are ORed: a rule that matches any entry is affected.
+
 ### Matching rules with `where`
 
 A `where` block supports these selectors:
@@ -48,11 +52,7 @@ stable across model re-deployment. Prefer matching by `alert` name or `labels`
 for reliable targeting.
 ```
 
-All fields in a single `where` block are ANDed: a rule must satisfy every
-selector to match. Multiple `where` entries in the `remove` or `patch` list
-are ORed: a rule that matches any entry is affected.
-
-Example. A `where` block that targets a specific alert with a specific label:
+This is an example of a `where` block that targets a specific alert with a specific label:
 
 ```yaml
 where:
@@ -76,13 +76,6 @@ A `set` block inside a `patch` operation supports these fields:
 | `labels` | Merge new or updated labels into the rule |
 | `annotations` | Merge new or updated annotations into the rule |
 
-```{warning}
-Replacing `expr` requires retyping the full PromQL or LogQL expression,
-including all Juju topology matchers that the charm injects automatically.
-Omitting a matcher will cause the alert to lose its model and application
-scoping. The charm re-validates the resulting expression via cos-tool and
-will reject invalid expressions.
-```
 
 Labels and annotations in a `set` block are merged into the existing
 labels/annotations. They overwrite existing entries with the same key and
@@ -174,6 +167,13 @@ patch:
 ```
 
 ### Replace the expression
+```{warning}
+Replacing `expr` requires retyping the full PromQL or LogQL expression,
+including all Juju topology matchers that the charm injects automatically.
+Omitting a matcher will cause the alert to lose its model and application
+scoping. The charm re-validates the resulting expression via cos-tool and
+will reject invalid expressions.
+```
 
 ```yaml
 patch:
@@ -221,24 +221,6 @@ miss. No warning is emitted for non-matching operations.
 A `patch` or `remove` that matches nothing is a silent no-op. The charm
 remains in `ActiveStatus` and the original rules are kept unchanged.
 ```
-
-## How the configuration is applied
-
-The flow inside the charm:
-
-1. The config string is parsed by `AlertRulesCustomization.from_yaml()`.
-   Invalid YAML or unknown keys raise an error and the charm blocks.
-2. `apply()` is called with the relation-derived alert rules (e.g.
-   `self.metrics_consumer.alerts`). A deep copy of the input is made.
-3. `remove` operations are applied, then `patch` operations.
-4. The resulting rules are validated with cos-tool for every identifier.
-   Expressions that are not valid PromQL or LogQL cause validation to fail.
-5. If **any** identifier produces invalid rules, the **entire** transformation
-   is discarded and the original rules are used. The charm blocks.
-
-This fail-open design ensures that a broken customization config never results
-in missing or invalid alert rules. The original rules continue to be evaluated
-while the operator fixes the configuration.
 
 ## Setting the config option
 
