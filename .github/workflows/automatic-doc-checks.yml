@@ -27,3 +27,15 @@ jobs:
     name: Removed URLs
     if: github.event_name == 'pull_request'
     uses: canonical/sphinx-stack/.github/workflows/check-removed-urls.yml@2.0
+
+  lint-doc-refs:
+    name: Versioned docs links
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: sudo snap install just --classic
+      - name: Check for versioned docs links
+        run: just lint-doc-refs
+

@@ -16,7 +16,7 @@ lock:
 
 # Lint everything
 [group("Lint")]
-lint: lint-workflows lint-terraform lint-terraform-docs lint-presets
+lint: lint-workflows lint-terraform lint-terraform-docs lint-doc-refs lint-presets
 
 # Format everything
 [group("Format")]
@@ -42,6 +42,18 @@ lint-terraform:
 [group("Lint")]
 lint-terraform-docs:
   terraform-docs --config .tfdocs-config.yml --output-check .
+
+# In-version references must stay branch-relative.
+# Lint the docs for hardcoded versioned links e.g., /latest/, /track-3.0/, etc.
+[group("Lint")]
+lint-doc-refs:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  pattern='documentation\.ubuntu\.com/observability/(latest|stable|track[-/][^/)]*)/'
+  if grep -rn --include='*.md' --exclude='release-policy.md' -E "$pattern" docs; then
+    echo "FAIL: detected an internal link that references a branch; correct internal links to be relative (../link) instead of a versioned observability docs URL" >&2
+    exit 1
+  fi
 
 # Lint the .tfvars presets under terraform/*/presets/ against each module's variables.tf
 [group("Lint")]
