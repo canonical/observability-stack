@@ -99,3 +99,14 @@ add retries where data genuinely trails active/idle (e.g. the first Prometheus s
    ```
 4. Run `just solution test <name>` to verify it.
 
+## Running on SolQA
+
+The stable quality gate (`.github/workflows/quality-gates-stable.yaml`) runs these tests on
+Solutions QA's lab through `sqa_tests` at the repo root. SolQA deploys the product from
+`candidate`, runs `./sqa_tests <cos|cos-lite>`, and keeps `test_results.xml` with the run.
+
+SolQA's runner can't reach the pods directly yet
+([terragrunt-deployment-pipelines#235](https://github.com/canonical/terragrunt-deployment-pipelines/issues/235)).
+When that's the case, `sqa_tests` routes the pod addresses through one of the Kubernetes machines
+with [sshuttle](https://github.com/sshuttle/sshuttle) (over `juju ssh`), so the tests reach them
+unchanged. This is temporary and goes away once #235 is fixed.

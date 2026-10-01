@@ -34,3 +34,6 @@ terraform.rc
 .terraform.lock.hcl
 
 terraform/testing/**
+# SolQA test output and tunnel log (see sqa_tests)
+test_results.xml
+sshuttle.log
