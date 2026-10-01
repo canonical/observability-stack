@@ -56,11 +56,10 @@ SOLUTION_MODEL="microk8s-localhost:cos-lite" uv run --frozen --isolated pytest -
 
 ## Adding a new scenario
 
-Feature files live under each solution's own `<name>/features/`, plus `features/smoke.feature`
-at the top level, shared by every solution since it names no concrete workload. Add a new
-`.feature` file to the solution(s) it applies to; if two solutions want the same capability
-(e.g. both scrape a metrics backend), give each its own scenario naming its own workload rather
-than sharing a file -- there is no cross-solution tagging to keep in sync. Reuse the existing
+Feature files live under each solution's own `<name>/features/`. Add a new `.feature` file to
+the solution(s) it applies to; if two solutions want the same capability (e.g. both scrape a
+metrics backend), give each its own copy naming its own workload rather than sharing a file --
+there is no cross-solution tagging to keep in sync. Reuse the existing
 steps where they apply -- most scenarios want the `Given the solution has been deployed` /
 `And the model is healthy` background.
 
@@ -91,7 +90,7 @@ add retries where data genuinely trails active/idle (e.g. the first Prometheus s
    ```python
    from pytest_bdd import scenarios
 
-   scenarios("../features", "features")
+   scenarios("features")
    ```
 5. Run `just solution test <name>` to verify it.
 

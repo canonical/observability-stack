@@ -5,6 +5,7 @@
 import json
 import os
 import subprocess
+import time
 from pathlib import Path
 from typing import Any, Dict
 
@@ -14,6 +15,15 @@ import requests
 # Resolved terraform/tofu binary, set by quality-gates.just; falls back to
 # "terraform" when running pytest directly.
 TERRAFORM_BIN = os.environ.get("terraform") or "terraform"
+
+# How far back to look for logs and traces.
+LOOKBACK_HOURS = 24
+
+
+def lookback_window_ns() -> tuple[int, int]:
+    """Return the (start, end) of the lookback window, in nanoseconds since the epoch."""
+    end = time.time_ns()
+    return end - LOOKBACK_HOURS * 3600 * 1_000_000_000, end
 
 
 def terraform_output(terraform_dir: Path) -> Dict[str, Any]:
