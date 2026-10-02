@@ -9,8 +9,8 @@ locals {
   tls_termination            = var.external_certificates_offer_url != null ? true : false
   traefik_enabled            = local.reverse_proxy_enabled && !var.mesh_enabled
   bases = {
-    istio_beacon  = "ubuntu@22.04"
-    istio_ingress = "ubuntu@24.04"
+    istio_beacon  = "ubuntu@26.04"
+    istio_ingress = "ubuntu@26.04"
     o11y          = "ubuntu@26.04"
     s3_integrator = "ubuntu@24.04"
     ssc           = "ubuntu@24.04"
