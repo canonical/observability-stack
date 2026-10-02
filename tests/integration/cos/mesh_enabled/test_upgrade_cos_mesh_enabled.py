@@ -1,0 +1,53 @@
+"""There are 2 sections of the COS deployment (internal and external) which can implement TLS
+communication. This python test file deploys COS without external and internal TLS.
+
+For more further TLS configuration details, refer to our documentation:
+https://documentation.ubuntu.com/observability/latest/how-to/configure-tls-encryption/"""
+
+import os
+from pathlib import Path
+
+import jubilant
+from helpers import (
+    generic_assertions,
+    no_errors_in_otelcol_logs,
+    xfail_otelcol_logs,
+)
+
+TRACK_3_TF_FILE = Path(__file__).parent.resolve() / "track-3.0.tf"
+TRACK_DEV_TF_FILE = Path(__file__).parent.resolve() / "track-dev.tf"
+S3_ENDPOINT = {
+    "s3_endpoint": os.getenv("S3_ENDPOINT"),
+    "s3_secret_key": os.getenv("S3_SECRET_KEY"),
+    "s3_access_key": os.getenv("S3_ACCESS_KEY"),
+}
+
+
+def test_envvars():
+    assert all(S3_ENDPOINT.values()), (
+        f"export the following env vars (upper case) before running this test: {S3_ENDPOINT.keys()}"
+    )
+
+
+def test_deploy_from_track(tf_manager, cos_model: jubilant.Juju):
+    # GIVEN a module deployed from the previous track
+    tf_manager.init(TRACK_3_TF_FILE)
+    tf_manager.apply(model=cos_model.model, **S3_ENDPOINT)
+
+    # THEN the model is upgraded and is healthy
+    generic_assertions(cos_model)
+
+
+@xfail_otelcol_logs
+def test_no_errors_in_otelcol_logs(cos_model: jubilant.Juju):
+    no_errors_in_otelcol_logs(cos_model)
+
+
+def test_deploy_to_track_dev(tf_manager, cos_model: jubilant.Juju):
+    # WHEN upgraded to track dev
+    tf_manager.init(TRACK_DEV_TF_FILE)
+    tf_manager.apply(model=cos_model.model, **S3_ENDPOINT)
+
+    # THEN the model is upgraded and is healthy
+    generic_assertions(cos_model)
+    no_errors_in_otelcol_logs(cos_model)
