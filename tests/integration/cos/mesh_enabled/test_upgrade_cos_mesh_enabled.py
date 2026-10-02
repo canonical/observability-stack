@@ -1,5 +1,4 @@
-"""There are 2 sections of the COS deployment (internal and external) which can implement TLS
-communication. This python test file deploys COS without external and internal TLS.
+"""This python test file deploys COS where COS components are put on a service mesh.
 
 For more further TLS configuration details, refer to our documentation:
 https://documentation.ubuntu.com/observability/latest/how-to/configure-tls-encryption/"""

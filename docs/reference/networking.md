@@ -13,7 +13,7 @@ COS and COS Lite use Traefik by default to provide network ingress for the stack
 Make sure the load balancer provides Traefik with **a static IP**, or some other identity that remains stable over time.
 
 ```{note}
-When COS is deployed with service mesh enabled (`mesh_enabled = true`), Istio's ingress replaces Traefik.
+When COS is deployed with [service mesh](https://canonical-service-mesh-documentation.readthedocs-hosted.com/latest/istio/) enabled (`mesh_enabled = true`), Istio's ingress replaces Traefik.
 ```
 
 ## Egress
