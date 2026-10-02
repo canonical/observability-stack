@@ -439,6 +439,131 @@ resource "juju_integration" "traefik_route" {
   }
 }
 
+resource "juju_integration" "istio_ingress" {
+  for_each = {
+    for k, v in {
+      alertmanager = {
+        app_name = module.alertmanager.app_name
+        endpoint = module.alertmanager.requires.ingress
+      }
+      catalogue = {
+        app_name = module.catalogue.app_name
+        endpoint = module.catalogue.requires.ingress
+      }
+      loki = {
+        app_name = module.loki.app_names.loki_coordinator
+        endpoint = module.loki.requires.ingress
+      }
+      mimir = {
+        app_name = module.mimir.app_names.mimir_coordinator
+        endpoint = module.mimir.requires.ingress
+      }
+    } : k => v if local.istio_ingress_enabled && var.ingress[k]
+  }
+  model_uuid = local.model_uuid
+
+  application {
+    name     = module.istio_ingress[0].app_name
+    endpoint = module.istio_ingress[0].provides.ingress
+  }
+
+  application {
+    name     = each.value.app_name
+    endpoint = each.value.endpoint
+  }
+}
+
+resource "juju_integration" "grafana_istio_ingress" {
+  count = local.istio_ingress_enabled && var.ingress.grafana ? 1 : 0
+
+  model_uuid = local.model_uuid
+
+  application {
+    name     = module.grafana.app_name
+    endpoint = module.grafana.requires.ingress
+  }
+
+  application {
+    name     = module.istio_ingress[0].app_name
+    endpoint = module.istio_ingress[0].provides.ingress
+  }
+
+  lifecycle { replace_triggered_by = [terraform_data.grafana_ingress_interface, terraform_data.grafana_litestream_resource] }
+}
+
+resource "juju_integration" "istio_ingress_route" {
+  for_each = {
+    for k, v in {
+      opentelemetry_collector = {
+        app_name = module.opentelemetry_collector.app_name
+        endpoint = module.opentelemetry_collector.requires.ingress
+      }
+      tempo = {
+        app_name = module.tempo.app_names.tempo_coordinator
+        endpoint = module.tempo.requires.ingress
+      }
+    } : k => v if local.istio_ingress_enabled && var.ingress[k]
+  }
+  model_uuid = local.model_uuid
+
+  application {
+    name     = module.istio_ingress[0].app_name
+    endpoint = module.istio_ingress[0].provides["istio-ingress-route"]
+  }
+
+  application {
+    name     = each.value.app_name
+    endpoint = each.value.endpoint
+  }
+}
+
+# -------------- # Service mesh --------------------
+
+resource "juju_integration" "istio_beacon" {
+  for_each = var.mesh_enabled ? {
+    alertmanager = {
+      app_name = module.alertmanager.app_name
+      endpoint = module.alertmanager.requires.service_mesh
+    }
+    catalogue = {
+      app_name = module.catalogue.app_name
+      endpoint = module.catalogue.requires.service_mesh
+    }
+    grafana = {
+      app_name = module.grafana.app_name
+      endpoint = module.grafana.requires.service_mesh
+    }
+    loki = {
+      app_name = module.loki.app_names.loki_coordinator
+      endpoint = module.loki.requires.service_mesh
+    }
+    mimir = {
+      app_name = module.mimir.app_names.mimir_coordinator
+      endpoint = module.mimir.requires.service_mesh
+    }
+    opentelemetry_collector = {
+      app_name = module.opentelemetry_collector.app_name
+      endpoint = module.opentelemetry_collector.requires.service_mesh
+    }
+    tempo = {
+      app_name = module.tempo.app_names.tempo_coordinator
+      endpoint = module.tempo.requires.service_mesh
+    }
+  } : {}
+
+  model_uuid = local.model_uuid
+
+  application {
+    name     = module.istio_beacon[0].app_name
+    endpoint = module.istio_beacon[0].provides.service_mesh
+  }
+
+  application {
+    name     = each.value.app_name
+    endpoint = each.value.endpoint
+  }
+}
+
 # -------------- # Certificates --------------
 
 resource "juju_integration" "internal_certificates" {
@@ -511,6 +636,18 @@ resource "juju_integration" "external_traefik_certificates" {
   application {
     name     = module.traefik[0].app_name
     endpoint = module.traefik[0].endpoints.certificates
+  }
+}
+
+resource "juju_integration" "external_istio_ingress_certificates" {
+  count = local.istio_ingress_enabled && local.tls_termination ? 1 : 0
+
+  model_uuid = local.model_uuid
+
+  application { offer_url = var.external_certificates_offer_url }
+  application {
+    name     = module.istio_ingress[0].app_name
+    endpoint = module.istio_ingress[0].requires.certificates
   }
 }
 
