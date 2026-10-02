@@ -6,7 +6,9 @@ import json
 import os
 import shlex
 import shutil
+import ssl
 import subprocess
+import tempfile
 import time
 from pathlib import Path
 from typing import Any, Dict, Optional, Sequence
@@ -77,6 +79,11 @@ def lookback_window_ns() -> tuple[int, int]:
     return end - LOOKBACK_HOURS * 3600 * 1_000_000_000, end
 
 
+def terraform_dir(request) -> Path:
+    """Terraform wrapper directory for the solution a test module belongs to."""
+    return Path(request.module.__file__).parent / "terraform"
+
+
 def terraform_output(terraform_dir: Path) -> Dict[str, Any]:
     """Return `terraform output -json` for an already-applied module."""
     result = subprocess.run(
@@ -125,3 +132,18 @@ def unit_url(juju: jubilant.Juju, app: str, port: int) -> str:
             continue
         return url
     raise AssertionError(f"no reachable {app} workload at {address}:{port}")
+
+
+def get_tls_context(juju: jubilant.Juju, ca_name: str) -> Optional[ssl.SSLContext]:
+    # Duplicated in tests/integration/helpers.py, adapted to not need a
+    # caller-supplied temp_path. See TfDirManager above for why.
+    if ca_name not in juju.status().apps:
+        return None
+
+    cert = juju.run(f"{ca_name}/0", "get-ca-certificate").results["ca-certificate"]
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".pem") as cert_file:
+        cert_file.write(cert)
+        cert_file.flush()
+        ctx = ssl.create_default_context()
+        ctx.load_verify_locations(cert_file.name)
+    return ctx
