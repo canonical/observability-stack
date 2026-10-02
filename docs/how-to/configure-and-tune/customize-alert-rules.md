@@ -219,8 +219,8 @@ renames an alert, subsequent patches targeting the old name will silently
 miss. No warning is emitted for non-matching operations.
 
 ```{note}
-A `patch` or `remove` that matches nothing is a silent no-op. The charm
-remains in `ActiveStatus` and the original rules are kept unchanged.
+A `patch` or `remove` that matches nothing is a no-op. Juju's `debug-log` will contains logs indicating which operations had no match. If the provided customizations result in no changes, the charm
+remains in `ActiveStatus`, but the charm's status message will indicate that the provided rules had no effect. The original rules are used for evaluation.
 ```
 
 ## Setting the config option
