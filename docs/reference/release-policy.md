@@ -26,6 +26,7 @@ Short-term releases receive security patches and critical bug fixes for nine mon
 
 | Release                                                                                | LTS | Cycle | Base         | Release date  | Standard support  | Extended support |
 | -------------------------------------------------------------------------------------- | --- | ----- | ------------ | ------------- | ----------------- | ---------------- |
+| `3.1`                                                                                  | No  | 26.10 | Ubuntu 26.04 | TODO          | TODO              |                  |
 | [`3.0`](https://documentation.ubuntu.com/observability/track-3.0/release-notes/)       | Yes | 26.04 | Ubuntu 26.04 | July 2026     | May 2031          | May 2041         |
 | [`2`](https://documentation.ubuntu.com/observability/track-2/reference/release-notes/) | No  | 25.10 | Ubuntu 24.04 | November 2025 | July 2026         |                  |
 | `1`                                                                                    | No  | 25.04 | Ubuntu 24.04 | May 2025      | February 2026     |                  |

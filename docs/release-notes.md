@@ -1,124 +1,68 @@
----
-myst:
- html_meta:
-  description: "Read COS 3.0 and COS Lite 3.0 release notes to track new features, review requirements and compatibility, peripheral-charm changes, and breaking and deprecated changes."
----
-
 # Release notes
 
-## COS 3.0 and COS Lite 3.0
+## COS 3.1 and COS Lite 3.1
 
-*Released July 2026, long-term support (LTS).*
+*Released TODO, 2026.*
 
-These release notes cover both **COS 3.0** and **COS Lite 3.0**. COS and COS Lite are distinct products with separate Terraform modules and different component sets; sections below apply to both unless noted otherwise, via a `Scope` column or an *Applies to* note.
+These release notes cover both **COS 3.1** and **COS Lite 3.1**. COS and COS Lite are distinct products with separate Terraform modules and different component sets; sections below apply to both unless noted otherwise, via a `Scope` column or an *Applies to* note.
 
-Both tracks are LTS releases. They receive security updates and critical bug fixes for the same support window as [Ubuntu 26.04 LTS](https://ubuntu.com/about/release-cycle). If you have COS 2 or COS Lite 2 installed, plan to upgrade by the **end of July 2026**. See the [release policy](reference/release-policy) for the full support window and cadence.
+3.1 is a **short-term release** on the interim track between the COS 3.0 LTS and the next LTS. It is a small, focused release: most components keep the tracks they shipped on in 3.0, and the changes below are deliberate and narrow. Short-term releases receive security updates and critical bug fixes for nine months. If you need a longer support window, stay on the COS 3.0 LTS; see the [release policy](reference/release-policy) for the full support window, cadence, and links to each release's notes.
 
 ```{note}
-COS `3.0` is a product version, not a single Charmhub track shared by every component. Some charms use `3.0` as their track, but most retain their own versioning; see [Component versions](#component-versions) for the exact track each charm uses in this release.
+COS `3.1` is a product version, not a single Charmhub track shared by every component. Most charms retain their own versioning; see [Component versions](#component-versions) for the exact track each charm uses in this release.
 ```
 
-**Compatibility.** COS 3.0 and COS Lite 3.0 require Juju v3.6+. See [system requirements](reference/system-requirements) for the full compatibility matrix.
+**Compatibility.** COS 3.1 and COS Lite 3.1 require Juju v3.6+. See [system requirements](reference/system-requirements) for the full compatibility matrix.
 
 **Install and upgrade**
 
-- [Install COS 3.0 or COS Lite 3.0](how-to/deploy-and-manage/install.md)
-- [Migrate from COS 2 to COS 3.0 (or from COS Lite 2 to COS Lite 3.0)](how-to/deploy-and-manage/upgrade.md#migrate-from-cos-2-to-cos-30)
+- [Install COS 3.1 or COS Lite 3.1](how-to/deploy-and-manage/install.md)
+- [Upgrade from COS 3.0 to COS 3.1 (or from COS Lite 3.0 to COS Lite 3.1)](how-to/deploy-and-manage/upgrade.md)
 
 ## What's new
 
-### Reproducibility and lifecycle
-
-#### Strict reproducibility
-
-*Applies to: `cos`, `cos-lite`.*
-
-Previously only charm revisions could be pinned. In COS 3.0 you can also constrain the Terraform module version, limiting the deployment variance of the Terraform and Juju layers, so that a re-deploy converges on the same result. See [Configure strict reproducibility](how-to/deploy-and-manage/configure-strict-reproducibility.md).
-
-#### Smooth cross-track upgrades
-
-*Applies to: `cos`, `cos-lite`.*
-
-Upgrading from track 2 previously required a Juju admin to manually refresh every component. In COS 3.0 the upgrade path is product-managed via Terraform lifecycle definitions, so a single `terraform apply` moves the deployment to the new track. See [How to upgrade](how-to/deploy-and-manage/upgrade.md).
-
-### Deployment topology
-
-#### Module-managed Juju model
-
-*Applies to: `cos`, `cos-lite`.*
-
-`model_uuid` is no longer required as input. By default the module manages its own Juju model; pass `model = { uuid = "<uuid>" }` to target an existing one. See [Configure the Juju model](how-to/deploy-and-manage/configure-juju-model.md).
-
-#### Granular Traefik ingress
-
-*Applies to: `cos`, `cos-lite`.*
-
-Previously all components were ingressed unconditionally. You can now select which components are exposed, or opt out of Traefik entirely. See [Configure granular ingress](how-to/deploy-and-manage/configure-granular-ingress.md).
-
-#### Configurable Grafana database
-
-*Applies to: `cos`, `cos-lite`.*
-
-Grafana was previously limited to a single unit backed by local Juju storage. Supplying a `postgresql_offer_url` now backs Grafana with an external PostgreSQL, enabling multi-unit high availability. See [Configure the Grafana database](how-to/deploy-and-manage/configure-grafana-database.md).
-
-### Telemetry pipelines
-
-#### OpenTelemetry Collector in COS Lite
-
-*Applies to: `cos-lite`.*
-
-COS Lite previously self-monitored by relating each component straight to Prometheus and Loki. It now deploys an `opentelemetry-collector` alongside the rest of the stack and funnels its own telemetry through it, matching how COS is wired: the collector scrapes every component's metrics endpoint and remote-writes into Prometheus, and receives every component's logs and forwards them to Loki. This applies processing, relabeling and topology injection uniformly. As a result, Prometheus no longer contains a "self monitoring" scrape job; instead, the collector is responsible for scraping Prometheus' metrics and remote writing them into Prometheus itself. This is consistent with COS, where Mimir's metrics are collected and remote written into Mimir.
-
-#### OpenTelemetry Collector pinned to v0.130
+### Service mesh in COS (opt-in)
 
 *Applies to: `cos`.*
 
-The `opentelemetry-collector` charm workload is pinned to `v0.130` because upstream [`opentelemetry-collector-contrib`](https://github.com/open-telemetry/opentelemetry-collector-contrib) dropped the Loki exporter in [v0.131.0](https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/tag/v0.131.0), directing users to the OTLP exporters instead.
+COS can now route its traffic through an [Istio service mesh](https://istio.io/), giving mutual TLS (mTLS) between components. This is opt-in and disabled by default: set `mesh_enabled = true` to turn it on.
 
-The `logging` integration relies on `lokiexporter` to send logs to Loki push API endpoints. Loki only recently gained an upstream OTLP endpoint, and the migration to an OTLP-first ecosystem began in 26.04. The plan is:
+When enabled, the module deploys an `istio-beacon` and wires it to every COS component, and — when ingress is on — deploys an `istio-ingress` that replaces Traefik as the reverse proxy. `istio-ingress` can also terminate TLS for an external CA, mirroring the Traefik path. If you have built automation or monitoring around the Traefik applications and routes, it will not apply to a mesh-enabled deployment; leave `mesh_enabled` at its default to keep the Traefik-based topology.
 
-- **26.10**: OTLP support ecosystem-wide.
-- **27.04**: the Loki Push API feature (`logging` endpoint) is dropped and the `opentelemetry-collector` charms are unpinned from `v0.130`.
+Two important constraints:
 
-## Breaking changes
+- **The module does not deploy the Istio control plane.** You must already have `istio-k8s` (the control plane) deployed in another Juju model, for example `istio-system`, before enabling the mesh. See the [Istio documentation](https://canonical-service-mesh-documentation.readthedocs-hosted.com/latest/istio/how-to/).
+- **`mesh_enabled` and `internal_tls` are mutually exclusive.** The mesh provides mTLS between components, so internal TLS (self-signed certificates) is not used when the mesh is on. The two cannot both be enabled.
 
-The following changes apply when upgrading from COS 2 or COS Lite 2.
+### Workload version bumps
 
-### Terraform inputs
+*Applies to: `cos`, `cos-lite`.*
 
-| Change                                    | Scope              | Details                                                                                                                                                                          |
-|-------------------------------------------|--------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **`channel` removed**                     | `cos`, `cos-lite`  | Replaced by a new `risk` variable. The old `channel` defaulted to `"2/stable"` and validated a `2/` prefix. Track is no longer user-facing; only risk is configurable.           |
-| **`ssc.channel` removed**                 | `cos`, `cos-lite`  | No longer configurable per-component; controlled by `risk`.                                                                                                                      |
-| **`s3_integrator.channel` removed**       | `cos`, `cos-lite`  | No longer configurable per-component; controlled by `risk`.                                                                                                                      |
-| **`traefik.channel` removed**             | `cos`, `cos-lite`  | No longer configurable per-component; controlled by `risk`.                                                                                                                      |
-| **`model_uuid` removed**                  | `cos`, `cos-lite`  | Replaced by the `model` structured object. Pass the UUID as `model = { uuid = "<uuid>" }` instead. If omitted, the module manages its own Juju model.                            |
-| **`loki_worker.storage_directives` split**  | `cos`              | Single `storage_directives` replaced by three: `backend_storage_directives`, `read_storage_directives`, `write_storage_directives`.                                            |
-| **`mimir_worker.storage_directives` split** | `cos`              | Split into 3 per-role storage directives.                                                                                                                                        |
-| **`tempo_worker.storage_directives` split** | `cos`              | Split into 6 per-role storage directives.                                                                                                                                        |
+Two components move to newer upstream workloads in 3.1. Both bumps are per the 26.10 release cycle and are the only workload changes in this release.
 
-### Terraform outputs
+| Component      | 3.0   | 3.1   | Scope                       |
+| -------------- | ----- | ----- | --------------------------- |
+| **Alertmanager** | 0.31  | 0.34  | `cos`, `cos-lite`           |
+| **Prometheus**   | 3.11  | 3.14  | `cos-lite`                  |
 
-| Change                     | Scope              | Details                                                                                              |
-|----------------------------|--------------------|------------------------------------------------------------------------------------------------------|
-| **`components.ssc`**       | `cos`, `cos-lite`  | Now `try(module.ssc[0], null)`: SSC became conditional (count-based), so this output may be `null`.  |
-| **`components.traefik`**   | `cos`, `cos-lite`  | Now `try(module.traefik[0], null)`: Traefik became conditional, so this output may be `null`.        |
-
-### Peripheral charms
-
-**Promtail is no longer maintained by Grafana Labs.** `LogProxyConsumer` relied on Promtail to scrape logs from files and forward them to Loki. Since March 2026, [Promtail](https://grafana.com/docs/loki/latest/send-data/promtail/) is no longer under active development.
-
-Starting with COS 3.0, use [Pebble log forwarding](https://documentation.ubuntu.com/pebble/reference/log-forwarding/) from Kubernetes workloads. The `LogForwarder` object in the [`loki_push_api` charm library](https://charmhub.io/loki-k8s/libraries/loki_push_api) automates the Pebble setup. This requires the workload to emit logs to stdout (standard practice in Kubernetes).
+Everything else ships on the same track as 3.0; see [Component versions](#component-versions) for the exact track each charm uses.
 
 ## Non-breaking additions
 
 ### Terraform inputs
 
-| Change                | Scope              | Details                                                       |
-|-----------------------|--------------------|---------------------------------------------------------------|
-| **`ingress` added**   | `cos`, `cos-lite`  | New structured object to toggle ingress per component.        |
-| **`model` added**     | `cos`, `cos-lite`  | New structured object to configure the Juju model.            |
-| **`opentelemetry_collector` added** | `cos-lite` | New structured object to configure the OpenTelemetry Collector application. |
+| Change                  | Scope   | Details                                                                                  |
+|-------------------------|---------|------------------------------------------------------------------------------------------|
+| **`mesh_enabled` added**   | `cos`   | New boolean (default `false`) to route COS traffic through Istio.                        |
+| **`istio_beacon` added**   | `cos`   | New structured object to configure the `istio-beacon` application.                       |
+| **`istio_ingress` added**  | `cos`   | New structured object to configure the `istio-ingress` application.                      |
+
+### Terraform outputs
+
+| Change                     | Scope   | Details                                                                                                 |
+|----------------------------|---------|---------------------------------------------------------------------------------------------------------|
+| **`components.istio_beacon`**  | `cos`   | Added, `try(module.istio_beacon[0], null)`: the beacon is conditional, so this output may be `null`.    |
+| **`components.istio_ingress`** | `cos`   | Added, `try(module.istio_ingress[0], null)`: istio-ingress is conditional, so this output may be `null`. |
 
 ## Deprecations
 
