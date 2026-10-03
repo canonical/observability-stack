@@ -5,6 +5,7 @@ terraform := `which terraform || which tofu || echo ""` # require 'terraform' or
 uv_flags := "--frozen --isolated"
 
 mod solution
+import 'release.just'
 
 [private]
 default:
@@ -111,3 +112,4 @@ unit-test module:
 [working-directory("./tests/integration")]
 integration *args='':
   uv run ${uv_flags} pytest -vv -ra --capture=no --exitfirst {{args}}
+
