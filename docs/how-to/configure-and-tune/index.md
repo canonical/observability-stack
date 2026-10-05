@@ -14,6 +14,7 @@ repository.
 
 Sync alert rules from Git <sync-alert-rules-from-git>
 Disable built-in charm alert rules <disable-charmed-rules>
+Customize alert rules <customize-alert-rules>
 ```
 
 ## Telemetry volume & filtering

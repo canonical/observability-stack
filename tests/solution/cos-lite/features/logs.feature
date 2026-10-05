@@ -5,8 +5,7 @@ Feature: Log collection
     Given the solution has been deployed
     And the model is healthy
 
-  @cos-lite
-  Scenario Outline: Loki collects logs from a component
+  Scenario Outline: Loki collects logs pushed to it directly
     Then Loki has logs from the "<application>" application
 
     Examples:

@@ -1,14 +1,10 @@
 """Steps about telemetry reaching its backend."""
 
-import time
-
-from observability_clients import Loki, Prometheus
+from observability_clients import Loki, Mimir, Prometheus, Tempo
 from pytest_bdd import parsers, then
 from tenacity import RetryError, Retrying, retry_if_result, stop_after_delay, wait_fixed
 
-# How far back to look for logs. Components like Alertmanager and Prometheus are
-# quiet once running, so their only log lines may date to deployment time.
-_LOG_LOOKBACK_HOURS = 24
+from helpers import LOOKBACK_HOURS, lookback_window_ns
 
 
 @then(parsers.parse('Prometheus has metrics from the "{application}" application'))
@@ -31,15 +27,38 @@ def prometheus_has_metrics_from(prometheus: Prometheus, application: str):
     assert found, f"Prometheus has no metrics labelled juju_application={application}"
 
 
+@then(parsers.parse('Mimir has metrics from the "{application}" application'))
+def mimir_has_metrics_from(mimir: Mimir, application: str):
+    """Assert whether Mimir has metrics with a given `juju_application` label."""
+    assert mimir.has_metric(labels={"juju_application": application}), (
+        f"Mimir has no metrics labelled juju_application={application}"
+    )
+
+
 @then(parsers.parse('Loki has logs from the "{application}" application'))
 def loki_has_logs_from(loki: Loki, application: str):
     """Assert Loki has logs with a given `juju_application` label."""
-    end = time.time_ns()
-    start = end - _LOG_LOOKBACK_HOURS * 3600 * 1_000_000_000
+    start, end = lookback_window_ns()
     result = loki.query_range(
         f'{{juju_application="{application}"}}', start=str(start), end=str(end), limit=1
     )
     assert result.get("data", {}).get("result"), (
         f"Loki has no log lines labelled juju_application={application} "
-        f"in the last {_LOG_LOOKBACK_HOURS}h"
+        f"in the last {LOOKBACK_HOURS}h"
+    )
+
+
+@then(parsers.parse('Tempo has traces from the "{application}" application'))
+def tempo_has_traces_from(tempo: Tempo, application: str):
+    """Assert Tempo has traces with a given `resource.juju_application` attribute."""
+    start, end = lookback_window_ns()
+    result = tempo.search(
+        f'{{resource.juju_application="{application}"}}',
+        start=str(start // 1_000_000_000),
+        end=str(end // 1_000_000_000),
+        limit=1,
+    )
+    assert result.get("traces"), (
+        f"Tempo has no traces with resource.juju_application={application} "
+        f"in the last {LOOKBACK_HOURS}h"
     )
