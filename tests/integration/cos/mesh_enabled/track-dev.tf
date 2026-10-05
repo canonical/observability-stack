@@ -30,7 +30,7 @@ variable "s3_access_key" {
 }
 
 module "cos" {
-  source       = "git::https://github.com/canonical/observability-stack//terraform/cos"
+  source       = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=feat/service-mesh"
   model        = { uuid = data.juju_model.model.uuid }
   risk         = "edge"
   internal_tls = false
