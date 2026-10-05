@@ -92,7 +92,7 @@ Before you begin, review [How to configure COS for strict reproducibility](confi
     terraform apply
     ```
 3. Remove the revision pins.
-4. Review the [breaking changes](../../release-notes.md#breaking-changes) for the new track and update your inputs accordingly.
+4. Review the breaking changes for the new track and update your inputs accordingly. The breaking changes for each release are documented in that release's notes; see the [release policy](../../reference/release-policy.md) for links to each version.
 5. Update the Terraform module source ref to a [release tag](https://github.com/canonical/observability-stack/tags), for example `tf-cos-3.0.n`, then apply:
     ```bash
     terraform init -upgrade
