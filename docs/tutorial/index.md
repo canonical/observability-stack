@@ -19,7 +19,6 @@ or COS Lite, Juju-based observability stacks running on single-node Kubernetes.
 The tutorials here are meant as a demonstration of COS.
 Production deployment configuration may differ from the setup showcased here.
 
-
 ## COS
 
 ```{toctree}

@@ -16,7 +16,7 @@ lock:
 
 # Lint everything
 [group("Lint")]
-lint: lint-workflows lint-terraform lint-terraform-docs check-presets
+lint: lint-workflows lint-terraform lint-terraform-docs lint-doc-refs lint-presets
 
 # Format everything
 [group("Format")]
@@ -43,24 +43,41 @@ lint-terraform:
 lint-terraform-docs:
   terraform-docs --config .tfdocs-config.yml --output-check .
 
-# Test presets under terraform/*/presets/
+# In-version references must stay branch-relative.
+# Lint the docs for hardcoded versioned links e.g., /latest/, /track-3.0/, etc.
+[group("Lint")]
+lint-doc-refs:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  pattern='documentation\.ubuntu\.com/observability/(latest|stable|track[-/][^/)]*)/'
+  if grep -rn --include='*.md' --exclude='release-policy.md' -E "$pattern" docs; then
+    echo "FAIL: detected an internal link that references a branch; correct internal links to be relative (../link) instead of a versioned observability docs URL" >&2
+    exit 1
+  fi
+
+# Lint the .tfvars presets under terraform/*/presets/ against each module's variables.tf
 [group("Lint")]
 [working-directory("./terraform")]
-check-presets:
+lint-presets:
   if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
-  set -e; for f in */presets/*.tfvars; do \
+  set -eu; fail=0; for f in */presets/*.tfvars; do \
     [ -f "$f" ] || continue; \
-    abs="$(cd "$(dirname "$f")" && pwd)/$(basename "$f")"; \
     module=$(dirname "$(dirname "$f")"); tmp=$(mktemp -d); \
-    cp "$module/variables.tf" "$tmp/"; \
-    out=$(cd "$tmp" && $terraform init -no-color >/dev/null 2>&1 && $terraform validate -no-color -var-file="$abs" 2>&1) \
-      || { echo "$out"; echo "FAIL: $f is malformed or could not be validated"; rm -rf "$tmp"; exit 1; }; \
-    rm -rf "$tmp"; \
-    if echo "$out" | grep -q "Value for undeclared variable"; then \
-      echo "$out"; echo "FAIL: $f references an undeclared variable"; exit 1; \
-    fi; \
-    echo "OK: $f"; \
-  done
+    cp "$module/variables.tf" "$tmp/"; : > "$tmp/empty.tfvars"; \
+    vars=$(grep -oE '^variable "[a-z_]+"' "$module/variables.tf" | sed -E 's/variable "([a-z_]+)"/\1/'); \
+    (cd "$tmp" && $terraform init -no-color >/dev/null 2>&1); \
+    expr="{ "; for v in $vars; do expr="$expr$v = try(keys(var.$v), null), "; done; expr="$expr}"; \
+    declared=$(cd "$tmp" && echo "$expr" | $terraform console -var-file=empty.tfvars 2>/dev/null); \
+    rm -rf "$tmp"; bad=""; \
+    for v in $vars; do \
+      dk=$(printf '%s\n' "$declared" | awk -v k="\"$v\"" '$1==k{i=1;next} i&&/\]/{exit} i{gsub(/[ ",]/,"");if($0!="")print}'); \
+      for s in $(sed -E 's/\{/\{\n/g; s/,/\n/g; s/\}/\n}/g' "$f" | awk -v n="$v" '$0~"^[[:space:]]*"n"[[:space:]]*=.*[{]"{b=1;next} b&&/^\}/{b=0;next} b&&/^[[:space:]]*[a-z_]+[[:space:]]*=/{print $1}'); do \
+        printf '%s\n' "$dk" | grep -qx "$s" || bad="$bad  $v.$s: not declared in $module\n"; \
+      done; \
+    done; \
+    for t in $(grep -oE '^[a-z_]+[[:space:]]*=' "$f" | tr -d ' =' | sort -u); do printf '%s\n' "$vars" | grep -qx "$t" || bad="$bad  $t: not declared in $module\n"; done; \
+    [ -n "$bad" ] && { printf "FAIL: %s\n%b" "$f" "$bad"; fail=1; } || echo "OK: $f"; \
+  done; [ "$fail" -eq 0 ] || exit 1
 
 # Format the Terraform modules
 [group("Format")]

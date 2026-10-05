@@ -31,18 +31,68 @@ This is the recommended upgrade method.
 
 Before you begin, review [How to configure COS for strict reproducibility](configure-strict-reproducibility.md) to understand how to upgrade with version pinning.
 
-1. Set the channel input to `2/stable`, then apply:
+1. Ensure the channel input is set to `2/stable` in your Terraform configuration, then apply:
+
+    ```hcl
+    module "cos" {
+      source  = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=track/2"
+      channel = "2/stable"
+      # ... other inputs ...
+    }
+    ```
+
     ```bash
     terraform apply
     ```
+
 2. Refresh all charms to the latest revision on `2/stable`:
-    1. Check [charmhub.io](https://charmhub.io/) for the latest revision on `2/stable` [per component](../../reference/cos-components/index.md).
-    2. Pin all components to those revisions, then apply:
-        ```bash
-        terraform apply
+    1. Check [charmhub.io](https://charmhub.io/) for the latest revision on `2/stable` for each charm.
+    2. Pin each component to its latest revision using the [Terraform variable mapping](../../reference/cos-components/index.md#terraform-variable-mapping), then apply:
+
+        ```hcl
+        alertmanager = {
+          revision = "REVISION"
+        }
+        catalogue = {
+          revision = "REVISION"
+        }
+        grafana = {
+          revision = "REVISION"
+        }
+        loki_coordinator = {
+          revision = "REVISION"
+        }
+        loki_worker = {
+          revision = "REVISION"
+        }
+        mimir_coordinator = {
+          revision = "REVISION"
+        }
+        mimir_worker = {
+          revision = "REVISION"
+        }
+        s3_integrator = {
+          revision = "REVISION"
+        }
+        ssc = {
+          revision = "REVISION"
+        }
+        tempo_coordinator = {
+          revision = "REVISION"
+        }
+        tempo_worker = {
+          revision = "REVISION"
+        }
+        traefik = {
+          revision = "REVISION"
+        }
         ```
+
+    ```bash
+    terraform apply
+    ```
 3. Remove the revision pins.
-4. Review the [breaking changes](../../release-notes.md#breaking-changes) for the new track and update your inputs accordingly.
+4. Review the breaking changes for the new track and update your inputs accordingly. The breaking changes for each release are documented in that release's notes; see the [release policy](../../reference/release-policy.md) for links to each version.
 5. Update the Terraform module source ref to a [release tag](https://github.com/canonical/observability-stack/tags), for example `tf-cos-3.0.n`, then apply:
     ```bash
     terraform init -upgrade

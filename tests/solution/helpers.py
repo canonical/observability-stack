@@ -5,24 +5,25 @@
 import json
 import os
 import subprocess
+import time
 from pathlib import Path
 from typing import Any, Dict
 
 import jubilant
 import requests
 
-SOLUTION_ROOT = Path(__file__).parent
-
 # Resolved terraform/tofu binary, set by quality-gates.just; falls back to
 # "terraform" when running pytest directly.
 TERRAFORM_BIN = os.environ.get("terraform") or "terraform"
 
+# How far back to look for logs and traces.
+LOOKBACK_HOURS = 24
 
-def discover_solutions() -> frozenset[str]:
-    """Every solution name under tests/solution/ (any dir with a terraform/ subdir)."""
-    return frozenset(
-        p.name for p in SOLUTION_ROOT.iterdir() if (p / "terraform").is_dir()
-    )
+
+def lookback_window_ns() -> tuple[int, int]:
+    """Return the (start, end) of the lookback window, in nanoseconds since the epoch."""
+    end = time.time_ns()
+    return end - LOOKBACK_HOURS * 3600 * 1_000_000_000, end
 
 
 def terraform_output(terraform_dir: Path) -> Dict[str, Any]:

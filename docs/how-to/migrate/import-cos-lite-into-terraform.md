@@ -27,7 +27,7 @@ supported tracks.
   eddaeb90-3115-4832-8bc4-ad4167df94dc
   ```
 
-- [Atelier](https://github.com/MichaelThamm/atelier) `>= 0.4.5` (for the automated method)
+- [Atelier](https://github.com/MichaelThamm/atelier) `>= 0.20.0` (for the automated method)
 - [Terraform](https://developer.hashicorp.com/terraform/install) `>= 1.14` with the
   [Juju Terraform provider](https://registry.terraform.io/providers/juju/juju) `>= 1.4.0`.
 
@@ -39,39 +39,47 @@ module's resource addresses, and running `terraform import` for each match.
 
 ### 1. Set up a wrapper directory
 
-Create an empty directory and run `atelier import`:
+Run `atelier import`, naming the directory to build the wrapper in. It does not
+have to exist yet:
 
 ```bash
-mkdir cos-lite-import && cd cos-lite-import
-
 atelier import juju \
-  --source https://github.com/canonical/observability-stack.git \
-  --module terraform/cos-lite \
+  --source cos-lite \
   --ref track/2 \
-  --query-var model_uuid=eddaeb90-3115-4832-8bc4-ad4167df94dc
+  --query-var model_uuid=eddaeb90-3115-4832-8bc4-ad4167df94dc \
+  --dir cos-lite-import
 ```
+
+`--source cos-lite` is this repository's bundled quick-start name for the
+`terraform/cos-lite` module — equivalent to `--source
+https://github.com/canonical/observability-stack.git --module terraform/cos-lite`.
 
 The Juju provider needs `model_uuid` to query live resources, so
 `--query-var model_uuid` is required. Atelier also seeds the module input
 from this value, so you do not need to pass `--var model_uuid` separately.
 
+Pass each remaining module input with `--var KEY=VALUE`. If you have
+aggregated them into a single `atelier.presets/*.tfvars` file, pass that file
+with `--var-file` instead. `--var` wins over `--var-file`.
+
 | Flag | Purpose |
 |------|---------|
-| `--source` | Upstream repository that contains the module |
-| `--module` | Path to the Terraform module inside the repository |
+| `--source` | Module to import: a bundled quick-start name, or a repository URL with `--module` |
+| `--module` | Path to the module in the repository (not needed with a quick-start name) |
 | `--ref` | Git ref (branch or tag) matching your deployment track |
+| `--dir` | Directory to build the wrapper in; created if missing |
 | `--query-var` | Variables the Juju provider needs to query live resources |
-| `--var` | Module input variables the module requires |
-| `--preset` | Named variable sets from an `atelier.local.yaml` file |
+| `--var` | Module input variables the module requires (`KEY=VALUE`, repeatable) |
+| `--var-file` | Seed module inputs from a `.tfvars` bundle, such as an `atelier.presets/*.tfvars` file (repeatable; later files win) |
 | `--dry-run` | Preview what would be imported without touching state |
 
 #### How model UUID is resolved
 
 The Juju provider's list resources require `model_uuid` in their config to
 run `terraform query`. Atelier feeds `--query-var model_uuid` into those
-list blocks and also seeds the module input from the same value. For COS
-Lite, which uses a `model = { uuid = ... }` object variable, the UUID is
-injected into the wrapper automatically.
+list blocks and also seeds the module input from the same value. Later tracks of
+this module take the model as a `model = { uuid = ... }` object instead; check
+which shape your `--ref` declares.
 
 After the query succeeds, Atelier also derives the UUID from the live
 resources' identity strings as a cross-check. If the wrapper already has the
@@ -84,10 +92,10 @@ state:
 
 ```bash
 atelier import juju \
-  --source https://github.com/canonical/observability-stack.git \
-  --module terraform/cos-lite \
+  --source cos-lite \
   --ref track/2 \
   --query-var model_uuid=eddaeb90-3115-4832-8bc4-ad4167df94dc \
+  --dir cos-lite-import \
   --dry-run
 ```
 
@@ -241,6 +249,7 @@ terraform query -json > live-resources.json
 
 This produces a JSON stream with one `list_resource_found` event per live
 object. Each event carries:
+
 - `resource_type` — e.g. `juju_application`
 - `display_name` — the application name, e.g. `alertmanager`
 - `identity` — provider-specific identity, e.g. `{"id": "eddaeb90-…:alertmanager"}`
@@ -552,6 +561,10 @@ rm imports.tf
 - **Model mismatch is refused** (Atelier only). If the wrapper targets a
   different model than the live resources, Atelier aborts. Proceeding would
   destroy every imported resource on the next apply.
+- **A source that contradicts the wrapper is refused** (Atelier only). Re-running
+  into a directory that already holds a wrapper reads the module from `main.tf`,
+  so a `--module` or `--ref` naming something else is an error, not something
+  quietly ignored.
 - **Check the plan before applying.** `juju_application` resources must not
   show `replace` or `create`. A clean import shows only attribute drift and
   Terraform-internal resources with no live counterpart.
