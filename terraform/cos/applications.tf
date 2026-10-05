@@ -153,9 +153,7 @@ module "mimir" {
 }
 
 module "opentelemetry_collector" {
-  # TODO: drop the ref pin once the istio_ingress output lands on main.
-  # https://github.com/canonical/opentelemetry-collector-k8s-operator/pull/403
-  source = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform?ref=fix/tf-istio-ingress-endpoint"
+  source = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform"
 
   app_name           = var.opentelemetry_collector.app_name
   base               = local.bases.o11y
