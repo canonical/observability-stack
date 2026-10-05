@@ -220,7 +220,7 @@ miss. No warning is emitted for non-matching operations.
 
 ```{note}
 A `patch` or `remove` that matches nothing is a no-op. Juju's `debug-log` will contains logs indicating which operations had no match. If the provided customizations result in no changes, the charm
-remains in `ActiveStatus`, but the charm's status message will indicate that the provided rules had no effect. The original rules are used for evaluation.
+remains in `ActiveStatus` and the original rules are used for evaluation. The charm's debug logs will provide more details.
 ```
 
 ## Setting the config option
