@@ -9,16 +9,7 @@ import jubilant
 import pytest
 from observability_clients import Alertmanager, Grafana, Loki, Mimir, Prometheus, Tempo
 
-from helpers import leader_unit, unit_url
-
-_PORTS = {
-    "alertmanager": 9093,
-    "grafana": 3000,
-    "loki": 3100,
-    "mimir": 8080,
-    "prometheus": 9090,
-    "tempo": 3200,
-}
+from helpers import _PORTS, leader_unit, unit_url
 
 
 @pytest.fixture

@@ -23,6 +23,17 @@ TERRAFORM_BIN = os.environ.get("terraform") or "terraform"
 # How far back to look for logs and traces.
 LOOKBACK_HOURS = 24
 
+# Ports the workloads' own APIs listen on, shared by clients.py's fixtures and
+# steps/tls.py's port lookup.
+_PORTS = {
+    "alertmanager": 9093,
+    "grafana": 3000,
+    "loki": 3100,
+    "mimir": 8080,
+    "prometheus": 9090,
+    "tempo": 3200,
+}
+
 
 class TfDirManager:
     # Duplicated in tests/integration/helpers.py: the two pytest roots don't
