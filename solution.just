@@ -13,15 +13,13 @@ uv_flags := "--frozen --isolated"
 # Init/apply a solution's Terraform module, then run its solution test suite.
 [group("test")]
 [working-directory("./tests/solution")]
-test solution="cos-lite":
+test solution="cos-lite" tls_mode="" ingress_mode="":
   #!/usr/bin/env bash
   set -euo pipefail
   echo "==> Testing solution: {{solution}}"
   juju whoami
   if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
-  $terraform -chdir="{{solution}}/terraform" init -upgrade
-  $terraform -chdir="{{solution}}/terraform" apply -auto-approve
-  uv run ${uv_flags} pytest -vv -ra --capture=no "{{solution}}"
+  uv run ${uv_flags} pytest -vv -ra --capture=no --tls-mode="{{tls_mode}}" --ingress-mode="{{ingress_mode}}" "{{solution}}"
 
 # Promote every charm in a solution from /beta to /candidate
 [group("promote")]
