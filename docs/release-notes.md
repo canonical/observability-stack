@@ -2,7 +2,7 @@
 
 ## COS 3.1 and COS Lite 3.1
 
-*Released TODO, 2026.*
+*Released November 2026, short-term support.*
 
 These release notes cover both **COS 3.1** and **COS Lite 3.1**. COS and COS Lite are distinct products with separate Terraform modules and different component sets; sections below apply to both unless noted otherwise, via a `Scope` column or an *Applies to* note.
 
