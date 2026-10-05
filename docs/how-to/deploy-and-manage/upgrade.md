@@ -35,7 +35,7 @@ Before you begin, review [How to configure COS for strict reproducibility](confi
 
     ```hcl
     module "cos" {
-      source  = "git::https://github.com/canonical/observability-stack//terraform/<cos|cos-lite>?ref=track/2"
+      source  = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=track/2"
       channel = "2/stable"
       # ... other inputs ...
     }
