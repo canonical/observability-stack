@@ -28,12 +28,9 @@ From the repo root:
 just solution test cos-lite   # or: cos
 ```
 
-This will:
-
-1. `terraform init` and `terraform apply` the solution's Terraform wrapper module
-   (`tests/solution/<name>/terraform/`), deploying it into a new model on the current controller.
-2. Run that solution's `pytest-bdd` scenario (`tests/solution/<name>/test_solution.py`), which
-   connects to the model Terraform just created and waits for it to become active/idle.
+The pytest run itself `terraform init`s and `terraform apply`s the solution's Terraform wrapper
+module (`tests/solution/<name>/terraform/`) into a new model on the current controller, then runs
+that solution's `pytest-bdd` scenarios (`tests/solution/<name>/test_solution.py`) against it.
 
 The Terraform module is *not* destroyed automatically afterwards (so you can inspect a failure).
 Clean up when you're done:
@@ -42,9 +39,28 @@ Clean up when you're done:
 terraform -chdir=tests/solution/cos-lite/terraform destroy -auto-approve
 ```
 
+In `tls_full`/`tls_external` mode this same command also tears down the external-CA model, since
+it lives in the same Terraform state as the solution model.
+
+### Running a specific mode
+
+`--tls-mode` (`tls_none`, `tls_internal`, `tls_full`, `tls_external`) and `--ingress-mode`
+(`ingress`, `no_ingress`) select the deployment shape, both passed straight through to the
+Terraform wrapper:
+
+```bash
+just solution test cos-lite tls_external ingress
+```
+
+`tls_full`/`tls_external` with `no_ingress` is rejected before anything gets deployed: without
+ingress the product module leaves the external-CA wiring as a no-op, so the combination has
+nothing to assert. Scenarios don't carry mode tags: `tls.feature` reads the mode back from the
+Terraform wrapper's own outputs (`internal_tls`, `tls_termination`) and asserts against whichever
+one is running.
+
 ### Running against an already-deployed model
 
-The `given` step (`the solution has been deployed`, defined in `steps/common_steps.py`) can skip
+The `given` step (`the solution has been deployed`, defined in `steps/deployment.py`) can skip
 discovering a model from Terraform output entirely: set `SOLUTION_MODEL` (optionally
 `<controller>:<model>`) and it's used as-is. This lets an external suite that deploys a solution
 some other way reuse these same steps against its own model:
