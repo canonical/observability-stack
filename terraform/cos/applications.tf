@@ -153,7 +153,9 @@ module "mimir" {
 }
 
 module "opentelemetry_collector" {
-  source = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform"
+  # TODO: drop the ref pin once the istio_ingress output lands on main.
+  # https://github.com/canonical/opentelemetry-collector-k8s-operator/pull/403
+  source = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform?ref=fix/tf-istio-ingress-endpoint"
 
   app_name           = var.opentelemetry_collector.app_name
   base               = local.bases.o11y
@@ -182,7 +184,9 @@ module "ssc" {
 }
 
 module "tempo" {
-  source = "git::https://github.com/canonical/tempo-operators//terraform"
+  # TODO: drop the ref pin once the istio_ingress output lands on main.
+  # https://github.com/canonical/tempo-operators/pull/431
+  source = "git::https://github.com/canonical/tempo-operators//terraform?ref=fix/tf-istio-ingress-endpoint"
 
   anti_affinity                               = var.anti_affinity
   base                                        = local.bases.o11y

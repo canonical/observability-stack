@@ -142,6 +142,50 @@ run "istio_ingress_enabled" {
   }
 }
 
+# --- istio: istio_ingress_route binds the istio-ingress endpoints, not Traefik's ---
+# otelcol and tempo cannot both be ingressed, so each gets its own run.
+
+run "istio_ingress_route_binds_otelcol_istio_ingress" {
+  command = plan
+
+  variables {
+    internal_tls = false
+    mesh_enabled = true
+    ingress = {
+      tempo = false
+    }
+  }
+
+  assert {
+    condition = { for app in juju_integration.istio_ingress_route["opentelemetry_collector"].application : app.name => app.endpoint } == {
+      (module.istio_ingress[0].app_name)        = module.istio_ingress[0].provides["istio-ingress-route"]
+      (module.opentelemetry_collector.app_name) = module.opentelemetry_collector.requires.istio_ingress
+    }
+    error_message = "Expected otelcol to offer istio-ingress and be offered istio-ingress's istio-ingress-route endpoint"
+  }
+}
+
+run "istio_ingress_route_binds_tempo_istio_ingress" {
+  command = plan
+
+  variables {
+    internal_tls = false
+    mesh_enabled = true
+    ingress = {
+      opentelemetry_collector = false
+      tempo                   = true
+    }
+  }
+
+  assert {
+    condition = { for app in juju_integration.istio_ingress_route["tempo"].application : app.name => app.endpoint } == {
+      (module.istio_ingress[0].app_name)         = module.istio_ingress[0].provides["istio-ingress-route"]
+      (module.tempo.app_names.tempo_coordinator) = module.tempo.requires.istio_ingress
+    }
+    error_message = "Expected tempo to offer istio-ingress and be offered istio-ingress's istio-ingress-route endpoint"
+  }
+}
+
 # --- istio: all ingress disabled ---
 
 run "istio_ingress_disabled" {

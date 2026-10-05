@@ -496,11 +496,11 @@ resource "juju_integration" "istio_ingress_route" {
     for k, v in {
       opentelemetry_collector = {
         app_name = module.opentelemetry_collector.app_name
-        endpoint = module.opentelemetry_collector.requires.ingress
+        endpoint = module.opentelemetry_collector.requires.istio_ingress
       }
       tempo = {
         app_name = module.tempo.app_names.tempo_coordinator
-        endpoint = module.tempo.requires.ingress
+        endpoint = module.tempo.requires.istio_ingress
       }
     } : k => v if local.istio_ingress_enabled && var.ingress[k]
   }
