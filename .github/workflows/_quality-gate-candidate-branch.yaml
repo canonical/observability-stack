@@ -41,12 +41,21 @@ jobs:
           echo "solutions=$solutions" >> "$GITHUB_OUTPUT"
 
   test-solutions:
-    name: Test ${{ matrix.solution }}
+    name: Test ${{ matrix.solution }} (tls=${{ matrix.tls-mode }}, ingress=${{ matrix.ingress-mode }}, juju=${{ matrix.juju-channel }})
     needs: [discover-solutions]
     strategy:
       fail-fast: false
       matrix:
         solution: ${{ fromJson(needs.discover-solutions.outputs.solutions) }}
+        tls-mode: ["tls_internal", "tls_none", "tls_full", "tls_external"]
+        ingress-mode: ["ingress", "no_ingress"]
+        juju-channel: ["3.6/stable", "4.1/beta"]
+        exclude:
+          # external_ca silently no-ops without ingress (see terraform wrapper), nothing to assert
+          - tls-mode: tls_full
+            ingress-mode: no_ingress
+          - tls-mode: tls_external
+            ingress-mode: no_ingress
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -57,18 +66,20 @@ jobs:
       - name: Install dependencies
         run: |
           sudo snap install concierge --classic
-          sudo concierge prepare -p k8s --extra-snaps just,astral-uv,terraform
+          sudo concierge prepare -p k8s --juju-channel ${{ matrix.juju-channel }} --extra-snaps just,astral-uv,terraform
           # Configure Cilium for Istio ambient service mesh compatibility
           sudo k8s kubectl patch configmap cilium-config -n kube-system --type merge -p '{"data":{"bpf-lb-sock-hostns-only":"true"}}'
           sudo k8s kubectl rollout restart daemonset/cilium -n kube-system
           sudo k8s kubectl rollout status daemonset/cilium -n kube-system --timeout=90s
 
       - name: Run solution tests
-        run: just solution test ${{ matrix.solution }}
+        run: just solution test ${{ matrix.solution }} ${{ matrix.tls-mode }} ${{ matrix.ingress-mode }}
 
   promote:
     name: Promote ${{ matrix.solution }}
     needs: [discover-solutions, test-solutions]
+    # TODO: remove before merging -- never auto-promote from a pull_request-triggered run
+    if: github.event_name != 'pull_request'
     strategy:
       matrix:
         solution: ${{ fromJson(needs.discover-solutions.outputs.solutions) }}
