@@ -34,7 +34,6 @@ module "cos" {
   model        = { uuid = data.juju_model.model.uuid }
   risk         = "stable"
   internal_tls = false
-  mesh_enabled = true
 
   s3_endpoint   = var.s3_endpoint
   s3_secret_key = var.s3_secret_key
