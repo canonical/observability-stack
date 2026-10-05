@@ -37,6 +37,27 @@ This page describes the charms, rocks, and snaps that make up the current **Obse
 | [Self-signed Certificates](https://charmhub.io/self-signed-certificates) | Yes | Any       | -                | 1     | [Source](https://github.com/canonical/self-signed-certificates-operator), [issues](https://github.com/canonical/self-signed-certificates-operator/issues) |
 | [Traefik](https://charmhub.io/traefik-k8s)                               | Yes | K8s       | 2.11             | latest | [Source](https://github.com/canonical/traefik-k8s-operator), [issues](https://github.com/canonical/traefik-k8s-operator/issues)                           |
 
+## Terraform variable mapping
+
+The following table maps each main COS or COS Lite charm to its corresponding Terraform input variable name in the [`cos`](https://github.com/canonical/observability-stack/tree/main/terraform/cos) or [`cos-lite`](https://github.com/canonical/observability-stack/tree/main/terraform/cos-lite) module. The `Scope` column indicates which module the variable belongs to.
+
+| Charm                                                                      | Charmhub name                                                                    | Terraform variable     | Scope             |
+| -------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | ---------------------- | ----------------- |
+| [Alertmanager](https://charmhub.io/alertmanager-k8s)                       | [alertmanager-k8s](https://charmhub.io/alertmanager-k8s)                         | `alertmanager`         | `cos`, `cos-lite` |
+| [Catalogue](https://charmhub.io/catalogue-k8s)                             | [catalogue-k8s](https://charmhub.io/catalogue-k8s)                               | `catalogue`            | `cos`, `cos-lite` |
+| [Grafana](https://charmhub.io/grafana-k8s)                                 | [grafana-k8s](https://charmhub.io/grafana-k8s)                                   | `grafana`              | `cos`, `cos-lite` |
+| [Loki](https://charmhub.io/loki-k8s)                                       | [loki-k8s](https://charmhub.io/loki-k8s)                                         | `loki`                 | `cos-lite`        |
+| [Loki Coordinator](https://charmhub.io/loki-coordinator-k8s)               | [loki-coordinator-k8s](https://charmhub.io/loki-coordinator-k8s)                 | `loki_coordinator`     | `cos`             |
+| [Loki Worker](https://charmhub.io/loki-worker-k8s)                         | [loki-worker-k8s](https://charmhub.io/loki-worker-k8s)                           | `loki_worker`          | `cos`             |
+| [Mimir Coordinator](https://charmhub.io/mimir-coordinator-k8s)             | [mimir-coordinator-k8s](https://charmhub.io/mimir-coordinator-k8s)               | `mimir_coordinator`    | `cos`             |
+| [Mimir Worker](https://charmhub.io/mimir-worker-k8s)                       | [mimir-worker-k8s](https://charmhub.io/mimir-worker-k8s)                         | `mimir_worker`         | `cos`             |
+| [Prometheus](https://charmhub.io/prometheus-k8s)                           | [prometheus-k8s](https://charmhub.io/prometheus-k8s)                             | `prometheus`           | `cos-lite`        |
+| [S3 Integrator](https://charmhub.io/s3-integrator)                         | [s3-integrator](https://charmhub.io/s3-integrator)                               | `s3_integrator`        | `cos`             |
+| [Self-signed Certificates](https://charmhub.io/self-signed-certificates)   | [self-signed-certificates](https://charmhub.io/self-signed-certificates)         | `ssc`                  | `cos`, `cos-lite` |
+| [Tempo Coordinator](https://charmhub.io/tempo-coordinator-k8s)             | [tempo-coordinator-k8s](https://charmhub.io/tempo-coordinator-k8s)               | `tempo_coordinator`    | `cos`             |
+| [Tempo Worker](https://charmhub.io/tempo-worker-k8s)                       | [tempo-worker-k8s](https://charmhub.io/tempo-worker-k8s)                         | `tempo_worker`         | `cos`             |
+| [Traefik](https://charmhub.io/traefik-k8s)                                 | [traefik-k8s](https://charmhub.io/traefik-k8s)                                   | `traefik`              | `cos`, `cos-lite` |
+
 ## Peripheral charms
 
 | Charm                                                                                        | LTS | Substrate | Workload version | Track | Contributing                                                                                                                                                                  |
