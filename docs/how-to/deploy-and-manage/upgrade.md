@@ -49,7 +49,7 @@ Before you begin, review [How to configure COS for strict reproducibility](confi
     1. Check [charmhub.io](https://charmhub.io/) for the latest revision on `2/stable` for each charm.
     2. Pin each component to its latest revision using the [Terraform variable mapping](../../reference/cos-components/index.md#terraform-variable-mapping), then apply:
 
-        ```
+        ```hcl
         alertmanager = {
           revision = <rev>
         }
