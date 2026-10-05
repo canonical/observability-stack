@@ -15,12 +15,12 @@ def pytest_addoption(parser):
     parser.addoption(
         "--tls-mode",
         default="",
-        help="One of tls_none, tls_internal, tls_full, tls_external. "
-        "Empty uses the Terraform wrapper's own default (tls_internal).",
+        choices=["", "tls_none", "tls_internal", "tls_full", "tls_external"],
+        help="Empty uses the Terraform wrapper's own default (tls_internal).",
     )
     parser.addoption(
         "--ingress-mode",
         default="",
-        help="One of ingress, no_ingress. Empty uses the Terraform "
-        "wrapper's own default (ingress on).",
+        choices=["", "ingress", "no_ingress"],
+        help="Empty uses the Terraform wrapper's own default (ingress on).",
     )
