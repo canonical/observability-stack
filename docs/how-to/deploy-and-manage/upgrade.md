@@ -49,42 +49,42 @@ Before you begin, review [How to configure COS for strict reproducibility](confi
     1. Check [charmhub.io](https://charmhub.io/) for the latest revision on `2/stable` for each charm.
     2. Pin each component to its latest revision using the [Terraform variable mapping](../../reference/cos-components/index.md#terraform-variable-mapping), then apply:
 
-        ```
+        ```hcl
         alertmanager = {
-          revision = <rev>
+          revision = "REVISION"
         }
         catalogue = {
-          revision = <rev>
+          revision = "REVISION"
         }
         grafana = {
-          revision = <rev>
+          revision = "REVISION"
         }
         loki_coordinator = {
-          revision = <rev>
+          revision = "REVISION"
         }
         loki_worker = {
-          revision = <rev>
+          revision = "REVISION"
         }
         mimir_coordinator = {
-          revision = <rev>
+          revision = "REVISION"
         }
         mimir_worker = {
-          revision = <rev>
+          revision = "REVISION"
         }
         s3_integrator = {
-          revision = <rev>
+          revision = "REVISION"
         }
         ssc = {
-          revision = <rev>
+          revision = "REVISION"
         }
         tempo_coordinator = {
-          revision = <rev>
+          revision = "REVISION"
         }
         tempo_worker = {
-          revision = <rev>
+          revision = "REVISION"
         }
         traefik = {
-          revision = <rev>
+          revision = "REVISION"
         }
         ```
 
