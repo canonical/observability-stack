@@ -19,7 +19,7 @@ on:
         required: true
         type: string
     secrets:
-      CHARMCRAFT_AUTH:
+      CHARMHUB_TOKEN:
         required: true
 
 jobs:
@@ -98,5 +98,5 @@ jobs:
 
       - name: Promote
         env:
-          CHARMCRAFT_AUTH: ${{ secrets.CHARMCRAFT_AUTH }}
+          CHARMCRAFT_AUTH: ${{ secrets.CHARMHUB_TOKEN }}
         run: just solution promote ${{ matrix.solution }} ${{ inputs.branch }}
