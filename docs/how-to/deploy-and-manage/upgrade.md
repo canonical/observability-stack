@@ -6,14 +6,14 @@ myst:
 
 # How to upgrade
 
-This guide shows how to upgrade an existing COS deployment to a newer track.
+This guide shows how to upgrade an existing COS 3.0 or COS Lite 3.0 deployment to COS 3.1. Each release documents one upgrade only, so if you are on an older release, follow the chain from the guide of the release you are on.
 
 Find the section that matches the upgrade path you need:
 
 - [Migrate from COS 3.0 to COS 3.1](#migrate-from-cos-30-to-cos-31) (COS or COS Lite)
-- [Migrate from COS 2 to COS 3.0](#migrate-from-cos-2-to-cos-30) (COS or COS Lite)
-- [Migrate from COS Lite 1 to COS 2](#migrate-from-cos-lite-1-to-cos-2)
-- [Migrate from COS Lite 1 to COS Lite 2](#migrate-from-cos-lite-1-to-cos-lite-2)
+- [Migrate from COS 2 to COS 3.0](https://documentation.ubuntu.com/observability/track-3.0/how-to/deploy-and-manage/upgrade/#migrate-from-cos-2-to-cos-3-0) (COS or COS Lite)
+- [Migrate from COS Lite 1 to COS 2](https://documentation.ubuntu.com/observability/track-3.0/how-to/deploy-and-manage/upgrade/#migrate-from-cos-lite-1-to-cos-2)
+- [Migrate from COS Lite 1 to COS Lite 2](https://documentation.ubuntu.com/observability/track-3.0/how-to/deploy-and-manage/upgrade/#migrate-from-cos-lite-1-to-cos-lite-2)
 
 ## COS 3.1
 
@@ -23,7 +23,7 @@ These steps apply to both **COS 3.1** and **COS Lite 3.1**. COS 3.1 has no break
 
 COS 3.1 is a short-term release, so this upgrade is optional. If you need the longer support window, stay on the COS 3.0 LTS; see the [release policy](../../reference/release-policy.md) for the support windows of each release.
 
-Unlike the [COS 2 to COS 3.0](#migrate-from-cos-2-to-cos-30) migration, you don't have to pin every component revision by hand. Since COS 3.0 the module resolves revisions per charm track, so it performs the cross-track upgrade for you.
+Unlike the [COS 2 to COS 3.0](https://documentation.ubuntu.com/observability/track-3.0/how-to/deploy-and-manage/upgrade/#migrate-from-cos-2-to-cos-3-0) migration, you don't have to pin every component revision by hand. Since COS 3.0 the module resolves revisions per charm track, so it performs the cross-track upgrade for you.
 
 1. Remove any per-component `revision` and `resources` pins from your configuration, so that each application runs the latest revision of its current track:
 

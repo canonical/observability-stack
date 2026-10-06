@@ -45,12 +45,14 @@ lint-terraform-docs:
 
 # In-version references must stay branch-relative.
 # Lint the docs for hardcoded versioned links e.g., /latest/, /track-3.0/, etc.
+# release-policy.md and upgrade.md are exempt: release-policy.md tabulates every
+# published version, and upgrade.md links to the previous release's guide on purpose.
 [group("Lint")]
 lint-doc-refs:
   #!/usr/bin/env bash
   set -euo pipefail
   pattern='documentation\.ubuntu\.com/observability/(latest|stable|track[-/][^/)]*)/'
-  if grep -rn --include='*.md' --exclude='release-policy.md' -E "$pattern" docs; then
+  if grep -rn --include='*.md' --exclude='release-policy.md' --exclude='upgrade.md' -E "$pattern" docs; then
     echo "FAIL: detected an internal link that references a branch; correct internal links to be relative (../link) instead of a versioned observability docs URL" >&2
     exit 1
   fi
