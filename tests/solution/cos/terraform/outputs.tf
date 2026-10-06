@@ -13,6 +13,11 @@ output "ingress_enabled" {
   description = "Whether any component has ingress enabled in this deployment"
 }
 
+output "ingress" {
+  value       = var.ingress
+  description = "Per-component ingress toggle state, as configured for this deployment"
+}
+
 output "ca_model_name" {
   value       = var.external_ca ? local.ca_model_name : null
   description = "Name of the external-CA model, null unless deployed in tls_full/tls_external."

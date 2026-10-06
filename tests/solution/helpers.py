@@ -163,6 +163,24 @@ def unit_url(juju: jubilant.Juju, app: str, port: int) -> str:
     raise AssertionError(f"no reachable {app} workload at {address}:{port}")
 
 
+def ingressed_url(juju: jubilant.Juju, request, app: str, port: int) -> Optional[str]:
+    """Base URL of an application's ingress route, when its ingress is enabled.
+
+    Returns None when not ingressed, so the caller can fall back to unit_url.
+    """
+    ingress = terraform_output(terraform_dir(request))["ingress"]["value"]
+    if not ingress.get(app):
+        return None
+
+    proxied_endpoints = json.loads(
+        juju.run("traefik/leader", "show-proxied-endpoints").results[
+            "proxied-endpoints"
+        ]
+    )
+    entry = proxied_endpoints.get(app) or proxied_endpoints.get(leader_unit(juju, app))
+    return entry["url"] if entry else None
+
+
 def get_tls_context(juju: jubilant.Juju, ca_name: str) -> Optional[ssl.SSLContext]:
     # Duplicated in tests/integration/helpers.py, adapted to not need a
     # caller-supplied temp_path. See TfDirManager above for why.

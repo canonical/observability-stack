@@ -1,11 +1,17 @@
 """Steps about TLS: introspects the wrapper's own Terraform outputs instead of a mode tag."""
 
-import json
 from urllib.parse import urlparse
 from urllib.request import urlopen
 
 import jubilant
-from helpers import _PORTS, get_tls_context, terraform_dir, terraform_output, unit_url
+from helpers import (
+    _PORTS,
+    get_tls_context,
+    ingressed_url,
+    terraform_dir,
+    terraform_output,
+    unit_url,
+)
 from pytest_bdd import parsers, then
 
 
@@ -44,11 +50,6 @@ def components_certificate_is_trusted_by_configured_ca(
     # The external CA only terminates TLS at Traefik's own ingress-facing
     # certificate, not at each component's own unit, so the check goes
     # through the ingressed URL rather than unit_url.
-    proxied_endpoints = json.loads(
-        juju.run("traefik/leader", "show-proxied-endpoints").results[
-            "proxied-endpoints"
-        ]
-    )
-    url = proxied_endpoints[component]["url"]
+    url = ingressed_url(juju, request, component, _PORTS[component])
     with urlopen(url, timeout=30, context=ctx) as response:
         assert response.status == 200, f"{component} was not reachable through Traefik"
