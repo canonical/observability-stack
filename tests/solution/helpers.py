@@ -11,10 +11,11 @@ import subprocess
 import tempfile
 import time
 from pathlib import Path
-from typing import Any, Dict, Optional, Sequence
+from typing import Any, Callable, Dict, Optional, Sequence
 
 import jubilant
 import requests
+from tenacity import RetryError, Retrying, retry_if_result, stop_after_delay, wait_fixed
 
 # Resolved terraform/tofu binary, set by quality-gates.just; falls back to
 # "terraform" when running pytest directly.
@@ -88,6 +89,23 @@ def lookback_window_ns() -> tuple[int, int]:
     """Return the (start, end) of the lookback window, in nanoseconds since the epoch."""
     end = time.time_ns()
     return end - LOOKBACK_HOURS * 3600 * 1_000_000_000, end
+
+
+def retry_until_found(check: Callable[[], bool]) -> bool:
+    """Retry `check` for up to two minutes, polling every ten seconds.
+
+    Scraping/ingestion is periodic, so the first samples for an application
+    can land a little after the model has settled into active/idle.
+    """
+    retrying = Retrying(
+        retry=retry_if_result(lambda result: result is False),
+        wait=wait_fixed(10),
+        stop=stop_after_delay(60 * 2),
+    )
+    try:
+        return retrying(check)
+    except RetryError:
+        return False
 
 
 def terraform_dir(request) -> Path:
