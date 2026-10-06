@@ -25,7 +25,7 @@ COS `3.1` is a product version, not a single Charmhub track shared by every comp
 
 *Applies to: `cos-lite`.*
 
-COS Lite 3.1 deploys an OpenTelemetry Collector (`otelcol`, from the [opentelemetry-collector-k8s](https://charmhub.io/opentelemetry-collector-k8s) charm), which COS already had. It becomes the single point where COS Lite's own telemetry is collected, so that processing and relabelling apply uniformly, as they do in COS.
+COS Lite 3.1 deploys an OpenTelemetry Collector (`otelcol`, from the [opentelemetry-collector-k8s](https://charmhub.io/opentelemetry-collector-k8s) charm), which COS already had. It becomes the single point where COS Lite collects its own telemetry, so that processing and relabeling apply uniformly, as they do in COS.
 
 Upgrading rewires the self-monitoring integrations: components now send their telemetry to the collector, and the collector forwards it to the backend.
 
