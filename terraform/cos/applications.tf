@@ -182,9 +182,7 @@ module "ssc" {
 }
 
 module "tempo" {
-  # TODO: drop the ref pin once the istio_ingress output lands on main.
-  # https://github.com/canonical/tempo-operators/pull/431
-  source = "git::https://github.com/canonical/tempo-operators//terraform?ref=fix/tf-istio-ingress-endpoint"
+  source = "git::https://github.com/canonical/tempo-operators//terraform"
 
   anti_affinity                               = var.anti_affinity
   base                                        = local.bases.o11y
