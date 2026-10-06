@@ -29,14 +29,12 @@ COS Lite 3.1 deploys an OpenTelemetry Collector (`otelcol`, from the [openteleme
 
 Upgrading rewires the self-monitoring integrations: components now send their telemetry to the collector, and the collector forwards it to the backend.
 
-| Telemetry                                 | 3.0                            | 3.1                                                         |
-| ----------------------------------------- | ------------------------------ | ----------------------------------------------------------- |
-| Metrics of Alertmanager, Grafana, Loki    | scraped directly by Prometheus | scraped by the collector, which remote-writes to Prometheus |
-| Metrics of Prometheus                     | not collected                  | scraped by the collector                                    |
-| Metrics of Traefik                        | scraped directly by Prometheus | scraped by the collector                                    |
-| Logs of Alertmanager, Grafana, Prometheus | sent directly to Loki          | sent to the collector, which forwards them to Loki          |
+| Telemetry | 3.0                            | 3.1                                                         |
+| --------- | ------------------------------ | ----------------------------------------------------------- |
+| Metrics   | scraped directly by Prometheus | scraped by the collector, which remote-writes to Prometheus |
+| Logs      | sent directly to Loki          | sent to the collector, which forwards them to Loki          |
 
-Terraform therefore replaces the `metrics_endpoint`, `loki_logging` and `traefik_self_monitoring_prometheus` integrations with collector-based ones during the upgrade; every application is upgraded in place, and none is removed or re-deployed. Telemetry already stored in Prometheus and Loki is unaffected, and the collector starts collecting as soon as the upgrade completes.
+Telemetry already stored in Prometheus and Loki is unaffected, and the collector starts collecting as soon as the upgrade completes.
 
 The collector is also wired into Grafana dashboards, internal TLS (`internal_tls`) and ingress (`ingress.opentelemetry_collector`), and it can be configured through the new [`opentelemetry_collector`](#terraform-inputs) input. Its default application name is `otelcol`, so if you deployed a standalone collector named `otelcol` in the same model, rename one of them before upgrading.
 
