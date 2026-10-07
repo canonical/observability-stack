@@ -150,6 +150,16 @@ jobs:
           sudo microceph.radosgw-admin user create --uid=user --display-name=User
           sudo microceph.radosgw-admin key create --uid=user --key-type=s3 --access-key=access-key --secret-key=secret-key
 
+      - name: Install Istio control plane
+        if: ${{ matrix.scenario == 'mesh_enabled' }}
+        timeout-minutes: 15
+        run: |
+          # The cos module does not deploy the Istio control plane; it must
+          # already exist in a separate model (conventionally "istio-system").
+          juju add-model istio-system
+          juju deploy istio-k8s istio --channel dev/edge --trust
+          juju wait-for application istio --model istio-system --query='status=="active"' --timeout=10m
+
       - name: Test deployment
         run: |
           if [[ "${{ inputs.product }}" == "cos" ]]; then
