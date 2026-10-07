@@ -39,22 +39,21 @@ Clean up when you're done:
 terraform -chdir=tests/solution/cos-lite/terraform destroy -auto-approve
 ```
 
-In `tls_full`/`tls_external` mode this same command also tears down the external-CA model, since
+In `external-ca=true` mode this same command also tears down the external-CA model, since
 it lives in the same Terraform state as the solution model.
 
 ### Running a specific mode
 
-`--tls-mode` (`tls_none`, `tls_internal`, `tls_full`, `tls_external`) and `--ingress-mode`
-(`ingress`, `no_ingress`) select the deployment shape, both passed straight through to the
-Terraform wrapper:
+`--internal-tls`, `--external-ca`, and `--ingress` (`true`, `false`) select the deployment
+shape, all passed straight through to the Terraform wrapper:
 
 ```bash
-just solution test cos-lite tls_external ingress
+just solution test cos-lite false true true
 ```
 
-`tls_full`/`tls_external` with `no_ingress` is rejected before anything gets deployed: without
-ingress the product module leaves the external-CA wiring as a no-op, so the combination has
-nothing to assert. Scenarios don't carry mode tags: `tls.feature` reads the mode back from the
+`--external-ca=true` with `--ingress=false` is rejected before anything gets deployed:
+without ingress the product module leaves the external-CA wiring as a no-op, so the combination
+has nothing to assert. Scenarios don't carry mode tags: `tls.feature` reads the mode back from the
 Terraform wrapper's own outputs (`internal_tls`, `tls_termination`) and asserts against whichever
 one is running.
 

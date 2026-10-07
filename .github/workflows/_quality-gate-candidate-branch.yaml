@@ -41,21 +41,19 @@ jobs:
           echo "solutions=$solutions" >> "$GITHUB_OUTPUT"
 
   test-solutions:
-    name: Test ${{ matrix.solution }} (tls=${{ matrix.tls-mode }}, ingress=${{ matrix.ingress-mode }}, juju=${{ matrix.juju-channel }})
+    name: Test ${{ matrix.solution }} (internal-tls=${{ matrix.internal-tls }}, external-ca=${{ matrix.external-ca }}, ingress=${{ matrix.ingress }}, juju=${{ matrix.juju-channel }})
     needs: [discover-solutions]
     strategy:
       fail-fast: false
       matrix:
         solution: ${{ fromJson(needs.discover-solutions.outputs.solutions) }}
-        tls-mode: ["tls_internal", "tls_none", "tls_full", "tls_external"]
-        ingress-mode: ["ingress", "no_ingress"]
+        internal-tls: ["true", "false"]
+        external-ca: ["true", "false"]
+        ingress: ["true", "false"]
         juju-channel: ["3.6/stable", "4.1/beta"]
         exclude:
-          # external_ca silently no-ops without ingress (see terraform wrapper), nothing to assert
-          - tls-mode: tls_full
-            ingress-mode: no_ingress
-          - tls-mode: tls_external
-            ingress-mode: no_ingress
+          - external-ca: "true"
+            ingress: "false"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -73,7 +71,7 @@ jobs:
           sudo k8s kubectl rollout status daemonset/cilium -n kube-system --timeout=90s
 
       - name: Run solution tests
-        run: just solution test ${{ matrix.solution }} ${{ matrix.tls-mode }} ${{ matrix.ingress-mode }}
+        run: just solution test ${{ matrix.solution }} ${{ matrix.internal-tls }} ${{ matrix.external-ca }} ${{ matrix.ingress }}
 
   promote:
     name: Promote ${{ matrix.solution }}

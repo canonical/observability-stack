@@ -1,7 +1,6 @@
 """Steps about the deployment itself: which model, and whether it is healthy."""
 
 import os
-from typing import NamedTuple
 
 import jubilant
 import pytest
@@ -11,25 +10,6 @@ from pytest_bdd import given, then
 # Points the "given" step at an already-deployed model instead of applying
 # the Terraform wrapper ourselves (see README.md).
 _MODEL_ENV_VAR = "SOLUTION_MODEL"
-
-
-class _ModeVars(NamedTuple):
-    internal_tls: str
-    external_ca: str
-
-
-# Keyed on every value --tls-mode's choices= allows (see conftest.py). "" (the
-# wrapper's own default) carries tls_internal's values explicitly rather than
-# omitting the -vars: passing a value equal to a Terraform variable's own
-# default has the same effect as leaving it unset, so every mode can be
-# applied the same way below, with no silently-defaulting lookup.
-_TLS_MODES = {
-    "": _ModeVars(internal_tls="true", external_ca="false"),
-    "tls_none": _ModeVars(internal_tls="false", external_ca="false"),
-    "tls_internal": _ModeVars(internal_tls="true", external_ca="false"),
-    "tls_external": _ModeVars(internal_tls="false", external_ca="true"),
-    "tls_full": _ModeVars(internal_tls="true", external_ca="true"),
-}
 
 
 @pytest.fixture(scope="module")
@@ -42,11 +22,12 @@ def _terraform_applied(request) -> None:
     if _MODEL_ENV_VAR in os.environ:
         return
 
-    tls_mode = request.config.getoption("--tls-mode")
-    ingress_mode = request.config.getoption("--ingress-mode")
-    if tls_mode in ("tls_full", "tls_external") and ingress_mode == "no_ingress":
+    internal_tls = request.config.getoption("--internal-tls")
+    external_ca = request.config.getoption("--external-ca")
+    ingress = request.config.getoption("--ingress")
+    if external_ca == "true" and ingress == "false":
         pytest.fail(
-            f"--tls-mode={tls_mode} with --ingress-mode=no_ingress would deploy "
+            "--external-ca=true with --ingress=false would deploy "
             "the external-CA model and offer for nothing: the product module "
             "silently no-ops the external-CA wiring without ingress."
         )
@@ -57,18 +38,19 @@ def _terraform_applied(request) -> None:
 
     var_files = (
         [str(repo_root / "terraform" / solution / "presets" / "no-ingress.tfvars")]
-        if ingress_mode == "no_ingress"
+        if ingress == "false"
         else []
     )
 
+    tf_vars = {}
+    if internal_tls:
+        tf_vars["internal_tls"] = internal_tls
+    if external_ca:
+        tf_vars["external_ca"] = external_ca
+
     tf = TfDirManager(dir=str(tf_dir))
     tf.init()
-    mode_vars = _TLS_MODES[tls_mode]
-    tf.apply(
-        var_files=var_files,
-        internal_tls=mode_vars.internal_tls,
-        external_ca=mode_vars.external_ca,
-    )
+    tf.apply(var_files=var_files, **tf_vars)
 
 
 @given("the solution has been deployed", target_fixture="juju")

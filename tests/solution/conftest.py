@@ -14,14 +14,20 @@ pytest_plugins = [
 
 def pytest_addoption(parser):
     parser.addoption(
-        "--tls-mode",
+        "--internal-tls",
         default="",
-        choices=["", "tls_none", "tls_internal", "tls_full", "tls_external"],
-        help="Empty uses the Terraform wrapper's own default (tls_internal).",
+        choices=["", "true", "false"],
+        help="Empty uses the Terraform wrapper's own default (true).",
     )
     parser.addoption(
-        "--ingress-mode",
+        "--external-ca",
         default="",
-        choices=["", "ingress", "no_ingress"],
-        help="Empty uses the Terraform wrapper's own default (ingress on).",
+        choices=["", "true", "false"],
+        help="Empty uses the Terraform wrapper's own default (false).",
+    )
+    parser.addoption(
+        "--ingress",
+        default="",
+        choices=["", "true", "false"],
+        help="Empty uses the Terraform wrapper's own default (true).",
     )
