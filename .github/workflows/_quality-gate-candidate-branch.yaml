@@ -54,12 +54,30 @@ jobs:
         exclude:
           - external-ca: "true"
             ingress: "false"
-    runs-on: ubuntu-latest
+    # cos deploys the full stack (plus object storage), so it gets the bigger
+    # runner; cos-lite gets the same size as its Terraform integration test
+    # (see .github/workflows/terraform.yml).
+    runs-on: ${{ matrix.solution == 'cos' && 'self-hosted-linux-amd64-noble-xlarge' || 'self-hosted-linux-amd64-noble-large' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           ref: ${{ inputs.branch }}
+
+      # https://documentation.ubuntu.com/self-hosted-runners/en/latest/usage/faq/how-to-setup-canonical-k8s/
+      - name: Remove docker.io and containerd
+        if: ${{ runner.environment == 'self-hosted' }}
+        run: |
+          sudo apt-get remove -y docker.io containerd
+          sudo rm -rf /run/containerd
+
+      # Removing dockerd leaves `iptables -P FORWARD DROP` behind, which
+      # blackholes all pod egress. MicroK8s used to reset this; CK8s does not.
+      - name: Allow forwarded traffic
+        if: ${{ runner.environment == 'self-hosted' }}
+        run: |
+          sudo iptables -P FORWARD ACCEPT
+          sudo ip6tables -P FORWARD ACCEPT || true
 
       - name: Install dependencies
         run: |
