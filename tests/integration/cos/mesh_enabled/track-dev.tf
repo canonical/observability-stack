@@ -17,6 +17,15 @@ data "juju_model" "model" {
   owner = "admin"
 }
 
+variable "istio_model" {
+  type = string
+}
+
+data "juju_model" "istio-model" {
+  name  = var.istio_model
+  owner = "admin"
+}
+
 variable "s3_endpoint" {
   type = string
 }
@@ -29,8 +38,15 @@ variable "s3_access_key" {
   type = string
 }
 
+module "istio" {
+  source     = "git::https://github.com/canonical/service-mesh//charms/istio-k8s/terraform"
+  channel    = "dev/edge"
+  model_uuid = data.juju_model.istio-model.uuid
+}
+
 module "cos" {
   source       = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=feat/service-mesh"
+  depends_on   = [module.istio] # The control plane must exist before COS components join the mesh.
   model        = { uuid = data.juju_model.model.uuid }
   risk         = "edge"
   internal_tls = false
