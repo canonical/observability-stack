@@ -12,6 +12,16 @@ to recover it — this guide shows how to reconstruct Terraform state from a liv
 deployment.
 
 ```{warning}
+Importing existing infrastructure into Terraform carries risk, and applying
+afterwards on a production deployment carries even more. This applies to both
+the automated method and the manual `terraform import` commands below.
+
+Atelier is a helper tool that makes no claim that importing works end to end.
+Whatever method you choose, you must review `terraform plan` and confirm it
+makes only the changes you expect before you apply.
+```
+
+```{warning}
 Before importing, make sure the module version you plan to use is compatible with the
 charms you have deployed. See the [release policy](/reference/release-policy) for
 supported tracks.
