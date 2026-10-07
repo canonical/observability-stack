@@ -4,6 +4,7 @@
 
 import json
 import os
+import pytest
 import shlex
 import shutil
 import ssl
@@ -194,3 +195,9 @@ def get_tls_context(juju: jubilant.Juju, ca_name: str) -> Optional[ssl.SSLContex
         ctx = ssl.create_default_context()
         ctx.load_verify_locations(cert_file.name)
     return ctx
+
+
+def _skip_if_not_deployed(juju: jubilant.Juju, application: str) -> None:
+    """Skip the current scenario when `application` isn't part of this deployment."""
+    if application not in juju.status().apps:
+        pytest.skip(f"'{application}' is not deployed in this solution's current mode")
