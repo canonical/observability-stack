@@ -4,7 +4,8 @@ on:
   workflow_dispatch: {}
   push:
     branches:
-      - track/**
+      - track/2
+      - track/3.0
 
 permissions:
   # Required for all workflows
