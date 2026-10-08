@@ -47,7 +47,7 @@ The default storage allocation for charmed persistent volumes is 1GB. The follow
 | loki-worker-k8s             | write             | loki-persisted   | Ingester WAL for received logs before they are sent off to S3  | 100GB        | 3                  |
 | mimir-worker-k8s            | write             | data             | Ingester WAL for received metrics before they are sent off to S3  | 50GB      | 3                  |
 | mimir-worker-k8s            | backend           | data             | Store-gateway index-header sync and compactor block scratch space | 32GB      | 3                  |
-| tempo-worker                | ingester          | data             | WAL for received traces                                        | 100GB        | 3                  |
+| tempo-worker                | ingester          | wal              | WAL for received traces                                        | 100GB        | 3                  |
 | grafana-k8s                 | -                 | database         | Configurations, plugins, user data                             | 10GB         | 3                  |
 | alertmanager-k8s            | -                 | data             | `nflog` and silences snapshots                                 | 1GB          | 3                  |
 | opentelemetry-collector-k8s | -                 | persisted        | Self-monitoring, queued telemetry                              | 10GB         | 1                  |
