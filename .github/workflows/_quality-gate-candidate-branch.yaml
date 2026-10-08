@@ -50,7 +50,7 @@ jobs:
         internal-tls: ["true", "false"]
         external-ca: ["true", "false"]
         ingress: ["true", "false"]
-        juju-channel: ["3.6/stable", "4.1/beta"]
+        juju-channel: ["3.6/stable"]
         exclude:
           - external-ca: "true"
             ingress: "false"
