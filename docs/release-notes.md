@@ -21,6 +21,23 @@ COS `3.1` is a product version, not a single Charmhub track shared by every comp
 
 ## What's new
 
+### OpenTelemetry Collector in COS Lite
+
+*Applies to: `cos-lite`.*
+
+COS Lite 3.1 deploys an OpenTelemetry Collector (`otelcol`, from the [opentelemetry-collector-k8s](https://charmhub.io/opentelemetry-collector-k8s) charm), which COS already had. It becomes the single point where COS Lite collects its own telemetry, so that processing and relabeling apply uniformly, as they do in COS.
+
+Upgrading rewires the self-monitoring integrations: components now send their telemetry to the collector, and the collector forwards it to the backend.
+
+| Telemetry | 3.0                            | 3.1                                                         |
+| --------- | ------------------------------ | ----------------------------------------------------------- |
+| Metrics   | scraped directly by Prometheus | scraped by the collector, which remote-writes to Prometheus |
+| Logs      | sent directly to Loki          | sent to the collector, which forwards them to Loki          |
+
+Telemetry already stored in Prometheus and Loki is unaffected, and the collector starts collecting as soon as the upgrade completes.
+
+The collector is also wired into Grafana dashboards, internal TLS (`internal_tls`) and ingress (`ingress.opentelemetry_collector`), and it can be configured through the new [`opentelemetry_collector`](#terraform-inputs) input. Its default application name is `otelcol`, so if you deployed a standalone collector named `otelcol` in the same model, rename one of them before upgrading.
+
 ### Service mesh in COS (opt-in)
 
 *Applies to: `cos`.*
@@ -56,6 +73,7 @@ Everything else ships on the same track as 3.0; see [Component versions](#compon
 | **`mesh_enabled` added**   | `cos`   | New boolean (default `false`) to route COS traffic through Istio.                        |
 | **`istio_beacon` added**   | `cos`   | New structured object to configure the `istio-beacon` application.                       |
 | **`istio_ingress` added**  | `cos`   | New structured object to configure the `istio-ingress` application.                      |
+| **`opentelemetry_collector` added** | `cos-lite` | New structured object (default application name `otelcol`) to configure the OpenTelemetry Collector that 3.1 now deploys. |
 
 ### Terraform outputs
 
@@ -63,6 +81,18 @@ Everything else ships on the same track as 3.0; see [Component versions](#compon
 |----------------------------|---------|---------------------------------------------------------------------------------------------------------|
 | **`components.istio_beacon`**  | `cos`   | Added, `try(module.istio_beacon[0], null)`: the beacon is conditional, so this output may be `null`.    |
 | **`components.istio_ingress`** | `cos`   | Added, `try(module.istio_ingress[0], null)`: istio-ingress is conditional, so this output may be `null`. |
+
+### Offers
+
+| Change                           | Scope             | Details                                                                                                                       |
+| -------------------------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| **`otelcol-receive-otlp` added** | `cos`, `cos-lite` | New offer on the collector's `receive-otlp` endpoint, so applications in other models can push OTLP telemetry into the stack. |
+
+In COS, the existing `otelcol-receive-traces` offer is unchanged.
+
+## Removals
+
+- **`certificates` and `send-ca-cert` offers**: *Applies to: `cos`, `cos-lite`, with `internal_tls = true`.* In 3.0 the `self-signed-certificates` application published both of its endpoints as Juju offers, for example `admin/cos-lite.certificates`. The charm module that 3.1 uses only creates offers that you explicitly ask for, and the COS modules do not, so upgrading removes these two offers. If you consume them from another model, plan for their removal before you upgrade.
 
 ## Deprecations
 
