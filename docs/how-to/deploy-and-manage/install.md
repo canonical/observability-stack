@@ -85,7 +85,7 @@ Create a `main.tf` file like this one:
 
 ```hcl
 module "cos" {
-  source = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=tf-cos-3.0.n"
+  source = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=tf-cos-3.1.n"
   risk         = "stable"
   s3_endpoint   = "http://IP_ADDRESS:PORT"
   s3_secret_key = "REPLACE_ME"
@@ -93,7 +93,7 @@ module "cos" {
 }
 ```
 
-where `.n` in `tf-cos-3.0.n` is the latest available patch version in the [COS tags](https://github.com/canonical/observability-stack/tags) list.
+where `.n` in `tf-cos-3.1.n` is the latest available patch version in the [COS tags](https://github.com/canonical/observability-stack/tags) list.
 
 ## Deploy COS Alerter
 
