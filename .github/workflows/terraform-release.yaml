@@ -6,6 +6,7 @@ on:
     branches:
       - track/2
       - track/3.0
+      - track/3.1
 
 permissions:
   # Required for all workflows
