@@ -32,7 +32,7 @@ Desired end state for each area of a cycle release. Please mark tasks as they ar
 
 ## 4. Documentation
 
-Documentation lives in `docs/` and is versioned by branch: `main` is the staging area and the "latest" docs, and each `track/X.Y` branch publishes its own version (`documentation.ubuntu.com/observability/track-X.Y/`). Read the Docs keeps a release track as the default version, so `latest` is a preview of the release in progress. Author the updates on `main`; the `track/X.Y` branch is cut from `main` in step 5 and carries them.
+Documentation lives in `docs/` and is versioned by branch: `main` is the "latest" docs, and each `track/X.Y` branch publishes its own version (`documentation.ubuntu.com/observability/track-X.Y/`). Read the Docs keeps a release track as the default version. Update the pages below for `X.Y`.
 
 ### Pages
 
@@ -45,11 +45,10 @@ Documentation lives in `docs/` and is versioned by branch: `main` is the staging
   - [ ] Points to the previous release's upgrade guide on its own track docs for older migration paths, instead of repeating them.
   - [ ] Has its quick-links list at the top updated.
 - [ ] Every tutorial in `docs/tutorial/` references the `X.Y` Terraform module tags and charm tracks.
-- [ ] `main` contains all the documentation updates above, so the "latest" docs match the new release.
 
 ## 5. Product repository (`observability-stack`)
 
-- [ ] A `track/X.Y` branch has been created, cut from `main` (it carries the documentation updates from step 4).
+- [ ] A `track/X.Y` branch has been created, cut from `main`.
 - [ ] On the `track/X.Y` branch, every product module pins each charm to the specific Charmhub track it ships on in this release, instead of `dev`, defaulting to the `stable` risk.
 - [ ] The product has been successfully tested via Solutions QA.
 - [ ] Terraform state migrations (`moved` blocks) cover every resource change since the previous release, so upgrades in place work.
