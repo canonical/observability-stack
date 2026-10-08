@@ -83,6 +83,9 @@ module "cos" {
   # Single unit: the default of 3 requires an external PostgreSQL offer
   # (see terraform/cos/variables.tf) that this smoke test doesn't stand up.
   grafana = { units = 1 }
+
+  # Tests usually run on a single host, so the HA charms won't schedule
+  anti_affinity = false
 }
 
 # Looked up by name rather than passed as a module output, to avoid a
