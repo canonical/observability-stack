@@ -30,7 +30,20 @@ Desired end state for each area of a cycle release. Please mark tasks as they ar
 - [ ] Every in-scope charm's `track/<version>` branch has a generated `CHANGELOG.md` describing the changes since the previous track.
 - [ ] Every in-scope charm's integration tests on the track branch target the new track and risk rather than `dev`/`edge`.
 
-## 4. Documentation
+## 4. Product repository (`observability-stack`)
+
+- [ ] A `track/X.Y` branch has been created, cut from `main`.
+- [ ] On the `track/X.Y` branch, every product module pins each charm to the specific Charmhub track it ships on in this release, instead of `dev`, defaulting to the `stable` risk.
+- [ ] The product has been successfully tested via Solutions QA.
+- [ ] Terraform state migrations (`moved` blocks) cover every resource change since the previous release, so upgrades in place work.
+- [ ] Integration tests cover fresh install and upgrade from the previous supported release(s) to this one, across every TLS mode (none, internal, external, full) and the supported Juju versions, for both COS and COS Lite.
+
+## 5. Product release
+
+- [ ] The `track/X.Y` branch has been added to the `terraform-release.yaml` workflow.
+- [ ] The Terraform release workflow ran on the `track/X.Y` branch and created the product tags `tf-cos-X.Y.0` and `tf-cos-lite-X.Y.0`.
+
+## 6. Documentation
 
 Documentation lives in `docs/` and is versioned by branch: `main` is the "latest" docs, and each `track/X.Y` branch publishes its own version (`documentation.ubuntu.com/observability/track-X.Y/`). Read the Docs keeps a release track as the default version. Update the pages below for `X.Y`.
 
@@ -45,20 +58,7 @@ Documentation lives in `docs/` and is versioned by branch: `main` is the "latest
   - [ ] Points to the previous release's upgrade guide on its own track docs for older migration paths, instead of repeating them.
   - [ ] Has its quick-links list at the top updated.
 - [ ] Every tutorial in `docs/tutorial/` references the `X.Y` Terraform module tags and charm tracks.
-
-## 5. Product repository (`observability-stack`)
-
-- [ ] A `track/X.Y` branch has been created, cut from `main`.
-- [ ] On the `track/X.Y` branch, every product module pins each charm to the specific Charmhub track it ships on in this release, instead of `dev`, defaulting to the `stable` risk.
-- [ ] The product has been successfully tested via Solutions QA.
-- [ ] Terraform state migrations (`moved` blocks) cover every resource change since the previous release, so upgrades in place work.
-- [ ] Integration tests cover fresh install and upgrade from the previous supported release(s) to this one, across every TLS mode (none, internal, external, full) and the supported Juju versions, for both COS and COS Lite.
 - [ ] The documentation site (Read the Docs) has a version for `track/X.Y`, and it shows in the version switcher. @lucabello (or someone that has Read the Docs permissions)
-
-## 6. Product release
-
-- [ ] The `track/X.Y` branch has been added to the `terraform-release.yaml` workflow.
-- [ ] The Terraform release workflow ran on the `track/X.Y` branch and created the product tags `tf-cos-X.Y.0` and `tf-cos-lite-X.Y.0`.
 
 ## 7. Announcement and close-out
 
