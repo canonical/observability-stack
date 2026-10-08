@@ -45,24 +45,25 @@ This page describes the charms, rocks, and snaps that make up the current **Obse
 
 The following table maps each main COS or COS Lite charm to its corresponding Terraform input variable name in the [`cos`](https://github.com/canonical/observability-stack/tree/main/terraform/cos) or [`cos-lite`](https://github.com/canonical/observability-stack/tree/main/terraform/cos-lite) module. The `Scope` column indicates which module the variable belongs to.
 
-| Charmhub name                                                                    | Terraform variable     | Scope             |
-| -------------------------------------------------------------------------------- | ---------------------- | ----------------- |
-| [alertmanager-k8s](https://charmhub.io/alertmanager-k8s)                         | `alertmanager`         | `cos`, `cos-lite` |
-| [catalogue-k8s](https://charmhub.io/catalogue-k8s)                               | `catalogue`            | `cos`, `cos-lite` |
-| [grafana-k8s](https://charmhub.io/grafana-k8s)                                   | `grafana`              | `cos`, `cos-lite` |
-| [istio-beacon-k8s](https://charmhub.io/istio-beacon-k8s)                         | `istio_beacon`         | `cos`             |
-| [istio-ingress-k8s](https://charmhub.io/istio-ingress-k8s)                       | `istio_ingress`        | `cos`             |
-| [loki-k8s](https://charmhub.io/loki-k8s)                                         | `loki`                 | `cos-lite`        |
-| [loki-coordinator-k8s](https://charmhub.io/loki-coordinator-k8s)                 | `loki_coordinator`     | `cos`             |
-| [loki-worker-k8s](https://charmhub.io/loki-worker-k8s)                           | `loki_worker`          | `cos`             |
-| [mimir-coordinator-k8s](https://charmhub.io/mimir-coordinator-k8s)               | `mimir_coordinator`    | `cos`             |
-| [mimir-worker-k8s](https://charmhub.io/mimir-worker-k8s)                         | `mimir_worker`         | `cos`             |
-| [prometheus-k8s](https://charmhub.io/prometheus-k8s)                             | `prometheus`           | `cos-lite`        |
-| [s3-integrator](https://charmhub.io/s3-integrator)                               | `s3_integrator`        | `cos`             |
-| [self-signed-certificates](https://charmhub.io/self-signed-certificates)         | `ssc`                  | `cos`, `cos-lite` |
-| [tempo-coordinator-k8s](https://charmhub.io/tempo-coordinator-k8s)               | `tempo_coordinator`    | `cos`             |
-| [tempo-worker-k8s](https://charmhub.io/tempo-worker-k8s)                         | `tempo_worker`         | `cos`             |
-| [traefik-k8s](https://charmhub.io/traefik-k8s)                                   | `traefik`              | `cos`, `cos-lite` |
+| Charmhub name                                                                    | Terraform variable        | Scope             |
+| -------------------------------------------------------------------------------- | ------------------------- | ----------------- |
+| [alertmanager-k8s](https://charmhub.io/alertmanager-k8s)                         | `alertmanager`            | `cos`, `cos-lite` |
+| [catalogue-k8s](https://charmhub.io/catalogue-k8s)                               | `catalogue`               | `cos`, `cos-lite` |
+| [grafana-k8s](https://charmhub.io/grafana-k8s)                                   | `grafana`                 | `cos`, `cos-lite` |
+| [istio-beacon-k8s](https://charmhub.io/istio-beacon-k8s)                         | `istio_beacon`            | `cos`             |
+| [istio-ingress-k8s](https://charmhub.io/istio-ingress-k8s)                       | `istio_ingress`           | `cos`             |
+| [loki-k8s](https://charmhub.io/loki-k8s)                                         | `loki`                    | `cos-lite`        |
+| [loki-coordinator-k8s](https://charmhub.io/loki-coordinator-k8s)                 | `loki_coordinator`        | `cos`             |
+| [loki-worker-k8s](https://charmhub.io/loki-worker-k8s)                           | `loki_worker`             | `cos`             |
+| [mimir-coordinator-k8s](https://charmhub.io/mimir-coordinator-k8s)               | `mimir_coordinator`       | `cos`             |
+| [mimir-worker-k8s](https://charmhub.io/mimir-worker-k8s)                         | `mimir_worker`            | `cos`             |
+| [opentelemetry-collector-k8s](https://charmhub.io/opentelemetry-collector-k8s)   | `opentelemetry_collector` | `cos`, `cos-lite` |
+| [prometheus-k8s](https://charmhub.io/prometheus-k8s)                             | `prometheus`              | `cos-lite`        |
+| [s3-integrator](https://charmhub.io/s3-integrator)                               | `s3_integrator`           | `cos`             |
+| [self-signed-certificates](https://charmhub.io/self-signed-certificates)         | `ssc`                     | `cos`, `cos-lite` |
+| [tempo-coordinator-k8s](https://charmhub.io/tempo-coordinator-k8s)               | `tempo_coordinator`       | `cos`             |
+| [tempo-worker-k8s](https://charmhub.io/tempo-worker-k8s)                         | `tempo_worker`            | `cos`             |
+| [traefik-k8s](https://charmhub.io/traefik-k8s)                                   | `traefik`                 | `cos`, `cos-lite` |
 
 ## Peripheral charms
 
