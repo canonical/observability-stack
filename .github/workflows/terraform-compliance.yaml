@@ -1,0 +1,21 @@
+name: Terraform compliance
+
+on:
+  pull_request:
+    paths:
+      - "terraform/**"
+      - ".github/workflows/terraform-compliance.yaml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  compliance:
+    name: Terraform module compliance
+    # TODO: switch to @v2 once canonical/observability#<PR> is released.
+    uses: canonical/observability/.github/workflows/terraform-compliance.yaml@feat/terraform-compliance
+    with:
+      # aws-infra provisions the AWS VPC/EKS infrastructure (it is not a charm),
+      # and seaweedfs is versioned separately; exclude both from compliance.
+      exclude-modules: terraform/aws-infra terraform/seaweedfs
