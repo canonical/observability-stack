@@ -85,15 +85,15 @@ Create a `main.tf` file like this one:
 
 ```hcl
 module "cos" {
-  source = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=tf-cos-3.0.n"
-  risk         = "stable"
+  source = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=main"
+  risk         = "edge"
   s3_endpoint   = "http://IP_ADDRESS:PORT"
   s3_secret_key = "REPLACE_ME"
   s3_access_key = "REPLACE_ME"
 }
 ```
 
-where `.n` in `tf-cos-3.0.n` is the latest available patch version in the [COS tags](https://github.com/canonical/observability-stack/tags) list.
+This uses the `main` development branch. For a supported deployment, pin a release tag from the [COS tags](https://github.com/canonical/observability-stack/tags) list instead.
 
 ## Deploy COS Alerter
 
