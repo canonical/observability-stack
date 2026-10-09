@@ -8,7 +8,7 @@ import ssl
 import subprocess
 import time
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Sequence
 from urllib.request import urlopen
 
 import jubilant
@@ -27,33 +27,51 @@ xfail_otelcol_logs = pytest.mark.xfail(
 
 
 class TfDirManager:
-    def __init__(self, base_tmpdir):
-        self.base: str = str(base_tmpdir)
-        self.dir: str = ""
+    # Duplicated in tests/solution/helpers.py: the two pytest roots don't
+    # share a package, and this is small enough not to be worth a shared
+    # module. Keep both copies in sync by hand.
+    def __init__(self, base_tmpdir=None, dir: Optional[str] = None):
+        self.base: str = str(base_tmpdir) if base_tmpdir is not None else ""
+        self.dir: str = dir or ""
 
     @property
     def tf_cmd(self):
         return f"terraform -chdir={self.dir}"
 
-    def init(self, tf_file: str):
-        """Initialize a Terraform module in a subdirectory."""
-        self.dir = os.path.join(self.base, "terraform")
-        os.makedirs(self.dir, exist_ok=True)
-        shutil.copy(tf_file, os.path.join(self.dir, "main.tf"))
+    def init(self, tf_file: Optional[str] = None):
+        """Initialize a Terraform module, copying `tf_file` in if given."""
+        if tf_file is not None:
+            self.dir = os.path.join(self.base, "terraform")
+            os.makedirs(self.dir, exist_ok=True)
+            shutil.copy(tf_file, os.path.join(self.dir, "main.tf"))
         subprocess.run(shlex.split(f"{self.tf_cmd} init -upgrade"), check=True)
 
     @staticmethod
-    def _args_str(target: Optional[str] = None, **kwargs) -> str:
+    def _args_str(
+        target: Optional[str] = None,
+        var_files: Sequence[str] = (),
+        **kwargs,
+    ) -> str:
         target_arg = f"-target module.{target}" if target else ""
+        var_file_args = " ".join(f"-var-file {f}" for f in var_files)
         var_args = " ".join(f"-var {k}={v}" for k, v in kwargs.items())
-        return "-auto-approve " + f"{target_arg} " + var_args
+        return f"-auto-approve {target_arg} {var_file_args} {var_args}"
 
-    def apply(self, target: Optional[str] = None, **kwargs):
-        cmd_str = f"{self.tf_cmd} apply " + self._args_str(target, **kwargs)
+    def apply(
+        self,
+        target: Optional[str] = None,
+        var_files: Sequence[str] = (),
+        **kwargs,
+    ):
+        cmd_str = f"{self.tf_cmd} apply " + self._args_str(
+            target, var_files, **kwargs
+        )
         subprocess.run(shlex.split(cmd_str), check=True)
 
-    def destroy(self, **kwargs):
-        cmd_str = f"{self.tf_cmd} destroy " + self._args_str(None, **kwargs)
+    def destroy(self, var_files: Sequence[str] = (), **kwargs):
+        cmd_str = f"{self.tf_cmd} destroy " + self._args_str(
+            None, var_files, **kwargs
+        )
         subprocess.run(shlex.split(cmd_str), check=True)
 
 

@@ -19,7 +19,7 @@ on:
         required: true
         type: string
     secrets:
-      CHARMCRAFT_AUTH:
+      CHARMHUB_TOKEN:
         required: true
 
 jobs:
@@ -41,34 +41,67 @@ jobs:
           echo "solutions=$solutions" >> "$GITHUB_OUTPUT"
 
   test-solutions:
-    name: Test ${{ matrix.solution }}
-    needs: [discover-solutions]
+    name: Test ${{ matrix.solution }} (internal-tls=${{ matrix.internal-tls }}, external-ca=${{ matrix.external-ca }}, ingress=${{ matrix.ingress }}, juju=${{ matrix.juju-channel }})
+    # TODO: revert to the full matrix (driven by discover-solutions) once the
+    # "model never settles" blocker is root-caused -- see the dedicated
+    # section in CI_FAILURES_modes.md. Narrowed to a single `cos` combo for
+    # now: just enough to reproduce the blocker with the new debug dumping
+    # added to wait_for_active_idle(), without burning 6+ `cos` x mode jobs
+    # (each up to the 6h ceiling) per run. `internal-tls=false,
+    # external-ca=false, ingress=false, juju=3.6/stable` is picked because
+    # it's a mode already confirmed clean end-to-end on `cos-lite` (see the
+    # "Clean runs" section), so `cos` failing here can't be blamed on a
+    # TLS/ingress-specific wrinkle.
     strategy:
       fail-fast: false
       matrix:
-        solution: ${{ fromJson(needs.discover-solutions.outputs.solutions) }}
-    runs-on: ubuntu-latest
+        solution: ["cos"]
+        internal-tls: ["false"]
+        external-ca: ["false"]
+        ingress: ["false"]
+        juju-channel: ["3.6/stable"]
+    # cos deploys the full stack (plus object storage), so it gets the bigger
+    # runner; cos-lite gets the same size as its Terraform integration test
+    # (see .github/workflows/terraform.yml).
+    runs-on: ${{ matrix.solution == 'cos' && 'self-hosted-linux-amd64-noble-xlarge' || 'self-hosted-linux-amd64-noble-large' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           ref: ${{ inputs.branch }}
 
+      # https://documentation.ubuntu.com/self-hosted-runners/en/latest/usage/faq/how-to-setup-canonical-k8s/
+      - name: Remove docker.io and containerd
+        if: ${{ runner.environment == 'self-hosted' }}
+        run: |
+          sudo apt-get remove -y docker.io containerd
+          sudo rm -rf /run/containerd
+
+      # Removing dockerd leaves `iptables -P FORWARD DROP` behind, which
+      # blackholes all pod egress. MicroK8s used to reset this; CK8s does not.
+      - name: Allow forwarded traffic
+        if: ${{ runner.environment == 'self-hosted' }}
+        run: |
+          sudo iptables -P FORWARD ACCEPT
+          sudo ip6tables -P FORWARD ACCEPT || true
+
       - name: Install dependencies
         run: |
           sudo snap install concierge --classic
-          sudo concierge prepare -p k8s --extra-snaps just,astral-uv,terraform
+          sudo concierge prepare -p k8s --juju-channel ${{ matrix.juju-channel }} --extra-snaps just,astral-uv,terraform
           # Configure Cilium for Istio ambient service mesh compatibility
           sudo k8s kubectl patch configmap cilium-config -n kube-system --type merge -p '{"data":{"bpf-lb-sock-hostns-only":"true"}}'
           sudo k8s kubectl rollout restart daemonset/cilium -n kube-system
           sudo k8s kubectl rollout status daemonset/cilium -n kube-system --timeout=90s
 
       - name: Run solution tests
-        run: just solution test ${{ matrix.solution }}
+        run: just solution test ${{ matrix.solution }} ${{ matrix.internal-tls }} ${{ matrix.external-ca }} ${{ matrix.ingress }}
 
   promote:
     name: Promote ${{ matrix.solution }}
     needs: [discover-solutions, test-solutions]
+    # TODO: remove before merging -- never auto-promote from a pull_request-triggered run
+    if: github.event_name != 'pull_request'
     strategy:
       matrix:
         solution: ${{ fromJson(needs.discover-solutions.outputs.solutions) }}
@@ -87,5 +120,5 @@ jobs:
 
       - name: Promote
         env:
-          CHARMCRAFT_AUTH: ${{ secrets.CHARMCRAFT_AUTH }}
+          CHARMCRAFT_AUTH: ${{ secrets.CHARMHUB_TOKEN }}
         run: just solution promote ${{ matrix.solution }} ${{ inputs.branch }}
