@@ -35,7 +35,7 @@ For details on the resulting backend errors, see [`err-mimir-sample-out-of-order
 
 ## Keep the batch size low for heterogeneous metric sources
 
-When you configure large batch sizes (thousands of items), a single malformed or unparseable metric name can cause the backend to reject the entire batch. Examples include names with non-ASCII characters, such as the microsecond symbol `µs`. For example, Mimir rejects metrics with non-ASCII characters.
+When you configure large batch sizes (thousands of items), a single malformed or unparseable metric name can cause the backend to reject the entire batch. Mimir, for example, rejects metrics with non-ASCII characters in their names, such as the microsecond symbol `µs`.
 
 This leads to silent data loss: every record in the batch is dropped on each export attempt.
 
