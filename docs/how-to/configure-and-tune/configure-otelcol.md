@@ -1,22 +1,48 @@
+---
+myst:
+  html_meta:
+    description: "Configure the OpenTelemetry Collector to avoid dropped telemetry."
+---
 
-## Queue size
-Maintain exporter queue size (the `queue_size` config option) no less than the default value (1000).
+# How to configure OpenTelemetry Collector for production
 
-## Tiered otelcols
-Chaining queues across multiple collector layers accumulates latency, so buffered data held across
-chained queues risks exceeding timestamp validity windows, triggering "timestamp too old" errors
-upon eventual delivery.
+The exporter queue and the batch processor control how the charmed OpenTelemetry Collector (otelcol) buffers telemetry before sending it to a backend. Poorly chosen values can cause delayed delivery, rejected samples, or silent data loss. This guide describes the values to avoid and how to tune them.
 
-In tiered otelcols setups, avoid lowering queue sizes drastically (e.g., down to 100) in downstream otelcols,
-to avoid queues from backing up along the entire critical chain.
+## Keep the exporter queue size at or above the default
 
-See the [../validate-and-troubleshoot/troubleshootin.md](troubleshooting guide) for more details.
+Keep the exporter queue size (the `queue_size` option of `sending_queue`) at or above the default value of 1000.
 
-## Batch size
-When large batch sizes (thousands of items) are configured, a single malformed or unparseable metric name
-inside the batch (e.g. non-ascii microsecond symbols `µs` or utf8 characters) may cause downstream backends
-to reject the entire batch. For example, Mimir is configure to reject metrics with non-ascii characters.
-This would lead to silent data loss, dropping the entire batch size of records per export attempt.
+A smaller queue fills up faster during a backend slowdown or outage, which results in `sending queue is full` errors and dropped telemetry. See [`sending queue is full`](../validate-and-troubleshoot/troubleshooting.md#sending-queue-is-full) for diagnosis steps.
 
-Disable or keep batch processing size low when ingesting metrics from heterogeneous sources.
+```yaml
+exporters:
+  loki/send-loki-logs/0:
+    sending_queue:
+      enabled: true
+      queue_size: 1000
+```
 
+## Avoid drastic changes in queues in tiered collectors
+
+In a [tiered OpenTelemetry Collector topology](../integrate/tiered-otelcols.md), don't drastically lower the queue size (for example, down to 100) in downstream collectors.
+A small queue in a downstream collector backs up and propagates the backpressure along the entire chain.
+
+## Avoid over-chaining otelcols
+
+Each collector layer has its own queue, and chaining queues accumulates latency. Data buffered across several queues can exceed the time window that the backend accepts for sample timestamps. When it's finally delivered, the backend rejects it with a "timestamp too old" error.
+
+For details on the resulting backend errors, see [`err-mimir-sample-out-of-order` and `err-mimir-sample-timestamp-too-old`](../validate-and-troubleshoot/troubleshooting.md).
+
+## Keep the batch size low for heterogeneous metric sources
+
+When you configure large batch sizes (thousands of items), a single malformed or unparseable metric name can cause the backend to reject the entire batch. Examples include names with non-ASCII characters, such as the microsecond symbol `µs`. For example, Mimir rejects metrics with non-ASCII characters.
+
+This leads to silent data loss: every record in the batch is dropped on each export attempt.
+
+When you ingest metrics from heterogeneous sources, either disable the batch processor or keep its batch size low. Where possible, also sanitize metric names at the source. See [`dropping items`](../validate-and-troubleshoot/troubleshooting.md#dropping-items) for diagnosis steps.
+
+## Related topics
+
+- [How to tier OpenTelemetry Collector with different pipelines per data stream](../integrate/tiered-otelcols.md)
+- [How to configure memory limits for the OpenTelemetry Collector](configure-memory-limits-otelcol.md)
+- [Troubleshooting](../validate-and-troubleshoot/troubleshooting.md)
