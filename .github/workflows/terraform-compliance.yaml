@@ -19,3 +19,4 @@ jobs:
       # aws-infra provisions the AWS VPC/EKS infrastructure (it is not a charm),
       # and seaweedfs is versioned separately; exclude both from compliance.
       exclude-modules: terraform/aws-infra terraform/seaweedfs
+      fail-on-violations: true
