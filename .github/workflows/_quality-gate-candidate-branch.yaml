@@ -42,18 +42,24 @@ jobs:
 
   test-solutions:
     name: Test ${{ matrix.solution }} (internal-tls=${{ matrix.internal-tls }}, external-ca=${{ matrix.external-ca }}, ingress=${{ matrix.ingress }}, juju=${{ matrix.juju-channel }})
-    needs: [discover-solutions]
+    # TODO: revert to the full matrix (driven by discover-solutions) once the
+    # "model never settles" blocker is root-caused -- see the dedicated
+    # section in CI_FAILURES_modes.md. Narrowed to a single `cos` combo for
+    # now: just enough to reproduce the blocker with the new debug dumping
+    # added to wait_for_active_idle(), without burning 6+ `cos` x mode jobs
+    # (each up to the 6h ceiling) per run. `internal-tls=false,
+    # external-ca=false, ingress=false, juju=3.6/stable` is picked because
+    # it's a mode already confirmed clean end-to-end on `cos-lite` (see the
+    # "Clean runs" section), so `cos` failing here can't be blamed on a
+    # TLS/ingress-specific wrinkle.
     strategy:
       fail-fast: false
       matrix:
-        solution: ${{ fromJson(needs.discover-solutions.outputs.solutions) }}
-        internal-tls: ["true", "false"]
-        external-ca: ["true", "false"]
-        ingress: ["true", "false"]
+        solution: ["cos"]
+        internal-tls: ["false"]
+        external-ca: ["false"]
+        ingress: ["false"]
         juju-channel: ["3.6/stable"]
-        exclude:
-          - external-ca: "true"
-            ingress: "false"
     # cos deploys the full stack (plus object storage), so it gets the bigger
     # runner; cos-lite gets the same size as its Terraform integration test
     # (see .github/workflows/terraform.yml).

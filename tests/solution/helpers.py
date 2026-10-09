@@ -10,6 +10,7 @@ import shutil
 import ssl
 import subprocess
 import tempfile
+import threading
 import time
 from pathlib import Path
 from typing import Any, Callable, Dict, Optional, Sequence
@@ -125,17 +126,83 @@ def terraform_output(terraform_dir: Path) -> Dict[str, Any]:
     return json.loads(result.stdout)
 
 
-def wait_for_active_idle(juju: jubilant.Juju, timeout: int = 60 * 45):
-    """Wait for every application to be active, then every agent to be idle."""
-    print(f"\nwaiting for the model ({juju.model}) to settle ...\n")
-    juju.wait(jubilant.all_active, delay=10, timeout=timeout)
-    print("\nwaiting for agents idle ...\n")
-    juju.wait(
+def wait_for_active_idle(
+    juju: jubilant.Juju, timeout: int = 60 * 45, status_interval: int = 60
+):
+    """Wait for every application to be active, then every agent to be idle.
+
+    This 45-minute wait can span most of a CI job, and GitHub's job-level
+    timeout cancels the whole job (rather than letting pytest time out and
+    report a traceback) if it's ever reached -- which previously left zero
+    debugging information behind ("model never settles", CI_FAILURES_modes.md).
+    To make sure a cancelled job still has something to diagnose, this dumps
+    `juju status` and recent `debug-log` output to stdout every
+    `status_interval` seconds while waiting, instead of only noting the
+    final status on a `TimeoutError` nothing ever gets to print.
+    """
+    print(f"\nwaiting for the model ({juju.model}) to settle ...\n", flush=True)
+    _wait_dumping_status(juju, jubilant.all_active, "active", timeout, status_interval)
+    print("\nwaiting for agents idle ...\n", flush=True)
+    _wait_dumping_status(
+        juju,
         jubilant.all_agents_idle,
-        delay=10,
-        timeout=timeout,
+        "idle",
+        timeout,
+        status_interval,
         error=jubilant.any_error,
     )
+
+
+def _wait_dumping_status(
+    juju: jubilant.Juju,
+    ready: Callable[[jubilant.Status], bool],
+    label: str,
+    timeout: int,
+    status_interval: int,
+    **wait_kwargs,
+) -> None:
+    """Like `juju.wait()`, but dumps status periodically instead of silently.
+
+    A single call to `juju.wait()` only requires `successes` *consecutive*
+    passes of `ready`, so chunking it into repeated shorter-timeout calls
+    (tried first, see git history) resets that streak every chunk and can
+    spin forever even once the model is genuinely settled -- never do that
+    again. Instead, run the *real* `juju.wait()` call once, with the full
+    `timeout`, and dump `juju status`/`debug-log` from a background thread
+    every `status_interval` seconds while it runs, so CI's *live* log has
+    something to show even if the job gets cancelled before `juju.wait()`
+    itself ever gets a chance to raise (and print) its `TimeoutError`.
+    """
+    stop = threading.Event()
+
+    def _periodic_dump():
+        while not stop.wait(status_interval):
+            _dump_status(juju, label)
+
+    dumper = threading.Thread(target=_periodic_dump, daemon=True)
+    dumper.start()
+    try:
+        juju.wait(ready, delay=10, timeout=timeout, **wait_kwargs)
+    except TimeoutError:
+        _dump_status(juju, label)
+        raise
+    finally:
+        stop.set()
+        dumper.join(timeout=5)
+
+
+def _dump_status(juju: jubilant.Juju, label: str) -> None:
+    """Print `juju status` and recent `debug-log` for live CI debugging."""
+    print(f"\n--- still waiting for all-{label} (model={juju.model}) ---", flush=True)
+    try:
+        print(juju.cli("status", "--relations"), flush=True)
+    except subprocess.CalledProcessError as exc:
+        print(f"(juju status failed: {exc})", flush=True)
+    try:
+        print(juju.debug_log(limit=200), flush=True)
+    except subprocess.CalledProcessError as exc:
+        print(f"(juju debug-log failed: {exc})", flush=True)
+    print(f"--- end status dump (still waiting for all-{label}) ---\n", flush=True)
 
 
 def leader_unit(juju: jubilant.Juju, app: str) -> str:
