@@ -107,7 +107,7 @@ jobs:
     name: COS Terraform integration
     needs: [test-unit, changes]
     if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.cos == 'true' }}
-    uses: canonical/observability-stack/.github/workflows/_integration.yml@main
+    uses: canonical/observability-stack/.github/workflows/_integration.yml@feat/service-mesh
     with:
       product: cos
       runner: self-hosted-linux-amd64-noble-xlarge
