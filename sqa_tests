@@ -1,4 +1,86 @@
-#!/bin/bash
-set -eu
+#!/usr/bin/env bash
+# SolQA entry point: run the solution tests against the deployed "cos" model.
+# Output: test_results.xml (JUnit), which SolQA keeps with the run.
+# Exit code: pytest's, so SolQA's "Run SQA tests" step fails if any test fails.
+# Usage: ./sqa_tests [cos|cos-lite] [pytest args]; defaults to $PRODUCT.
+set -euo pipefail
 
-./tests/sqa/model-active
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
+rm -f test_results.xml
+
+MODEL="cos"
+# SolQA's runners have Python 3.10; the tests need 3.12.
+UV_FLAGS=(--frozen --isolated --python 3.12)
+
+solution="${1:-${PRODUCT:-}}"
+if [ $# -gt 0 ]; then shift; fi
+case "$solution" in
+    cos | cos-lite) ;;
+    *)
+        echo "ERROR: unknown solution '$solution'; pass cos or cos-lite, or set PRODUCT" >&2
+        exit 1
+        ;;
+esac
+
+if ! command -v uv &> /dev/null; then
+    echo "Installing astral-uv (snap, provides 'uv')..."
+    sudo snap install astral-uv --classic
+fi
+
+# TEMPORARY: SolQA's runner can't reach the pods directly
+# (https://github.com/canonical/terragrunt-deployment-pipelines/issues/235).
+# If so, route the pod addresses through one of the Kubernetes machines with
+# sshuttle, so the tests reach them unchanged. Remove once #235 is fixed.
+json() { python3 -c "import json, sys; d = json.load(sys.stdin); $1"; }
+reachable() {
+    curl -sk -m 10 -o /dev/null "https://$1:3000/api/health" \
+        || curl -s -m 10 -o /dev/null "http://$1:3000/api/health"
+}
+grafana() {
+    juju status -m "$MODEL" --format json \
+        | json 'print(next(iter(d["applications"]["grafana"]["units"].values()))["address"])'
+}
+# Right after SolQA's deploy, pods are still being replaced and their
+# addresses change, so first wait until everything is active and idle, the
+# same way the tests do (`juju wait-for` missed a settled model on SolQA).
+if ! (cd tests/solution && MODEL="$MODEL" uv run "${UV_FLAGS[@]}" python -c \
+    'import os, jubilant; from helpers import wait_for_active_idle; wait_for_active_idle(jubilant.Juju(model=os.environ["MODEL"]))'); then
+    echo "ERROR: $MODEL didn't become active and idle" >&2
+    juju status -m "$MODEL" >&2
+    exit 1
+fi
+if ! reachable "$(grafana)"; then
+    k8s_model=""
+    for model in $(juju models --format json | json 'print(" ".join(m["short-name"] for m in d["models"]))'); do
+        if juju status -m "$model" --format json \
+            | json 'sys.exit(0 if any(a.get("charm") == "k8s" for a in d.get("applications", {}).values()) else 1)'; then
+            k8s_model="$model"
+            break
+        fi
+    done
+    if [ -z "$k8s_model" ]; then
+        echo "ERROR: can't reach the pods, and found no Kubernetes model to tunnel through" >&2
+        exit 1
+    fi
+    machine=$(juju status -m "$k8s_model" --format json | json 'print(sorted(d["machines"])[0])')
+    pod_range="$(cut -d. -f1-2 <<< "$(grafana)").0.0/16"
+    echo "Pods aren't reachable; routing $pod_range through machine $machine of model $k8s_model"
+    sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -q sshuttle > /dev/null
+    sshuttle --ssh-cmd "juju ssh -m $k8s_model" -r "$machine" "$pod_range" > sshuttle.log 2>&1 &
+    tunnel=$!
+    trap 'kill "$tunnel" 2> /dev/null || true' EXIT
+    for _ in $(seq 1 20); do
+        sleep 3
+        if reachable "$(grafana)"; then break; fi
+    done
+    if ! reachable "$(grafana)"; then
+        echo "ERROR: the pods are still unreachable through sshuttle:" >&2
+        cat sshuttle.log >&2
+        exit 1
+    fi
+fi
+
+cd tests/solution
+SOLUTION_MODEL="$MODEL" uv run "${UV_FLAGS[@]}" pytest -vv -ra "$solution" \
+    --junitxml="$SCRIPT_DIR/test_results.xml" "$@"
