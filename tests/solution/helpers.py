@@ -196,7 +196,9 @@ def _wait_dumping_status(
 def _dump_status(juju: jubilant.Juju, label: str) -> None:
     """Print `juju status` and recent `debug-log` for live CI debugging."""
     print(f"\n--- still waiting for all-{label} (model={juju.model}) ---", flush=True)
+    status = None
     try:
+        status = juju.status()
         print(juju.cli("status", "--relations"), flush=True)
     except subprocess.CalledProcessError as exc:
         print(f"(juju status failed: {exc})", flush=True)
@@ -204,7 +206,26 @@ def _dump_status(juju: jubilant.Juju, label: str) -> None:
         print(juju.debug_log(limit=200), flush=True)
     except subprocess.CalledProcessError as exc:
         print(f"(juju debug-log failed: {exc})", flush=True)
+    # Pull logs just for the errored units
+    for unit_name in _errored_unit_names(status):
+        print(f"\n--- debug-log --include {unit_name} ---", flush=True)
+        try:
+            print(juju.cli("debug-log", "--limit", "200", "--include", unit_name), flush=True)
+        except subprocess.CalledProcessError as exc:
+            print(f"(juju debug-log --include {unit_name} failed: {exc})", flush=True)
     print(f"--- end status dump (still waiting for all-{label}) ---\n", flush=True)
+
+
+def _errored_unit_names(status: Optional[jubilant.Status]) -> list[str]:
+    """Names of units whose workload or agent status is currently "error"."""
+    if status is None:
+        return []
+    return [
+        unit_name
+        for app in status.apps.values()
+        for unit_name, unit in app.units.items()
+        if unit.workload_status.current == "error" or unit.juju_status.current == "error"
+    ]
 
 
 def leader_unit(juju: jubilant.Juju, app: str) -> str:
