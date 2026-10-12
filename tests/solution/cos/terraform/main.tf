@@ -76,7 +76,7 @@ module "cos" {
 
   # In-cluster S3-compatible store, avoiding external S3 credentials in this
   # smoke test.
-  s3_endpoint   = "http://${local.seaweedfs_app_name}.cos.svc.cluster.local:8333"
+  s3_endpoint   = "http://${local.seaweedfs_app_name}-0.${local.seaweedfs_app_name}-endpoints.cos.svc.cluster.local:8333"
   s3_access_key = "placeholder"
   s3_secret_key = "placeholder"
 
