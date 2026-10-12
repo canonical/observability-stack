@@ -126,31 +126,44 @@ def terraform_output(terraform_dir: Path) -> Dict[str, Any]:
     return json.loads(result.stdout)
 
 
+# Every scenario's `Background` calls `wait_for_active_idle` again for the
+# same already-applied model - cache a confirmed failure so later scenarios
+# don't each take the full timeout on a stuck model.
+_settled: Dict[str, Exception] = {}
+
+
 def wait_for_active_idle(
     juju: jubilant.Juju, timeout: int = 60 * 45, status_interval: int = 60
 ):
     """Wait for every application to be active, then every agent to be idle.
 
     This 45-minute wait can span most of a CI job, and GitHub's job-level
-    timeout cancels the whole job (rather than letting pytest time out and
-    report a traceback) if it's ever reached -- which previously left zero
-    debugging information behind ("model never settles", CI_FAILURES_modes.md).
+    timeout cancels the whole job.
     To make sure a cancelled job still has something to diagnose, this dumps
     `juju status` and recent `debug-log` output to stdout every
-    `status_interval` seconds while waiting, instead of only noting the
-    final status on a `TimeoutError` nothing ever gets to print.
+    `status_interval` seconds while waiting.
     """
-    print(f"\nwaiting for the model ({juju.model}) to settle ...\n", flush=True)
-    _wait_dumping_status(juju, jubilant.all_active, "active", timeout, status_interval)
-    print("\nwaiting for agents idle ...\n", flush=True)
-    _wait_dumping_status(
-        juju,
-        jubilant.all_agents_idle,
-        "idle",
-        timeout,
-        status_interval,
-        error=jubilant.any_error,
-    )
+    if juju.model in _settled:
+        # Already confirmed stuck - don't wait until the timeout.
+        raise _settled[juju.model]
+
+    try:
+        print(f"\nwaiting for the model ({juju.model}) to settle ...\n", flush=True)
+        _wait_dumping_status(
+            juju, jubilant.all_active, "active", timeout, status_interval
+        )
+        print("\nwaiting for agents idle ...\n", flush=True)
+        _wait_dumping_status(
+            juju,
+            jubilant.all_agents_idle,
+            "idle",
+            timeout,
+            status_interval,
+            error=jubilant.any_error,
+        )
+    except Exception as exc:
+        _settled[juju.model] = exc
+        raise
 
 
 def _wait_dumping_status(
@@ -161,18 +174,7 @@ def _wait_dumping_status(
     status_interval: int,
     **wait_kwargs,
 ) -> None:
-    """Like `juju.wait()`, but dumps status periodically instead of silently.
-
-    A single call to `juju.wait()` only requires `successes` *consecutive*
-    passes of `ready`, so chunking it into repeated shorter-timeout calls
-    (tried first, see git history) resets that streak every chunk and can
-    spin forever even once the model is genuinely settled -- never do that
-    again. Instead, run the *real* `juju.wait()` call once, with the full
-    `timeout`, and dump `juju status`/`debug-log` from a background thread
-    every `status_interval` seconds while it runs, so CI's *live* log has
-    something to show even if the job gets cancelled before `juju.wait()`
-    itself ever gets a chance to raise (and print) its `TimeoutError`.
-    """
+    """Like `juju.wait()`, but dumps status periodically."""
     stop = threading.Event()
 
     def _periodic_dump():
@@ -214,11 +216,7 @@ def leader_unit(juju: jubilant.Juju, app: str) -> str:
 
 
 def unit_url(juju: jubilant.Juju, app: str, port: int) -> str:
-    """Base URL of an application's first unit, picking the scheme it actually serves.
-
-    Solutions enable internal TLS by default, but that is configurable, so the
-    scheme is probed rather than assumed.
-    """
+    """Base URL of an application's first unit, picking the scheme it actually serves."""
     status = juju.status()
     address = next(iter(status.apps[app].units.values())).address
     for scheme in ("https", "http"):

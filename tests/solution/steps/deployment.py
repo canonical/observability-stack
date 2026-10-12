@@ -27,9 +27,7 @@ def _terraform_applied(request) -> None:
     ingress = request.config.getoption("--ingress")
     if external_ca == "true" and ingress == "false":
         pytest.fail(
-            "--external-ca=true with --ingress=false would deploy "
-            "the external-CA model and offer for nothing: the product module "
-            "silently no-ops the external-CA wiring without ingress."
+            "--external-ca=true with --ingress=false isn't an allowed combination."
         )
 
     tf_dir = terraform_dir(request)
