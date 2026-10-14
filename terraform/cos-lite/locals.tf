@@ -32,12 +32,12 @@ locals {
     traefik      = var.traefik.revision != null ? var.traefik.revision : data.juju_charm.traefik_info.revision
   }
   tracks = {
-    alertmanager = "dev"
-    catalogue    = "dev"
-    grafana      = "dev"
-    loki         = "dev"
-    otelcol      = "dev"
-    prometheus   = "dev"
+    alertmanager = "0.34"
+    catalogue    = "3.0"
+    grafana      = "12.4"
+    loki         = "3.7"
+    otelcol      = "0.130"
+    prometheus   = "3.14"
     # external charms
     ssc     = "1"
     traefik = "latest"

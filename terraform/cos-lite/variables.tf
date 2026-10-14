@@ -8,7 +8,7 @@
 variable "risk" {
   description = "Risk level that the applications are (unless overwritten by individual channels) deployed from"
   type        = string
-  default     = "edge"
+  default     = "stable"
 }
 
 variable "model" {
