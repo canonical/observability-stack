@@ -50,6 +50,7 @@ juju models --format json | jq -r '.models[] | select(.name | contains("my-cos-m
 ## Common configuration mistakes
 
 ### Creating a model which already exists
+
 If you set the `model.name` to the same name as an existing model, then Juju returns a client error because it cannot create the model:
 
 ```bash
@@ -70,6 +71,7 @@ Choose a new model name or remove the existing one to proceed.
 ### Switching Juju models post-deployment
 
 The Juju Terraform provider translates state changes into Juju API calls. There is no guarantee that arbitrary state transitions, such as:
+
 - switching between a module-managed model and a pre-existing one
 - changing the name of the module-managed model
 - updating the `model.uuid`

@@ -71,7 +71,6 @@ Use a Prometheus client that supports exemplars or an OpenTelemetry metrics expo
 
 Mimir supports exemplars and trace links can be displayed in Grafana; COS Terraform module (post-[#119](https://github.com/canonical/observability-stack/pull/119)) ensures Mimir is available and integrated to support the correlation.
 
-
 ## Verification and troubleshooting
 
 - Verify traces: use Grafana's Explore tab with Tempo datasource to confirm traces arrive and contain expected trace ids.

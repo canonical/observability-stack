@@ -19,10 +19,12 @@ When the built-in alert rules are picked up by the charmed operator, they are tr
 and forwarded to Prometheus or Loki charms over relation data.
 
 The main advantage of charmed rules is that operation knowledge is centralized, and is
-readily available with the charmed operator. The main disadvantage of charmed rules is 
-that alert thresholds are opinionated and not configurable. This means that authors of 
-charmed rules must pay special attention to wide applicability. Charmed rules can be 
-[disabled](/how-to/configure-and-tune/disable-charmed-rules).
+readily available with the charmed operator. The main disadvantage of charmed rules is
+that alert thresholds are opinionated and not configurable. This means that authors of
+charmed rules must pay special attention to wide applicability. Charmed rules can be
+[disabled](/how-to/configure-and-tune/disable-charmed-rules) or
+[customized](/how-to/configure-and-tune/customize-alert-rules) to adjust thresholds,
+relabel alerts, or drop noisy rules in your specific deployment.
 
 ## Automatic modifications made to charmed alert rules
 

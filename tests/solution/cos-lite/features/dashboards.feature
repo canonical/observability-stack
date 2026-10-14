@@ -7,7 +7,6 @@ Feature: Dashboard aggregation
     Given the solution has been deployed
     And the model is healthy
 
-  @cos-lite
   Scenario Outline: Grafana receives dashboards from a component
     Then Grafana has a dashboard from the "<charm>" charm
 

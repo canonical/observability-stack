@@ -5,14 +5,13 @@ Feature: Metrics collection
     Given the solution has been deployed
     And the model is healthy
 
-  @cos-lite
-  Scenario Outline: Prometheus collects metrics from a component
-    Then Prometheus has metrics from the "<application>" application
+  Scenario Outline: Mimir collects metrics from a component
+    Then Mimir has metrics from the "<application>" application
 
     Examples:
       | application  |
       | alertmanager |
       | grafana      |
       | loki         |
-      | prometheus   |
-      | traefik      |
+      | mimir        |
+      | tempo        |

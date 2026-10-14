@@ -22,8 +22,10 @@ jobs:
           sudo snap install just --classic
       - name: Lint the Terraform modules
         run: just lint-terraform
+      - name: Lint the Terraform presets
+        run: just lint-presets
   lint-terraform-docs:
-    name: Lint terraform docs
+    name: Terraform docs
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

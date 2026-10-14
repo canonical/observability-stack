@@ -19,13 +19,12 @@ or COS Lite, Juju-based observability stacks running on single-node Kubernetes.
 The tutorials here are meant as a demonstration of COS.
 Production deployment configuration may differ from the setup showcased here.
 
-
 ## COS
 
 ```{toctree}
 :maxdepth: 1
 
-COS on Canonical K8s <cos-canonical-k8s-sandbox>
+COS on Canonical Kubernetes <cos-canonical-k8s-sandbox>
 ```
 
 ## COS Lite
@@ -33,6 +32,6 @@ COS on Canonical K8s <cos-canonical-k8s-sandbox>
 ```{toctree}
 :maxdepth: 1
 
-COS Lite on Canonical K8s <cos-lite-canonical-k8s-sandbox>
+COS Lite on Canonical Kubernetes <cos-lite-canonical-k8s-sandbox>
 COS Lite on MicroK8s <cos-lite-microk8s-sandbox>
 ```

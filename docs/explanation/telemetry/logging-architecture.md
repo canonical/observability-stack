@@ -49,6 +49,7 @@ click cos-proxy "https://charmhub.io/cos-proxy"
 ```
 
 ### Send logs from Kubernetes charms
+
 Depending on your workload, you could choose one of the following [charm libraries](https://charmhub.io/loki-k8s/libraries/loki_push_api):
 
 - `LokiPushApiConsumer`, for workloads that can speak Loki's Push API.
@@ -56,6 +57,7 @@ Depending on your workload, you could choose one of the following [charm librari
 - `LogForwarder`: This object can be used by any Charmed Operator which needs to send the workload standard output (`stdout`) through Pebble's log forwarding mechanism.
 
 #### Example: postgresql
+
 [Charmed postgresql-k8s](https://charmhub.io/postgresql-k8s) is [using `LogProxyConsumer`](https://github.com/canonical/postgresql-k8s-operator/blob/978080424255e109c7a7c4f4d23a5b3d5aba12a6/src/charm.py#L188) to tell Promtail to [collect logs from](https://github.com/canonical/postgresql-k8s-operator/blob/978080424255e109c7a7c4f4d23a5b3d5aba12a6/src/constants.py#L23):
 
 ```text
@@ -143,6 +145,7 @@ Use charmed [opentelemetry-collector](https://charmhub.io/opentelemetry-collecto
 - When related over `cos-agent`, it will collect the logs specified in charm code, as well as built-in alert rules and dashboards.
 
 #### Example: nova-compute
+
 [nova-compute](https://charmhub.io/nova-compute) does not make use of the charm libraries provided by charmed loki, so the method of integration is over the `juju-info` interface.
 
 ```yaml
@@ -196,9 +199,11 @@ extensions:
 ```
 
 ### Send logs from legacy charms
+
 Legacy charms are charms that do not have COS relations in place, and are using older, "legacy" relations instead, such as `http`, `prometheus`, etc. Legacy charms relate to COS via the [cos-proxy](https://charmhub.io/cos-proxy) charm.
 
 ### Send logs manually (no-juju solution)
+
 You can set up [any client](https://grafana.com/docs/loki/latest/send-data/) that can speak Loki's [Push API], for example: [opentelemetry-collector snap](https://snapcraft.io/opentelemetry-collector).
 
 ## Inspect log lines ingested by Loki
@@ -208,6 +213,7 @@ You can set up [any client](https://grafana.com/docs/loki/latest/send-data/) tha
 You can [use the Loki HTTP API](../../how-to/integrate/use-loki-http-api.md) to inspect or push logs.
 
 ### Display in a Grafana panel
+
 A Loki [data source](https://grafana.com/docs/grafana/latest/datasources/loki/) is automatically created in grafana when a relation is formed [between loki and grafana](https://charmhub.io/integrations/grafana_datasource).
 
 You can visualize logs in Grafana using [LogQL expressions](https://grafana.com/docs/loki/latest/query/). Grafana does not keep a copy of the Loki database. It queries loki for data, based on the `expr` in the panels.

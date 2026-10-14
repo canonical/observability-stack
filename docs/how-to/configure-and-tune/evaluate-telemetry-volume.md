@@ -9,10 +9,10 @@ myst:
 The [resource requirements] for COS depend on the ingestion rate of telemetry.
 In order to correctly size the VM(s) needed for COS, you need to know how much telemetry your workloads generate.
 
-
 ## Metrics rate
 
 ### Manual evaluation
+
 Find out the metrics endpoint manifest for each observed workload. If it is not documented,
 you will need to manually count the number of non-comment lines served on the metrics endpoint,
 for example:
@@ -26,6 +26,7 @@ This will give you the number of time series that will be created for the worklo
 Another option is to deploy a temporary pilot Prometheus charm.
 
 ### With charmed Prometheus
+
 Have your deployment sending all metrics to Prometheus (or Mimir) and inspect the 48hr plot for `count({__name__=~".+"})`.
 The raw data can also be obtained by querying the Prometheus `query` endpoint directly:
 
@@ -52,12 +53,15 @@ postgresql ---|metrics-endpoint| prometheus
 ```
 
 ## Logs rate
+
 ### Manual evaluation
+
 The most reliable way to evaluate the logging rate of a workload is with load tests.
 
 Another option is to deploy temporary pilot Loki and Prometheus charms.
 
 ### With charmed Loki and Prometheus
+
 Have your deployment sending all logs to Loki, and inspect the 48hr plot for `loki_distributor_*_received_total`:
 
 ```
@@ -74,7 +78,6 @@ load[load generator] ---|db| postgresql
 postgresql ---|logging| loki
 loki ---|metrics-endpoint| prometheus
 ```
-
 
 ## Sample collection script
 
@@ -114,8 +117,8 @@ curl -s --data-urlencode 'query=sum(rate(loki_distributor_lines_received_total[5
   | jq '.data.result[].values'
 ```
 
-
 ## How to model the load when telemetry volume is not constant
+
 Applications may have many knobs and load patterns.
 
 1. Pick a few of the most significant variables. One or two would be easiest to work with.

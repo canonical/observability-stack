@@ -18,15 +18,19 @@ and refer to the [sizing guide](system-requirements) for concrete numbers.
 Ensure data-intensive components have sufficient storage for telemetry by [configuring their storage options](/how-to/configure-and-tune/customize-storage-options.md).
 
 ## Set up distributed storage
-In production, do not use hostPath storage ([`hostpath-storage`](https://canonical.com/microk8s/docs/addon-hostpath-storage) in MicroK8s; `local-storage` in Canonical K8s):
+
+In production, do not use hostPath storage ([`hostpath-storage`](https://canonical.com/microk8s/docs/addon-hostpath-storage) in MicroK8s; `local-storage` in Canonical Kubernetes):
+
 - `PersistentVolumeClaims` created by the host path storage provisioner are bound to the local node, so it is *impossible to move them to a different node*.
 - A `hostpath` volume can *grow beyond the capacity set in the volume claim manifest*.
 
-### Canonical K8s
+### Canonical Kubernetes
+
 Use Ceph CSI. Refer to Canonical Kubernetes [snap](https://documentation.ubuntu.com/canonical-kubernetes/latest/snap/howto/storage/ceph/)
 and [charm](https://documentation.ubuntu.com/canonical-kubernetes/latest/charm/howto/ceph-csi/) docs.
 
 ### MicroK8s
+
 Use the [`rook-ceph`](https://canonical.com/microk8s/docs/addon-rook-ceph) add-on together with Microceph.
 See the [Microceph tutorial](https://canonical.com/microk8s/docs/how-to-ceph).
 
@@ -38,6 +42,7 @@ The following storage recommendations are based on:
 - 400k metrics per minute.
 
 ### COS
+
 #### Kubernetes persistent volume storage
 
 The default storage allocation for charmed persistent volumes is 1GB. The following mount points typically require non-default storage allocations.
@@ -47,7 +52,7 @@ The default storage allocation for charmed persistent volumes is 1GB. The follow
 | loki-worker-k8s             | write             | loki-persisted   | Ingester WAL for received logs before they are sent off to S3  | 100GB        | 3                  |
 | mimir-worker-k8s            | write             | data             | Ingester WAL for received metrics before they are sent off to S3  | 50GB      | 3                  |
 | mimir-worker-k8s            | backend           | data             | Store-gateway index-header sync and compactor block scratch space | 32GB      | 3                  |
-| tempo-worker                | ingester          | data             | WAL for received traces                                        | 100GB        | 3                  |
+| tempo-worker                | ingester          | wal              | WAL for received traces                                        | 100GB        | 3                  |
 | grafana-k8s                 | -                 | database         | Configurations, plugins, user data                             | 10GB         | 3                  |
 | alertmanager-k8s            | -                 | data             | `nflog` and silences snapshots                                 | 1GB          | 3                  |
 | opentelemetry-collector-k8s | -                 | persisted        | Self-monitoring, queued telemetry                              | 10GB         | 1                  |
@@ -69,7 +74,6 @@ The S3 Integrator provides integration with S3-compatible object storage backend
 | tempo       | 200GB       |
 
 The total object storage needed by COS depends on the replication count. For the table above, a COS deployment would require 1.7 TB per replicated storage pool.
-
 
 ### COS Lite
 

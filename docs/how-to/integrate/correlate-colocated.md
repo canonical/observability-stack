@@ -75,5 +75,6 @@ Here is what is happening:
 - The `label_replace` instructions replace the existing `juju_application` and `juju_unit` labels (from `otelcol`) with the `related_app` and `related_unit` labels (from the principal charm `otelcol` is related to).
 
 ## References
+
 - Robust Perception, [Exposing the software version to Prometheus](https://www.robustperception.io/exposing-the-software-version-to-prometheus/), August 22, 2016.
 - Julien Pivotto, Brian Brazil, [Prometheus Up & Running](https://www.oreilly.com/library/view/prometheus-up/9781098131135/), page 97.

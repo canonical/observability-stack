@@ -6,7 +6,6 @@ myst:
 
 # Integration matrix
 
-
 |             | K8s charm                                                                                                                                               | Machine charm                                                                                  | Legacy charms - LMA         | Non-juju workload                          |
 | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | -------------------------------- | ------------------------------------------ |
 | Logs        |  | [cos_agent] (subordinate, pulls logs from `/var/log` or from other snaps with a matching slot) | [cos-proxy]                      | [grafana-agent snap] (manually configured) |
@@ -32,5 +31,6 @@ myst:
  [LogProxyConsumer]: https://charmhub.io/loki-k8s/libraries/loki_push_api
 
 ## External links
+
 - [Monitoring Agents Comparative Study]( https://lf-anuket.atlassian.net/wiki/spaces/HOME/pages/21878543/Monitoring+Agents+Comparative+Study)
 - [How to integrate COS Lite with non-juju workloads](https://discourse.charmhub.io/t/how-to-integrate-cos-lite-with-uncharmed-applications/12005)

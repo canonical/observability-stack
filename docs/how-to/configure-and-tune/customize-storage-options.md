@@ -55,6 +55,7 @@ You may want to use custom storage classes like Ceph or Cinder-backed PVCs for y
 ```bash
 kubectl get sc
 ```
+
 ```
 NAME                  PROVISIONER              RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE    
 ceph-ext4             rbd.csi.ceph.com         Delete          Immediate              true                   2d22h  

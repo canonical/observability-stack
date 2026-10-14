@@ -20,17 +20,16 @@ You may also encounter phrases like "track 3 charms" or "track 3.0 charms" used 
 
 Correspondingly, `track/3.0` in this documentation repository is a **git branch** that hosts the docs for the COS 3.0 product release, not a Charmhub track.
 
-
 ## Releases
 
 Short-term releases receive security patches and critical bug fixes for nine months. LTS releases receive standard support for the same window as the Ubuntu base they are built on (see [Ubuntu's release cycle](https://ubuntu.com/about/release-cycle)), and extended support with an [Ubuntu Pro](https://ubuntu.com/pro) subscription.
 
 | Release                                                                                | LTS | Cycle | Base         | Release date  | Standard support  | Extended support |
 | -------------------------------------------------------------------------------------- | --- | ----- | ------------ | ------------- | ----------------- | ---------------- |
-| [`3.0`](https://documentation.ubuntu.com/observability/track-3.0/release-notes/)       | Yes | 26.04 | Ubuntu 26.04 | July 2026     | May 2031          | May 2041         |
-| [`2`](https://documentation.ubuntu.com/observability/track-2/reference/release-notes/) | No  | 25.10 | Ubuntu 24.04 | November 2025 | July 2026         |                  |
-| `1`                                                                                    | No  | 25.04 | Ubuntu 24.04 | May 2025      | February 2026     |                  |
-
+| `3.1`                                                                                  | No  | 26.10 | Ubuntu 26.04 | November 2026 | July 2027 |                  |
+| [`3.0`](https://documentation.ubuntu.com/observability/track-3.0/release-notes/)       | Yes | 26.04 | Ubuntu 26.04 | July 2026     | May 2031  | May 2041         |
+| [`2`](https://documentation.ubuntu.com/observability/track-2/reference/release-notes/) | No  | 25.10 | Ubuntu 24.04 | November 2025 | July 2026 |                  |
+| `1`                                                                                    | No  | 25.04 | Ubuntu 24.04 | May 2025      | February 2026 |                  |
 
 ## Peripheral charms
 
@@ -38,8 +37,8 @@ Short-term releases receive security patches and critical bug fixes for nine mon
 
 Because peripheral charms are consumed on their own (not through the COS or COS Lite Terraform module), they do not carry a product release number. To pick the right revision, refer to each charm's Charmhub page for its supported tracks and to the [release notes](../release-notes.md) of the product release you are aligning against for the recommended revision.
 
-
 ## Charmhub tracks and git branches
+
 Charmhub tracks (per charm) are created at the beginning of a cycle; the corresponding git branch is created at the end of a cycle.
 
 For example, during June-September 2025 the charms that make up COS 2 already had their `2`-series tracks on Charmhub, but this documentation repository still only had `track/1` and `main` branches on GitHub.

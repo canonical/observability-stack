@@ -94,7 +94,15 @@ module "cos" {
 }
 ```
 
-### Basic usage
+### Deploy from the module root
+
+```bash
+cd observability-stack/terraform/cos
+terraform apply \
+    -var s3_endpoint=http://S3_HOST_IP:808 -var s3_access_key=access-key -var s3_secret_key=secret-key
+```
+
+### Deploy as a child module
 
 By default, this Terraform module will deploy each worker with `3` unit. If you want to scale each Loki, Mimir or Tempo worker unit please check the variables available for that purpose in `variables.tf`.
 
@@ -123,6 +131,16 @@ Then, use terraform to deploy the module:
 ```shell
 terraform init
 terraform apply
+```
+
+### Preset catalog
+
+The [`presets/`](presets/) directory contains reusable deployment shapes such as a single-unit dev topology or a deployment with ingress disabled. They are plain Terraform variable files (`.tfvars`), so they can be applied directly or copied as-is into a `module "cos"` block.
+
+When this module is applied as a root (e.g. `cd observability-stack/terraform/cos`), pass one with `-var-file`:
+
+```shell
+terraform apply -var-file=presets/single-unit.tfvars
 ```
 
 #### Known Juju issue.

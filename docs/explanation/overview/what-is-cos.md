@@ -12,7 +12,6 @@ COS gathers, processes, visualises, and alerts on telemetry (metrics, logs, and 
 
 COS is developed from the lessons learned with its predecessor, [LMA](/how-to/migrate/migrate-lma-to-cos-lite), and is designed to deliver a consistent, cohesive operational experience for Site Reliability Engineers.
 
-
 ## How COS works
 
 COS is deployed and operated through [Juju](https://documentation.ubuntu.com/juju/3.6/). Its components are charmed operators connected by Juju relations, which automate configuration and integration between them.
@@ -23,11 +22,9 @@ Juju topology labels are automatically applied to all telemetry, making it possi
 
 For more detail, see [Telemetry Flow](/explanation/architecture/telemetry-flow) and [Model Topology for COS Lite](/explanation/architecture/cos-lite-model-topology).
 
-
 ## What COS does
 
 By modelling observability as a set of Juju relations, COS eliminates the manual configuration burden typically associated with spinning up a monitoring stack. Dashboards, alert rules, and scrape targets are automatically provisioned when charms are related. This application of Juju topology also means that telemetry is contextualised out of the box, enabling admins to filter and correlate data by model, application, or unit without any extra instrumentation. The result is a full-stack, self-monitoring observability platform that evolves alongside the applications it observes.
-
 
 ## Flavors of COS: COS and COS Lite
 
@@ -46,6 +43,7 @@ There are two flavors available: COS and COS Lite. Each is suited to different d
 | Minimum system requirements | 3x 8cpu/16gb + storage nodes ([details](/reference/system-requirements)) | 1x 4cpu8gb (+storage nodes, if any) ([details](/reference/system-requirements))                  |
 
 ### Architecture
+
 The key architectural difference between COS and COS Lite is how the backends are deployed.
 COS is built around a **coordinator/worker pattern**: each backend (Mimir, Loki, Tempo) is split into a coordinator charm and one or more worker charms, allowing individual components to be scaled out independently and placed on separate nodes. An Nginx layer handles load balancing across workers before traffic reaches Traefik. This makes COS HA suitable for high-availability, enterprise deployments where telemetry volumes are large and resilience to node failure is required. 
 

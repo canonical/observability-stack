@@ -13,6 +13,7 @@ COS and COS Lite use Traefik to provide network ingress for the stack components
 Make sure the load balancer provides Traefik with **a static IP**, or some other identity that remains stable over time.
 
 ## Egress
+
 Some charms require external connectivity to function correctly.
 
 As a common requirement, the environment should be able to reach:
@@ -40,7 +41,6 @@ juju bootstrap microk8s uk8s \
 ```
 
 Note that these config values can only be set at bootstrap time, and are read-only thereafter.
-
 
 ## Juju relation topology
 

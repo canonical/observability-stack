@@ -26,7 +26,6 @@ The image below describes a typical COS Lite deployment observing both a LXD- an
 
 COS includes Mimir, a distributed metrics backend, Loki, a distributed logging backend, and Tempo, a distributed tracing backend. For all intents and purposes, COS provides the same telemetry flows as COS Lite, but with two key differences: traces flowing from the agents to Tempo, and Mimir - in contrast to Prometheus - not being capable of scraping on it's own but instead relying on having the telemetry pushed to it.
 
-
 ## Auxiliary Charms
 
 ### COS Proxy

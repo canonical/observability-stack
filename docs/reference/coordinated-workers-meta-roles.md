@@ -5,6 +5,7 @@ myst:
 ---
 
 # Coordinated worker roles and meta-roles
+
 Worker meta-roles and roles for Mimir, Loki, and Tempo in COS HA. See the [coordinated workers explanation guide](/explanation/architecture/coordinated-workers.md) for an overview of the coordinator-worker pattern in COS.
 
 ## Mimir
@@ -76,6 +77,7 @@ Loki's microservices mode uses three top-level roles (`read`, `write`, `backend`
 | `metrics-generator` | `all` | no | 1 |
 
 ## References
+
 - [Grafana Mimir architecture](https://grafana.com/docs/mimir/latest/get-started/about-grafana-mimir-architecture/)
 - [Mimir components](https://grafana.com/docs/mimir/latest/references/architecture/components/)
 - [Loki components](https://grafana.com/docs/loki/latest/get-started/components/)
