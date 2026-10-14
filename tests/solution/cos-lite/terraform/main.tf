@@ -45,7 +45,8 @@ locals {
 resource "juju_model" "ca" {
   count = var.external_ca ? 1 : 0
 
-  name = local.ca_model_name
+  name   = local.ca_model_name
+  config = { automatically-retry-hooks = "true" }
 }
 
 module "ssc" {
@@ -59,7 +60,7 @@ module "ssc" {
 
 module "cos-lite" {
   source = "../../../../terraform/cos-lite"
-  model  = { name = local.model_name }
+  model  = { name = local.model_name, config = { automatically-retry-hooks = "true" } }
 
   depends_on = [module.ssc]
 

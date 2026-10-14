@@ -396,6 +396,10 @@ resource "juju_integration" "external_traefik_certificates" {
 
 resource "juju_integration" "external_ca_cert" {
   for_each = local.tls_termination ? {
+    alertmanager = {
+      app_name = module.alertmanager.app_name
+      endpoint = module.alertmanager.requires.receive_ca_cert
+    }
     grafana = {
       app_name = module.grafana.app_name
       endpoint = module.grafana.requires.receive_ca_cert
