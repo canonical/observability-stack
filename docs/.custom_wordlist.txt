@@ -3,6 +3,7 @@ aggregator
 alerter
 Alertmanager
 alertmanager
+ANDed
 backend
 backend's
 backends
@@ -133,6 +134,7 @@ Minio
 misconfiguration
 misconfigured
 monorepo
+multiline
 Multipass
 MyST
 nflog
@@ -154,6 +156,7 @@ otelcol
 otf
 OTLP
 OTTL
+ORed
 PagerDuty
 Parca
 PDF
