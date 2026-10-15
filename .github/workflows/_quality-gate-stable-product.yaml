@@ -29,6 +29,10 @@ on:
       # Rotation: see how-to/managing-team-secrets.md in canonical/observability-team.
       OBSERVABILITY_NOCTUA_TOKEN:
         required: true
+      # Charmhub credentials for `charmcraft promote`, passed as CHARMCRAFT_AUTH.
+      # Export with: charmcraft login --export <file> --charm=<charm>... --permission=package-manage-releases
+      # See https://canonical-charmcraft.readthedocs-hosted.com/en/stable/howto/manage-charms/#log-in-to-charmhub
+      # Rotation: see how-to/managing-team-secrets.md in canonical/observability-team.
       CHARMHUB_TOKEN:
         required: true
 
@@ -99,6 +103,21 @@ jobs:
             exit 1
           fi
           just solution solqa-passed "$RUN_ID" "$EXPECTED_TITLE" "$NOT_BEFORE" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Keep the test results with this run
+        if: always() && steps.solqa.outputs.run_id != ''
+        env:
+          GH_TOKEN: ${{ secrets.OBSERVABILITY_NOCTUA_TOKEN }}
+          RUN_ID: ${{ steps.solqa.outputs.run_id }}
+        # The file is missing when the lab or pipeline failed before our tests ran.
+        run: just solution solqa-results "$RUN_ID" solqa-results || echo "No test results in the SolQA run." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload the test results
+        if: always() && hashFiles('solqa-results/test_results.xml') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ inputs.product }}-${{ inputs.cluster }}
+          path: solqa-results/test_results.xml
 
       - name: Promote to stable
         env:

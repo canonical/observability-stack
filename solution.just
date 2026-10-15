@@ -204,6 +204,11 @@ solqa-inputs product branch cluster test_ref test_repo="canonical/observability-
       test_parameters: ({repo: $repo, ref: $ref, args: [$product]} | tojson)
     }'
 
+# Download the JUnit file our sqa_tests wrote (test_results.xml) from a SolQA Deploy Product run into <dir>.
+[group("solqa")]
+solqa-results run_id dir=".":
+  gh run download "{{run_id}}" --repo canonical/terragrunt-deployment-pipelines --name test_results.xml --dir "{{dir}}"
+
 # expected_title and not_before check that the run is the one we started:
 # SolQA's executor takes the newest run, which may be another team's.
 # Exit 0 only if our tests ran and passed in a SolQA Deploy Product run.
