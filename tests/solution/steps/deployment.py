@@ -1,10 +1,17 @@
 """Steps about the deployment itself: which model, and whether it is healthy."""
 
 import os
+import subprocess
 
 import jubilant
 import pytest
-from helpers import TfDirManager, terraform_dir, terraform_output, wait_for_active_idle
+from helpers import (
+    TfDirManager,
+    dump_debug_state,
+    terraform_dir,
+    terraform_output,
+    wait_for_active_idle,
+)
 from pytest_bdd import given, then
 
 # Points the "given" step at an already-deployed model instead of applying
@@ -48,7 +55,16 @@ def _terraform_applied(request) -> None:
 
     tf = TfDirManager(dir=str(tf_dir))
     tf.init()
-    tf.apply(var_files=var_files, **tf_vars)
+    # Apply is idempotent, so retry once to get past transient errors.
+    attempts = 2
+    for attempt in range(1, attempts + 1):
+        try:
+            tf.apply(var_files=var_files, **tf_vars)
+            return
+        except subprocess.CalledProcessError:
+            dump_debug_state(f"terraform apply failed (attempt {attempt}/{attempts})")
+            if attempt == attempts:
+                raise
 
 
 @given("the solution has been deployed", target_fixture="juju")

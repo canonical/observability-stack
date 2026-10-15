@@ -16,6 +16,9 @@ import pytest
 
 logger = logging.getLogger(__name__)
 
+# Set by the justfile to terraform or tofu.
+TERRAFORM_BIN = os.environ.get("terraform") or "terraform"
+
 # An xfail'ing test is reported (so the otelcol log errors stay visible) but is
 # never treated as a failure, so it does NOT trigger --exitfirst and does not
 # fail the run. See https://github.com/canonical/observability-stack/issues/428
@@ -36,7 +39,7 @@ class TfDirManager:
 
     @property
     def tf_cmd(self):
-        return f"terraform -chdir={self.dir}"
+        return f"{TERRAFORM_BIN} -chdir={self.dir}"
 
     def init(self, tf_file: Optional[str] = None):
         """Initialize a Terraform module, copying `tf_file` in if given."""

@@ -98,7 +98,7 @@ add retries where data genuinely trails active/idle (e.g. the first Prometheus s
 ## Adding a new solution
 
 1. Create `tests/solution/<name>/terraform/main.tf` wrapping `terraform/<name>`, and
-   `outputs.tf` exposing `model_name`.
+   an `outputs.tf` with the same outputs as the existing solutions (the steps read them).
 2. Add an empty `tests/solution/<name>/__init__.py`.
 3. Add `tests/solution/<name>/features/` with that solution's own scenarios.
 4. Add `tests/solution/<name>/test_solution.py` containing:

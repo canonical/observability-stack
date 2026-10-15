@@ -2,6 +2,7 @@
 # See LICENSE file for licensing details.
 """Shared helpers for solution smoke tests."""
 
+import functools
 import json
 import os
 import pytest
@@ -10,7 +11,6 @@ import shutil
 import ssl
 import subprocess
 import tempfile
-import threading
 import time
 from pathlib import Path
 from typing import Any, Callable, Dict, Optional, Sequence
@@ -19,7 +19,7 @@ import jubilant
 import requests
 from tenacity import RetryError, Retrying, retry_if_result, stop_after_delay, wait_fixed
 
-# Resolved terraform/tofu binary, set by quality-gates.just; falls back to
+# Resolved terraform/tofu binary, set by solution.just; falls back to
 # "terraform" when running pytest directly.
 TERRAFORM_BIN = os.environ.get("terraform") or "terraform"
 
@@ -48,7 +48,7 @@ class TfDirManager:
 
     @property
     def tf_cmd(self):
-        return f"terraform -chdir={self.dir}"
+        return f"{TERRAFORM_BIN} -chdir={self.dir}"
 
     def init(self, tf_file: Optional[str] = None):
         """Initialize a Terraform module, copying `tf_file` in if given."""
@@ -132,16 +132,10 @@ def terraform_output(terraform_dir: Path) -> Dict[str, Any]:
 _settled: Dict[str, Exception] = {}
 
 
-def wait_for_active_idle(
-    juju: jubilant.Juju, timeout: int = 60 * 45, status_interval: int = 60
-):
+def wait_for_active_idle(juju: jubilant.Juju, timeout: int = 60 * 45):
     """Wait for every application to be active, then every agent to be idle.
 
-    This 45-minute wait can span most of a CI job, and GitHub's job-level
-    timeout cancels the whole job.
-    To make sure a cancelled job still has something to diagnose, this dumps
-    `juju status` and recent `debug-log` output to stdout every
-    `status_interval` seconds while waiting.
+    Dumps juju and k8s state once if the wait fails.
     """
     if juju.model in _settled:
         # Already confirmed stuck - don't wait until the timeout.
@@ -149,53 +143,40 @@ def wait_for_active_idle(
 
     try:
         print(f"\nwaiting for the model ({juju.model}) to settle ...\n", flush=True)
-        _wait_dumping_status(
-            juju, jubilant.all_active, "active", timeout, status_interval
-        )
+        juju.wait(jubilant.all_active, delay=10, timeout=timeout)
         print("\nwaiting for agents idle ...\n", flush=True)
-        _wait_dumping_status(
-            juju,
+        juju.wait(
             jubilant.all_agents_idle,
-            "idle",
-            timeout,
-            status_interval,
+            delay=10,
+            timeout=timeout,
             error=jubilant.any_error,
         )
     except Exception as exc:
         _settled[juju.model] = exc
+        dump_debug_state(f"model {juju.model} did not settle")
         raise
 
 
-def _wait_dumping_status(
-    juju: jubilant.Juju,
-    ready: Callable[[jubilant.Status], bool],
-    label: str,
-    timeout: int,
-    status_interval: int,
-    **wait_kwargs,
-) -> None:
-    """Like `juju.wait()`, but dumps status periodically."""
-    stop = threading.Event()
-
-    def _periodic_dump():
-        while not stop.wait(status_interval):
-            _dump_status(juju, label)
-
-    dumper = threading.Thread(target=_periodic_dump, daemon=True)
-    dumper.start()
+def dump_debug_state(reason: str) -> None:
+    """Print juju and k8s state for every non-controller model."""
+    print(f"\n=== debug dump: {reason} ===", flush=True)
     try:
-        juju.wait(ready, delay=10, timeout=timeout, **wait_kwargs)
-    except TimeoutError:
-        _dump_status(juju, label)
-        raise
-    finally:
-        stop.set()
-        dumper.join(timeout=5)
+        models = json.loads(
+            jubilant.Juju().cli("models", "--format", "json", include_model=False)
+        )["models"]
+    except subprocess.CalledProcessError as exc:
+        print(f"(juju models failed: {exc})", flush=True)
+        models = []
+    names = [m["short-name"] for m in models if m["short-name"] != "controller"]
+    for name in names:
+        _dump_juju(jubilant.Juju(model=name))
+        _dump_k8s(name)
+    _run_kubectl("get", "pv,storageclass")
+    print(f"=== end debug dump: {reason} ===\n", flush=True)
 
 
-def _dump_status(juju: jubilant.Juju, label: str) -> None:
-    """Print `juju status` and recent `debug-log` for live CI debugging."""
-    print(f"\n--- still waiting for all-{label} (model={juju.model}) ---", flush=True)
+def _dump_juju(juju: jubilant.Juju) -> None:
+    print(f"\n--- juju status (model={juju.model}) ---", flush=True)
     status = None
     try:
         status = juju.status()
@@ -213,7 +194,11 @@ def _dump_status(juju: jubilant.Juju, label: str) -> None:
             print(juju.cli("debug-log", "--limit", "200", "--include", unit_name), flush=True)
         except subprocess.CalledProcessError as exc:
             print(f"(juju debug-log --include {unit_name} failed: {exc})", flush=True)
-    print(f"--- end status dump (still waiting for all-{label}) ---\n", flush=True)
+
+
+def _dump_k8s(namespace: str) -> None:
+    _run_kubectl("get", "pods,pvc", "-n", namespace, "-o", "wide")
+    _run_kubectl("get", "events", "-n", namespace, "--sort-by=.lastTimestamp")
 
 
 def _errored_unit_names(status: Optional[jubilant.Status]) -> list[str]:
@@ -226,6 +211,38 @@ def _errored_unit_names(status: Optional[jubilant.Status]) -> list[str]:
         for unit_name, unit in app.units.items()
         if unit.workload_status.current == "error" or unit.juju_status.current == "error"
     ]
+
+
+@functools.cache
+def _kubectl() -> Optional[tuple[str, ...]]:
+    """The first working kubectl command: $KUBECTL, kubectl, k8s or microk8s."""
+    if "KUBECTL" in os.environ:
+        return tuple(shlex.split(os.environ["KUBECTL"]))
+    for cmd in (("kubectl",), ("sudo", "-n", "k8s", "kubectl"), ("microk8s", "kubectl")):
+        try:
+            subprocess.run(
+                [*cmd, "get", "ns"], check=True, capture_output=True, timeout=30
+            )
+        except (OSError, subprocess.SubprocessError):
+            continue
+        return cmd
+    return None
+
+
+def _run_kubectl(*args: str) -> None:
+    cmd = _kubectl()
+    if cmd is None:
+        print("(no working kubectl found, set KUBECTL)", flush=True)
+        return
+    print(f"\n--- kubectl {' '.join(args)} ---", flush=True)
+    try:
+        result = subprocess.run(
+            [*cmd, *args], capture_output=True, text=True, timeout=120, check=False
+        )
+    except subprocess.TimeoutExpired as exc:
+        print(f"(kubectl timed out: {exc})", flush=True)
+        return
+    print(result.stdout + result.stderr, flush=True)
 
 
 def leader_unit(juju: jubilant.Juju, app: str) -> str:
@@ -283,7 +300,11 @@ def get_tls_context(juju: jubilant.Juju, ca_name: str) -> Optional[ssl.SSLContex
     return ctx
 
 
-def _skip_if_not_deployed(juju: jubilant.Juju, application: str) -> None:
-    """Skip the current scenario when `application` isn't part of this deployment."""
-    if application not in juju.status().apps:
+def _expect_deployed(juju: jubilant.Juju, request, application: str) -> None:
+    """Skip if this mode doesn't deploy `application`, fail if it should but isn't."""
+    optional = terraform_output(terraform_dir(request))["optional_apps"]["value"]
+    if optional.get(application) is False:
         pytest.skip(f"'{application}' is not deployed in this solution's current mode")
+    assert application in juju.status().apps, (
+        f"'{application}' should be deployed in this mode but isn't in the model"
+    )

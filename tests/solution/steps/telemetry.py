@@ -4,15 +4,15 @@ import jubilant
 from observability_clients import Loki, Mimir, Prometheus, Tempo
 from pytest_bdd import parsers, then
 
-from helpers import LOOKBACK_HOURS, lookback_window_ns, retry_until_found, _skip_if_not_deployed
+from helpers import LOOKBACK_HOURS, lookback_window_ns, retry_until_found, _expect_deployed
 
 
 @then(parsers.parse('Prometheus has metrics from the "{application}" application'))
 def prometheus_has_metrics_from(
-    prometheus: Prometheus, juju: jubilant.Juju, application: str
+    prometheus: Prometheus, juju: jubilant.Juju, request, application: str
 ):
     """Assert whether Prometheus has metrics with a given `juju_application` label."""
-    _skip_if_not_deployed(juju, application)
+    _expect_deployed(juju, request, application)
     found = retry_until_found(
         lambda: prometheus.has_metric(labels={"juju_application": application})
     )
@@ -20,9 +20,11 @@ def prometheus_has_metrics_from(
 
 
 @then(parsers.parse('Mimir has metrics from the "{application}" application'))
-def mimir_has_metrics_from(mimir: Mimir, juju: jubilant.Juju, application: str):
+def mimir_has_metrics_from(
+    mimir: Mimir, juju: jubilant.Juju, request, application: str
+):
     """Assert whether Mimir has metrics with a given `juju_application` label."""
-    _skip_if_not_deployed(juju, application)
+    _expect_deployed(juju, request, application)
     found = retry_until_found(
         lambda: mimir.has_metric(labels={"juju_application": application})
     )
@@ -30,9 +32,9 @@ def mimir_has_metrics_from(mimir: Mimir, juju: jubilant.Juju, application: str):
 
 
 @then(parsers.parse('Loki has logs from the "{application}" application'))
-def loki_has_logs_from(loki: Loki, juju: jubilant.Juju, application: str):
+def loki_has_logs_from(loki: Loki, juju: jubilant.Juju, request, application: str):
     """Assert Loki has logs with a given `juju_application` label."""
-    _skip_if_not_deployed(juju, application)
+    _expect_deployed(juju, request, application)
     start, end = lookback_window_ns()
 
     def check() -> bool:
@@ -48,9 +50,11 @@ def loki_has_logs_from(loki: Loki, juju: jubilant.Juju, application: str):
 
 
 @then(parsers.parse('Tempo has traces from the "{application}" application'))
-def tempo_has_traces_from(tempo: Tempo, juju: jubilant.Juju, application: str):
+def tempo_has_traces_from(
+    tempo: Tempo, juju: jubilant.Juju, request, application: str
+):
     """Assert Tempo has traces with a given `resource.juju_application` attribute."""
-    _skip_if_not_deployed(juju, application)
+    _expect_deployed(juju, request, application)
     start, end = lookback_window_ns()
 
     def check() -> bool:

@@ -27,3 +27,10 @@ output "tls_termination" {
   value       = var.external_ca
   description = "Whether an external CA is terminating TLS for this deployment."
 }
+
+output "optional_apps" {
+  value = {
+    traefik = module.cos.components.traefik != null
+  }
+  description = "Whether each optional application is deployed in this mode."
+}
