@@ -17,7 +17,7 @@ Disable built-in charm alert rules <disable-charmed-rules>
 Customize alert rules <customize-alert-rules>
 ```
 
-## Telemetry volume & filtering
+## Telemetry volume and filtering
 
 Right-size the data flowing through COS by measuring and filtering at
 collection time.
@@ -51,4 +51,15 @@ Set the resource consumption limits to avoid COS components from starving their 
 :maxdepth: 1
 
 Configure the memory limit of the OpenTelemetry Collector <configure-memory-limits-otelcol>
+```
+
+## Delivery reliability
+
+Tune queue and batch settings to avoid delayed, rejected, or silently dropped
+telemetry.
+
+```{toctree}
+:maxdepth: 1
+
+Configure OpenTelemetry Collector for production <configure-otelcol>
 ```
