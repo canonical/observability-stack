@@ -1,0 +1,82 @@
+name: Stable quality gate
+
+# Test each product with new candidate revisions on SolQA, and promote every
+# product that passes from candidate to stable. A person starts every run;
+# that is the release sign-off. Dry run by default.
+
+on:
+  workflow_dispatch:
+    inputs:
+      cluster:
+        description: "SolQA cluster (check workflow-coordinator for locks)"
+        type: choice
+        default: dh1_j8_1
+        options:
+          - dh1_j8_1
+          - dh1_j8_2
+          - dh1_j9_1
+      dry_run:
+        description: "Run the quality gate without triggering promotions"
+        type: boolean
+        default: true
+      force:
+        description: "Test every product, even if candidate matches stable"
+        type: boolean
+        default: false
+
+jobs:
+  decide:
+    name: Decide what to test
+    runs-on: ubuntu-latest
+    outputs:
+      targets: ${{ steps.decide.outputs.targets }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The recipes read each branch's Terraform modules through git
+          fetch-depth: 0
+
+      - name: Install dependencies
+        run: sudo snap install just --classic
+
+      - name: Find products with new candidate revisions
+        id: decide
+        env:
+          FORCE: ${{ inputs.force }}
+          # Release tracks only; dev is never released to stable.
+          BRANCHES: track/3.0
+        run: |
+          targets='[]'
+          for branch in $BRANCHES; do
+            for product in cos cos-lite; do
+              changed=$(just solution candidate-changed "$product" "origin/$branch")
+              if [ "$FORCE" = "true" ] || [ "$changed" = "true" ]; then
+                targets=$(jq -c --arg b "$branch" --arg p "$product" '. + [{branch: $b, product: $p}]' <<< "$targets")
+              fi
+            done
+          done
+          echo "targets=$targets" >> "$GITHUB_OUTPUT"
+          if [ "$targets" = "[]" ]; then
+            echo "Nothing to do: stable already holds the candidate revisions." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "To test: $targets" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  gate:
+    name: ${{ matrix.product }} (${{ matrix.branch }})
+    needs: [decide]
+    if: needs.decide.outputs.targets != '[]'
+    strategy:
+      fail-fast: false
+      # One SolQA cluster: SolQA keeps only one waiting run per cluster, and a
+      # newer waiting run cancels the older one.
+      max-parallel: 1
+      matrix:
+        include: ${{ fromJSON(needs.decide.outputs.targets) }}
+    uses: ./.github/workflows/_quality-gate-stable-product.yaml
+    secrets: inherit
+    with:
+      branch: ${{ matrix.branch }}
+      product: ${{ matrix.product }}
+      cluster: ${{ inputs.cluster }}
+      dry_run: ${{ inputs.dry_run }}

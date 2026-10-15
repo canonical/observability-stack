@@ -95,3 +95,12 @@ add retries where data genuinely trails active/idle (e.g. the first Prometheus s
 5. Run `just solution test <name>` to verify it.
 
 
+## Running on SolQA
+
+The stable quality gate (`.github/workflows/quality-gates-stable.yaml`) runs these tests on
+Solutions QA's lab through `sqa_tests` at the repo root. SolQA deploys the product from
+`candidate`, runs `./sqa_tests <cos|cos-lite>`, and keeps `test_results.xml` with the run.
+
+The tests reach the applications through Traefik's load balancer address (the URLs from Traefik's
+`show-proxied-endpoints` action), so only that address has to be reachable from SolQA's runner,
+not the pods. Applications without ingress are reached at their first unit's address.
