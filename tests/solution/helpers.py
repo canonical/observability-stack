@@ -23,6 +23,10 @@ from tenacity import RetryError, Retrying, retry_if_result, stop_after_delay, wa
 # "terraform" when running pytest directly.
 TERRAFORM_BIN = os.environ.get("terraform") or "terraform"
 
+# Points the tests at an already-deployed model instead of applying the
+# Terraform wrapper ourselves; Terraform isn't run at all then (see README.md).
+_MODEL_ENV_VAR = "SOLUTION_MODEL"
+
 # How far back to look for logs and traces.
 LOOKBACK_HOURS = 24
 
@@ -124,6 +128,48 @@ def terraform_output(terraform_dir: Path) -> Dict[str, Any]:
         text=True,
     )
     return json.loads(result.stdout)
+
+
+def mode_options(request) -> Dict[str, str]:
+    """The --internal-tls, --external-ca and --ingress options ("" means the wrapper's default)."""
+    options = {
+        "internal_tls": request.config.getoption("--internal-tls"),
+        "external_ca": request.config.getoption("--external-ca"),
+        "ingress": request.config.getoption("--ingress"),
+    }
+    if options["external_ca"] == "true" and options["ingress"] == "false":
+        pytest.fail(
+            "--external-ca=true with --ingress=false isn't an allowed combination."
+        )
+    return options
+
+
+def deployment_mode(request) -> Dict[str, Any]:
+    """The mode the steps expect the deployment to be in.
+
+    Read from the wrapper's Terraform outputs, or with SOLUTION_MODEL, from the
+    mode options, so an external suite needs no Terraform state. Per-component
+    ingress isn't known then (None); `app_url` asks Traefik instead.
+    """
+    if _MODEL_ENV_VAR not in os.environ:
+        outputs = terraform_output(terraform_dir(request))
+        keys = ("internal_tls", "tls_termination", "ingress", "optional_apps")
+        mode = {key: outputs[key]["value"] for key in keys}
+        # Terraform leaves null outputs out, and ca_model_name is null without an external CA.
+        mode["ca_model_name"] = outputs.get("ca_model_name", {}).get("value")
+        return mode
+
+    options = mode_options(request)
+    if options["external_ca"] == "true":
+        # The external-CA step gets its CA from the wrapper's own CA model.
+        pytest.fail(f"--external-ca=true isn't supported with {_MODEL_ENV_VAR} yet.")
+    return {
+        "internal_tls": options["internal_tls"] != "false",
+        "tls_termination": False,
+        "ca_model_name": None,
+        "ingress": None,
+        "optional_apps": {"traefik": options["ingress"] != "false"},
+    }
 
 
 # Every scenario's `Background` calls `wait_for_active_idle` again for the
@@ -253,6 +299,37 @@ def leader_unit(juju: jubilant.Juju, app: str) -> str:
     raise AssertionError(f"no leader unit found for application '{app}'")
 
 
+@functools.cache
+def _proxied_endpoints(model: str) -> Dict[str, Any]:
+    """Traefik's ingress URLs, keyed by application (or by unit, for per-unit ingress).
+
+    Empty when the model has no Traefik. Cached per model, so the action runs once.
+    """
+    juju = jubilant.Juju(model=model)
+    if "traefik" not in juju.status().apps:
+        return {}
+    task = juju.run(leader_unit(juju, "traefik"), "show-proxied-endpoints")
+    return json.loads(task.results["proxied-endpoints"])
+
+
+def ingressed_url(juju: jubilant.Juju, app: str) -> Optional[str]:
+    """Base URL of an application's ingress route, or None if Traefik has no route for it."""
+    endpoints = _proxied_endpoints(juju.model)
+    for key in sorted(endpoints):
+        if key == app or key.startswith(f"{app}/"):
+            return endpoints[key]["url"].rstrip("/")
+    return None
+
+
+def app_url(juju: jubilant.Juju, app: str, port: int) -> str:
+    """Base URL of an application: through Traefik if it's ingressed, else its first unit.
+
+    Through Traefik, only the load balancer address has to be reachable from
+    where the tests run, not the pods.
+    """
+    return ingressed_url(juju, app) or unit_url(juju, app, port)
+
+
 def unit_url(juju: jubilant.Juju, app: str, port: int) -> str:
     """Base URL of an application's first unit, picking the scheme it actually serves."""
     status = juju.status()
@@ -265,24 +342,6 @@ def unit_url(juju: jubilant.Juju, app: str, port: int) -> str:
             continue
         return url
     raise AssertionError(f"no reachable {app} workload at {address}:{port}")
-
-
-def ingressed_url(juju: jubilant.Juju, request, app: str, port: int) -> Optional[str]:
-    """Base URL of an application's ingress route, when its ingress is enabled.
-
-    Returns None when not ingressed, so the caller can fall back to unit_url.
-    """
-    ingress = terraform_output(terraform_dir(request))["ingress"]["value"]
-    if not ingress.get(app):
-        return None
-
-    proxied_endpoints = json.loads(
-        juju.run("traefik/leader", "show-proxied-endpoints").results[
-            "proxied-endpoints"
-        ]
-    )
-    entry = proxied_endpoints.get(app) or proxied_endpoints.get(leader_unit(juju, app))
-    return entry["url"] if entry else None
 
 
 def get_tls_context(juju: jubilant.Juju, ca_name: str) -> Optional[ssl.SSLContext]:
@@ -302,7 +361,7 @@ def get_tls_context(juju: jubilant.Juju, ca_name: str) -> Optional[ssl.SSLContex
 
 def _expect_deployed(juju: jubilant.Juju, request, application: str) -> None:
     """Skip if this mode doesn't deploy `application`, fail if it should but isn't."""
-    optional = terraform_output(terraform_dir(request))["optional_apps"]["value"]
+    optional = deployment_mode(request)["optional_apps"]
     if optional.get(application) is False:
         pytest.skip(f"'{application}' is not deployed in this solution's current mode")
     assert application in juju.status().apps, (

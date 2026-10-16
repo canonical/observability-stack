@@ -69,6 +69,11 @@ cd tests/solution
 SOLUTION_MODEL="microk8s-localhost:cos-lite" uv run --frozen --isolated pytest -vv --capture=no cos-lite
 ```
 
+With `SOLUTION_MODEL` set, Terraform isn't run at all, so the steps take the mode from the
+options instead of the wrapper's outputs. Pass the `--internal-tls` and `--ingress` values the
+model was deployed with (both default to `true`). `--external-ca=true` isn't supported with
+`SOLUTION_MODEL` yet.
+
 ## Adding a new scenario
 
 Feature files live under each solution's own `<name>/features/`. Add a new `.feature` file to

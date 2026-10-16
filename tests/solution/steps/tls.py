@@ -1,4 +1,4 @@
-"""Steps about TLS: introspects the wrapper's own Terraform outputs instead of a mode tag."""
+"""Steps about TLS: checks the model against `deployment_mode` instead of a mode tag."""
 
 import socket
 import ssl
@@ -7,10 +7,9 @@ from urllib.parse import urlparse
 import jubilant
 from helpers import (
     _PORTS,
+    deployment_mode,
     get_tls_context,
     ingressed_url,
-    terraform_dir,
-    terraform_output,
     unit_url,
 )
 from pytest_bdd import parsers, then
@@ -35,7 +34,7 @@ def _tls_handshake(
 def component_serves_traffic_using_internal_tls_mode(
     juju: jubilant.Juju, request, component: str
 ):
-    internal_tls = terraform_output(terraform_dir(request))["internal_tls"]["value"]
+    internal_tls = deployment_mode(request)["internal_tls"]
     expected = "https" if internal_tls else "http"
     actual = urlparse(unit_url(juju, component, _PORTS[component])).scheme
     assert actual == expected, (
@@ -51,7 +50,7 @@ def component_serves_traffic_using_internal_tls_mode(
 def components_certificate_is_trusted_by_internal_ca(
     juju: jubilant.Juju, request, component: str
 ):
-    if not terraform_output(terraform_dir(request))["internal_tls"]["value"]:
+    if not deployment_mode(request)["internal_tls"]:
         return
 
     ctx = get_tls_context(juju, _INTERNAL_CA_APP)
@@ -79,16 +78,20 @@ def components_certificate_is_trusted_by_internal_ca(
 def components_certificate_is_trusted_by_external_ca(
     juju: jubilant.Juju, request, component: str
 ):
-    output = terraform_output(terraform_dir(request))
-    if not output["tls_termination"]["value"]:
+    mode = deployment_mode(request)
+    if not mode["tls_termination"]:
         return
 
     # The external CA only signs Traefik's certificate, so check the ingressed URL.
-    url = ingressed_url(juju, request, component, _PORTS[component])
-    if url is None:
+    # (mode["ingress"] is None with SOLUTION_MODEL, which can't get here yet.)
+    if not mode["ingress"].get(component):
         return
+    url = ingressed_url(juju, component)
+    assert url is not None, (
+        f"{component} should be ingressed in this mode, but Traefik has no route for it"
+    )
 
-    ca_model_name = output["ca_model_name"]["value"]
+    ca_model_name = mode["ca_model_name"]
     ctx = get_tls_context(
         jubilant.Juju(model=ca_model_name), "self-signed-certificates"
     )

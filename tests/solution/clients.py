@@ -9,16 +9,12 @@ import jubilant
 import pytest
 from observability_clients import Alertmanager, Grafana, Loki, Mimir, Prometheus, Tempo
 
-from helpers import _PORTS, ingressed_url, leader_unit, unit_url
+from helpers import _PORTS, app_url, leader_unit
 
 
 @pytest.fixture
-def alertmanager(juju: jubilant.Juju, request) -> Alertmanager:
-    port = _PORTS["alertmanager"]
-    url = ingressed_url(juju, request, "alertmanager", port) or unit_url(
-        juju, "alertmanager", port
-    )
-    return Alertmanager(url=url)
+def alertmanager(juju: jubilant.Juju) -> Alertmanager:
+    return Alertmanager(url=app_url(juju, "alertmanager", _PORTS["alertmanager"]))
 
 
 @functools.cache
@@ -35,44 +31,30 @@ def _grafana_admin_credentials(model: str) -> str:
 
 
 @pytest.fixture
-def grafana(juju: jubilant.Juju, request) -> Grafana:
+def grafana(juju: jubilant.Juju) -> Grafana:
     """Grafana, authenticated as admin with the charm-generated password."""
     credentials = _grafana_admin_credentials(juju.model)
-    port = _PORTS["grafana"]
-    url = ingressed_url(juju, request, "grafana", port) or unit_url(
-        juju, "grafana", port
-    )
     return Grafana(
-        url=url,
+        url=app_url(juju, "grafana", _PORTS["grafana"]),
         headers={"Authorization": f"Basic {credentials}"},
     )
 
 
 @pytest.fixture
-def loki(juju: jubilant.Juju, request) -> Loki:
-    port = _PORTS["loki"]
-    url = ingressed_url(juju, request, "loki", port) or unit_url(juju, "loki", port)
-    return Loki(url=url)
+def loki(juju: jubilant.Juju) -> Loki:
+    return Loki(url=app_url(juju, "loki", _PORTS["loki"]))
 
 
 @pytest.fixture
-def mimir(juju: jubilant.Juju, request) -> Mimir:
-    port = _PORTS["mimir"]
-    url = ingressed_url(juju, request, "mimir", port) or unit_url(juju, "mimir", port)
-    return Mimir(url=url)
+def mimir(juju: jubilant.Juju) -> Mimir:
+    return Mimir(url=app_url(juju, "mimir", _PORTS["mimir"]))
 
 
 @pytest.fixture
-def prometheus(juju: jubilant.Juju, request) -> Prometheus:
-    port = _PORTS["prometheus"]
-    url = ingressed_url(juju, request, "prometheus", port) or unit_url(
-        juju, "prometheus", port
-    )
-    return Prometheus(url=url)
+def prometheus(juju: jubilant.Juju) -> Prometheus:
+    return Prometheus(url=app_url(juju, "prometheus", _PORTS["prometheus"]))
 
 
 @pytest.fixture
-def tempo(juju: jubilant.Juju, request) -> Tempo:
-    port = _PORTS["tempo"]
-    url = ingressed_url(juju, request, "tempo", port) or unit_url(juju, "tempo", port)
-    return Tempo(url=url)
+def tempo(juju: jubilant.Juju) -> Tempo:
+    return Tempo(url=app_url(juju, "tempo", _PORTS["tempo"]))

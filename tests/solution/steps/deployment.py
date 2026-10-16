@@ -6,17 +6,16 @@ import subprocess
 import jubilant
 import pytest
 from helpers import (
+    _MODEL_ENV_VAR,
     TfDirManager,
+    deployment_mode,
     dump_debug_state,
+    mode_options,
     terraform_dir,
     terraform_output,
     wait_for_active_idle,
 )
 from pytest_bdd import given, then
-
-# Points the "given" step at an already-deployed model instead of applying
-# the Terraform wrapper ourselves (see README.md).
-_MODEL_ENV_VAR = "SOLUTION_MODEL"
 
 
 @pytest.fixture(scope="module")
@@ -29,13 +28,10 @@ def _terraform_applied(request) -> None:
     if _MODEL_ENV_VAR in os.environ:
         return
 
-    internal_tls = request.config.getoption("--internal-tls")
-    external_ca = request.config.getoption("--external-ca")
-    ingress = request.config.getoption("--ingress")
-    if external_ca == "true" and ingress == "false":
-        pytest.fail(
-            "--external-ca=true with --ingress=false isn't an allowed combination."
-        )
+    options = mode_options(request)
+    internal_tls = options["internal_tls"]
+    external_ca = options["external_ca"]
+    ingress = options["ingress"]
 
     tf_dir = terraform_dir(request)
     solution = tf_dir.parent.name
@@ -82,7 +78,6 @@ def the_model_is_healthy(request, juju: jubilant.Juju):
     and, when present, the external-CA model."""
     wait_for_active_idle(juju)
 
-    ca_model_output = terraform_output(terraform_dir(request)).get("ca_model_name", {})
-    ca_model_name = ca_model_output.get("value")
+    ca_model_name = deployment_mode(request)["ca_model_name"]
     if ca_model_name is not None:
         wait_for_active_idle(jubilant.Juju(model=ca_model_name))
