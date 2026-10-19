@@ -167,6 +167,57 @@ jobs:
               q="loki/api/v1/label/juju_application/values?since=24h"
               { curl -sfk --max-time 30 "https://$loki_ip:3100/$q" || curl -sf --max-time 30 "http://$loki_ip:3100/$q"; } > "$d/loki-apps.txt" 2>&1
             fi
+            # otelcol's own counters for spans received, sampled, dropped and sent. Its metrics
+            # port only listens on localhost, but it remote-writes them to Mimir or Prometheus.
+            for backend in "mimir 8080 prometheus/api/v1/query" "prometheus 9090 api/v1/query"; do
+              read -r papp pport ppath <<<"$backend"
+              pip=$(jq -r --arg a "$papp" '.applications[$a].units // {} | to_entries[0].value.address // empty' <<<"$status")
+              [ -n "$pip" ] || continue
+              for scheme in https http; do
+                curl -sfk --max-time 30 -G "$scheme://$pip:$pport/$ppath" \
+                  --data-urlencode 'query={__name__=~"otelcol_(processor_tail_sampling|receiver_accepted_spans|receiver_refused_spans|exporter_sent_spans|exporter_send_failed_spans).*"}' && break
+              done > "$d/otelcol-trace-metrics.json" 2>&1
+            done
+            # The certificate otelcol serves on its trace and log ports (Traefik's backend).
+            otelcol_ip=$(jq -r '.applications.otelcol.units // {} | to_entries[0].value.address // empty' <<<"$status")
+            if [ -n "$otelcol_ip" ]; then
+              for port in 4318 3500; do
+                echo "== $otelcol_ip:$port"
+                echo | timeout 20 openssl s_client -connect "$otelcol_ip:$port" 2>/dev/null |
+                  openssl x509 -noout -subject -issuer -ext subjectAltName
+              done > "$d/otelcol-certs.txt" 2>&1
+            fi
+            # Experiment, after the tests: do these apps' charm traces reach Tempo when otelcol
+            # keeps every "workload" trace? (ops tracing names traces after the bare app name,
+            # and otelcol only keeps all traces named "<x>-charm".)
+            if [ -n "$otelcol_ip" ] && [ -n "$tempo_ip" ]; then
+              tempo_count() {  # number of traces from app $1 in Tempo since $2
+                for scheme in https http; do
+                  curl -sfk --max-time 30 -G "$scheme://$tempo_ip:3200/api/search" \
+                    --data-urlencode "q={resource.juju_application=\"$1\"}" \
+                    --data-urlencode "start=$2" --data-urlencode "end=$(date +%s)" \
+                    --data-urlencode "limit=100" | jq '.traces | length' && return
+                done
+              }
+              poke() {  # run update-status 5 times on one unit of each app
+                for app in loki mimir grafana alertmanager; do
+                  u=$(jq -r --arg a "$app" '.applications[$a].units // {} | keys[0] // empty' <<<"$status")
+                  [ -n "$u" ] || continue
+                  for _ in 1 2 3 4 5; do
+                    juju exec -m "$m" --unit "$u" -- 'JUJU_DISPATCH_PATH=hooks/update-status ./dispatch' > /dev/null 2>&1
+                  done
+                done
+              }
+              {
+                echo "otelcol tracing_sampling_rate_workload=$(juju config -m "$m" otelcol tracing_sampling_rate_workload)"
+                t0=$(date +%s); poke; sleep 120
+                for app in loki mimir grafana alertmanager; do echo "before: $app $(tempo_count "$app" "$t0")"; done
+                juju config -m "$m" otelcol tracing_sampling_rate_workload=100
+                sleep 180
+                t1=$(date +%s); poke; sleep 120
+                for app in loki mimir grafana alertmanager; do echo "after: $app $(tempo_count "$app" "$t1")"; done
+              } > "$d/sampling-experiment.txt" 2>&1
+            fi
             # The certificate Traefik serves on otelcol's log and trace ports, and its routes.
             host=$(jq -r '.applications.traefik["application-status"].message // empty' <<<"$status" | grep -oE '[^/ ]+$')
             if [ -n "$host" ]; then
