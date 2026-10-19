@@ -91,6 +91,68 @@ jobs:
       - name: Run solution tests
         run: just solution test ${{ matrix.solution }} ${{ matrix.internal-tls }} ${{ matrix.external-ca }} ${{ matrix.ingress }}
 
+      # TODO: remove before merging -- temporary, to find out from CI runs why
+      # some log and trace checks fail (pod logs are lost with the runner).
+      - name: Collect debug state
+        if: ${{ always() }}
+        continue-on-error: true
+        run: |
+          k() { sudo k8s kubectl "$@"; }
+          cat > /tmp/tracing_buffer.py <<'EOF'
+          import glob, sqlite3
+          for path in glob.glob("/var/lib/juju/agents/unit-*/charm/.tracing-data.db"):
+              db = sqlite3.connect(path)
+              settings = dict(db.execute("SELECT key, value FROM settings"))
+              pending = db.execute("SELECT count(*) FROM tracing").fetchone()[0]
+              ca = "set" if settings.get("ca") else "none"
+              print(f"{path}: url={settings.get('url', '')!r} ca={ca} pending={pending}")
+          EOF
+          apps="alertmanager catalogue grafana loki mimir tempo otelcol traefik prometheus self-signed-certificates"
+          for m in $(juju models --format json | jq -r '.models[]."short-name"' | grep -vx controller); do
+            d="solution-debug/$m"
+            mkdir -p "$d/units" "$d/pods"
+            juju status -m "$m" --relations > "$d/status.txt" 2>&1
+            juju debug-log -m "$m" --replay --no-tail > "$d/debug-log.txt" 2>&1
+            status=$(juju status -m "$m" --format json 2>/dev/null)
+            for app in $apps; do
+              for u in $(jq -r --arg a "$app" '.applications[$a].units // {} | keys[]' <<<"$status"); do
+                juju show-unit -m "$m" "$u" 2>&1 |
+                  sed -E 's/((secret|password|access|token|credential)[a-z_-]*: ).*/\1<redacted>/I' > "$d/units/${u/\//-}.yaml"
+              done
+            done
+            k get pods,events -n "$m" -o wide > "$d/pods.txt" 2>&1
+            for p in $(k get pods -n "$m" -o jsonpath='{.items[*].metadata.name}'); do
+              k logs -n "$m" "$p" --all-containers --prefix --timestamps > "$d/pods/$p.log" 2>&1
+              k logs -n "$m" "$p" --all-containers --prefix --timestamps --previous > "$d/pods/$p.previous.log" 2>/dev/null || rm -f "$d/pods/$p.previous.log"
+              for c in $(k get pod -n "$m" "$p" -o jsonpath='{.spec.containers[*].name}'); do
+                if [ "$c" = charm ]; then
+                  k exec -i -n "$m" "$p" -c charm -- python3 - < /tmp/tracing_buffer.py > "$d/pods/$p.tracing-buffer.txt" 2>&1
+                else
+                  k exec -n "$m" "$p" -c "$c" -- /charm/bin/pebble plan > "$d/pods/$p.$c.plan.yaml" 2>&1
+                fi
+              done
+            done
+            # The certificate Traefik serves on otelcol's log and trace ports, and its routes.
+            host=$(jq -r '.applications.traefik["application-status"].message // empty' <<<"$status" | grep -oE '[^/ ]+$')
+            if [ -n "$host" ]; then
+              for port in 3500 4318; do
+                echo "== $host:$port" >> "$d/traefik-certs.txt"
+                echo | timeout 20 openssl s_client -connect "$host:$port" 2>/dev/null |
+                  openssl x509 -noout -subject -issuer -ext subjectAltName >> "$d/traefik-certs.txt" 2>&1
+              done
+              k exec -n "$m" traefik-0 -c traefik -- sh -c 'for f in /opt/traefik/juju/*.yaml; do echo "== $f"; cat "$f"; done' > "$d/traefik-config.txt" 2>&1
+            fi
+          done
+
+      # TODO: remove before merging -- goes with "Collect debug state" above.
+      - name: Upload debug state
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: solution-debug-${{ matrix.solution }}-${{ matrix.internal-tls }}-${{ matrix.external-ca }}-${{ matrix.ingress }}
+          path: solution-debug
+          retention-days: 14
+
   promote:
     name: Promote ${{ matrix.solution }}
     needs: [discover-solutions, test-solutions]
