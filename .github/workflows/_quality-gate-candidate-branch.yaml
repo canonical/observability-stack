@@ -97,6 +97,8 @@ jobs:
         if: ${{ always() }}
         continue-on-error: true
         run: |
+          # Keep going past failed commands (GitHub runs this with bash -e).
+          set +e
           k() { sudo k8s kubectl "$@"; }
           cat > /tmp/tracing_buffer.py <<'EOF'
           import glob, sqlite3
@@ -106,6 +108,21 @@ jobs:
               pending = db.execute("SELECT count(*) FROM tracing").fetchone()[0]
               ca = "set" if settings.get("ca") else "none"
               print(f"{path}: url={settings.get('url', '')!r} ca={ca} pending={pending}")
+          EOF
+          # Is each CA file the charm wrote also in the trust store Pebble reads?
+          cat > /tmp/trust_check.sh <<'EOF'
+          bundle=/etc/ssl/certs/ca-certificates.crt
+          echo "bundle mtime: $(stat -c %y "$bundle")"
+          for f in /usr/local/share/ca-certificates/*.crt /usr/local/share/ca-certificates/*/*.crt; do
+            [ -f "$f" ] || continue
+            echo "file $f mtime: $(stat -c %y "$f")"
+            awk -v name="$f" -v bundle="$bundle" '
+              BEGIN { while ((getline line < bundle) > 0) flat = flat (line ~ /-----/ ? "|" : line) }
+              /BEGIN CERT/ { body = ""; next }
+              /END CERT/ { n++; print name " cert " n ": " (index(flat, body) ? "in trust store" : "NOT in trust store"); next }
+              { body = body $0 }
+            ' "$f"
+          done
           EOF
           apps="alertmanager catalogue grafana loki mimir tempo otelcol traefik prometheus self-signed-certificates"
           for m in $(juju models --format json | jq -r '.models[]."short-name"' | grep -vx controller); do
@@ -121,6 +138,7 @@ jobs:
               done
             done
             k get pods,events -n "$m" -o wide > "$d/pods.txt" 2>&1
+            k get pods -n "$m" -o json > "$d/pods.json" 2>&1
             for p in $(k get pods -n "$m" -o jsonpath='{.items[*].metadata.name}'); do
               k logs -n "$m" "$p" --all-containers --prefix --timestamps > "$d/pods/$p.log" 2>&1
               k logs -n "$m" "$p" --all-containers --prefix --timestamps --previous > "$d/pods/$p.previous.log" 2>/dev/null || rm -f "$d/pods/$p.previous.log"
@@ -129,17 +147,35 @@ jobs:
                   k exec -i -n "$m" "$p" -c charm -- python3 - < /tmp/tracing_buffer.py > "$d/pods/$p.tracing-buffer.txt" 2>&1
                 else
                   k exec -n "$m" "$p" -c "$c" -- /charm/bin/pebble plan > "$d/pods/$p.$c.plan.yaml" 2>&1
+                  k exec -i -n "$m" "$p" -c "$c" -- sh -s < /tmp/trust_check.sh > "$d/pods/$p.$c.trust.txt" 2>&1
                 fi
               done
             done
+            # Which apps Tempo has traces from and Loki has logs from, asked directly.
+            since=$(( $(date +%s) - 86400 ))
+            tempo_ip=$(jq -r '.applications.tempo.units // {} | to_entries[0].value.address // empty' <<<"$status")
+            if [ -n "$tempo_ip" ]; then
+              for tag in resource.juju_application resource.service.name; do
+                q="api/v2/search/tag/$tag/values?start=$since&end=$(date +%s)"
+                echo "== $tag"
+                curl -sfk --max-time 30 "https://$tempo_ip:3200/$q" || curl -sf --max-time 30 "http://$tempo_ip:3200/$q"
+                echo
+              done > "$d/tempo-tags.txt" 2>&1
+            fi
+            loki_ip=$(jq -r '.applications.loki.units // {} | to_entries[0].value.address // empty' <<<"$status")
+            if [ -n "$loki_ip" ]; then
+              q="loki/api/v1/label/juju_application/values?since=24h"
+              { curl -sfk --max-time 30 "https://$loki_ip:3100/$q" || curl -sf --max-time 30 "http://$loki_ip:3100/$q"; } > "$d/loki-apps.txt" 2>&1
+            fi
             # The certificate Traefik serves on otelcol's log and trace ports, and its routes.
             host=$(jq -r '.applications.traefik["application-status"].message // empty' <<<"$status" | grep -oE '[^/ ]+$')
             if [ -n "$host" ]; then
               for port in 3500 4318; do
-                echo "== $host:$port" >> "$d/traefik-certs.txt"
+                echo "== $host:$port"
                 echo | timeout 20 openssl s_client -connect "$host:$port" 2>/dev/null |
-                  openssl x509 -noout -subject -issuer -ext subjectAltName >> "$d/traefik-certs.txt" 2>&1
-              done
+                  openssl x509 -noout -subject -issuer -ext subjectAltName
+              done > "$d/traefik-certs.txt" 2>&1
+              # shellcheck disable=SC2016 # $f must expand inside the container
               k exec -n "$m" traefik-0 -c traefik -- sh -c 'for f in /opt/traefik/juju/*.yaml; do echo "== $f"; cat "$f"; done' > "$d/traefik-config.txt" 2>&1
             fi
           done
