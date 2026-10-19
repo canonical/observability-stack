@@ -52,7 +52,7 @@ html_title = project + " documentation"
 # NOTE: The Open Graph Protocol (OGP) enhances page display in a social graph
 #       and is used by social media platforms; see https://ogp.me/
 
-ogp_site_url = "https://documentation.ubuntu.com/observability/"
+ogp_site_url = f"https://canonical.com/observability/docs/{os.environ.get('READTHEDOCS_VERSION', 'local')}/"
 
 
 # Preview name of the documentation website
@@ -173,19 +173,20 @@ html_theme_options = {
 # TODO: If your documentation is hosted on https://docs.ubuntu.com/,
 #       uncomment and update as needed.
 
-slug = 'observability'
+slug = "observability/docs"
 
 #######################
 # Sitemap configuration: https://sphinx-sitemap.readthedocs.io/
 #######################
 
-# Base URL of RTD hosted project
+# Versioned canonical URL on canonical.com, where the docs are served via the RTD proxy
 
-html_baseurl = 'https://documentation.ubuntu.com/observability/'
+html_baseurl = f"https://canonical.com/observability/docs/{os.environ.get('READTHEDOCS_VERSION', 'local')}/"
 
 # sphinx-sitemap uses html_baseurl to generate the full URL for each page:
 
 sitemap_url_scheme = '{link}'
+sitemap_filename = "doc-sitemap.xml"
 
 # Include `lastmod` dates in the sitemap:
 
@@ -206,7 +207,7 @@ sitemap_excludes = [
 # Template and asset locations #
 ################################
 
-html_static_path = [".sphinx/_static"]
+html_static_path = [".sphinx/_static", "_static"]
 templates_path = [".sphinx/_templates"]
 
 
@@ -329,6 +330,7 @@ html_css_files = [
 
 html_js_files = [
     "bundle.js",
+    "js/overwrite_links.js",
  ]
 
 
