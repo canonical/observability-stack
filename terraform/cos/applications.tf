@@ -196,7 +196,7 @@ module "tempo" {
 }
 
 module "traefik" {
-  source = "git::https://github.com/canonical/traefik-k8s-operator//terraform?ref=traefik-k8s-rev360"
+  source = "git::https://github.com/canonical/traefik-k8s-operator//terraform?ref=traefik-k8s-rev511"
   count  = local.traefik_enabled ? 1 : 0
 
   app_name           = var.traefik.app_name
