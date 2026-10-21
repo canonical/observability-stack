@@ -1,5 +1,5 @@
 module "alertmanager" {
-  source = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform?ref=tf-0.34.0"
+  source = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform?ref=tf-0.34.1"
 
   app_name           = var.alertmanager.app_name
   base               = local.bases.o11y
@@ -74,7 +74,7 @@ module "opentelemetry_collector" {
 }
 
 module "prometheus" {
-  source = "git::https://github.com/canonical/prometheus-k8s-operator//terraform?ref=tf-3.14.0"
+  source = "git::https://github.com/canonical/prometheus-k8s-operator//terraform?ref=tf-3.14.1"
 
   app_name           = var.prometheus.app_name
   base               = local.bases.o11y

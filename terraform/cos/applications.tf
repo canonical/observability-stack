@@ -1,5 +1,5 @@
 module "alertmanager" {
-  source = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform?ref=tf-0.34.0"
+  source = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform?ref=tf-0.34.1"
 
   app_name           = var.alertmanager.app_name
   base               = local.bases.o11y
