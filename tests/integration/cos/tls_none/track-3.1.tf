@@ -48,3 +48,4 @@ module "cos" {
   tempo_coordinator = { units = 1 }
   tempo_worker      = { compactor_units = 1, distributor_units = 1, ingester_units = 1, metrics_generator_units = 1, querier_units = 1, query_frontend_units = 1 }
 }
+

@@ -15,6 +15,12 @@ The combination of these 2 configurations provides our products with 4 modes of 
 3. Only `internal` TLS communication (default)
 4. Neither `external` nor `internal` TLS communication, i.e. `unencrypted`
 
+```{note}
+As an alternative to `internal` TLS, COS (but not COS Lite) can secure internal communication 
+by leveraging the Istio service mesh. When `mesh_enabled = true`, the COS components are placed
+on the mesh and use mTLS between each other. Please note that you need [istio-k8s](https://canonical-service-mesh-documentation.readthedocs-hosted.com/latest/istio/)
+already installed to use this feature.
+```
 
 <!-- Note: edit this diagram by dragging it into a drawio editor -->
 ![high-level-tls.png](/assets/high-level-tls.png)

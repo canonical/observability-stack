@@ -5,6 +5,13 @@ This is a Terraform module facilitating the deployment of the COS Dev solution, 
 This module is intended for development and testing environments where full HA is not required. It uses the individual coordinator and worker charm modules, rather than the bundled operator modules used by the main COS module.
 
 <!-- BEGIN_TF_DOCS -->
+## Requirements
+
+| Name | Version |
+| ---- | ------- |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.11 |
+| <a name="requirement_juju"></a> [juju](#requirement\_juju) | >= 1.0 |
+
 ## Providers
 
 | Name | Version |

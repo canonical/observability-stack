@@ -39,6 +39,12 @@ def cos_model(request):
 
 
 @pytest.fixture(scope="module")
+def istio_model(request):
+    with jubilant.temp_model(keep=_keep_models(request)) as juju:
+        yield juju
+
+
+@pytest.fixture(scope="module")
 def tf_manager(tmp_path_factory):
     base = tmp_path_factory.mktemp("terraform_base")
     return TfDirManager(base)
