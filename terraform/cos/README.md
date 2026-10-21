@@ -16,7 +16,7 @@ This is a Terraform module facilitating the deployment of the COS solution, usin
 
 | Name | Source | Version |
 | ---- | ------ | ------- |
-| <a name="module_alertmanager"></a> [alertmanager](#module\_alertmanager) | git::https://github.com/canonical/alertmanager-k8s-operator//terraform | tf-0.34.0 |
+| <a name="module_alertmanager"></a> [alertmanager](#module\_alertmanager) | git::https://github.com/canonical/alertmanager-k8s-operator//terraform | tf-0.34.1 |
 | <a name="module_catalogue"></a> [catalogue](#module\_catalogue) | git::https://github.com/canonical/catalogue-k8s-operator//charm/terraform | tf-3.0.3 |
 | <a name="module_grafana"></a> [grafana](#module\_grafana) | git::https://github.com/canonical/grafana-k8s-operator//terraform | tf-12.4.2 |
 | <a name="module_loki"></a> [loki](#module\_loki) | git::https://github.com/canonical/loki-operators//terraform | tf-loki-3.7.3 |
