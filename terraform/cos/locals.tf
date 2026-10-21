@@ -48,13 +48,13 @@ locals {
     traefik           = var.traefik.revision != null ? var.traefik.revision : data.juju_charm.traefik_info.revision
   }
   tracks = {
-    alertmanager = "0.34"
-    catalogue    = "3.0"
-    grafana      = "12.4"
-    loki         = "3.7"
-    mimir        = "2.17"
-    otelcol      = "0.130"
-    tempo        = "2.10"
+    alertmanager  = "0.34"
+    catalogue     = "3.0"
+    grafana       = "12.4"
+    loki          = "3.7"
+    mimir         = "2.17"
+    otelcol       = "0.130"
+    tempo         = "2.10"
     istio_beacon  = "1.31"
     istio_ingress = "1.31"
     # external charms
