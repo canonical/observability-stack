@@ -47,16 +47,16 @@ variable "s3_access_key" {
 
 module "istio" {
   count      = var.mesh ? 1 : 0
-  source     = "git::https://github.com/canonical/service-mesh//charms/istio-k8s/terraform"
-  channel    = "dev/edge"
+  source     = "git::https://github.com/canonical/service-mesh//charms/istio-k8s/terraform?ref=track/1.31"
+  channel    = "1.31/stable"
   model_uuid = data.juju_model.istio-model[0].uuid
 }
 
 module "cos" {
-  source       = "git::https://github.com/canonical/observability-stack//terraform/cos"
+  source       = "git::https://github.com/canonical/observability-stack//terraform/cos?ref=track/3.1"
   depends_on   = [module.istio] # The control plane must exist before COS components join the mesh.
   model        = { uuid = data.juju_model.model.uuid }
-  risk         = "edge"
+  risk         = "stable"
   internal_tls = false
   mesh_enabled = var.mesh
 
