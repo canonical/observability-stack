@@ -10,7 +10,7 @@ import jubilant
 from helpers import generic_assertions, no_errors_in_otelcol_logs
 
 TRACK_3_TF_FILE = Path(__file__).parent.resolve() / "track-3.0.tf"
-TRACK_DEV_TF_FILE = Path(__file__).parent.resolve() / "track-dev.tf"
+TRACK_DEV_TF_FILE = Path(__file__).parent.resolve() / "track-3.1.tf"
 
 
 def test_deploy_from_track(tf_manager, cos_model: jubilant.Juju):

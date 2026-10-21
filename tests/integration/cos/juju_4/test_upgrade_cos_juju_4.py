@@ -8,7 +8,7 @@ from pathlib import Path
 import jubilant
 from helpers import generic_assertions, no_errors_in_otelcol_logs
 
-TF_FILE = Path(__file__).parent.parent.resolve() / "tls_full/track-dev.tf"
+TF_FILE = Path(__file__).parent.parent.resolve() / "tls_full/track-3.1.tf"
 S3_ENDPOINT = {
     "s3_endpoint": os.getenv("S3_ENDPOINT"),
     "s3_secret_key": os.getenv("S3_SECRET_KEY"),

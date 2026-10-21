@@ -15,7 +15,7 @@ from helpers import (
 )
 
 TRACK_3_TF_FILE = Path(__file__).parent.resolve() / "track-3.0.tf"
-TRACK_DEV_TF_FILE = Path(__file__).parent.resolve() / "track-dev.tf"
+TRACK_DEV_TF_FILE = Path(__file__).parent.resolve() / "track-3.1.tf"
 S3_ENDPOINT = {
     "s3_endpoint": os.getenv("S3_ENDPOINT"),
     "s3_secret_key": os.getenv("S3_SECRET_KEY"),

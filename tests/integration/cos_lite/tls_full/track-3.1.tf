@@ -34,12 +34,12 @@ module "ssc" {
 }
 
 module "cos-lite" {
-  source     = "git::https://github.com/canonical/observability-stack//terraform/cos-lite"
+  source     = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=track/3.0"
   depends_on = [module.ssc] # Ensure the CA model's offers exist before COS consumes them.
 
   model                           = { uuid = data.juju_model.cos-model.uuid }
-  risk                            = "edge"
-  internal_tls                    = false
+  risk                            = "stable"
+  internal_tls                    = true
   external_certificates_offer_url = "admin/${var.ca_model}.self-signed-certificates-certificates"
   external_ca_cert_offer_url      = "admin/${var.ca_model}.self-signed-certificates-send-ca-cert"
 }
