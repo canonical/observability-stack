@@ -41,7 +41,6 @@ module "grafana" {
   revision           = local.revisions.grafana
   storage_directives = var.grafana.storage_directives
   units              = var.grafana.units
-  replace_triggers   = [terraform_data.grafana_litestream_resource.id]
 }
 
 module "loki" {

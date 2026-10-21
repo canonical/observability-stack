@@ -29,8 +29,7 @@ module "catalogue" {
 }
 
 module "grafana" {
-  source           = "git::https://github.com/canonical/grafana-k8s-operator//terraform?ref=tf-12.4.2"
-  replace_triggers = [terraform_data.grafana_litestream_resource.id]
+  source = "git::https://github.com/canonical/grafana-k8s-operator//terraform?ref=tf-12.4.2"
 
   app_name           = var.grafana.app_name
   base               = local.bases.o11y

@@ -67,8 +67,6 @@ resource "juju_integration" "catalogue_integration_grafana" {
     name     = module.grafana.app_name
     endpoint = module.grafana.requires.catalogue
   }
-
-  lifecycle { replace_triggered_by = [terraform_data.grafana_litestream_resource] }
 }
 
 # -------------- # Dashboards ---------------------
@@ -108,8 +106,6 @@ resource "juju_integration" "grafana_dashboards" {
     name     = module.grafana.app_name
     endpoint = module.grafana.requires.grafana_dashboard
   }
-
-  lifecycle { replace_triggered_by = [terraform_data.grafana_litestream_resource] }
 }
 
 # -------------- # Grafana Source --------------
@@ -145,8 +141,6 @@ resource "juju_integration" "grafana_sources" {
     name     = module.grafana.app_name
     endpoint = module.grafana.requires.grafana_source
   }
-
-  lifecycle { replace_triggered_by = [terraform_data.grafana_litestream_resource] }
 }
 
 # -------------- # Logs ---------------------
@@ -301,8 +295,6 @@ resource "juju_integration" "charm_tracing_grafana" {
     name     = module.opentelemetry_collector.app_name
     endpoint = module.opentelemetry_collector.provides.receive_traces
   }
-
-  lifecycle { replace_triggered_by = [terraform_data.grafana_litestream_resource] }
 }
 
 resource "juju_integration" "charm_tracing_otelcol" {
@@ -409,8 +401,6 @@ resource "juju_integration" "grafana_ingress" {
     name     = module.traefik[0].app_name
     endpoint = module.traefik[0].endpoints.ingress
   }
-
-  lifecycle { replace_triggered_by = [terraform_data.grafana_ingress_interface, terraform_data.grafana_litestream_resource] }
 }
 
 resource "juju_integration" "traefik_route" {
