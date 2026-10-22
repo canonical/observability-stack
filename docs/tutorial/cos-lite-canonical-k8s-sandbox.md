@@ -22,7 +22,7 @@ In this tutorial you deploy a single-node COS Lite appliance, backed by hostPath
 
 To deploy the COS Lite solution, create this root module and set the `model` to `cos-lite`:
 
-```{literalinclude} ../../tests/integration/cos_lite/tls_internal/track-dev.tf
+```{literalinclude} ../../tests/integration/cos_lite/tls_internal/track-3.1.tf
 ```
 
 ```{dropdown} Customize COS Lite
