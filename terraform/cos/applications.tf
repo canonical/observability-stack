@@ -44,7 +44,7 @@ module "grafana" {
 }
 
 module "istio_beacon" {
-  source = "git::https://github.com/canonical/service-mesh//charms/istio-beacon-k8s/terraform"
+  source = "git::https://github.com/canonical/service-mesh//charms/istio-beacon-k8s/terraform?ref=track/istio/1.31"
   count  = var.mesh_enabled ? 1 : 0
 
   app_name           = var.istio_beacon.app_name
@@ -60,7 +60,7 @@ module "istio_beacon" {
 }
 
 module "istio_ingress" {
-  source = "git::https://github.com/canonical/service-mesh//charms/istio-ingress-k8s/terraform"
+  source = "git::https://github.com/canonical/service-mesh//charms/istio-ingress-k8s/terraform?ref=track/istio/1.31"
   count  = local.istio_ingress_enabled ? 1 : 0
 
   app_name           = var.istio_ingress.app_name
@@ -228,7 +228,7 @@ module "tempo" {
 }
 
 module "traefik" {
-  source = "git::https://github.com/canonical/traefik-k8s-operator//terraform?ref=traefik-k8s-rev360"
+  source = "git::https://github.com/canonical/traefik-k8s-operator//terraform?ref=traefik-k8s-rev511"
   count  = local.traefik_enabled ? 1 : 0
 
   app_name           = var.traefik.app_name
