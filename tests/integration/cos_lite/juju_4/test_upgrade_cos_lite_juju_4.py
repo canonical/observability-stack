@@ -7,7 +7,7 @@ from pathlib import Path
 import jubilant
 from helpers import generic_assertions, no_errors_in_otelcol_logs
 
-TF_FILE = Path(__file__).parent.parent.resolve() / "tls_full/track-dev.tf"
+TF_FILE = Path(__file__).parent.parent.resolve() / "tls_full/track-3.1.tf"
 
 
 def test_deploy_from_track(

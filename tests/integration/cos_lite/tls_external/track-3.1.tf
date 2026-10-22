@@ -8,11 +8,11 @@ terraform {
   }
 }
 
-variable "cos_model" {
+variable "ca_model" {
   type = string
 }
 
-variable "ca_model" {
+variable "cos_model" {
   type = string
 }
 
@@ -21,21 +21,10 @@ data "juju_model" "ca-model" {
   owner = "admin"
 }
 
+
 data "juju_model" "cos-model" {
   name  = var.cos_model
   owner = "admin"
-}
-
-variable "s3_endpoint" {
-  type = string
-}
-
-variable "s3_secret_key" {
-  type = string
-}
-
-variable "s3_access_key" {
-  type = string
 }
 
 module "ssc" {
@@ -45,26 +34,13 @@ module "ssc" {
   offered_endpoints = ["certificates", "send-ca-cert"]
 }
 
-module "cos" {
-  source     = "git::https://github.com/canonical/observability-stack//terraform/cos"
+module "cos-lite" {
+  source     = "git::https://github.com/canonical/observability-stack//terraform/cos-lite?ref=track/3.1"
   depends_on = [module.ssc] # Ensure the CA model's offers exist before COS consumes them.
 
   model                           = { uuid = data.juju_model.cos-model.uuid }
-  risk                            = "edge"
+  risk                            = "stable"
   internal_tls                    = false
   external_certificates_offer_url = "admin/${var.ca_model}.self-signed-certificates-certificates"
   external_ca_cert_offer_url      = "admin/${var.ca_model}.self-signed-certificates-send-ca-cert"
-
-  s3_endpoint   = var.s3_endpoint
-  s3_secret_key = var.s3_secret_key
-  s3_access_key = var.s3_access_key
-
-  alertmanager      = { units = 1 }
-  grafana           = { units = 1 }
-  loki_coordinator  = { units = 1 }
-  loki_worker       = { backend_units = 1, read_units = 1, write_units = 1 }
-  mimir_coordinator = { units = 1 }
-  mimir_worker      = { backend_units = 1, read_units = 1, write_units = 1 }
-  tempo_coordinator = { units = 1 }
-  tempo_worker      = { compactor_units = 1, distributor_units = 1, ingester_units = 1, metrics_generator_units = 1, querier_units = 1, query_frontend_units = 1 }
 }

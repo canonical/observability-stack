@@ -37,7 +37,7 @@ and configure RadosGW to listen on port 8080 ([doc](https://canonical.com/ceph/d
 
 Create a `cos-demo.tf` file as follows:
 
-```{literalinclude} /../tests/integration/cos/tls_internal/track-dev.tf
+```{literalinclude} /../tests/integration/cos/tls_internal/track-3.1.tf
     :language: hcl
 ```
 
