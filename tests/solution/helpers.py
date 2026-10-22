@@ -70,7 +70,7 @@ class TfDirManager:
     ) -> str:
         target_arg = f"-target module.{target}" if target else ""
         var_file_args = " ".join(f"-var-file {f}" for f in var_files)
-        var_args = " ".join(f"-var {k}={v}" for k, v in kwargs.items())
+        var_args = " ".join(f"-var {k}={_fmt_tf_var(v)}" for k, v in kwargs.items())
         return f"-auto-approve {target_arg} {var_file_args} {var_args}"
 
     def apply(
@@ -89,6 +89,13 @@ class TfDirManager:
             None, var_files, **kwargs
         )
         subprocess.run(shlex.split(cmd_str), check=True)
+
+
+def _fmt_tf_var(value) -> str:
+    """Convert a python value to its Terraform CLI representation."""
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    return str(value)
 
 
 def lookback_window_ns() -> tuple[int, int]:
