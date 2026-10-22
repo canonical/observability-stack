@@ -17,6 +17,7 @@ from typing import Any, Callable, Dict, Optional, Sequence
 
 import jubilant
 import requests
+from observability_clients import Loki, Tempo
 from tenacity import RetryError, Retrying, retry_if_result, stop_after_delay, wait_fixed
 
 # Resolved terraform/tofu binary, set by solution.just; falls back to
@@ -119,6 +120,33 @@ def retry_until_found(check: Callable[[], bool]) -> bool:
         return retrying(check)
     except RetryError:
         return False
+
+
+def loki_has_logs(loki: Loki, application: str) -> bool:
+    """Whether Loki has a log line labelled `juju_application=application` in the lookback window.
+
+    The window ends now, so each retry also sees lines that arrived since the last one.
+    """
+    start, end = lookback_window_ns()
+    result = loki.query_range(
+        f'{{juju_application="{application}"}}', start=str(start), end=str(end), limit=1
+    )
+    return bool(result.get("data", {}).get("result"))
+
+
+def tempo_has_traces(tempo: Tempo, application: str) -> bool:
+    """Whether Tempo has a trace with `resource.juju_application=application` in the lookback window.
+
+    The window ends now, so each retry also sees traces that arrived since the last one.
+    """
+    start, end = lookback_window_ns()
+    result = tempo.search(
+        f'{{resource.juju_application="{application}"}}',
+        start=str(start // 1_000_000_000),
+        end=str(end // 1_000_000_000),
+        limit=1,
+    )
+    return bool(result.get("traces"))
 
 
 def terraform_dir(request) -> Path:

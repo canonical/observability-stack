@@ -4,7 +4,13 @@ import jubilant
 from observability_clients import Loki, Mimir, Prometheus, Tempo
 from pytest_bdd import parsers, then
 
-from helpers import LOOKBACK_HOURS, lookback_window_ns, retry_until_found, _expect_deployed
+from helpers import (
+    LOOKBACK_HOURS,
+    _expect_deployed,
+    loki_has_logs,
+    retry_until_found,
+    tempo_has_traces,
+)
 
 
 @then(parsers.parse('Prometheus has metrics from the "{application}" application'))
@@ -35,15 +41,7 @@ def mimir_has_metrics_from(
 def loki_has_logs_from(loki: Loki, juju: jubilant.Juju, request, application: str):
     """Assert Loki has logs with a given `juju_application` label."""
     _expect_deployed(juju, request, application)
-    start, end = lookback_window_ns()
-
-    def check() -> bool:
-        result = loki.query_range(
-            f'{{juju_application="{application}"}}', start=str(start), end=str(end), limit=1
-        )
-        return bool(result.get("data", {}).get("result"))
-
-    assert retry_until_found(check), (
+    assert retry_until_found(lambda: loki_has_logs(loki, application)), (
         f"Loki has no log lines labelled juju_application={application} "
         f"in the last {LOOKBACK_HOURS}h"
     )
@@ -55,18 +53,7 @@ def tempo_has_traces_from(
 ):
     """Assert Tempo has traces with a given `resource.juju_application` attribute."""
     _expect_deployed(juju, request, application)
-    start, end = lookback_window_ns()
-
-    def check() -> bool:
-        result = tempo.search(
-            f'{{resource.juju_application="{application}"}}',
-            start=str(start // 1_000_000_000),
-            end=str(end // 1_000_000_000),
-            limit=1,
-        )
-        return bool(result.get("traces"))
-
-    assert retry_until_found(check), (
+    assert retry_until_found(lambda: tempo_has_traces(tempo, application)), (
         f"Tempo has no traces with resource.juju_application={application} "
         f"in the last {LOOKBACK_HOURS}h"
     )
