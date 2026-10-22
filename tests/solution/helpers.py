@@ -8,6 +8,7 @@ import os
 import pytest
 import shlex
 import shutil
+import socket
 import ssl
 import subprocess
 import tempfile
@@ -392,6 +393,24 @@ def get_tls_context(juju: jubilant.Juju, ca_name: str) -> Optional[ssl.SSLContex
         ctx = ssl.create_default_context()
         ctx.load_verify_locations(cert_file.name)
     return ctx
+
+
+def tls_handshake_error(
+    address: str, port: int, server_hostname: str, ctx: ssl.SSLContext
+) -> Optional[str]:
+    """Try a TLS handshake that verifies the peer's certificate against `ctx`.
+
+    Returns None if it succeeds, else the TLS error, so the caller's assertion
+    can say why (an unknown CA and a hostname mismatch need different fixes).
+    """
+    try:
+        with (
+            socket.create_connection((address, port), timeout=30) as sock,
+            ctx.wrap_socket(sock, server_hostname=server_hostname),
+        ):
+            return None
+    except ssl.SSLError as exc:
+        return str(exc)
 
 
 def _expect_deployed(juju: jubilant.Juju, request, application: str) -> None:

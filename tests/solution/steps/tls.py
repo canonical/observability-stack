@@ -1,7 +1,5 @@
 """Steps about TLS: checks the model against `deployment_mode` instead of a mode tag."""
 
-import socket
-import ssl
 from urllib.parse import urlparse
 
 import jubilant
@@ -10,22 +8,13 @@ from helpers import (
     deployment_mode,
     get_tls_context,
     ingressed_url,
+    tls_handshake_error,
     unit_url,
 )
 from pytest_bdd import parsers, then
 
 _INTERNAL_CA_APP = "ca"  # the product modules' default
-
-
-def _tls_handshake(
-    address: str, port: int, server_hostname: str, ctx: ssl.SSLContext
-) -> None:
-    """Complete a TLS handshake, verifying the peer's certificate against `ctx`."""
-    with (
-        socket.create_connection((address, port), timeout=30) as sock,
-        ctx.wrap_socket(sock, server_hostname=server_hostname),
-    ):
-        pass
+_HTTPS_PORT = 443  # for an https URL that doesn't name a port
 
 
 @then(
@@ -62,12 +51,10 @@ def components_certificate_is_trusted_by_internal_ca(
             f"{unit_name.replace('/', '-')}.{component}-endpoints"
             f".{juju.model}.svc.cluster.local"
         )
-        try:
-            _tls_handshake(unit.address, _PORTS[component], fqdn, ctx)
-        except ssl.SSLError as exc:
-            raise AssertionError(
-                f"{unit_name}'s certificate isn't valid for {fqdn} under the internal CA: {exc}"
-            ) from exc
+        error = tls_handshake_error(unit.address, _PORTS[component], fqdn, ctx)
+        assert error is None, (
+            f"{unit_name}'s certificate isn't valid for {fqdn} under the internal CA: {error}"
+        )
 
 
 @then(
@@ -97,9 +84,9 @@ def components_certificate_is_trusted_by_external_ca(
     )
     assert ctx is not None, f"external CA isn't deployed in model '{ca_model_name}'"
     parsed = urlparse(url)
-    try:
-        _tls_handshake(parsed.hostname, parsed.port or 443, parsed.hostname, ctx)
-    except ssl.SSLError as exc:
-        raise AssertionError(
-            f"{component}'s ingress certificate isn't trusted by the external CA: {exc}"
-        ) from exc
+    error = tls_handshake_error(
+        parsed.hostname, parsed.port or _HTTPS_PORT, parsed.hostname, ctx
+    )
+    assert error is None, (
+        f"{component}'s ingress certificate isn't trusted by the external CA: {error}"
+    )
