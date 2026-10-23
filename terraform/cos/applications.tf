@@ -43,6 +43,38 @@ module "grafana" {
   units              = var.grafana.units
 }
 
+module "istio_beacon" {
+  source = "git::https://github.com/canonical/service-mesh//charms/istio-beacon-k8s/terraform?ref=tf-1.31.1"
+  count  = var.mesh_enabled ? 1 : 0
+
+  app_name           = var.istio_beacon.app_name
+  base               = local.bases.istio_beacon
+  channel            = local.channels.istio_beacon
+  config             = var.istio_beacon.config
+  constraints        = var.istio_beacon.constraints
+  model_uuid         = local.model_uuid
+  resources          = var.istio_beacon.resources
+  revision           = local.revisions.istio_beacon
+  storage_directives = var.istio_beacon.storage_directives
+  units              = var.istio_beacon.units
+}
+
+module "istio_ingress" {
+  source = "git::https://github.com/canonical/service-mesh//charms/istio-ingress-k8s/terraform?ref=tf-1.31.1"
+  count  = local.istio_ingress_enabled ? 1 : 0
+
+  app_name           = var.istio_ingress.app_name
+  base               = local.bases.istio_ingress
+  channel            = local.channels.istio_ingress
+  config             = var.istio_ingress.config
+  constraints        = var.istio_ingress.constraints
+  model_uuid         = local.model_uuid
+  resources          = var.istio_ingress.resources
+  revision           = local.revisions.istio_ingress
+  storage_directives = var.istio_ingress.storage_directives
+  units              = var.istio_ingress.units
+}
+
 module "loki" {
   source = "git::https://github.com/canonical/loki-operators//terraform?ref=tf-loki-3.7.3"
 
@@ -120,7 +152,7 @@ module "mimir" {
 }
 
 module "opentelemetry_collector" {
-  source = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform?ref=tf-0.130.3"
+  source = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform?ref=tf-0.130.5"
 
   app_name           = var.opentelemetry_collector.app_name
   base               = local.bases.o11y

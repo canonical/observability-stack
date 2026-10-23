@@ -45,7 +45,7 @@ class TfDirManager:
     @staticmethod
     def _args_str(target: Optional[str] = None, **kwargs) -> str:
         target_arg = f"-target module.{target}" if target else ""
-        var_args = " ".join(f"-var {k}={v}" for k, v in kwargs.items())
+        var_args = " ".join(f"-var {k}={_fmt_tf_var(v)}" for k, v in kwargs.items())
         return "-auto-approve " + f"{target_arg} " + var_args
 
     def apply(self, target: Optional[str] = None, **kwargs):
@@ -152,6 +152,13 @@ def no_errors_in_otelcol_logs(juju: jubilant.Juju, lookback_window: int = 60 * 2
     logs = _logs_newer_than(stdout, latest_log_ts)
     # no new logs is a good sign, as long as the lookback_window is sufficiently long
     _no_errors_in_otelcol_logs(logs)
+
+
+def _fmt_tf_var(value) -> str:
+    """Convert a python value to its Terraform CLI representation."""
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    return str(value)
 
 
 def _log_level(line: str) -> Optional[str]:
