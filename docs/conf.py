@@ -70,7 +70,7 @@ copyright = "%s CC-BY-SA, %s" % (datetime.date.today().year, author)
 # NOTE: The Open Graph Protocol (OGP) enhances page display in a social graph
 #       and is used by social media platforms; see https://ogp.me/
 
-ogp_site_url = "https://documentation.ubuntu.com/observability/"
+ogp_site_url = f"https://canonical.com/observability/docs/{os.environ.get('READTHEDOCS_VERSION', 'local')}/"
 
 
 # Preview name of the documentation website
@@ -165,25 +165,26 @@ html_context = {
 # TODO: If your documentation is hosted on https://docs.ubuntu.com/,
 #       uncomment and update as needed.
 
-slug = 'observability'
+slug = "observability/docs"
 
 #######################
 # Sitemap configuration: https://sphinx-sitemap.readthedocs.io/
 #######################
 
-# Base URL of RTD hosted project
+# Versioned canonical URL on canonical.com, where the docs are served via the RTD proxy
 
-html_baseurl = 'https://documentation.ubuntu.com/observability/'
+html_baseurl = f"https://canonical.com/observability/docs/{os.environ.get('READTHEDOCS_VERSION', 'local')}/"
 
 # URL scheme. Add language and version scheme elements.
 # When configured with RTD variables, check for RTD environment so manual runs succeed:
 
 sitemap_url_scheme = '{link}'
+sitemap_filename = "doc-sitemap.xml"
 
 # Template and asset locations
 
-#html_static_path = ["_static"]
-#templates_path = ["_templates"]
+html_static_path = ["_static"]
+templates_path = ["_templates"]
 
 
 #############
@@ -293,12 +294,17 @@ suppress_warnings = ["misc.copy_overwrite"]
 
 # Adds custom CSS files, located under 'html_static_path'
 
-# html_css_files = []
+html_css_files = [
+    "https://assets.ubuntu.com/v1/d86746ef-cookie_banner.css",
+]
 
 
 # Adds custom JavaScript files, located under 'html_static_path'
 
-# html_js_files = []
+html_js_files = [
+    "https://assets.ubuntu.com/v1/287a5e8f-bundle.js",
+    "js/overwrite_links.js",
+]
 
 
 # Specifies a reST snippet to be appended to each .rst file
