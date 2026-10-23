@@ -30,7 +30,7 @@ This is a Terraform module facilitating the deployment of the COS solution, usin
 | <a name="module_istio_ingress"></a> [istio\_ingress](#module\_istio\_ingress) | git::https://github.com/canonical/service-mesh//charms/istio-ingress-k8s/terraform | tf-1.31.1 |
 | <a name="module_loki"></a> [loki](#module\_loki) | git::https://github.com/canonical/loki-operators//terraform | tf-loki-3.7.3 |
 | <a name="module_mimir"></a> [mimir](#module\_mimir) | git::https://github.com/canonical/mimir-operators//terraform | tf-mimir-2.17.2 |
-| <a name="module_opentelemetry_collector"></a> [opentelemetry\_collector](#module\_opentelemetry\_collector) | git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform | tf-0.130.3 |
+| <a name="module_opentelemetry_collector"></a> [opentelemetry\_collector](#module\_opentelemetry\_collector) | git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform | tf-0.130.5 |
 | <a name="module_ssc"></a> [ssc](#module\_ssc) | git::https://github.com/canonical/self-signed-certificates-operator//terraform | rev707 |
 | <a name="module_tempo"></a> [tempo](#module\_tempo) | git::https://github.com/canonical/tempo-operators//terraform | tf-tempo-2.10.2 |
 | <a name="module_traefik"></a> [traefik](#module\_traefik) | git::https://github.com/canonical/traefik-k8s-operator//terraform | traefik-k8s-rev511 |
