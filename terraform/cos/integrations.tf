@@ -477,8 +477,6 @@ resource "juju_integration" "grafana_istio_ingress" {
     name     = module.istio_ingress[0].app_name
     endpoint = module.istio_ingress[0].provides.ingress
   }
-
-  lifecycle { replace_triggered_by = [terraform_data.grafana_ingress_interface, terraform_data.grafana_litestream_resource] }
 }
 
 resource "juju_integration" "istio_ingress_route" {
