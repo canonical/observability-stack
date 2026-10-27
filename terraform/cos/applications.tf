@@ -181,7 +181,7 @@ module "ssc" {
 }
 
 module "tempo" {
-  source = "git::https://github.com/canonical/tempo-operators//terraform?ref=tf-tempo-2.10.2"
+  source = "git::https://github.com/canonical/tempo-operators//terraform?ref=tf-tempo-2.10.3"
 
   anti_affinity                               = var.anti_affinity
   base                                        = local.bases.o11y
