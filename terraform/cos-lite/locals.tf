@@ -42,4 +42,12 @@ locals {
     ssc     = "1"
     traefik = "latest"
   }
+  offers = {
+    alertmanager_karma_dashboard    = juju_offer.alertmanager_karma_dashboard
+    grafana_dashboards              = juju_offer.grafana_dashboards
+    loki_logging                    = juju_offer.loki_logging
+    otelcol_receive_otlp            = juju_offer.otelcol_receive_otlp
+    prometheus_receive_remote_write = juju_offer.prometheus_receive_remote_write
+    prometheus_metrics_endpoint     = juju_offer.prometheus_metrics_endpoint
+  }
 }
