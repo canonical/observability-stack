@@ -47,7 +47,7 @@ variable "s3_access_key" {
 
 module "istio" {
   count      = var.mesh ? 1 : 0
-  source     = "git::https://github.com/canonical/service-mesh//charms/istio-k8s/terraform?ref=track/1.31"
+  source     = "git::https://github.com/canonical/service-mesh//charms/istio-k8s/terraform?ref=track/istio/1.31"
   channel    = "1.31/stable"
   model_uuid = data.juju_model.istio-model[0].uuid
 }

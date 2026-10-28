@@ -39,10 +39,10 @@ def test_no_errors_in_otelcol_logs(cos_model: jubilant.Juju):
     no_errors_in_otelcol_logs(cos_model)
 
 
-def test_deploy_to_track_dev(
+def test_deploy_with_mesh(
     tf_manager, cos_model: jubilant.Juju, istio_model: jubilant.Juju
 ):
-    # WHEN upgraded to track dev
+    # WHEN deployed with service mesh enabled
     tf_manager.init(TF_FILE)
     tf_manager.apply(
         model=cos_model.model, istio_model=istio_model.model, mesh=True, **S3_ENDPOINT
