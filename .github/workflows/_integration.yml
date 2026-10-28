@@ -39,7 +39,8 @@ jobs:
       fail-fast: false
       matrix:
         juju-channel: ["3.6/stable"]
-        scenario: ["tls_full", "tls_external", "tls_internal", "tls_none", "mesh_enabled"]
+        # `mesh_enabled` is only supported by the COS product
+        scenario: ${{ fromJSON(inputs.product == 'cos' && '["tls_full", "tls_external", "tls_internal", "tls_none", "mesh_enabled"]' || '["tls_full", "tls_external", "tls_internal", "tls_none"]') }}
         include:
         - juju-channel: "4.1/beta"
           scenario: "juju_4"
