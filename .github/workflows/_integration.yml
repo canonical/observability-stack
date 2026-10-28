@@ -39,8 +39,7 @@ jobs:
       fail-fast: false
       matrix:
         juju-channel: ["3.6/stable"]
-        # `mesh_enabled` is only supported by the COS product (terraform/cos); COS Lite
-        # and COS Dev have no such test scenario.
+        # `mesh_enabled` is only supported by the COS product
         scenario: ${{ fromJSON(inputs.product == 'cos' && '["tls_full", "tls_external", "tls_internal", "tls_none", "mesh_enabled"]' || '["tls_full", "tls_external", "tls_internal", "tls_none"]') }}
         include:
         - juju-channel: "4.1/beta"
