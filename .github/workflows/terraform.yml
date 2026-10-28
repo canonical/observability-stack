@@ -6,6 +6,8 @@ on:
     paths:
       - "**/*.tf"
       - "tests/integration/**"
+      - ".github/workflows/terraform.yml"
+      - ".github/workflows/_integration.yml"
 
 jobs:
   lint-terraform:
