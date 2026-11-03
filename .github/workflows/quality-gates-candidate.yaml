@@ -13,6 +13,16 @@ on:
   schedule:
     # Once a month, on the 1st at 03:00 UTC.
     - cron: "0 3 1 * *"
+  # TODO: remove before merging
+  pull_request:
+    paths:
+      - "tests/solution/**"
+      - "terraform/cos/**"
+      - "terraform/cos-lite/**"
+      - "solution.just"
+      - "tests/integration/helpers.py"
+      - ".github/workflows/quality-gates-candidate.yaml"
+      - ".github/workflows/_quality-gate-candidate-branch.yaml"
 
 jobs:
   solutions:
@@ -20,7 +30,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        branch: [main, track/3.0]
+        # TODO: remove before merging -- test this PR's own branch instead of
+        # main/track/3.0 when triggered by the pull_request event above.
+        branch: ${{ github.event_name == 'pull_request' && fromJson(format('["{0}"]', github.head_ref)) || fromJson('["main", "track/3.0"]') }}
     uses: ./.github/workflows/_quality-gate-candidate-branch.yaml
     secrets: inherit
     with:
