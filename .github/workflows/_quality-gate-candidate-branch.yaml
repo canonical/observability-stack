@@ -94,8 +94,6 @@ jobs:
   promote:
     name: Promote ${{ matrix.solution }}
     needs: [discover-solutions, test-solutions]
-    # TODO: remove before merging -- never auto-promote from a pull_request-triggered run
-    if: github.event_name != 'pull_request'
     strategy:
       matrix:
         solution: ${{ fromJson(needs.discover-solutions.outputs.solutions) }}
