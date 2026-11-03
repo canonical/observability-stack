@@ -2,6 +2,7 @@
 # See LICENSE file for licensing details.
 """Shared helpers for solution smoke tests."""
 
+import functools
 import json
 import os
 import subprocess
@@ -56,6 +57,32 @@ def leader_unit(juju: jubilant.Juju, app: str) -> str:
         if unit.leader:
             return name
     raise AssertionError(f"no leader unit found for application '{app}'")
+
+
+@functools.cache
+def _proxied_endpoints(model: str) -> Dict[str, Any]:
+    """Traefik's ingress URLs, keyed by application (or by unit, for per-unit ingress).
+
+    Empty when the model has no Traefik. Cached per model, so the action runs once.
+    """
+    juju = jubilant.Juju(model=model)
+    if "traefik" not in juju.status().apps:
+        return {}
+    task = juju.run(leader_unit(juju, "traefik"), "show-proxied-endpoints")
+    return json.loads(task.results["proxied-endpoints"])
+
+
+def app_url(juju: jubilant.Juju, app: str, port: int) -> str:
+    """Base URL of an application: through Traefik if it's ingressed, else its first unit.
+
+    Through Traefik, only the load balancer address has to be reachable from
+    where the tests run, not the pods.
+    """
+    endpoints = _proxied_endpoints(juju.model)
+    for key in sorted(endpoints):
+        if key == app or key.startswith(f"{app}/"):
+            return endpoints[key]["url"].rstrip("/")
+    return unit_url(juju, app, port)
 
 
 def unit_url(juju: jubilant.Juju, app: str, port: int) -> str:

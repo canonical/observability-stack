@@ -1,4 +1,44 @@
-#!/bin/bash
-set -eu
+#!/usr/bin/env bash
+# SolQA entry point: run the solution tests against the deployed "cos" model.
+# Output: test_results.xml (JUnit), which SolQA keeps with the run.
+# Exit code: pytest's, so SolQA's "Run SQA tests" step fails if any test fails.
+# Usage: ./sqa_tests [cos|cos-lite] [pytest args]; defaults to $PRODUCT.
+set -euo pipefail
 
-./tests/sqa/model-active
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
+rm -f test_results.xml
+
+MODEL="cos"
+# SolQA's runners have Python 3.10; the tests need 3.12.
+UV_FLAGS=(--frozen --isolated --python 3.12)
+
+solution="${1:-${PRODUCT:-}}"
+if [ $# -gt 0 ]; then shift; fi
+case "$solution" in
+    cos | cos-lite) ;;
+    *)
+        echo "ERROR: unknown solution '$solution'; pass cos or cos-lite, or set PRODUCT" >&2
+        exit 1
+        ;;
+esac
+
+if ! command -v uv &> /dev/null; then
+    echo "Installing astral-uv (snap, provides 'uv')..."
+    sudo snap install astral-uv --classic
+fi
+
+# Right after SolQA's deploy, pods are still being replaced, so first wait
+# until everything is active and idle, the same way the tests do (`juju
+# wait-for` missed a settled model on SolQA). The tests then reach the
+# applications through Traefik's load balancer address.
+if ! (cd tests/solution && MODEL="$MODEL" uv run "${UV_FLAGS[@]}" python -c \
+    'import os, jubilant; from helpers import wait_for_active_idle; wait_for_active_idle(jubilant.Juju(model=os.environ["MODEL"]))'); then
+    echo "ERROR: $MODEL didn't become active and idle" >&2
+    juju status -m "$MODEL" >&2
+    exit 1
+fi
+
+cd tests/solution
+SOLUTION_MODEL="$MODEL" uv run "${UV_FLAGS[@]}" pytest -vv -ra "$solution" \
+    --junitxml="$SCRIPT_DIR/test_results.xml" "$@"
