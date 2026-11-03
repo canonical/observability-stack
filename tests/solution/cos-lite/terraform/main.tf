@@ -25,6 +25,13 @@ variable "ingress" {
   default = {}
 }
 
+# The default matches terraform/cos-lite's own default on this branch.
+variable "risk" {
+  description = "Risk the charms are deployed from (edge, beta, candidate, stable). The candidate quality gate sets beta."
+  type        = string
+  default     = "edge"
+}
+
 # Whether an external CA terminates TLS instead of the module's own internal
 # ssc. Only meaningful when internal_tls is true (tls_full/tls_external).
 variable "external_ca" {
@@ -64,6 +71,7 @@ module "cos-lite" {
 
   depends_on = [module.ssc]
 
+  risk                            = var.risk
   internal_tls                    = var.internal_tls
   ingress                         = var.ingress
   external_certificates_offer_url = local.external_certificates_offer_url
