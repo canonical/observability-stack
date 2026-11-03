@@ -1,15 +1,22 @@
 name: Test and promote a branch's solutions
 
 # Reusable workflow: discovers every solution defined under tests/solution/
-# on a single branch, deploys and tests each one, and — only if all of them
-# pass — promotes every charm pinned by that branch's Terraform modules from
-# /beta to /candidate.
+# on a single branch, records what is in each charm's <track>/beta, deploys
+# and tests each solution from beta, and — only if all of them pass and beta
+# hasn't changed since — promotes every charm pinned by that branch's
+# Terraform modules from /beta to /candidate.
 #
 # Called once per supported branch/track from quality-gates-candidate.yaml, so adding
 # a new track only requires adding an entry to that workflow's branch
 # matrix, and adding a new solution only requires adding a directory under
 # tests/solution/ (each branch discovers its own set of solutions, so older
 # branches without a newer solution are unaffected).
+#
+# Every job uses the branch commit that discover-solutions saw, so a merge
+# during the run can't mix commits. The tests run from that commit's checkout.
+# The snapshot and promote recipes run from this workflow's own commit and read
+# that branch commit's Terraform through git, so the promotion logic lives in
+# one place.
 
 on:
   workflow_call:
@@ -18,6 +25,11 @@ on:
         description: 'The branch/track to check out and test (e.g. "main", "track/3.0").'
         required: true
         type: string
+      dry_run:
+        description: "Print what would be promoted instead of promoting."
+        required: false
+        type: boolean
+        default: true
     secrets:
       CHARMHUB_TOKEN:
         required: true
@@ -28,21 +40,75 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       solutions: ${{ steps.discover.outputs.solutions }}
+      sha: ${{ steps.sha.outputs.sha }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           ref: ${{ inputs.branch }}
 
+      - name: Record the branch commit
+        id: sha
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
       - name: List solutions with a Terraform wrapper module
         id: discover
+        env:
+          BRANCH: ${{ inputs.branch }}
         run: |
-          solutions=$(find tests/solution -mindepth 2 -maxdepth 2 -type d -name terraform -printf '%P\n' | sed 's|/terraform$||' | sort | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          if [ -d tests/solution ]; then
+            solutions=$(find tests/solution -mindepth 2 -maxdepth 2 -type d -name terraform -printf '%P\n' | sed 's|/terraform$||' | sort | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          else
+            solutions='[]'
+          fi
+          if [ "$solutions" = "[]" ]; then
+            echo "::warning::No solution tests on ${BRANCH}; nothing tested or promoted for it."
+          fi
           echo "solutions=$solutions" >> "$GITHUB_OUTPUT"
+
+  snapshot:
+    name: Snapshot beta
+    needs: [discover-solutions]
+    if: ${{ needs.discover-solutions.outputs.solutions != '[]' }}
+    runs-on: ubuntu-latest
+    outputs:
+      artifact: ${{ steps.name.outputs.artifact }}
+    env:
+      BRANCH: ${{ inputs.branch }}
+      SHA: ${{ needs.discover-solutions.outputs.sha }}
+      MODULES: ${{ join(fromJson(needs.discover-solutions.outputs.solutions), ' ') }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Fetch the branch commit's Terraform
+        run: git fetch --no-tags --depth=1 origin "$SHA"
+
+      - name: Install dependencies
+        run: sudo snap install just --classic
+
+      # Fails if any charm has nothing in <track>/beta, before any runner is spent on tests.
+      - name: Record the beta revisions
+        run: |
+          # shellcheck disable=SC2086 # MODULES is a space-separated list
+          just solution snapshot "$SHA" beta $MODULES > snapshot.json
+          cat snapshot.json
+
+      - name: Name the artifact
+        id: name
+        run: echo "artifact=candidate-gate-snapshot-${BRANCH//\//-}" >> "$GITHUB_OUTPUT"
+
+      - name: Upload the snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.name.outputs.artifact }}
+          path: snapshot.json
+          # "Re-run all jobs" takes a new snapshot under the same name.
+          overwrite: true
 
   test-solutions:
     name: Test ${{ matrix.solution }} (internal-tls=${{ matrix.internal-tls }}, external-ca=${{ matrix.external-ca }}, ingress=${{ matrix.ingress }}, juju=${{ matrix.juju-channel }})
-    needs: [discover-solutions]
+    needs: [discover-solutions, snapshot]
     strategy:
       fail-fast: false
       matrix:
@@ -62,7 +128,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.branch }}
+          ref: ${{ needs.discover-solutions.outputs.sha }}
 
       # https://documentation.ubuntu.com/self-hosted-runners/en/latest/usage/faq/how-to-setup-canonical-k8s/
       - name: Remove docker.io and containerd
@@ -88,29 +154,50 @@ jobs:
           sudo k8s kubectl rollout restart daemonset/cilium -n kube-system
           sudo k8s kubectl rollout status daemonset/cilium -n kube-system --timeout=90s
 
+      # Deploy from beta: that's what the promote job moves to candidate.
       - name: Run solution tests
-        run: just solution test ${{ matrix.solution }} ${{ matrix.internal-tls }} ${{ matrix.external-ca }} ${{ matrix.ingress }}
+        run: just solution test ${{ matrix.solution }} ${{ matrix.internal-tls }} ${{ matrix.external-ca }} ${{ matrix.ingress }} beta
 
   promote:
-    name: Promote ${{ matrix.solution }}
-    needs: [discover-solutions, test-solutions]
-    strategy:
-      matrix:
-        solution: ${{ fromJson(needs.discover-solutions.outputs.solutions) }}
+    name: Promote to candidate${{ inputs.dry_run && ' (dry run)' || '' }}
+    needs: [discover-solutions, snapshot, test-solutions]
     runs-on: ubuntu-latest
+    env:
+      BRANCH: ${{ inputs.branch }}
+      SHA: ${{ needs.discover-solutions.outputs.sha }}
+      DRY_RUN: ${{ inputs.dry_run }}
+      MODULES: ${{ join(fromJson(needs.discover-solutions.outputs.solutions), ' ') }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Fetch the branch commit's Terraform
+        run: git fetch --no-tags --depth=1 origin "$SHA"
+
+      - name: Download the snapshot
+        uses: actions/download-artifact@v4
         with:
-          ref: ${{ inputs.branch }}
+          name: ${{ needs.snapshot.outputs.artifact }}
 
       - name: Install dependencies
         run: |
-          sudo snap install terraform --classic
           sudo snap install just --classic
-          sudo snap install charmcraft --classic
+          if [ "$DRY_RUN" = "false" ]; then sudo snap install charmcraft --classic; fi
 
       - name: Promote
         env:
           CHARMCRAFT_AUTH: ${{ secrets.CHARMHUB_TOKEN }}
-        run: just solution promote ${{ matrix.solution }} ${{ inputs.branch }}
+        run: |
+          # A manual run can test any branch, but only main and track/* may promote.
+          case "$BRANCH" in
+            main|track/*) ;;
+            *)
+              if [ "$DRY_RUN" = "false" ]; then
+                echo "ERROR: ${BRANCH} isn't main or track/*, so it can only be a dry run; nothing promoted." >&2
+                exit 1
+              fi
+              ;;
+          esac
+          echo "Branch \`${BRANCH}\` at \`${SHA}\`" >> "$GITHUB_STEP_SUMMARY"
+          # shellcheck disable=SC2086 # MODULES is a space-separated list
+          just solution promote-to-candidate "$SHA" snapshot.json "$DRY_RUN" $MODULES
