@@ -48,6 +48,9 @@ def _terraform_applied(request) -> None:
         tf_vars["internal_tls"] = internal_tls
     if external_ca:
         tf_vars["external_ca"] = external_ca
+    risk = request.config.getoption("--risk")
+    if risk:
+        tf_vars["risk"] = risk
 
     tf = TfDirManager(dir=str(tf_dir))
     tf.init()

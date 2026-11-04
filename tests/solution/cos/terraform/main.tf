@@ -26,6 +26,13 @@ variable "ingress" {
   default = {}
 }
 
+# The default matches terraform/cos's own default on this branch.
+variable "risk" {
+  description = "Risk the charms are deployed from (edge, beta, candidate, stable). The candidate quality gate sets beta."
+  type        = string
+  default     = "stable"
+}
+
 variable "external_ca" {
   type    = bool
   default = false
@@ -70,6 +77,7 @@ module "cos" {
 
   depends_on = [module.ssc]
 
+  risk                            = var.risk
   internal_tls                    = var.internal_tls
   ingress                         = var.ingress
   external_certificates_offer_url = local.external_certificates_offer_url

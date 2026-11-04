@@ -31,3 +31,9 @@ def pytest_addoption(parser):
         choices=["", "true", "false"],
         help="Empty uses the Terraform wrapper's own default (true).",
     )
+    parser.addoption(
+        "--risk",
+        default="",
+        choices=["", "edge", "beta", "candidate", "stable"],
+        help="Risk the charms are deployed from. Empty uses the Terraform wrapper's own default (stable).",
+    )
