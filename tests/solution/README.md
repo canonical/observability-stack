@@ -57,6 +57,14 @@ has nothing to assert. Scenarios don't carry mode tags: `tls.feature` reads the 
 Terraform wrapper's own outputs (`internal_tls`, `tls_termination`) and asserts against whichever
 one is running.
 
+`--risk` (`edge`, `beta`, `candidate`, `stable`) picks the channel risk the charms are deployed
+from. It defaults to the product module's own default (`edge` on `main`). The candidate quality
+gate passes `beta`, since that's what it promotes:
+
+```bash
+just solution test cos-lite "" "" "" beta
+```
+
 ### Running against an already-deployed model
 
 The `given` step (`the solution has been deployed`, defined in `steps/deployment.py`) can skip

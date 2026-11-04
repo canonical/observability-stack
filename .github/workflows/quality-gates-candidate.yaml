@@ -1,15 +1,27 @@
 name: Solution tests
 
 # Periodically (and on demand) deploy the COS and COS Lite solutions from
-# every supported branch and run their solution test suites
-# (tests/solution). For each branch, when both solutions pass, promote every
-# charm pinned by that branch's Terraform modules from /beta to /candidate.
+# every supported branch, with their charms from <track>/beta, and run their
+# solution test suites (tests/solution). For each branch, when both solutions
+# pass, promote every charm pinned by that branch's Terraform modules from
+# /beta to /candidate.
 #
-# To support a new branch/track, add it to the `branch` matrix below; a
+# To support a new branch/track, add it to the default `branch` list below; a
 # separate, independent test+promote pipeline is instantiated per branch.
+#
+# Manual runs are dry runs unless dry_run is unticked. Scheduled runs promote.
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run: test, but only print what would be promoted."
+        type: boolean
+        default: true
+      branches:
+        description: 'JSON list of branches to test, e.g. ["main"]. Empty means every supported branch.'
+        type: string
+        default: ""
   schedule:
     # Once a month, on the 1st at 03:00 UTC.
     - cron: "0 3 1 * *"
@@ -20,8 +32,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        branch: [main, track/3.0]
+        branch: ${{ fromJson(inputs.branches || '["main", "track/3.0"]') }}
     uses: ./.github/workflows/_quality-gate-candidate-branch.yaml
     secrets: inherit
     with:
       branch: ${{ matrix.branch }}
+      # Scheduled runs have no inputs, so this is false for them.
+      dry_run: ${{ inputs.dry_run == true }}
