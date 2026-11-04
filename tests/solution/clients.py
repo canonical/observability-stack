@@ -9,21 +9,12 @@ import jubilant
 import pytest
 from observability_clients import Alertmanager, Grafana, Loki, Mimir, Prometheus, Tempo
 
-from helpers import leader_unit, unit_url
-
-_PORTS = {
-    "alertmanager": 9093,
-    "grafana": 3000,
-    "loki": 3100,
-    "mimir": 8080,
-    "prometheus": 9090,
-    "tempo": 3200,
-}
+from helpers import _PORTS, app_url, leader_unit
 
 
 @pytest.fixture
 def alertmanager(juju: jubilant.Juju) -> Alertmanager:
-    return Alertmanager(url=unit_url(juju, "alertmanager", _PORTS["alertmanager"]))
+    return Alertmanager(url=app_url(juju, "alertmanager", _PORTS["alertmanager"]))
 
 
 @functools.cache
@@ -44,26 +35,26 @@ def grafana(juju: jubilant.Juju) -> Grafana:
     """Grafana, authenticated as admin with the charm-generated password."""
     credentials = _grafana_admin_credentials(juju.model)
     return Grafana(
-        url=unit_url(juju, "grafana", _PORTS["grafana"]),
+        url=app_url(juju, "grafana", _PORTS["grafana"]),
         headers={"Authorization": f"Basic {credentials}"},
     )
 
 
 @pytest.fixture
 def loki(juju: jubilant.Juju) -> Loki:
-    return Loki(url=unit_url(juju, "loki", _PORTS["loki"]))
+    return Loki(url=app_url(juju, "loki", _PORTS["loki"]))
 
 
 @pytest.fixture
 def mimir(juju: jubilant.Juju) -> Mimir:
-    return Mimir(url=unit_url(juju, "mimir", _PORTS["mimir"]))
+    return Mimir(url=app_url(juju, "mimir", _PORTS["mimir"]))
 
 
 @pytest.fixture
 def prometheus(juju: jubilant.Juju) -> Prometheus:
-    return Prometheus(url=unit_url(juju, "prometheus", _PORTS["prometheus"]))
+    return Prometheus(url=app_url(juju, "prometheus", _PORTS["prometheus"]))
 
 
 @pytest.fixture
 def tempo(juju: jubilant.Juju) -> Tempo:
-    return Tempo(url=unit_url(juju, "tempo", _PORTS["tempo"]))
+    return Tempo(url=app_url(juju, "tempo", _PORTS["tempo"]))
