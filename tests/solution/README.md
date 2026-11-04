@@ -172,6 +172,10 @@ of waiting for the next scheduled run.
 
 ### Current state (November 2026)
 
+> [!NOTE]
+> This section is a snapshot and needs to be updated as the gates change. When you fix one of
+> these items, remove it from the list. When the list is empty, remove the section.
+
 Where things differ from the design above:
 
 - No charm has load or chaos tests yet, so the beta gate promotes without testing.
