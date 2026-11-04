@@ -132,12 +132,12 @@ Runs once for each branch, `main` and `track/3.0`, and the branches don't affect
 each branch it:
 
 1. Deploys every solution under `tests/solution/` and runs its tests.
-2. If all of them pass, promotes every charm pinned by those solutions' Terraform modules from
-   `beta` to `candidate` (`just solution charm-tracks <solution> <branch>` lists them). If any
+2. If all of them pass, promotes from `beta` to `candidate` every charm that those solutions'
+   Terraform modules pin, as listed by `just solution charm-tracks <solution> <branch>`. If any
    test fails, nothing on that branch is promoted.
 
-The modules also deploy three external charms (`traefik-k8s`, `self-signed-certificates`,
-`s3-integrator`). The gate never promotes them.
+The gate doesn't promote the external charms that the modules also deploy: `traefik-k8s`,
+`self-signed-certificates` and `s3-integrator`.
 
 ### Stable gate
 
@@ -146,9 +146,9 @@ it runs the tests but only prints the promotions. COS and COS Lite are handled s
 each one whose `candidate` revisions differ from `stable`, it:
 
 1. Records the revisions in `candidate`.
-2. Asks SolQA to deploy the product from `candidate` and run `sqa_tests` (at the repo root).
-   `sqa_tests` runs the solution tests against that deployment, see
-   [Running against an already-deployed model](#running-against-an-already-deployed-model).
+2. Asks SolQA to deploy the product from `candidate` and then run `sqa_tests` at the repo root,
+   which runs the solution tests against that deployment (see
+   [Running against an already-deployed model](#running-against-an-already-deployed-model)).
 3. Promotes `candidate` to `stable` only if every test passed and `candidate` has not changed
    since step 1.
 
@@ -181,8 +181,8 @@ Where things differ from the design above:
   tests `edge` revisions but promotes `beta` ones.
 - The daily "Promote Charm Train" workflow in `canonical/observability` still promotes `edge` to
   `beta` and to `candidate` on release tracks, skipping the gates.
-- The stable gate is not merged yet
-  ([#520](https://github.com/canonical/observability-stack/pull/520)). Until then, promotion to
-  `stable` is done by hand after a SolQA run, and `sqa_tests` only waits for the model to become
-  active and idle.
+- Until the stable gate is merged
+  ([#520](https://github.com/canonical/observability-stack/pull/520)), promotion to `stable` is
+  done by hand after a SolQA run, and `sqa_tests` only waits for the model to become active and
+  idle.
 - Nobody is notified when a gate fails.
