@@ -56,11 +56,10 @@ usable end-to-end flow):
 - `flog-k8s`: a fake-log generator used only in the validation step to
   produce a stream of synthetic log lines.
 - `opentelemetry-collector-k8s` (`otelcol`): used only in the validation
-  step to receive flog's output and route it to the Loki ingress via the
+  step to receive output from `flog-k8s` and route it to the Loki ingress via the
   `logging` relation. Note, however, that in most production deployments,
-  Otelcol is the component responsible for collecting logs from workloads and
+  `otelcol` is the component responsible for collecting logs from workloads and
   forwarding them to Loki.
-
 
 ## Prerequisites
 
@@ -169,7 +168,7 @@ At this point Loki should expose at least:
 For a minimal smoke test, deploy:
 
 - `flog-k8s`, which generates a stream of fake Apache-format log lines.
-- `opentelemetry-collector-k8s`, which collects flog's output and forwards
+- `opentelemetry-collector-k8s`, which collects output from `flog-k8s` and forwards
   it to Loki over the `logging` relation.
 
 Neither of these is required for Loki itself. They only exist here to prove

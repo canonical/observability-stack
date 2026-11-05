@@ -91,8 +91,8 @@ in additional files later for more workloads without editing the existing
 one.
 
 The pipeline below tails a log file at `/var/log/my-workload/app.log` and
-forwards each line to Loki over the `loki` exporter. The `filelog` receiver
-acts as the tailer, and the `loki` exporter pushes into Loki's ingestion URL.
+forwards each line to Loki over the `loki` exporter. The `filelog` receiver reads
+the file, and the `loki` exporter pushes into Loki's ingestion URL.
 The `X-Scope-OrgID` header is required by Loki's multi-tenant API; use
 `anonymous` for a single-tenant deployment.
 
@@ -175,7 +175,7 @@ machine trust store used by the snap.
 See the CA-handling guidance in
 [How to integrate COS Lite with uncharmed applications](integrating-cos-lite-with-uncharmed-applications).
 
-## Adapting the filelog configuration
+## Adapting the `filelog` configuration
 
 The example above uses a single static file path, but the same pattern works
 for:
@@ -184,7 +184,7 @@ for:
 - multiple include paths
 - custom operators for parsing or transforming log lines (e.g. JSON parsing,
   regex extraction)
-- journald input via the `journald` receiver
+- system journal input via the `journald` receiver
 
 The important part is that the log pipeline ends with the `loki` exporter
 pointing at:
