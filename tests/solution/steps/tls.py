@@ -33,7 +33,7 @@ def component_serves_traffic_using_internal_tls_mode(
 
 @then(
     parsers.parse(
-        "{component}'s certificate is trusted by the deployment's internal CA"
+        "{component}'s certificate is trusted by the deployment's internal CA if any"
     )
 )
 def components_certificate_is_trusted_by_internal_ca(
@@ -59,7 +59,7 @@ def components_certificate_is_trusted_by_internal_ca(
 
 @then(
     parsers.parse(
-        "{component}'s certificate is trusted by the deployment's external CA"
+        "{component}'s certificate is trusted by the deployment's external CA if any"
     )
 )
 def components_certificate_is_trusted_by_external_ca(
