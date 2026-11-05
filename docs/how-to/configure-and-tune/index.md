@@ -28,6 +28,7 @@ collection time.
 Evaluate telemetry volume <evaluate-telemetry-volume>
 Selectively drop telemetry using scrape config <selectively-drop-telemetry-scrape-config>
 Selectively drop telemetry using opentelemetry-collector <selectively-drop-telemetry-otelcol>
+Control cardinality <control-cardinality>
 ```
 
 ## Data privacy
