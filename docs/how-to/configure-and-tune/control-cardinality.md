@@ -17,9 +17,9 @@ myst:
 ```{note}
 This guide uses Mimir for concrete examples. The collector-side guidance (section 3)
 applies equally to Prometheus in COS Lite, and the general principles are the same.
-Mimir-specific parts are the cardinality API endpoints, the `cortex_ingester_*` metrics,
-and the ingester `instance_limits`; Prometheus exposes `prometheus_tsdb_head_series` and
-has no equivalent cardinality API.
+Mimir-specific parts are the cardinality API endpoints and the `cortex_ingester_*`
+metrics; Prometheus exposes `prometheus_tsdb_head_series` and has no equivalent
+cardinality API.
 ```
 
 ## The one idea
@@ -52,26 +52,23 @@ Once enabled, use the endpoints below.
 
 ### API endpoints
 
-Base: `<prometheus-http-prefix>` (default `/prometheus`), served by the query-frontend/querier. Available once the flag above is enabled.
+Base: `https://<query-frontend>:8080/prometheus/api/v1/cardinality` (the Prometheus HTTP prefix defaults to `/prometheus`), served by the query-frontend/querier. Available once the option above is enabled. Send the `X-Scope-OrgID: <tenant>` header (use `anonymous` when multitenancy is disabled).
 
-| Endpoint | Purpose |
+| Path | Purpose |
 |---|---|
-| `GET/POST /api/v1/cardinality/label_names` | distinct value count per label name |
-| `GET/POST /api/v1/cardinality/label_values` | series count per label value |
-| `GET/POST /api/v1/cardinality/active_series` | label sets of active series |
-| `GET/POST /api/v1/cardinality/active_native_histogram_metrics` | native histogram metric names |
+| `.../label_names` | distinct value count per label name |
+| `.../label_values` | series count per label value |
+| `.../active_series` | label sets of active series |
+| `.../active_native_histogram_metrics` | native histogram metric names |
 
 Parameters: `selector`, `label_names[]`, `count_method=inmemory|active`, `limit`.
-Header: `X-Scope-OrgID: <tenant>` (use `anonymous` when multitenancy is disabled).
 
 ```bash
-curl -sk -G https://<query-frontend>:8080/prometheus/api/v1/cardinality/label_values \
-  -H 'X-Scope-OrgID: anonymous' \
-  --data-urlencode 'label_names[]=job' \
-  --data-urlencode 'selector={__name__=~".+"}' \
-  --data-urlencode 'count_method=inmemory' \
-  --data-urlencode 'limit=100'
+curl -g -sk 'https://<query-frontend>:8080/prometheus/api/v1/cardinality/label_values?label_names[]=job&selector={__name__=~".*"}&count_method=inmemory&limit=100' \
+  -H 'X-Scope-OrgID: anonymous'
 ```
+
+The remaining examples in this guide use `.../` for the base above.
 
 `count_method`:
 
@@ -89,7 +86,7 @@ Work **job → metric → label → value**. Requires the API from the previous 
 1. Which source job?
 
 ```bash
-.../label_values?label_names[]=job&selector={__name__=~".+"}&count_method=inmemory&limit=100
+.../label_values?label_names[]=job&selector={__name__=~".*"}&count_method=inmemory&limit=100
 ```
 
 2. Which metric within the job?
@@ -124,6 +121,8 @@ and [Selectively drop telemetry using scrape config](selectively-drop-telemetry-
 
 ### 3.1 Drop metric families / histograms (`filter` processor)
 
+Drop whole metric families by name, or every histogram at once. The prometheus receiver folds a classic histogram into a single OTLP histogram metric named after the base (for example `apiserver_request_duration_seconds`), so match the base name here — there is no `_bucket` suffix at this point (see 3.2 for dropping buckets by name).
+
 Modern (collector ≥ 0.146):
 
 ```yaml
@@ -131,7 +130,9 @@ processors:
   filter/drop_unused:
     error_mode: ignore
     metric_conditions:
-      - 'IsMatch(metric.name, "^(apiserver_request_body_size_bytes|apiserver_watch_.*|workqueue_.*)$")'
+      # Drop specific families by base name, e.g. every kubelet metric
+      - 'IsMatch(metric.name, "^kubelet_")'
+      # Or drop every histogram metric
       - 'metric.type == METRIC_DATA_TYPE_HISTOGRAM'
 ```
 
@@ -143,7 +144,7 @@ processors:
     error_mode: ignore
     metrics:
       metric:
-        - 'IsMatch(name, "^(apiserver_request_body_size_bytes|apiserver_watch_.*|workqueue_.*)$")'
+        - 'IsMatch(name, "^kubelet_")'
         - 'type == METRIC_DATA_TYPE_HISTOGRAM'
 ```
 
@@ -181,21 +182,11 @@ processors:
         aggregation_type: sum     # only sum is supported for histograms
 ```
 
-### 3.4 Keep quantiles with fewer series (native histograms)
-
-```yaml
-exporters:
-  prometheusremotewrite:
-    convert_explicit_histograms_to_nhcb: true
-```
-
-Converts explicit-bucket histograms to native histograms with custom buckets: one series per label set instead of one per bucket. Requires native-histogram support end-to-end (remote write + Mimir `native_histograms_ingestion_enabled`, which is `[future]` not charm-configurable).
-
-### 3.5 Reduce histogram buckets
+### 3.4 Reduce histogram buckets
 
 Keep only the `le` values you query. This divides every histogram family by the ratio of buckets kept/dropped and is less destructive than dropping the whole family.
 
-### 3.6 Verify at the source
+### 3.5 Verify at the source
 
 ```bash
 curl -s localhost:8888/metrics | grep -E 'processor="filter/<id>"'
@@ -213,33 +204,7 @@ Mimir. This section is about protecting Mimir from the cardinality that still ar
 caps and rate limits that keep the ingesters within their memory budget instead of being
 OOM-killed.
 
-### 4.1 Ingester instance limits
-
-`[future]` Not yet exposed by the charm. Start with these values and adjust as the
-defensive model improves:
-
-```yaml
-ingester:
-  instance_limits:
-    # Max ingestion rate (samples/sec)
-    max_ingestion_rate: <memory_in_kbytes / num_cpu_cores>
-
-    # Max series this ingester can hold (across all tenants)
-    max_series: <memory_in_kbytes>
-
-    # Max inflight push requests this ingester can handle (across all tenants)
-    max_inflight_push_requests: <memory_in_kbytes / 100 / num_cpu_cores>
-
-    # Sum of request sizes (bytes) of inflight push requests; per-ingester
-    max_inflight_push_requests_bytes: <memory_in_bytes * 0.2>
-```
-
-- `max_series` is the per-ingester cap across all tenants. Exceeding it returns 5xx
-  (retryable) rather than discarding samples.
-- `max_ingestion_rate` and the inflight limits protect the ingester from overload.
-- These limits are per-ingester, not per-tenant.
-
-### 4.2 Per-tenant caps
+### 4.1 Per-tenant caps
 
 - `[charm]` **`max_global_series_per_user`** — cap in-memory series per tenant. Rejects
   excess (4xx). Default `0` (disabled) in the charm; Mimir's own default is `150000`.
@@ -250,13 +215,13 @@ ingester:
 - `[future]` **`max_label_names_per_series`** (default 30) /
   **`max_label_value_length`** (default 2048) — bound per-series cost.
 
-### 4.3 Read-path guards
+### 4.2 Read-path guards
 
 - `[future]` **`-querier.max-fetched-chunks-per-query`** (default 2,000,000) /
   **`-querier.max-fetched-series-per-query`** (default 0) — prevent a single huge metric
   from making queries fail or exhausting the querier.
 
-### 4.4 Idle TSDBs
+### 4.3 Idle TSDBs
 
 - `[future]` **`-blocks-storage.tsdb.close-idle-tsdbs-after`** — close idle tenant TSDBs
   to free memory.
