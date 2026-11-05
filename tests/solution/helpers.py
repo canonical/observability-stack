@@ -7,14 +7,13 @@ import json
 import os
 import pytest
 import shlex
-import shutil
 import socket
 import ssl
 import subprocess
 import tempfile
 import time
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional, Sequence
+from typing import Any, Callable, Dict, Optional
 
 import jubilant
 import requests
@@ -42,62 +41,6 @@ _PORTS = {
     "prometheus": 9090,
     "tempo": 3200,
 }
-
-
-class TfDirManager:
-    # Duplicated in tests/integration/helpers.py: the two pytest roots don't
-    # share a package, and this is small enough not to be worth a shared
-    # module. Keep both copies in sync by hand.
-    def __init__(self, base_tmpdir=None, dir: Optional[str] = None):
-        self.base: str = str(base_tmpdir) if base_tmpdir is not None else ""
-        self.dir: str = dir or ""
-
-    @property
-    def tf_cmd(self):
-        return f"{TERRAFORM_BIN} -chdir={self.dir}"
-
-    def init(self, tf_file: Optional[str] = None):
-        """Initialize a Terraform module, copying `tf_file` in if given."""
-        if tf_file is not None:
-            self.dir = os.path.join(self.base, "terraform")
-            os.makedirs(self.dir, exist_ok=True)
-            shutil.copy(tf_file, os.path.join(self.dir, "main.tf"))
-        subprocess.run(shlex.split(f"{self.tf_cmd} init -upgrade"), check=True)
-
-    @staticmethod
-    def _args_str(
-        target: Optional[str] = None,
-        var_files: Sequence[str] = (),
-        **kwargs,
-    ) -> str:
-        target_arg = f"-target module.{target}" if target else ""
-        var_file_args = " ".join(f"-var-file {f}" for f in var_files)
-        var_args = " ".join(f"-var {k}={_fmt_tf_var(v)}" for k, v in kwargs.items())
-        return f"-auto-approve {target_arg} {var_file_args} {var_args}"
-
-    def apply(
-        self,
-        target: Optional[str] = None,
-        var_files: Sequence[str] = (),
-        **kwargs,
-    ):
-        cmd_str = f"{self.tf_cmd} apply " + self._args_str(
-            target, var_files, **kwargs
-        )
-        subprocess.run(shlex.split(cmd_str), check=True)
-
-    def destroy(self, var_files: Sequence[str] = (), **kwargs):
-        cmd_str = f"{self.tf_cmd} destroy " + self._args_str(
-            None, var_files, **kwargs
-        )
-        subprocess.run(shlex.split(cmd_str), check=True)
-
-
-def _fmt_tf_var(value) -> str:
-    """Convert a python value to its Terraform CLI representation."""
-    if isinstance(value, bool):
-        return "true" if value else "false"
-    return str(value)
 
 
 def lookback_window_ns() -> tuple[int, int]:
@@ -382,7 +325,7 @@ def unit_url(juju: jubilant.Juju, app: str, port: int) -> str:
 
 def get_tls_context(juju: jubilant.Juju, ca_name: str) -> Optional[ssl.SSLContext]:
     # Duplicated in tests/integration/helpers.py, adapted to not need a
-    # caller-supplied temp_path. See TfDirManager above for why.
+    # caller-supplied temp_path: the two pytest roots don't share a package.
     if ca_name not in juju.status().apps:
         return None
 
