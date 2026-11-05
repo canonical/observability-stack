@@ -6,7 +6,6 @@ import functools
 import json
 import os
 import pytest
-import shlex
 import socket
 import ssl
 import subprocess
@@ -158,10 +157,7 @@ _settled: Dict[str, Exception] = {}
 
 
 def wait_for_active_idle(juju: jubilant.Juju, timeout: int = 60 * 45):
-    """Wait for every application to be active, then every agent to be idle.
-
-    Dumps juju and k8s state once if the wait fails.
-    """
+    """Wait for every application to be active, then every agent to be idle."""
     if juju.model in _settled:
         # Already confirmed stuck - don't wait until the timeout.
         raise _settled[juju.model]
@@ -178,96 +174,7 @@ def wait_for_active_idle(juju: jubilant.Juju, timeout: int = 60 * 45):
         )
     except Exception as exc:
         _settled[juju.model] = exc
-        dump_debug_state(f"model {juju.model} did not settle")
         raise
-
-
-def dump_debug_state(reason: str) -> None:
-    """Print juju and k8s state for every non-controller model."""
-    print(f"\n=== debug dump: {reason} ===", flush=True)
-    try:
-        models = json.loads(
-            jubilant.Juju().cli("models", "--format", "json", include_model=False)
-        )["models"]
-    except subprocess.CalledProcessError as exc:
-        print(f"(juju models failed: {exc})", flush=True)
-        models = []
-    names = [m["short-name"] for m in models if m["short-name"] != "controller"]
-    for name in names:
-        _dump_juju(jubilant.Juju(model=name))
-        _dump_k8s(name)
-    _run_kubectl("get", "pv,storageclass")
-    print(f"=== end debug dump: {reason} ===\n", flush=True)
-
-
-def _dump_juju(juju: jubilant.Juju) -> None:
-    print(f"\n--- juju status (model={juju.model}) ---", flush=True)
-    status = None
-    try:
-        status = juju.status()
-        print(juju.cli("status", "--relations"), flush=True)
-    except subprocess.CalledProcessError as exc:
-        print(f"(juju status failed: {exc})", flush=True)
-    try:
-        print(juju.debug_log(limit=200), flush=True)
-    except subprocess.CalledProcessError as exc:
-        print(f"(juju debug-log failed: {exc})", flush=True)
-    # Pull logs just for the errored units
-    for unit_name in _errored_unit_names(status):
-        print(f"\n--- debug-log --include {unit_name} ---", flush=True)
-        try:
-            print(juju.cli("debug-log", "--limit", "200", "--include", unit_name), flush=True)
-        except subprocess.CalledProcessError as exc:
-            print(f"(juju debug-log --include {unit_name} failed: {exc})", flush=True)
-
-
-def _dump_k8s(namespace: str) -> None:
-    _run_kubectl("get", "pods,pvc", "-n", namespace, "-o", "wide")
-    _run_kubectl("get", "events", "-n", namespace, "--sort-by=.lastTimestamp")
-
-
-def _errored_unit_names(status: Optional[jubilant.Status]) -> list[str]:
-    """Names of units whose workload or agent status is currently "error"."""
-    if status is None:
-        return []
-    return [
-        unit_name
-        for app in status.apps.values()
-        for unit_name, unit in app.units.items()
-        if unit.workload_status.current == "error" or unit.juju_status.current == "error"
-    ]
-
-
-@functools.cache
-def _kubectl() -> Optional[tuple[str, ...]]:
-    """The first working kubectl command: $KUBECTL, kubectl, k8s or microk8s."""
-    if "KUBECTL" in os.environ:
-        return tuple(shlex.split(os.environ["KUBECTL"]))
-    for cmd in (("kubectl",), ("sudo", "-n", "k8s", "kubectl"), ("microk8s", "kubectl")):
-        try:
-            subprocess.run(
-                [*cmd, "get", "ns"], check=True, capture_output=True, timeout=30
-            )
-        except (OSError, subprocess.SubprocessError):
-            continue
-        return cmd
-    return None
-
-
-def _run_kubectl(*args: str) -> None:
-    cmd = _kubectl()
-    if cmd is None:
-        print("(no working kubectl found, set KUBECTL)", flush=True)
-        return
-    print(f"\n--- kubectl {' '.join(args)} ---", flush=True)
-    try:
-        result = subprocess.run(
-            [*cmd, *args], capture_output=True, text=True, timeout=120, check=False
-        )
-    except subprocess.TimeoutExpired as exc:
-        print(f"(kubectl timed out: {exc})", flush=True)
-        return
-    print(result.stdout + result.stderr, flush=True)
 
 
 def leader_unit(juju: jubilant.Juju, app: str) -> str:

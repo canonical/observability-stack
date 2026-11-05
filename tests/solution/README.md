@@ -33,7 +33,8 @@ module (`tests/solution/<name>/terraform/`) into a new model on the current cont
 that solution's `pytest-bdd` scenarios (`tests/solution/<name>/test_solution.py`) against it.
 
 The Terraform module is *not* destroyed automatically afterwards (so you can inspect a failure).
-Clean up when you're done:
+`just solution debug-dump` prints the Juju and Kubernetes state of every model; CI runs it when
+a solution test job fails. Clean up when you're done:
 
 ```bash
 terraform -chdir=tests/solution/cos-lite/terraform destroy -auto-approve

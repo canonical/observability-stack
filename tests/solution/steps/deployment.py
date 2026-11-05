@@ -9,7 +9,6 @@ from helpers import (
     _MODEL_ENV_VAR,
     TERRAFORM_BIN,
     deployment_mode,
-    dump_debug_state,
     mode_options,
     terraform_dir,
     terraform_output,
@@ -43,15 +42,10 @@ def _terraform_applied(request) -> None:
 
     subprocess.run([*terraform, "init", "-upgrade"], check=True)
     # Apply is idempotent, so retry once to get past transient errors.
-    attempts = 2
-    for attempt in range(1, attempts + 1):
-        try:
-            subprocess.run(apply, check=True)
-            return
-        except subprocess.CalledProcessError:
-            dump_debug_state(f"terraform apply failed (attempt {attempt}/{attempts})")
-            if attempt == attempts:
-                raise
+    try:
+        subprocess.run(apply, check=True)
+    except subprocess.CalledProcessError:
+        subprocess.run(apply, check=True)
 
 
 @given("the solution has been deployed", target_fixture="juju")
