@@ -570,6 +570,22 @@ pipeline, or Tempo on the traces pipeline) are *not* dropped and still reach Lok
 form a loop while the logs path is healthy, so their `Exporting failed` logs remain visible in
 Grafana.
 
+### `sending queue is full`
+#### Downstream target unreachable
+It is normal to see `sending queue is full` when the target backend experiences an outage.
+Verify target connectivity.
+
+#### Queue capacity configured too low
+The queue size may be undersized for the oeprational context.
+Increase `queue_size` (e.g. double the value) and inspect changes in resource utilization.
+
+### `dropping items`
+
+#### Malformed metric name
+An entire batch may be rejected due to e.g. malformed metric name (e.g., `µs` symbol as part of the name).
+Disable or reduce batch_size; sanitize metric names upstream.
+
+
 ## `err-mimir-sample-out-of-order` and `err-mimir-sample-timestamp-too-old`
 
 For any given series, Mimir requires each sample's timestamp to be newer than the last
