@@ -127,10 +127,13 @@ juju add-secret loki-s3-credentials \
 juju grant-secret loki-s3-credentials loki-s3
 
 juju config loki-s3 \
-    credentials=loki-s3-credentials \
+    credentials=secret:<secret-ID> \
     endpoint=<s3-endpoint> \
     bucket=<bucket-name>
 ```
+
+`juju add-secret` prints a secret ID (`secret:...`). Use that ID in the
+`credentials` option above.
 
 If your object store needs additional settings such as a custom CA chain,
 region, or path-style addressing, see

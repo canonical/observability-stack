@@ -131,7 +131,7 @@ Save it as:
 
 ```bash
 sudo mkdir -p /etc/otelcol/config.d
-sudo editor /etc/otelcol/config.d/otelcol_loki.yaml
+sudo nano /etc/otelcol/config.d/otelcol_loki.yaml
 ```
 
 Replace:
