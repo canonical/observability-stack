@@ -21,6 +21,34 @@ test solution="cos-lite" internal_tls="" external_ca="" ingress="":
   if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
   uv run ${uv_flags} pytest -vv -ra --capture=no --internal-tls="{{internal_tls}}" --external-ca="{{external_ca}}" --ingress="{{ingress}}" "{{solution}}"
 
+# Set KUBECTL to override the kubectl command (default: kubectl, then k8s, then microk8s).
+# Print Juju and Kubernetes state for every model, to debug a failed run
+[group("test")]
+debug-dump:
+  #!/usr/bin/env bash
+  set -uo pipefail  # no -e: print as much as possible, even if one command fails
+  if [ -n "${KUBECTL:-}" ]; then read -ra kubectl <<< "$KUBECTL"
+  elif command -v kubectl >/dev/null; then kubectl=(kubectl)
+  elif command -v k8s >/dev/null; then kubectl=(sudo k8s kubectl)
+  else kubectl=(microk8s kubectl); fi
+  for model in $(juju models --format json | jq -r '.models[]."short-name" | select(. != "controller")'); do
+    echo "=== juju status: $model ==="
+    juju status -m "$model" --relations
+    errored=$(juju status -m "$model" --format json | jq -r '.applications[].units // {} | to_entries[]
+      | select(.value."workload-status".current == "error" or .value."juju-status".current == "error") | .key')
+    for unit in $errored; do
+      echo "=== juju debug-log: $unit ==="
+      juju debug-log -m "$model" --limit 200 --include "$unit"
+    done
+    echo "=== juju debug-log: $model ==="
+    juju debug-log -m "$model" --limit 200
+    echo "=== kubectl: $model ==="
+    "${kubectl[@]}" get pods,pvc -n "$model" -o wide
+    "${kubectl[@]}" get events -n "$model" --sort-by=.lastTimestamp
+  done
+  echo "=== kubectl: cluster ==="
+  "${kubectl[@]}" get pv,storageclass
+
 # Promote every charm in a solution from /beta to /candidate
 [group("promote")]
 promote solution="cos-lite" ref="main":
