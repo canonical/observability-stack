@@ -9,10 +9,15 @@ myst:
 ## Ingress
 
 MetalLB, or an equivalent load balancer, should be configured on the Kubernetes environment.
-COS and COS Lite use Traefik to provide network ingress for the stack components.
+COS and COS Lite use Traefik by default to provide network ingress for the stack components.
 Make sure the load balancer provides Traefik with **a static IP**, or some other identity that remains stable over time.
 
+```{note}
+When COS is deployed with [service mesh](https://canonical-service-mesh-documentation.readthedocs-hosted.com/latest/istio/) enabled (`mesh_enabled = true`), Istio's ingress replaces Traefik.
+```
+
 ## Egress
+
 Some charms require external connectivity to function correctly.
 
 As a common requirement, the environment should be able to reach:
@@ -40,7 +45,6 @@ juju bootstrap microk8s uk8s \
 ```
 
 Note that these config values can only be set at bootstrap time, and are read-only thereafter.
-
 
 ## Juju relation topology
 

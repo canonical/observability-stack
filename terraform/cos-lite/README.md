@@ -3,6 +3,13 @@
 This is a Terraform module facilitating the deployment of the COS Lite solution, using the [Terraform juju provider](https://github.com/juju/terraform-provider-juju/). For more information, refer to the provider [documentation](https://registry.terraform.io/providers/juju/juju/latest/docs).
 
 <!-- BEGIN_TF_DOCS -->
+## Requirements
+
+| Name | Version |
+| ---- | ------- |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.11 |
+| <a name="requirement_juju"></a> [juju](#requirement\_juju) | >= 1.4.0 |
+
 ## Providers
 
 | Name | Version |
@@ -14,13 +21,14 @@ This is a Terraform module facilitating the deployment of the COS Lite solution,
 
 | Name | Source | Version |
 | ---- | ------ | ------- |
-| <a name="module_alertmanager"></a> [alertmanager](#module\_alertmanager) | git::https://github.com/canonical/alertmanager-k8s-operator//terraform | n/a |
-| <a name="module_catalogue"></a> [catalogue](#module\_catalogue) | git::https://github.com/canonical/catalogue-k8s-operator//charm/terraform | n/a |
-| <a name="module_grafana"></a> [grafana](#module\_grafana) | git::https://github.com/canonical/grafana-k8s-operator//terraform | n/a |
-| <a name="module_loki"></a> [loki](#module\_loki) | git::https://github.com/canonical/loki-k8s-operator//terraform | n/a |
-| <a name="module_prometheus"></a> [prometheus](#module\_prometheus) | git::https://github.com/canonical/prometheus-k8s-operator//terraform | n/a |
-| <a name="module_ssc"></a> [ssc](#module\_ssc) | git::https://github.com/canonical/self-signed-certificates-operator//terraform | n/a |
-| <a name="module_traefik"></a> [traefik](#module\_traefik) | git::https://github.com/canonical/traefik-k8s-operator//terraform | n/a |
+| <a name="module_alertmanager"></a> [alertmanager](#module\_alertmanager) | git::https://github.com/canonical/alertmanager-k8s-operator//terraform?depth=1 | n/a |
+| <a name="module_catalogue"></a> [catalogue](#module\_catalogue) | git::https://github.com/canonical/catalogue-k8s-operator//charm/terraform?depth=1 | n/a |
+| <a name="module_grafana"></a> [grafana](#module\_grafana) | git::https://github.com/canonical/grafana-k8s-operator//terraform?depth=1 | n/a |
+| <a name="module_loki"></a> [loki](#module\_loki) | git::https://github.com/canonical/loki-k8s-operator//terraform?depth=1 | n/a |
+| <a name="module_opentelemetry_collector"></a> [opentelemetry\_collector](#module\_opentelemetry\_collector) | git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform?depth=1 | n/a |
+| <a name="module_prometheus"></a> [prometheus](#module\_prometheus) | git::https://github.com/canonical/prometheus-k8s-operator//terraform?depth=1 | n/a |
+| <a name="module_ssc"></a> [ssc](#module\_ssc) | git::https://github.com/canonical/self-signed-certificates-operator//terraform?depth=1 | n/a |
+| <a name="module_traefik"></a> [traefik](#module\_traefik) | git::https://github.com/canonical/traefik-k8s-operator//terraform?depth=1 | n/a |
 
 ## Inputs
 
@@ -31,10 +39,11 @@ This is a Terraform module facilitating the deployment of the COS Lite solution,
 | <a name="input_external_ca_cert_offer_url"></a> [external\_ca\_cert\_offer\_url](#input\_external\_ca\_cert\_offer\_url) | A Juju offer URL (e.g. admin/external-ca.send-ca-cert) of a CA providing the 'certificate\_transfer' integration for applications to trust ingress via Traefik. | `string` | `null` | no |
 | <a name="input_external_certificates_offer_url"></a> [external\_certificates\_offer\_url](#input\_external\_certificates\_offer\_url) | A Juju offer URL (e.g. admin/external-ca.certificates) of a CA providing the 'tls\_certificates' integration for Traefik to supply it with server certificates. | `string` | `null` | no |
 | <a name="input_grafana"></a> [grafana](#input\_grafana) | Application configuration for Grafana. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    app_name           = optional(string, "grafana")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    resources          = optional(map(string), {})<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
-| <a name="input_ingress"></a> [ingress](#input\_ingress) | Per-component toggle for ingress integrations | <pre>object({<br/>    alertmanager = optional(bool, true)<br/>    catalogue    = optional(bool, true)<br/>    grafana      = optional(bool, true)<br/>    loki         = optional(bool, true)<br/>    prometheus   = optional(bool, true)<br/>  })</pre> | `{}` | no |
+| <a name="input_ingress"></a> [ingress](#input\_ingress) | Per-component toggle for ingress integrations | <pre>object({<br/>    alertmanager            = optional(bool, true)<br/>    catalogue               = optional(bool, true)<br/>    grafana                 = optional(bool, true)<br/>    loki                    = optional(bool, true)<br/>    opentelemetry_collector = optional(bool, true)<br/>    prometheus              = optional(bool, true)<br/>  })</pre> | `{}` | no |
 | <a name="input_internal_tls"></a> [internal\_tls](#input\_internal\_tls) | Specify whether to use TLS or not for internal COS communication. By default, TLS is enabled using self-signed-certificates | `bool` | `true` | no |
 | <a name="input_loki"></a> [loki](#input\_loki) | Application configuration for Loki. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    app_name           = optional(string, "loki")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    resources          = optional(map(string), {})<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
 | <a name="input_model"></a> [model](#input\_model) | Model configuration. When `uuid` is set, an existing model is looked up; otherwise a new model is created with the given fields. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/model | <pre>object({<br/>    uuid = optional(string)<br/>    name = optional(string, "cos-lite")<br/>    cloud = optional(object({<br/>      name   = string<br/>      region = optional(string)<br/>    }))<br/>    annotations       = optional(map(string))<br/>    config            = optional(map(string))<br/>    constraints       = optional(string)<br/>    credential        = optional(string)<br/>    target_controller = optional(string)<br/>  })</pre> | `{}` | no |
+| <a name="input_opentelemetry_collector"></a> [opentelemetry\_collector](#input\_opentelemetry\_collector) | Application configuration for OpenTelemetry Collector. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    app_name           = optional(string, "otelcol")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    resources          = optional(map(string), {})<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
 | <a name="input_postgresql_offer_url"></a> [postgresql\_offer\_url](#input\_postgresql\_offer\_url) | A Juju offer URL (e.g. admin/postgresql.database) of a PostgreSQL service providing the 'postgresql\_client' integration for applications to connect to the database. | `string` | `null` | no |
 | <a name="input_prometheus"></a> [prometheus](#input\_prometheus) | Application configuration for Prometheus. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    app_name           = optional(string, "prometheus")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    resources          = optional(map(string), {})<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
 | <a name="input_risk"></a> [risk](#input\_risk) | Risk level that the applications are (unless overwritten by individual channels) deployed from | `string` | `"edge"` | no |
@@ -76,7 +85,14 @@ module "cos-lite" {
 }
 ```
 
-### Basic usage
+### Deploy from the module root
+
+```bash
+cd observability-stack/terraform/cos-lite
+terraform apply
+```
+
+### Deploy as a child module
 
 The minimum version of Terraform Juju provider required is `1.5`.
 

@@ -94,8 +94,8 @@ curl -s --data-urlencode 'match[]={__name__="prometheus_http_requests_total"}' l
 
 Similarly, "service labels" can be specified using prometheus [remote-write endpoint](https://prometheus.io/docs/prometheus/latest/querying/api/#remote-write-receiver) and [push-gateway](https://github.com/prometheus/pushgateway/blob/master/README.md#use-it).
 
-
 ## Log labels
+
 Logs ("streams") ingested by Loki will be searchable by the specified labels.
 If you [push logs directly to Loki](https://grafana.com/docs/loki/latest/reference/loki-http-api/#ingest-logs), you can attach labels to every "stream" pushed.
 In Loki's terminology, a stream is a set of log lines pushed in a single request:
@@ -118,13 +118,13 @@ In Loki's terminology, a stream is a set of log lines pushed in a single request
 
 all of the labels specified in the `stream` section above will be applied to all the log lines specified in the `values` block.
 
-
 ## Scrape job labels for logs
+
 Log files can be scraped by Promtail or opentelemetry collector, which then stream the log lines to Loki using Loki's `push-api` endpoint.
 Promtail has a [`scarpe_configs` section in its config file](https://grafana.com/docs/enterprise-logs/latest/send-data/promtail/) for specifying targets (log filename) and associate labels to them.
 
-
 ## Alert labels
+
 By design, prometheus (and Loki) store all [alerts](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) in a centralized fashion: if you want your alerts to be evaluated, you must place them on the filesystem somewhere accessible by prometheus, and specify that path in Prometheus's [config file](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#configuration-file):
 
 ```yaml
@@ -152,8 +152,8 @@ This is useful for:
 - Filtering alert rules (see [grouping](https://prometheus.io/docs/alerting/latest/alertmanager/#grouping), [inhibition](https://prometheus.io/docs/alerting/latest/alertmanager/#inhibition), [silences](https://prometheus.io/docs/alerting/latest/alertmanager/#silences)).
 - Enriching the message an on-caller sees with additional metadata.
 
-
 ## Relabeling
+
 [`relabel_configs`](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config) and [`metric_relabel_configs`](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs) are for modifying label and metric names, respectively.
 
 See also:

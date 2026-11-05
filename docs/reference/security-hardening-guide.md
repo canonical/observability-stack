@@ -35,7 +35,7 @@ If you're using the Canonical Identity Platform to manage authentication, this c
 ### Be judicious about what is exposed via an ingress
 
 Generally, some COS components must be exposed via ingress to other audiences for COS to work effectively.  Examples where this is necessary include:
-* allowing applications to send metrics to COS when COS is deployed on a different substrate (as recommended by the [COS deployment best practices guide](https://documentation.ubuntu.com/observability/latest/reference/topology/#deploy-in-isolation)
+* allowing applications to send metrics to COS when COS is deployed on a different substrate (as recommended by the [COS deployment best practices guide](topology.md#deploy-in-isolation)
 * exposing Grafana dashboards outside the COS network
 
 Whatever the reason, administrators should consider what should be exposed and to which audiences, and set up their ingresses accordingly.  For example:
@@ -54,5 +54,6 @@ For cases where:
 It may be possible to secure the entire ingress with authentication.  For example, see the [basic authentication](https://charmhub.io/traefik-k8s/configurations#basic_auth_user) and [`forward_auth`](https://charmhub.io/traefik-k8s/configurations#enable_experimental_forward_auth) integrations on the Traefik charm.
 
 ## Secure configuration
+
 Use Juju secrets where applicable. For example, the `opentelemetry-collector-integrator` can be used for forwarding exporter
 configuration to `opentelemetry-collector`. Do not pass secrets, such as token in cleartext; use Juju secrets instead.

@@ -1,9 +1,10 @@
 mock_provider "juju" {}
 
 variables {
-  grafana    = { storage_directives = { "foo" = "1G" } }
-  loki       = { storage_directives = { "foo" = "1G" } }
-  prometheus = { storage_directives = { "foo" = "1G" } }
+  grafana                 = { storage_directives = { "foo" = "1G" } }
+  loki                    = { storage_directives = { "foo" = "1G" } }
+  opentelemetry_collector = { storage_directives = { "foo" = "1G" } }
+  prometheus              = { storage_directives = { "foo" = "1G" } }
 }
 
 # --- model: create when no uuid provided ---

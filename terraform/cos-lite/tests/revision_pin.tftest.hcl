@@ -1,9 +1,10 @@
 mock_provider "juju" {}
 
 variables {
-  grafana    = { storage_directives = { "foo" = "1G" } }
-  loki       = { storage_directives = { "foo" = "1G" } }
-  prometheus = { storage_directives = { "foo" = "1G" } }
+  grafana                 = { storage_directives = { "foo" = "1G" } }
+  loki                    = { storage_directives = { "foo" = "1G" } }
+  opentelemetry_collector = { storage_directives = { "foo" = "1G" } }
+  prometheus              = { storage_directives = { "foo" = "1G" } }
 }
 
 # --- User revision pin is respected and not overridden by juju_charm datasource ---
@@ -12,13 +13,14 @@ run "user_revision_pin_is_respected" {
   command = plan
 
   variables {
-    alertmanager = { revision = 1 }
-    catalogue    = { revision = 2 }
-    grafana      = { revision = 3, storage_directives = { "foo" = "1G" } }
-    loki         = { revision = 4, storage_directives = { "foo" = "1G" } }
-    prometheus   = { revision = 5, storage_directives = { "foo" = "1G" } }
-    ssc          = { revision = 6 }
-    traefik      = { revision = 7 }
+    alertmanager            = { revision = 1 }
+    catalogue               = { revision = 2 }
+    grafana                 = { revision = 3, storage_directives = { "foo" = "1G" } }
+    loki                    = { revision = 4, storage_directives = { "foo" = "1G" } }
+    opentelemetry_collector = { revision = 5, storage_directives = { "foo" = "1G" } }
+    prometheus              = { revision = 6, storage_directives = { "foo" = "1G" } }
+    ssc                     = { revision = 7 }
+    traefik                 = { revision = 8 }
   }
 
   assert {
@@ -42,18 +44,23 @@ run "user_revision_pin_is_respected" {
   }
 
   assert {
-    condition     = local.revisions.prometheus == 5
-    error_message = "Expected prometheus revision 5, got ${local.revisions.prometheus}"
+    condition     = local.revisions.otelcol == 5
+    error_message = "Expected otelcol revision 5, got ${local.revisions.otelcol}"
   }
 
   assert {
-    condition     = local.revisions.ssc == 6
-    error_message = "Expected ssc revision 6, got ${local.revisions.ssc}"
+    condition     = local.revisions.prometheus == 6
+    error_message = "Expected prometheus revision 6, got ${local.revisions.prometheus}"
   }
 
   assert {
-    condition     = local.revisions.traefik == 7
-    error_message = "Expected traefik revision 7, got ${local.revisions.traefik}"
+    condition     = local.revisions.ssc == 7
+    error_message = "Expected ssc revision 7, got ${local.revisions.ssc}"
+  }
+
+  assert {
+    condition     = local.revisions.traefik == 8
+    error_message = "Expected traefik revision 8, got ${local.revisions.traefik}"
   }
 }
 
@@ -80,6 +87,11 @@ run "no_pin_uses_datasource" {
   assert {
     condition     = local.revisions.loki == data.juju_charm.loki_info.revision
     error_message = "loki revision should come from datasource when no pin is set"
+  }
+
+  assert {
+    condition     = local.revisions.otelcol == data.juju_charm.otelcol_info.revision
+    error_message = "otelcol revision should come from datasource when no pin is set"
   }
 
   assert {

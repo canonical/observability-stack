@@ -14,11 +14,5 @@ on:
 
 jobs:
   markdown-lint:
-    runs-on: ubuntu-22.04
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-    - uses: DavidAnson/markdownlint-cli2-action@v16
-      with:
-        config: "docs/.sphinx/.markdownlint.json"
+    name: Markdown lint
+    uses: canonical/sphinx-stack/.github/workflows/markdown-style-checks.yml@2.0

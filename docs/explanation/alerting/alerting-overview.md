@@ -26,6 +26,7 @@ COS alert rules are sourced in several ways.
 ```{note}
 Both generic and charmed alert rules can be disabled by setting the `forward_alert_rules` parameter to `False` (default: `True`).
 ```
+
 ### Generic alert rules
 
 Generic rules are a minimal set of host-health rules shipped with COS itself, covering common failure scenarios such as unreachable targets and missing metrics. They require no configuration and apply automatically across deployments. The main focus of these alerts is the health of COS itself, as well as the reachability and `up` status of monitored instances. See [Generic alert rule groups](./generic-rules) for the full list and their behaviour.

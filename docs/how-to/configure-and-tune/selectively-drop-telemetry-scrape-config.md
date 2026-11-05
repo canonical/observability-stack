@@ -16,6 +16,7 @@ Metrics can be dropped by using the `drop` action in several different places:
 - Under [`<remote_write>`](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write) section (`<write_relabel_configs>` subsection). For example: prometheus can be told to drop metrics before pushing them to another prometheus over remote-write API. This use case is not addressed in this guide.
 
 ###  MetricsEndpointProvider
+
 Charms that integrate with prometheus or otelcol, provide a "scrape config" to `MetricsEndpointProvider` (imported from [`charms.prometheus_k8s.v0.prometheus_scrape`](https://charmhub.io/prometheus-k8s/libraries/prometheus_scrape)).
 
 Let's take for example the alertmanager self-metrics that prometheus scrapes. If we do not want prometheus or otelcol to ingest any `scrape_samples_*` metrics from alertmanager, then we need to adjust the scrape job specified in the alertmanager charm:
@@ -42,6 +43,7 @@ index fa3678c..f0e943b 100755
 ```
 
 ### scrape-config charm
+
 In a typical scrape-config deployment such as:
 
 ```{mermaid}
@@ -60,8 +62,8 @@ EOF
 )"
 ```
 
-
 ## References
+
 - [Dropping metrics at scrape time with Prometheus](https://www.robustperception.io/dropping-metrics-at-scrape-time-with-prometheus/) (robustperception, 2015)
 - [How relabeling in Prometheus works](https://grafana.com/blog/how-relabeling-in-prometheus-works/) (Grafana, 2022)
 - [How to drop and delete metrics in Prometheus](https://tanmay-bhat.github.io/posts/how-to-drop-and-delete-metrics-in-prometheus/) (gh:tanmay-bhat, 2022)

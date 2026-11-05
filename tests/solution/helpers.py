@@ -5,21 +5,25 @@
 import json
 import os
 import subprocess
+import time
 from pathlib import Path
 from typing import Any, Dict
 
 import jubilant
-
-SOLUTION_ROOT = Path(__file__).parent
+import requests
 
 # Resolved terraform/tofu binary, set by quality-gates.just; falls back to
 # "terraform" when running pytest directly.
 TERRAFORM_BIN = os.environ.get("terraform") or "terraform"
 
+# How far back to look for logs and traces.
+LOOKBACK_HOURS = 24
 
-def discover_solutions() -> frozenset[str]:
-    """Every solution name under tests/solution/ (any dir with a terraform/ subdir)."""
-    return frozenset(p.name for p in SOLUTION_ROOT.iterdir() if (p / "terraform").is_dir())
+
+def lookback_window_ns() -> tuple[int, int]:
+    """Return the (start, end) of the lookback window, in nanoseconds since the epoch."""
+    end = time.time_ns()
+    return end - LOOKBACK_HOURS * 3600 * 1_000_000_000, end
 
 
 def terraform_output(terraform_dir: Path) -> Dict[str, Any]:
@@ -44,3 +48,29 @@ def wait_for_active_idle(juju: jubilant.Juju, timeout: int = 60 * 45):
         timeout=timeout,
         error=jubilant.any_error,
     )
+
+
+def leader_unit(juju: jubilant.Juju, app: str) -> str:
+    """Name of the leader unit of an application."""
+    for name, unit in juju.status().apps[app].units.items():
+        if unit.leader:
+            return name
+    raise AssertionError(f"no leader unit found for application '{app}'")
+
+
+def unit_url(juju: jubilant.Juju, app: str, port: int) -> str:
+    """Base URL of an application's first unit, picking the scheme it actually serves.
+
+    Solutions enable internal TLS by default, but that is configurable, so the
+    scheme is probed rather than assumed.
+    """
+    status = juju.status()
+    address = next(iter(status.apps[app].units.values())).address
+    for scheme in ("https", "http"):
+        url = f"{scheme}://{address}:{port}"
+        try:
+            requests.get(url, timeout=30, verify=False)
+        except requests.RequestException:
+            continue
+        return url
+    raise AssertionError(f"no reachable {app} workload at {address}:{port}")

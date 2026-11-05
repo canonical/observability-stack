@@ -7,6 +7,7 @@ version = "0.0.0"
 
 dependencies = [
   "jubilant",
+  "observability-clients",
   "pytest",
   "pytest-bdd>=8.1.0",
 ]

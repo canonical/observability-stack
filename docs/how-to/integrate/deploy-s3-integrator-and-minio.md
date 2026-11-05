@@ -77,7 +77,6 @@ The simplest way to create a bucket is to use the Minio console UI. Obtain the M
 
 From there you should be able to create a bucket with a few clicks. See [this guide](https://thenewstack.io/how-to-create-an-object-storage-bucket-with-minio-object-storage/) for a step-by-step tutorial.
 
-
 #### Using the Python SDK
 
 Alternatively, you can use the Minio Python SDK.

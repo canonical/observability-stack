@@ -6,6 +6,8 @@ output "offers" {
     grafana_dashboards           = juju_offer.grafana_dashboards
     loki_logging                 = juju_offer.loki_logging
     mimir_receive_remote_write   = juju_offer.mimir_receive_remote_write
+    otelcol_receive_otlp         = juju_offer.otelcol_receive_otlp
+    otelcol_receive_traces       = juju_offer.otelcol_receive_traces
   }
   description = "All Juju offers which are exposed by this product module"
 }
@@ -17,6 +19,8 @@ output "components" {
     alertmanager            = module.alertmanager
     catalogue               = module.catalogue
     grafana                 = module.grafana
+    istio_beacon            = try(module.istio_beacon[0], null)
+    istio_ingress           = try(module.istio_ingress[0], null)
     opentelemetry_collector = module.opentelemetry_collector
     loki                    = module.loki
     mimir                   = module.mimir

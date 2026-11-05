@@ -41,6 +41,8 @@ variable "s3_access_key" {
 module "ssc" {
   source     = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
   model_uuid = data.juju_model.ca-model.uuid
+
+  offered_endpoints = ["certificates", "send-ca-cert"]
 }
 
 module "cos" {
@@ -50,8 +52,8 @@ module "cos" {
   model                           = { uuid = data.juju_model.cos-model.uuid }
   risk                            = "edge"
   internal_tls                    = true
-  external_certificates_offer_url = "admin/${var.ca_model}.certificates"
-  external_ca_cert_offer_url      = "admin/${var.ca_model}.send-ca-cert"
+  external_certificates_offer_url = "admin/${var.ca_model}.self-signed-certificates-certificates"
+  external_ca_cert_offer_url      = "admin/${var.ca_model}.self-signed-certificates-send-ca-cert"
 
   s3_endpoint   = var.s3_endpoint
   s3_secret_key = var.s3_secret_key

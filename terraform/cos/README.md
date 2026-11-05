@@ -6,6 +6,13 @@ This is a Terraform module facilitating the deployment of the COS solution, usin
 > `s3-integrator` itself doesn't act as an S3 object storage system. For the HA solution to be functional, `s3-integrator` needs to point to an S3-like storage. See [this guide](https://documentation.ubuntu.com/observability/latest/tutorial/installation/cos-canonical-k8s-sandbox/#set-up-s3) to learn how to connect to an S3-like storage. If you deploy the COS TF module with an s3-integrator from `channel=2/edge` and `>=rev243`, then the buckets are automatically created for you.
 
 <!-- BEGIN_TF_DOCS -->
+## Requirements
+
+| Name | Version |
+| ---- | ------- |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.11 |
+| <a name="requirement_juju"></a> [juju](#requirement\_juju) | >= 1.4.0 |
+
 ## Providers
 
 | Name | Version |
@@ -17,15 +24,17 @@ This is a Terraform module facilitating the deployment of the COS solution, usin
 
 | Name | Source | Version |
 | ---- | ------ | ------- |
-| <a name="module_alertmanager"></a> [alertmanager](#module\_alertmanager) | git::https://github.com/canonical/alertmanager-k8s-operator//terraform | n/a |
-| <a name="module_catalogue"></a> [catalogue](#module\_catalogue) | git::https://github.com/canonical/catalogue-k8s-operator//charm/terraform | n/a |
-| <a name="module_grafana"></a> [grafana](#module\_grafana) | git::https://github.com/canonical/grafana-k8s-operator//terraform | n/a |
-| <a name="module_loki"></a> [loki](#module\_loki) | git::https://github.com/canonical/loki-operators//terraform | n/a |
-| <a name="module_mimir"></a> [mimir](#module\_mimir) | git::https://github.com/canonical/mimir-operators//terraform | n/a |
-| <a name="module_opentelemetry_collector"></a> [opentelemetry\_collector](#module\_opentelemetry\_collector) | git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform | n/a |
-| <a name="module_ssc"></a> [ssc](#module\_ssc) | git::https://github.com/canonical/self-signed-certificates-operator//terraform | n/a |
-| <a name="module_tempo"></a> [tempo](#module\_tempo) | git::https://github.com/canonical/tempo-operators//terraform | n/a |
-| <a name="module_traefik"></a> [traefik](#module\_traefik) | git::https://github.com/canonical/traefik-k8s-operator//terraform | n/a |
+| <a name="module_alertmanager"></a> [alertmanager](#module\_alertmanager) | git::https://github.com/canonical/alertmanager-k8s-operator//terraform?depth=1 | n/a |
+| <a name="module_catalogue"></a> [catalogue](#module\_catalogue) | git::https://github.com/canonical/catalogue-k8s-operator//charm/terraform?depth=1 | n/a |
+| <a name="module_grafana"></a> [grafana](#module\_grafana) | git::https://github.com/canonical/grafana-k8s-operator//terraform?depth=1 | n/a |
+| <a name="module_istio_beacon"></a> [istio\_beacon](#module\_istio\_beacon) | git::https://github.com/canonical/service-mesh//charms/istio-beacon-k8s/terraform?depth=1 | n/a |
+| <a name="module_istio_ingress"></a> [istio\_ingress](#module\_istio\_ingress) | git::https://github.com/canonical/service-mesh//charms/istio-ingress-k8s/terraform?depth=1 | n/a |
+| <a name="module_loki"></a> [loki](#module\_loki) | git::https://github.com/canonical/loki-operators//terraform?depth=1 | n/a |
+| <a name="module_mimir"></a> [mimir](#module\_mimir) | git::https://github.com/canonical/mimir-operators//terraform?depth=1 | n/a |
+| <a name="module_opentelemetry_collector"></a> [opentelemetry\_collector](#module\_opentelemetry\_collector) | git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform?depth=1 | n/a |
+| <a name="module_ssc"></a> [ssc](#module\_ssc) | git::https://github.com/canonical/self-signed-certificates-operator//terraform?depth=1 | n/a |
+| <a name="module_tempo"></a> [tempo](#module\_tempo) | git::https://github.com/canonical/tempo-operators//terraform?depth=1 | n/a |
+| <a name="module_traefik"></a> [traefik](#module\_traefik) | git::https://github.com/canonical/traefik-k8s-operator//terraform?depth=1 | n/a |
 
 ## Inputs
 
@@ -40,9 +49,12 @@ This is a Terraform module facilitating the deployment of the COS solution, usin
 | <a name="input_grafana"></a> [grafana](#input\_grafana) | Application configuration for Grafana. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    app_name           = optional(string, "grafana")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    resources          = optional(map(string), {})<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 3)<br/>  })</pre> | `{}` | no |
 | <a name="input_ingress"></a> [ingress](#input\_ingress) | Per-component toggle for ingress integrations | <pre>object({<br/>    alertmanager            = optional(bool, true)<br/>    catalogue               = optional(bool, true)<br/>    grafana                 = optional(bool, true)<br/>    loki                    = optional(bool, true)<br/>    mimir                   = optional(bool, true)<br/>    opentelemetry_collector = optional(bool, true)<br/>    tempo                   = optional(bool, false)<br/>  })</pre> | `{}` | no |
 | <a name="input_internal_tls"></a> [internal\_tls](#input\_internal\_tls) | Specify whether to use TLS or not for internal COS communication. By default, TLS is enabled using self-signed-certificates | `bool` | `true` | no |
+| <a name="input_istio_beacon"></a> [istio\_beacon](#input\_istio\_beacon) | Application configuration for istio-beacon, only deployed when `mesh_enabled` is true. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    app_name           = optional(string, "istio-beacon")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    resources          = optional(map(string), {})<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
+| <a name="input_istio_ingress"></a> [istio\_ingress](#input\_istio\_ingress) | Application configuration for istio-ingress, which replaces Traefik as the reverse proxy when `mesh_enabled` is true. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    app_name           = optional(string, "istio-ingress")<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    resources          = optional(map(string), {})<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 1)<br/>  })</pre> | `{}` | no |
 | <a name="input_loki_bucket"></a> [loki\_bucket](#input\_loki\_bucket) | Loki bucket name | `string` | `"loki"` | no |
 | <a name="input_loki_coordinator"></a> [loki\_coordinator](#input\_loki\_coordinator) | Application configuration for Loki Coordinator. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    resources          = optional(map(string), {})<br/>    revision           = optional(number, null)<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 3)<br/>  })</pre> | `{}` | no |
 | <a name="input_loki_worker"></a> [loki\_worker](#input\_loki\_worker) | Application configuration for all Loki Workers. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    backend_config             = optional(map(string), {})<br/>    read_config                = optional(map(string), {})<br/>    write_config               = optional(map(string), {})<br/>    constraints                = optional(string, "arch=amd64")<br/>    resources                  = optional(map(string), {})<br/>    revision                   = optional(number, null)<br/>    backend_storage_directives = optional(map(string), {})<br/>    read_storage_directives    = optional(map(string), {})<br/>    write_storage_directives   = optional(map(string), {})<br/>    backend_units              = optional(number, 3)<br/>    read_units                 = optional(number, 3)<br/>    write_units                = optional(number, 3)<br/>  })</pre> | `{}` | no |
+| <a name="input_mesh_enabled"></a> [mesh\_enabled](#input\_mesh\_enabled) | Route COS traffic through the Istio service mesh, which provides mTLS between COS components. This module does NOT deploy the Istio control plane: before enabling this, you must have already satisfied the istio-k8s dependency by deploying it in another Juju model (e.g. `istio-system`). See https://canonical-service-mesh-documentation.readthedocs-hosted.com/latest/istio/how-to/ | `bool` | `false` | no |
 | <a name="input_mimir_bucket"></a> [mimir\_bucket](#input\_mimir\_bucket) | Mimir bucket name | `string` | `"mimir"` | no |
 | <a name="input_mimir_coordinator"></a> [mimir\_coordinator](#input\_mimir\_coordinator) | Application configuration for Mimir Coordinator. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    config             = optional(map(string), {})<br/>    constraints        = optional(string, "arch=amd64")<br/>    revision           = optional(number, null)<br/>    resources          = optional(map(string), {})<br/>    storage_directives = optional(map(string), {})<br/>    units              = optional(number, 3)<br/>  })</pre> | `{}` | no |
 | <a name="input_mimir_worker"></a> [mimir\_worker](#input\_mimir\_worker) | Application configuration for all Mimir Workers. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application | <pre>object({<br/>    backend_config             = optional(map(string), {})<br/>    read_config                = optional(map(string), {})<br/>    write_config               = optional(map(string), {})<br/>    constraints                = optional(string, "arch=amd64")<br/>    resources                  = optional(map(string), {})<br/>    revision                   = optional(number, null)<br/>    backend_storage_directives = optional(map(string), {})<br/>    read_storage_directives    = optional(map(string), {})<br/>    write_storage_directives   = optional(map(string), {})<br/>    backend_units              = optional(number, 3)<br/>    read_units                 = optional(number, 3)<br/>    write_units                = optional(number, 3)<br/>  })</pre> | `{}` | no |
@@ -94,7 +106,15 @@ module "cos" {
 }
 ```
 
-### Basic usage
+### Deploy from the module root
+
+```bash
+cd observability-stack/terraform/cos
+terraform apply \
+    -var s3_endpoint=http://S3_HOST_IP:808 -var s3_access_key=access-key -var s3_secret_key=secret-key
+```
+
+### Deploy as a child module
 
 By default, this Terraform module will deploy each worker with `3` unit. If you want to scale each Loki, Mimir or Tempo worker unit please check the variables available for that purpose in `variables.tf`.
 
@@ -123,6 +143,16 @@ Then, use terraform to deploy the module:
 ```shell
 terraform init
 terraform apply
+```
+
+### Preset catalog
+
+The [`presets/`](presets/) directory contains reusable deployment shapes such as a single-unit dev topology or a deployment with ingress disabled. They are plain Terraform variable files (`.tfvars`), so they can be applied directly or copied as-is into a `module "cos"` block.
+
+When this module is applied as a root (e.g. `cd observability-stack/terraform/cos`), pass one with `-var-file`:
+
+```shell
+terraform apply -var-file=presets/single-unit.tfvars
 ```
 
 #### Known Juju issue.

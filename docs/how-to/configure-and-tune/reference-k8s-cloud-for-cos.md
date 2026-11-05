@@ -13,6 +13,7 @@ For example:
 ```bash
 juju clouds
 ```
+
 ```
 Clouds available on the controller:  
 Cloud      Regions  Default     Type 
@@ -22,6 +23,7 @@ k8s-cloud  1        default     k8s
 ```bash
 juju credentials
 ```
+
 ```
 Controller Credentials:  
 Cloud      Credentials   

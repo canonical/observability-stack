@@ -49,6 +49,7 @@ When you ship dashboard changes in a charm release, always update the
 dashboard JSON `version` field as part of the same change.
 
 ## When metrics are renamed or removed
+
 Changes in metric names that are used in dashboard panels make a breaking change.
 In this case, bumping the dashboard's `version` field is not enough, because the deduplicated
 dashboard won't work for older charms (from before the metric was renamed).

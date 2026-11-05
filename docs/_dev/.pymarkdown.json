@@ -5,7 +5,13 @@
             "enabled": true,
             "style": "atx"
         },
+        "commands-show-output": {
+            "enabled": true
+        },
         "no-missing-space-atx": {
+            "enabled": true
+        },
+        "blanks-around-headings": {
             "enabled": true
         },
         "heading-start-left": {

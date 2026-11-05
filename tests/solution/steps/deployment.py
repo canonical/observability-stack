@@ -1,11 +1,11 @@
-"""Step definitions shared across feature files (deploy, wait, health checks)."""
+"""Steps about the deployment itself: which model, and whether it is healthy."""
 
 import os
 from pathlib import Path
 
 import jubilant
 from helpers import terraform_output, wait_for_active_idle
-from pytest_bdd import given, then, when
+from pytest_bdd import given, then
 
 # Points the "given" step at an already-deployed model instead of
 # discovering one from `terraform output` (see README.md).
@@ -21,11 +21,8 @@ def the_solution_has_been_deployed(request) -> jubilant.Juju:
     return jubilant.Juju(model=model_name)
 
 
-@when("no action is done")
-def no_action_is_done():
-    """No-op step: some scenarios (e.g. the smoke test) have no action to perform."""
-
-
-@then("the model settles into a healthy state")
-def the_model_settles_into_a_healthy_state(juju: jubilant.Juju):
+@given("the model is healthy")
+@then("the model is healthy")
+def the_model_is_healthy(juju: jubilant.Juju):
+    """Every application active and every agent idle."""
     wait_for_active_idle(juju)
