@@ -7,7 +7,7 @@ import jubilant
 import pytest
 from helpers import (
     _MODEL_ENV_VAR,
-    TfDirManager,
+    TERRAFORM_BIN,
     deployment_mode,
     dump_debug_state,
     mode_options,
@@ -29,33 +29,24 @@ def _terraform_applied(request) -> None:
         return
 
     options = mode_options(request)
-    internal_tls = options["internal_tls"]
-    external_ca = options["external_ca"]
-    ingress = options["ingress"]
-
     tf_dir = terraform_dir(request)
-    solution = tf_dir.parent.name
-    repo_root = tf_dir.parents[3]
+    terraform = [TERRAFORM_BIN, f"-chdir={tf_dir}"]
 
-    var_files = (
-        [str(repo_root / "terraform" / solution / "presets" / "no-ingress.tfvars")]
-        if ingress == "false"
-        else []
-    )
+    apply = [*terraform, "apply", "-auto-approve"]
+    if options["ingress"] == "false":
+        solution, repo_root = tf_dir.parent.name, tf_dir.parents[3]
+        preset = repo_root / "terraform" / solution / "presets" / "no-ingress.tfvars"
+        apply += ["-var-file", str(preset)]
+    for var in ("internal_tls", "external_ca"):
+        if options[var]:  # empty: keep the wrapper's default
+            apply += ["-var", f"{var}={options[var]}"]
 
-    tf_vars = {}
-    if internal_tls:
-        tf_vars["internal_tls"] = internal_tls
-    if external_ca:
-        tf_vars["external_ca"] = external_ca
-
-    tf = TfDirManager(dir=str(tf_dir))
-    tf.init()
+    subprocess.run([*terraform, "init", "-upgrade"], check=True)
     # Apply is idempotent, so retry once to get past transient errors.
     attempts = 2
     for attempt in range(1, attempts + 1):
         try:
-            tf.apply(var_files=var_files, **tf_vars)
+            subprocess.run(apply, check=True)
             return
         except subprocess.CalledProcessError:
             dump_debug_state(f"terraform apply failed (attempt {attempt}/{attempts})")
