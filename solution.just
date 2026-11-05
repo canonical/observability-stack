@@ -9,17 +9,18 @@ uv_flags := "--frozen --isolated"
   just --list solution
 
 # Deploys into whichever Juju controller is currently active -- `juju switch`
-# to the intended one first.
-# Init/apply a solution's Terraform module, then run its solution test suite.
+# to the intended one first. Extra arguments go to pytest, e.g. the mode:
+# `just solution test cos-lite --internal-tls=true --external-ca=false --ingress=true`
+# Run a solution's test suite; pytest applies its Terraform wrapper first
 [group("test")]
 [working-directory("./tests/solution")]
-test solution="cos-lite" internal_tls="" external_ca="" ingress="":
+test solution="cos-lite" *args='':
   #!/usr/bin/env bash
   set -euo pipefail
   echo "==> Testing solution: {{solution}}"
   juju whoami
   if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
-  uv run ${uv_flags} pytest -vv -ra --capture=no --internal-tls="{{internal_tls}}" --external-ca="{{external_ca}}" --ingress="{{ingress}}" "{{solution}}"
+  uv run ${uv_flags} pytest -vv -ra --capture=no "{{solution}}" {{args}}
 
 # Set KUBECTL to override the kubectl command (default: kubectl, then k8s, then microk8s).
 # Print Juju and Kubernetes state for every model, to debug a failed run
