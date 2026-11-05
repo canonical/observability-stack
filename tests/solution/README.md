@@ -46,10 +46,11 @@ it lives in the same Terraform state as the solution model.
 ### Running a specific mode
 
 `--internal-tls`, `--external-ca`, and `--ingress` (`true`, `false`) select the deployment
-shape, all passed straight through to the Terraform wrapper:
+shape, all passed straight through to the Terraform wrapper. `just solution test` hands any
+arguments after the solution name to pytest:
 
 ```bash
-just solution test cos-lite false true true
+just solution test cos-lite --internal-tls=false --external-ca=true --ingress=true
 ```
 
 `--external-ca=true` with `--ingress=false` is rejected before anything gets deployed:

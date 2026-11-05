@@ -89,7 +89,7 @@ jobs:
           sudo k8s kubectl rollout status daemonset/cilium -n kube-system --timeout=90s
 
       - name: Run solution tests
-        run: just solution test ${{ matrix.solution }} ${{ matrix.internal-tls }} ${{ matrix.external-ca }} ${{ matrix.ingress }}
+        run: just solution test ${{ matrix.solution }} --internal-tls=${{ matrix.internal-tls }} --external-ca=${{ matrix.external-ca }} --ingress=${{ matrix.ingress }}
 
   promote:
     name: Promote ${{ matrix.solution }}
