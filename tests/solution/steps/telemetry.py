@@ -7,9 +7,8 @@ from pytest_bdd import parsers, then
 from helpers import (
     LOOKBACK_HOURS,
     _expect_deployed,
-    loki_has_logs,
+    lookback_window_ns,
     retry_until_found,
-    tempo_has_traces,
 )
 
 
@@ -41,7 +40,16 @@ def mimir_has_metrics_from(
 def loki_has_logs_from(loki: Loki, juju: jubilant.Juju, request, application: str):
     """Assert Loki has logs with a given `juju_application` label."""
     _expect_deployed(juju, request, application)
-    assert retry_until_found(lambda: loki_has_logs(loki, application)), (
+
+    def check() -> bool:
+        # A new window on every try, so a retry also sees lines that arrived since the last one.
+        start, end = lookback_window_ns()
+        result = loki.query_range(
+            f'{{juju_application="{application}"}}', start=str(start), end=str(end), limit=1
+        )
+        return bool(result.get("data", {}).get("result"))
+
+    assert retry_until_found(check), (
         f"Loki has no log lines labelled juju_application={application} "
         f"in the last {LOOKBACK_HOURS}h"
     )
@@ -53,7 +61,19 @@ def tempo_has_traces_from(
 ):
     """Assert Tempo has traces with a given `resource.juju_application` attribute."""
     _expect_deployed(juju, request, application)
-    assert retry_until_found(lambda: tempo_has_traces(tempo, application)), (
+
+    def check() -> bool:
+        # A new window on every try, so a retry also sees traces that arrived since the last one.
+        start, end = lookback_window_ns()
+        result = tempo.search(
+            f'{{resource.juju_application="{application}"}}',
+            start=str(start // 1_000_000_000),
+            end=str(end // 1_000_000_000),
+            limit=1,
+        )
+        return bool(result.get("traces"))
+
+    assert retry_until_found(check), (
         f"Tempo has no traces with resource.juju_application={application} "
         f"in the last {LOOKBACK_HOURS}h"
     )
