@@ -1,15 +1,11 @@
 """Steps about the deployment itself: which model, and whether it is healthy."""
 
 import os
-import subprocess
 
 import jubilant
-import pytest
 from helpers import (
     _MODEL_ENV_VAR,
-    TERRAFORM_BIN,
     deployment_mode,
-    mode_options,
     terraform_dir,
     terraform_output,
     wait_for_active_idle,
@@ -17,39 +13,9 @@ from helpers import (
 from pytest_bdd import given, then
 
 
-@pytest.fixture(scope="module")
-def _terraform_applied(request) -> None:
-    """Apply the solution's Terraform wrapper for this test module.
-
-    No-op when SOLUTION_MODEL points at an already-deployed model. Not torn
-    down afterwards (see README.md).
-    """
-    if _MODEL_ENV_VAR in os.environ:
-        return
-
-    options = mode_options(request)
-    tf_dir = terraform_dir(request)
-    terraform = [TERRAFORM_BIN, f"-chdir={tf_dir}"]
-
-    apply = [*terraform, "apply", "-auto-approve"]
-    if options["ingress"] == "false":
-        solution, repo_root = tf_dir.parent.name, tf_dir.parents[3]
-        preset = repo_root / "terraform" / solution / "presets" / "no-ingress.tfvars"
-        apply += ["-var-file", str(preset)]
-    for var in ("internal_tls", "external_ca"):
-        if options[var]:  # empty: keep the wrapper's default
-            apply += ["-var", f"{var}={options[var]}"]
-
-    subprocess.run([*terraform, "init", "-upgrade"], check=True)
-    # Apply is idempotent, so retry once to get past transient errors.
-    try:
-        subprocess.run(apply, check=True)
-    except subprocess.CalledProcessError:
-        subprocess.run(apply, check=True)
-
-
 @given("the solution has been deployed", target_fixture="juju")
-def the_solution_has_been_deployed(request, _terraform_applied) -> jubilant.Juju:
+def the_solution_has_been_deployed(request) -> jubilant.Juju:
+    """The solution's model: SOLUTION_MODEL if set, else the one `just solution test` deployed."""
     model_name = os.environ.get(_MODEL_ENV_VAR)
     if model_name is None:
         model_name = terraform_output(terraform_dir(request))["model_name"]["value"]

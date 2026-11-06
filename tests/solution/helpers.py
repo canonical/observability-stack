@@ -23,8 +23,8 @@ from tenacity import RetryError, Retrying, retry_if_result, stop_after_delay, wa
 # "terraform" when running pytest directly.
 TERRAFORM_BIN = os.environ.get("terraform") or "terraform"
 
-# Points the tests at an already-deployed model instead of applying the
-# Terraform wrapper ourselves; Terraform isn't run at all then (see README.md).
+# Points the tests at an already-deployed model instead of the Terraform
+# wrapper's; Terraform isn't run at all then (see README.md).
 _MODEL_ENV_VAR = "SOLUTION_MODEL"
 
 # How far back to look for logs and traces.
