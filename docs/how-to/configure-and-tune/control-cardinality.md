@@ -208,6 +208,12 @@ OOM-killed.
 
 - `[charm]` **`max_global_series_per_user`** — cap in-memory series per tenant. Rejects
   excess (4xx). Default `0` (disabled) in the charm; Mimir's own default is `150000`.
+  This is a cluster-wide limit on **distinct** series, not a per-unit limit: each ingester
+  enforces a local limit of `value × RF / N` (`RF` = replication factor, `N` = ingesters).
+  At `RF=3` with 3 ingesters the local limit equals the configured value, so raise it as you
+  add ingesters to keep the same per-unit target — `10M`, `20M` and `30M` give about 10M per
+  unit at 3, 6 and 9 ingesters. Size the limit to the memory you can afford, not to a round
+  number.
 - `[future]` **`max_global_series_per_metric`** — cap series per metric name; contains a
   single runaway metric.
 - `[charm]` **`ingestion_rate`** — per-tenant samples/s limit. Throughput only; it does
