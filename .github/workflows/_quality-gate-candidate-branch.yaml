@@ -5,6 +5,11 @@ name: Test and promote a branch's solutions
 # pass — promotes every charm pinned by that branch's Terraform modules from
 # /beta to /candidate.
 #
+# Two test jobs run the full solution test suite:
+# - test-solutions: every deployment mode, on the fixed infrastructure below.
+# - test-infrastructure: one mode (everything on), on every supported Juju
+#   version, Kubernetes version and architecture.
+#
 # Called once per supported branch/track from quality-gates-candidate.yaml, so adding
 # a new track only requires adding an entry to that workflow's branch
 # matrix, and adding a new solution only requires adding a directory under
@@ -19,8 +24,14 @@ on:
         required: true
         type: string
     secrets:
-      CHARMCRAFT_AUTH:
+      CHARMHUB_TOKEN:
         required: true
+
+# The infrastructure test-solutions runs on. test-infrastructure sets its own
+# versions in its matrix.
+env:
+  JUJU_CHANNEL: "3.6/stable"
+  K8S_CHANNEL: "1.32-classic/stable"
 
 jobs:
   discover-solutions:
@@ -41,34 +52,112 @@ jobs:
           echo "solutions=$solutions" >> "$GITHUB_OUTPUT"
 
   test-solutions:
-    name: Test ${{ matrix.solution }}
+    name: Test ${{ matrix.solution }} (internal-tls=${{ matrix.internal-tls }}, external-ca=${{ matrix.external-ca }}, ingress=${{ matrix.ingress }})
     needs: [discover-solutions]
     strategy:
       fail-fast: false
       matrix:
         solution: ${{ fromJson(needs.discover-solutions.outputs.solutions) }}
-    runs-on: ubuntu-latest
+        internal-tls: ["true", "false"]
+        external-ca: ["true", "false"]
+        ingress: ["true", "false"]
+        exclude:
+          - external-ca: "true"
+            ingress: "false"
+    runs-on: ${{ matrix.solution == 'cos' && 'self-hosted-linux-amd64-noble-xlarge' || 'self-hosted-linux-amd64-noble-large' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           ref: ${{ inputs.branch }}
 
+      # https://documentation.ubuntu.com/self-hosted-runners/en/latest/usage/faq/how-to-setup-canonical-k8s/
+      - name: Remove docker.io and containerd
+        if: ${{ runner.environment == 'self-hosted' }}
+        run: |
+          sudo apt-get remove -y docker.io containerd
+          sudo rm -rf /run/containerd
+
+      # Removing dockerd leaves `iptables -P FORWARD DROP` behind, which
+      # blackholes all pod egress. MicroK8s used to reset this; CK8s does not.
+      - name: Allow forwarded traffic
+        if: ${{ runner.environment == 'self-hosted' }}
+        run: |
+          sudo iptables -P FORWARD ACCEPT
+          sudo ip6tables -P FORWARD ACCEPT || true
+
       - name: Install dependencies
         run: |
           sudo snap install concierge --classic
-          sudo concierge prepare -p k8s --extra-snaps just,astral-uv,terraform
+          sudo concierge prepare -p k8s --juju-channel "$JUJU_CHANNEL" --k8s-channel "$K8S_CHANNEL" --extra-snaps just,astral-uv,terraform
           # Configure Cilium for Istio ambient service mesh compatibility
           sudo k8s kubectl patch configmap cilium-config -n kube-system --type merge -p '{"data":{"bpf-lb-sock-hostns-only":"true"}}'
           sudo k8s kubectl rollout restart daemonset/cilium -n kube-system
           sudo k8s kubectl rollout status daemonset/cilium -n kube-system --timeout=90s
 
       - name: Run solution tests
-        run: just solution test ${{ matrix.solution }}
+        run: just solution test ${{ matrix.solution }} --internal-tls=${{ matrix.internal-tls }} --external-ca=${{ matrix.external-ca }} --ingress=${{ matrix.ingress }}
+
+      - name: Dump debug state
+        if: failure()
+        run: just solution debug-dump
+
+  test-infrastructure:
+    name: Test ${{ matrix.solution }} (juju=${{ matrix.juju-channel }}, k8s=${{ matrix.k8s-channel }}, arch=${{ matrix.arch }})
+    needs: [discover-solutions]
+    strategy:
+      fail-fast: false
+      matrix:
+        solution: ${{ fromJson(needs.discover-solutions.outputs.solutions) }}
+        juju-channel: ["3.6/stable", "4/stable"]
+        k8s-channel: ["1.32-classic/stable"]
+        # Add arm64 once the COS charms publish arm64 builds; today most of
+        # them (alertmanager, grafana, loki, mimir, tempo, ...) are amd64-only.
+        arch: [amd64]
+    runs-on: self-hosted-linux-${{ matrix.arch }}-noble-${{ matrix.solution == 'cos' && 'xlarge' || 'large' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+
+      # https://documentation.ubuntu.com/self-hosted-runners/en/latest/usage/faq/how-to-setup-canonical-k8s/
+      - name: Remove docker.io and containerd
+        if: ${{ runner.environment == 'self-hosted' }}
+        run: |
+          sudo apt-get remove -y docker.io containerd
+          sudo rm -rf /run/containerd
+
+      # Removing dockerd leaves `iptables -P FORWARD DROP` behind, which
+      # blackholes all pod egress. MicroK8s used to reset this; CK8s does not.
+      - name: Allow forwarded traffic
+        if: ${{ runner.environment == 'self-hosted' }}
+        run: |
+          sudo iptables -P FORWARD ACCEPT
+          sudo ip6tables -P FORWARD ACCEPT || true
+
+      - name: Install dependencies
+        run: |
+          sudo snap install concierge --classic
+          sudo concierge prepare -p k8s --juju-channel "${{ matrix.juju-channel }}" --k8s-channel "${{ matrix.k8s-channel }}" --extra-snaps just,astral-uv,terraform
+          # Configure Cilium for Istio ambient service mesh compatibility
+          sudo k8s kubectl patch configmap cilium-config -n kube-system --type merge -p '{"data":{"bpf-lb-sock-hostns-only":"true"}}'
+          sudo k8s kubectl rollout restart daemonset/cilium -n kube-system
+          sudo k8s kubectl rollout status daemonset/cilium -n kube-system --timeout=90s
+
+      # Everything on (internal TLS, external CA, ingress) covers the most.
+      - name: Run solution tests
+        run: just solution test ${{ matrix.solution }} --internal-tls=true --external-ca=true --ingress=true
+
+      - name: Dump debug state
+        if: failure()
+        run: just solution debug-dump
 
   promote:
     name: Promote ${{ matrix.solution }}
-    needs: [discover-solutions, test-solutions]
+    needs: [discover-solutions, test-solutions, test-infrastructure]
+    # TODO: remove before merging -- never auto-promote from a pull_request-triggered run
+    if: github.event_name != 'pull_request'
     strategy:
       matrix:
         solution: ${{ fromJson(needs.discover-solutions.outputs.solutions) }}
@@ -87,5 +176,5 @@ jobs:
 
       - name: Promote
         env:
-          CHARMCRAFT_AUTH: ${{ secrets.CHARMCRAFT_AUTH }}
+          CHARMCRAFT_AUTH: ${{ secrets.CHARMHUB_TOKEN }}
         run: just solution promote ${{ matrix.solution }} ${{ inputs.branch }}
