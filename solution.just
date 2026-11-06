@@ -9,9 +9,10 @@ uv_flags := "--frozen --isolated"
   just --list solution
 
 # Deploys into whichever Juju controller is currently active -- `juju switch`
-# to the intended one first. Extra arguments go to pytest, e.g. the mode:
+# to the intended one first. Extra arguments go to pytest, and the mode options
+# also to Terraform, e.g.:
 # `just solution test cos-lite --internal-tls=true --external-ca=false --ingress=true`
-# Run a solution's test suite; pytest applies its Terraform wrapper first
+# Apply a solution's Terraform wrapper, then run its test suite
 [group("test")]
 [working-directory("./tests/solution")]
 test solution="cos-lite" *args='':
@@ -20,6 +21,32 @@ test solution="cos-lite" *args='':
   echo "==> Testing solution: {{solution}}"
   juju whoami
   if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
+
+  # The mode options also go to the Terraform wrapper; empty keeps its default.
+  internal_tls="" external_ca="" ingress=""
+  for arg in {{args}}; do
+    case "$arg" in
+      --internal-tls=*) internal_tls="${arg#*=}" ;;
+      --external-ca=*) external_ca="${arg#*=}" ;;
+      --ingress=*) ingress="${arg#*=}" ;;
+      --internal-tls|--external-ca|--ingress) echo "ERROR: use $arg=<value>"; exit 1 ;;
+    esac
+  done
+  if [ "$external_ca" = "true" ] && [ "$ingress" = "false" ]; then
+    echo "ERROR: --external-ca=true with --ingress=false isn't an allowed combination."
+    exit 1
+  fi
+  vars=()
+  if [ -n "$internal_tls" ]; then vars+=(-var "internal_tls=$internal_tls"); fi
+  if [ -n "$external_ca" ]; then vars+=(-var "external_ca=$external_ca"); fi
+  if [ "$ingress" = "false" ]; then
+    vars+=(-var-file "$(cd ../.. && pwd)/terraform/{{solution}}/presets/no-ingress.tfvars")
+  fi
+
+  tf=("${terraform}" -chdir="{{solution}}/terraform")
+  "${tf[@]}" init -upgrade
+  # Apply is idempotent, so retry once to get past transient errors.
+  "${tf[@]}" apply -auto-approve "${vars[@]}" || "${tf[@]}" apply -auto-approve "${vars[@]}"
   uv run ${uv_flags} pytest -vv -ra --capture=no "{{solution}}" {{args}}
 
 # Set KUBECTL to override the kubectl command (default: kubectl, then k8s, then microk8s).

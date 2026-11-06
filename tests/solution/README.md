@@ -28,9 +28,10 @@ From the repo root:
 just solution test cos-lite   # or: cos
 ```
 
-The pytest run itself `terraform init`s and `terraform apply`s the solution's Terraform wrapper
-module (`tests/solution/<name>/terraform/`) into a new model on the current controller, then runs
-that solution's `pytest-bdd` scenarios (`tests/solution/<name>/test_solution.py`) against it.
+This first `terraform init`s and `terraform apply`s the solution's Terraform wrapper module
+(`tests/solution/<name>/terraform/`) into a new model on the current controller, then runs that
+solution's `pytest-bdd` scenarios (`tests/solution/<name>/test_solution.py`) against it. pytest
+itself deploys nothing.
 
 The Terraform module is *not* destroyed automatically afterwards (so you can inspect a failure).
 `just solution debug-dump` prints the Juju and Kubernetes state of every model; CI runs it when
@@ -46,8 +47,8 @@ it lives in the same Terraform state as the solution model.
 ### Running a specific mode
 
 `--internal-tls`, `--external-ca`, and `--ingress` (`true`, `false`) select the deployment
-shape, all passed straight through to the Terraform wrapper. `just solution test` hands any
-arguments after the solution name to pytest:
+shape. `just solution test` passes them to the Terraform wrapper (use the `--option=value` form),
+and hands every argument after the solution name to pytest:
 
 ```bash
 just solution test cos-lite --internal-tls=false --external-ca=true --ingress=true
