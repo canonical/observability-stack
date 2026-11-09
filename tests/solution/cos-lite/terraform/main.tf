@@ -32,6 +32,12 @@ variable "external_ca" {
   default = false
 }
 
+# The architecture of the cluster the solution is deployed on.
+variable "arch" {
+  type    = string
+  default = "amd64"
+}
+
 locals {
   # Output below for the solution test to connect jubilant to.
   model_name = "cos-lite"
@@ -40,13 +46,18 @@ locals {
 
   external_certificates_offer_url = var.external_ca ? "admin/${local.ca_model_name}.self-signed-certificates-certificates" : null
   external_ca_cert_offer_url      = var.external_ca ? "admin/${local.ca_model_name}.self-signed-certificates-send-ca-cert" : null
+
+  # Juju deploys amd64 charms unless told otherwise, and the modules default their applications
+  # to arch=amd64, so every application needs the architecture of the machine running the tests.
+  constraints = "arch=${var.arch}"
 }
 
 resource "juju_model" "ca" {
   count = var.external_ca ? 1 : 0
 
-  name   = local.ca_model_name
-  config = { automatically-retry-hooks = "true" }
+  name        = local.ca_model_name
+  config      = { automatically-retry-hooks = "true" }
+  constraints = local.constraints
 }
 
 module "ssc" {
@@ -56,11 +67,12 @@ module "ssc" {
   model_uuid = juju_model.ca[0].uuid
 
   offered_endpoints = ["certificates", "send-ca-cert"]
+  constraints       = local.constraints
 }
 
 module "cos-lite" {
   source = "../../../../terraform/cos-lite"
-  model  = { name = local.model_name, config = { automatically-retry-hooks = "true" } }
+  model  = { name = local.model_name, config = { automatically-retry-hooks = "true" }, constraints = local.constraints }
 
   depends_on = [module.ssc]
 
@@ -68,4 +80,13 @@ module "cos-lite" {
   ingress                         = var.ingress
   external_certificates_offer_url = local.external_certificates_offer_url
   external_ca_cert_offer_url      = local.external_ca_cert_offer_url
+
+  alertmanager            = { constraints = local.constraints }
+  catalogue               = { constraints = local.constraints }
+  grafana                 = { constraints = local.constraints }
+  loki                    = { constraints = local.constraints }
+  opentelemetry_collector = { constraints = local.constraints }
+  prometheus              = { constraints = local.constraints }
+  ssc                     = { constraints = local.constraints }
+  traefik                 = { constraints = local.constraints }
 }
