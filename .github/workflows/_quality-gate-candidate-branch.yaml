@@ -51,12 +51,18 @@ jobs:
     strategy:
       fail-fast: false
       # Don't hoard the self-hosted runners.
-      max-parallel: 3
+      max-parallel: 10
       matrix:
         solution: ${{ fromJson(needs.discover-solutions.outputs.solutions) }}
+        # Deployment modes
         internal-tls: ["true", "false"]
         external-ca: ["true", "false"]
         ingress: ["true", "false"]
+        # Infrastructure. Every mode runs on Juju 3.6 and amd64, but only the mode with
+        # everything on runs on the rest. That's what `exclude` below is for: this matrix is the
+        # full cross product of modes and infrastructure, and each `exclude` entry removes every
+        # combination that contains all of its key/value pairs. `include` can't express this, as
+        # it can only add jobs that name their `solution`, and the solutions are discovered.
         juju-channel: ["3.6/stable", "4/stable"]
         k8s-channel: ["1.32-classic/stable"]
         arch: [amd64, arm64]
@@ -64,14 +70,14 @@ jobs:
           # An external CA only signs the ingress's certificate.
           - external-ca: "true"
             ingress: "false"
-          # Juju 4 and arm64 run only the mode with everything on; the other
-          # modes run on Juju 3.6 and amd64 only.
+          # Juju 4 only runs the mode with everything on...
           - juju-channel: "4/stable"
             internal-tls: "false"
           - juju-channel: "4/stable"
             external-ca: "false"
           - juju-channel: "4/stable"
             ingress: "false"
+          # ... and so does arm64.
           - arch: arm64
             internal-tls: "false"
           - arch: arm64
