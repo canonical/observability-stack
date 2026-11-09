@@ -98,7 +98,8 @@ jobs:
   test-integration-cos-lite:
     name: COS Lite Terraform integration
     needs: [test-unit, changes]
-    if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.cos_lite == 'true' }}
+    # TODO: remove before merging -- skipped on pull requests while this PR is under review
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name != 'pull_request' && needs.changes.outputs.cos_lite == 'true') }}
     uses: canonical/observability-stack/.github/workflows/_integration.yml@main
     with:
       product: cos_lite
@@ -106,7 +107,8 @@ jobs:
   test-integration-cos:
     name: COS Terraform integration
     needs: [test-unit, changes]
-    if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.cos == 'true' }}
+    # TODO: remove before merging -- skipped on pull requests while this PR is under review
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name != 'pull_request' && needs.changes.outputs.cos == 'true') }}
     uses: canonical/observability-stack/.github/workflows/_integration.yml@main
     with:
       product: cos

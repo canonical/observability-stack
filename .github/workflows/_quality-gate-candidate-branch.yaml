@@ -58,11 +58,8 @@ jobs:
         internal-tls: ["true", "false"]
         external-ca: ["true", "false"]
         ingress: ["true", "false"]
-        # Infrastructure. Every mode runs on Juju 3.6 and amd64, but only the mode with
-        # everything on runs on the rest. That's what `exclude` below is for: this matrix is the
-        # full cross product of modes and infrastructure, and each `exclude` entry removes every
-        # combination that contains all of its key/value pairs. `include` can't express this, as
-        # it can only add jobs that name their `solution`, and the solutions are discovered.
+        # Infrastructure: every mode runs on Juju 3.6 and amd64, the rest only runs the mode
+        # with everything on (see `exclude`).
         juju-channel: ["3.6/stable", "4/stable"]
         k8s-channel: ["1.32-classic/stable"]
         arch: [amd64, arm64]
