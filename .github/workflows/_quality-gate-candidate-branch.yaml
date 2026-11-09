@@ -107,7 +107,14 @@ jobs:
       - name: Install dependencies
         run: |
           sudo snap install concierge --classic
-          sudo concierge prepare -p k8s --juju-channel "$JUJU_CHANNEL" --k8s-channel "$K8S_CHANNEL" --extra-snaps just,astral-uv,terraform
+          # FIXME: `snap install k8s` sometimes fails on the self-hosted runners with "download too
+          # slow", which fails the job before any test runs. Retry `concierge prepare` to get past
+          # it; drop the loop once the runners' downloads are reliable.
+          for attempt in 1 2 3; do
+            sudo concierge prepare -p k8s --juju-channel "$JUJU_CHANNEL" --k8s-channel "$K8S_CHANNEL" --extra-snaps just,astral-uv,terraform && break
+            [ "$attempt" -lt 3 ] || exit 1
+            sleep 30
+          done
           # Configure Cilium for Istio ambient service mesh compatibility
           sudo k8s kubectl patch configmap cilium-config -n kube-system --type merge -p '{"data":{"bpf-lb-sock-hostns-only":"true"}}'
           sudo k8s kubectl rollout restart daemonset/cilium -n kube-system
@@ -125,7 +132,7 @@ jobs:
       - name: Stop juju-lens recording
         if: ${{ always() }}
         run: |
-          sudo juju-lens stop "$RECORDING_FOLDER" || true
+          sudo juju-lens stop --timeout 120s --force "$RECORDING_FOLDER" || true
           sudo chown -R "$USER" "$RECORDING_FOLDER" || true
 
       - name: Compute juju-lens artifact name
