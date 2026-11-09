@@ -42,7 +42,11 @@ def the_solution_has_been_deployed(juju: jubilant.Juju):
 @given("the model is healthy")
 @then("the model is healthy")
 def the_model_is_healthy(settled: None):
-    """Every application active and every agent idle."""
+    """Every application active and every agent idle.
+
+    The `settled` fixture does the waiting: requesting it is what makes this step wait for the
+    model to settle, once per module, so the step itself has nothing left to do.
+    """
 
 
 @given("the solution is deployed with internal TLS")
