@@ -31,12 +31,6 @@ variable "external_ca" {
   default = false
 }
 
-# The architecture of the cluster the solution is deployed on.
-variable "arch" {
-  type    = string
-  default = "amd64"
-}
-
 locals {
   # Output below for the solution test to connect jubilant to.
   model_name = "cos"
@@ -49,18 +43,13 @@ locals {
 
   external_certificates_offer_url = var.external_ca ? "admin/${local.ca_model_name}.self-signed-certificates-certificates" : null
   external_ca_cert_offer_url      = var.external_ca ? "admin/${local.ca_model_name}.self-signed-certificates-send-ca-cert" : null
-
-  # Juju deploys amd64 charms unless told otherwise, and the modules default their applications
-  # to arch=amd64, so every application needs the architecture of the machine running the tests.
-  constraints = "arch=${var.arch}"
 }
 
 resource "juju_model" "ca" {
   count = var.external_ca ? 1 : 0
 
-  name        = local.ca_model_name
-  config      = { automatically-retry-hooks = "true" }
-  constraints = local.constraints
+  name   = local.ca_model_name
+  config = { automatically-retry-hooks = "true" }
 }
 
 module "ssc" {
@@ -70,7 +59,6 @@ module "ssc" {
   model_uuid = juju_model.ca[0].uuid
 
   offered_endpoints = ["certificates", "send-ca-cert"]
-  constraints       = local.constraints
 }
 
 # Creates its own model rather than depending on one created here, since a
@@ -78,7 +66,7 @@ module "ssc" {
 # create-vs-lookup-by-UUID logic at plan time.
 module "cos" {
   source = "../../../../terraform/cos"
-  model  = { name = local.model_name, config = { automatically-retry-hooks = "true" }, constraints = local.constraints }
+  model  = { name = local.model_name, config = { automatically-retry-hooks = "true" } }
 
   depends_on = [module.ssc]
 
@@ -95,22 +83,7 @@ module "cos" {
 
   # Single unit: the default of 3 requires an external PostgreSQL offer
   # (see terraform/cos/variables.tf) that this smoke test doesn't stand up.
-  grafana = { units = 1, constraints = local.constraints }
-
-  alertmanager            = { constraints = local.constraints }
-  catalogue               = { constraints = local.constraints }
-  istio_beacon            = { constraints = local.constraints }
-  istio_ingress           = { constraints = local.constraints }
-  loki_coordinator        = { constraints = local.constraints }
-  loki_worker             = { constraints = local.constraints }
-  mimir_coordinator       = { constraints = local.constraints }
-  mimir_worker            = { constraints = local.constraints }
-  opentelemetry_collector = { constraints = local.constraints }
-  s3_integrator           = { constraints = local.constraints }
-  ssc                     = { constraints = local.constraints }
-  tempo_coordinator       = { constraints = local.constraints }
-  tempo_worker            = { constraints = local.constraints }
-  traefik                 = { constraints = local.constraints }
+  grafana = { units = 1 }
 
   # Tests usually run on a single host, so the HA charms won't schedule
   anti_affinity = false
@@ -126,10 +99,9 @@ data "juju_model" "cos" {
 }
 
 module "seaweedfs" {
-  source      = "../../../../terraform/seaweedfs"
-  app_name    = local.seaweedfs_app_name
-  model_uuid  = data.juju_model.cos.uuid
-  constraints = local.constraints
+  source     = "../../../../terraform/seaweedfs"
+  app_name   = local.seaweedfs_app_name
+  model_uuid = data.juju_model.cos.uuid
 
   depends_on = [module.cos]
 }

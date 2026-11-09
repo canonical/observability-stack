@@ -27,8 +27,7 @@ test solution="cos-lite" internal_tls="true" external_ca="false" ingress="true" 
     exit 1
   fi
 
-  # Juju deploys amd64 charms unless told otherwise; the cluster runs on this machine.
-  vars=(-var "internal_tls={{internal_tls}}" -var "external_ca={{external_ca}}" -var "arch=$(dpkg --print-architecture)")
+  vars=(-var "internal_tls={{internal_tls}}" -var "external_ca={{external_ca}}")
   if [ "{{ingress}}" = "false" ]; then
     vars+=(-var-file "$(cd ../.. && pwd)/terraform/{{solution}}/presets/no-ingress.tfvars")
   fi
