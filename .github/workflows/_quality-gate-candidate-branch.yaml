@@ -27,12 +27,6 @@ on:
       CHARMHUB_TOKEN:
         required: true
 
-# The infrastructure test-solutions runs on. test-infrastructure sets its own
-# versions in its matrix.
-env:
-  JUJU_CHANNEL: "3.6/stable"
-  K8S_CHANNEL: "1.32-classic/stable"
-
 jobs:
   discover-solutions:
     name: Discover solutions
@@ -64,7 +58,13 @@ jobs:
         exclude:
           - external-ca: "true"
             ingress: "false"
+    # COS deploys the full stack, so it needs more resources than COS Lite.
     runs-on: ${{ matrix.solution == 'cos' && 'self-hosted-linux-amd64-noble-xlarge' || 'self-hosted-linux-amd64-noble-large' }}
+    # The infrastructure this job runs on; test-infrastructure varies it.
+    env:
+      JUJU_CHANNEL: "3.6/stable"
+      K8S_CHANNEL: "1.32-classic/stable"
+      RECORDING_FOLDER: /tmp/juju-lens-recordings
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -72,17 +72,13 @@ jobs:
           ref: ${{ inputs.branch }}
 
       # https://documentation.ubuntu.com/self-hosted-runners/en/latest/usage/faq/how-to-setup-canonical-k8s/
-      - name: Remove docker.io and containerd
+      - name: Prepare the runner for Canonical K8s
         if: ${{ runner.environment == 'self-hosted' }}
         run: |
           sudo apt-get remove -y docker.io containerd
           sudo rm -rf /run/containerd
-
-      # Removing dockerd leaves `iptables -P FORWARD DROP` behind, which
-      # blackholes all pod egress. MicroK8s used to reset this; CK8s does not.
-      - name: Allow forwarded traffic
-        if: ${{ runner.environment == 'self-hosted' }}
-        run: |
+          # Removing dockerd leaves `iptables -P FORWARD DROP` behind, which
+          # blackholes all pod egress. MicroK8s used to reset this; CK8s does not.
           sudo iptables -P FORWARD ACCEPT
           sudo ip6tables -P FORWARD ACCEPT || true
 
@@ -95,12 +91,36 @@ jobs:
           sudo k8s kubectl rollout restart daemonset/cilium -n kube-system
           sudo k8s kubectl rollout status daemonset/cilium -n kube-system --timeout=90s
 
+      - name: Install juju-lens
+        run: curl -fsSL https://raw.githubusercontent.com/lucabello/juju-lens/main/install.sh | sudo sh
+
+      - name: Start juju-lens recording
+        run: sudo juju-lens record "solution" --output "$RECORDING_FOLDER" --max-size 2147483648 --max-duration 3h --detach
+
       - name: Run solution tests
         run: just solution test ${{ matrix.solution }} --internal-tls=${{ matrix.internal-tls }} --external-ca=${{ matrix.external-ca }} --ingress=${{ matrix.ingress }}
 
-      - name: Dump debug state
-        if: failure()
-        run: just solution debug-dump
+      - name: Stop juju-lens recording
+        if: ${{ always() }}
+        run: |
+          sudo juju-lens stop "$RECORDING_FOLDER" || true
+          sudo chown -R "$USER" "$RECORDING_FOLDER" || true
+
+      - name: Compute juju-lens artifact name
+        id: lens-name
+        if: ${{ failure() }}
+        env:
+          BRANCH: ${{ inputs.branch }}
+        run: echo "name=juju-lens-${BRANCH//\//-}-${{ matrix.solution }}-internal-tls-${{ matrix.internal-tls }}-external-ca-${{ matrix.external-ca }}-ingress-${{ matrix.ingress }}" >> "$GITHUB_OUTPUT"
+
+      - name: Upload juju-lens recording
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: ${{ steps.lens-name.outputs.name }}
+          path: ${{ env.RECORDING_FOLDER }}
+          retention-days: 3
+          if-no-files-found: warn
 
   test-infrastructure:
     name: Test ${{ matrix.solution }} (juju=${{ matrix.juju-channel }}, k8s=${{ matrix.k8s-channel }}, arch=${{ matrix.arch }})
@@ -114,7 +134,12 @@ jobs:
         # Add arm64 once the COS charms publish arm64 builds; today most of
         # them (alertmanager, grafana, loki, mimir, tempo, ...) are amd64-only.
         arch: [amd64]
+    # COS deploys the full stack, so it needs more resources than COS Lite.
     runs-on: self-hosted-linux-${{ matrix.arch }}-noble-${{ matrix.solution == 'cos' && 'xlarge' || 'large' }}
+    env:
+      JUJU_CHANNEL: ${{ matrix.juju-channel }}
+      K8S_CHANNEL: ${{ matrix.k8s-channel }}
+      RECORDING_FOLDER: /tmp/juju-lens-recordings
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -122,41 +147,61 @@ jobs:
           ref: ${{ inputs.branch }}
 
       # https://documentation.ubuntu.com/self-hosted-runners/en/latest/usage/faq/how-to-setup-canonical-k8s/
-      - name: Remove docker.io and containerd
+      - name: Prepare the runner for Canonical K8s
         if: ${{ runner.environment == 'self-hosted' }}
         run: |
           sudo apt-get remove -y docker.io containerd
           sudo rm -rf /run/containerd
-
-      # Removing dockerd leaves `iptables -P FORWARD DROP` behind, which
-      # blackholes all pod egress. MicroK8s used to reset this; CK8s does not.
-      - name: Allow forwarded traffic
-        if: ${{ runner.environment == 'self-hosted' }}
-        run: |
+          # Removing dockerd leaves `iptables -P FORWARD DROP` behind, which
+          # blackholes all pod egress. MicroK8s used to reset this; CK8s does not.
           sudo iptables -P FORWARD ACCEPT
           sudo ip6tables -P FORWARD ACCEPT || true
 
       - name: Install dependencies
         run: |
           sudo snap install concierge --classic
-          sudo concierge prepare -p k8s --juju-channel "${{ matrix.juju-channel }}" --k8s-channel "${{ matrix.k8s-channel }}" --extra-snaps just,astral-uv,terraform
+          sudo concierge prepare -p k8s --juju-channel "$JUJU_CHANNEL" --k8s-channel "$K8S_CHANNEL" --extra-snaps just,astral-uv,terraform
           # Configure Cilium for Istio ambient service mesh compatibility
           sudo k8s kubectl patch configmap cilium-config -n kube-system --type merge -p '{"data":{"bpf-lb-sock-hostns-only":"true"}}'
           sudo k8s kubectl rollout restart daemonset/cilium -n kube-system
           sudo k8s kubectl rollout status daemonset/cilium -n kube-system --timeout=90s
 
+      - name: Install juju-lens
+        run: curl -fsSL https://raw.githubusercontent.com/lucabello/juju-lens/main/install.sh | sudo sh
+
+      - name: Start juju-lens recording
+        run: sudo juju-lens record "solution" --output "$RECORDING_FOLDER" --max-size 2147483648 --max-duration 3h --detach
+
       # Everything on (internal TLS, external CA, ingress) covers the most.
       - name: Run solution tests
         run: just solution test ${{ matrix.solution }} --internal-tls=true --external-ca=true --ingress=true
 
-      - name: Dump debug state
-        if: failure()
-        run: just solution debug-dump
+      - name: Stop juju-lens recording
+        if: ${{ always() }}
+        run: |
+          sudo juju-lens stop "$RECORDING_FOLDER" || true
+          sudo chown -R "$USER" "$RECORDING_FOLDER" || true
+
+      - name: Compute juju-lens artifact name
+        id: lens-name
+        if: ${{ failure() }}
+        env:
+          BRANCH: ${{ inputs.branch }}
+        run: echo "name=juju-lens-${BRANCH//\//-}-${{ matrix.solution }}-juju-${JUJU_CHANNEL//\//-}-k8s-${K8S_CHANNEL//\//-}-${{ matrix.arch }}" >> "$GITHUB_OUTPUT"
+
+      - name: Upload juju-lens recording
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: ${{ steps.lens-name.outputs.name }}
+          path: ${{ env.RECORDING_FOLDER }}
+          retention-days: 3
+          if-no-files-found: warn
 
   promote:
     name: Promote ${{ matrix.solution }}
     needs: [discover-solutions, test-solutions, test-infrastructure]
-    # TODO: remove before merging -- never auto-promote from a pull_request-triggered run
+    # A pull_request-triggered run only tests the branch; it never promotes.
     if: github.event_name != 'pull_request'
     strategy:
       matrix:

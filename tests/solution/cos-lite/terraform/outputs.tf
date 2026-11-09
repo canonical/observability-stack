@@ -1,16 +1,11 @@
 output "model_name" {
   value       = local.model_name
-  description = "Name of the model this solution was deployed into (used by the solution smoke test to connect via jubilant)"
+  description = "Name of the model this solution was deployed into"
 }
 
 output "internal_tls" {
   value       = var.internal_tls
   description = "Whether internal COS communication uses TLS in this deployment"
-}
-
-output "ingress_enabled" {
-  value       = anytrue(values(var.ingress))
-  description = "Whether any component has ingress enabled in this deployment"
 }
 
 output "ingress" {

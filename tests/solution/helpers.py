@@ -1,37 +1,28 @@
 # Copyright 2026 Canonical Ltd.
 # See LICENSE file for licensing details.
-"""Shared helpers for solution smoke tests."""
+"""Helpers shared by the solution tests' fixtures and steps."""
 
-import functools
 import json
 import os
-import pytest
 import socket
 import ssl
 import subprocess
-import tempfile
 import time
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Dict, NamedTuple, Optional
 
 import jubilant
 import requests
-from tenacity import RetryError, Retrying, retry_if_result, stop_after_delay, wait_fixed
 
 # Resolved terraform/tofu binary, set by solution.just; falls back to
 # "terraform" when running pytest directly.
 TERRAFORM_BIN = os.environ.get("terraform") or "terraform"
 
-# Points the tests at an already-deployed model instead of the Terraform
-# wrapper's; Terraform isn't run at all then (see README.md).
-_MODEL_ENV_VAR = "SOLUTION_MODEL"
-
 # How far back to look for logs and traces.
 LOOKBACK_HOURS = 24
 
-# Ports the workloads' own APIs listen on, shared by clients.py's fixtures and
-# steps/tls.py's port lookup.
-_PORTS = {
+# Ports the workloads' own APIs listen on.
+PORTS = {
     "alertmanager": 9093,
     "grafana": 3000,
     "loki": 3100,
@@ -41,112 +32,41 @@ _PORTS = {
 }
 
 
+class Mode(NamedTuple):
+    """How the Terraform wrapper deployed the solution (see the wrapper's outputs.tf)."""
+
+    internal_tls: bool
+    external_ca: bool
+    ca_model_name: Optional[str]  # the model the external CA lives in
+    ingress: Dict[str, bool]  # per component
+    traefik: bool
+
+
 def lookback_window_ns() -> tuple[int, int]:
     """Return the (start, end) of the lookback window, in nanoseconds since the epoch."""
     end = time.time_ns()
     return end - LOOKBACK_HOURS * 3600 * 1_000_000_000, end
 
 
-def retry_until_found(check: Callable[[], bool]) -> bool:
-    """Retry `check` for up to two minutes, polling every ten seconds.
-
-    Scraping/ingestion is periodic, so the first samples for an application
-    can land a little after the model has settled into active/idle.
-    """
-    retrying = Retrying(
-        retry=retry_if_result(lambda result: result is False),
-        wait=wait_fixed(10),
-        stop=stop_after_delay(60 * 2),
-    )
-    try:
-        return retrying(check)
-    except RetryError:
-        return False
-
-
-def terraform_dir(request) -> Path:
-    """Terraform wrapper directory for the solution a test module belongs to."""
-    return Path(request.module.__file__).parent / "terraform"
-
-
-def terraform_output(terraform_dir: Path) -> Dict[str, Any]:
-    """Return `terraform output -json` for an already-applied module."""
+def deployment_mode(terraform_dir: Path) -> Mode:
+    """The mode of an already-applied Terraform wrapper, from its outputs."""
     result = subprocess.run(
         [TERRAFORM_BIN, f"-chdir={terraform_dir}", "output", "-json"],
         check=True,
         capture_output=True,
         text=True,
     )
-    return json.loads(result.stdout)
-
-
-def mode_options(request) -> Dict[str, str]:
-    """The --internal-tls, --external-ca and --ingress options ("" means the wrapper's default)."""
-    options = {
-        "internal_tls": request.config.getoption("--internal-tls"),
-        "external_ca": request.config.getoption("--external-ca"),
-        "ingress": request.config.getoption("--ingress"),
+    outputs = {
+        name: output["value"] for name, output in json.loads(result.stdout).items()
     }
-    if options["external_ca"] == "true" and options["ingress"] == "false":
-        pytest.fail(
-            "--external-ca=true with --ingress=false isn't an allowed combination."
-        )
-    return options
-
-
-def deployment_mode(request) -> Dict[str, Any]:
-    """The mode the steps expect the deployment to be in.
-
-    Read from the wrapper's Terraform outputs, or with SOLUTION_MODEL, from the
-    mode options, so an external suite needs no Terraform state. Per-component
-    ingress isn't known then (None); `app_url` asks Traefik instead.
-    """
-    if _MODEL_ENV_VAR not in os.environ:
-        outputs = terraform_output(terraform_dir(request))
-        keys = ("internal_tls", "tls_termination", "ingress", "optional_apps")
-        mode = {key: outputs[key]["value"] for key in keys}
-        # Terraform leaves null outputs out, and ca_model_name is null without an external CA.
-        mode["ca_model_name"] = outputs.get("ca_model_name", {}).get("value")
-        return mode
-
-    options = mode_options(request)
-    if options["external_ca"] == "true":
-        # The external-CA step gets its CA from the wrapper's own CA model.
-        pytest.fail(f"--external-ca=true isn't supported with {_MODEL_ENV_VAR} yet.")
-    return {
-        "internal_tls": options["internal_tls"] != "false",
-        "tls_termination": False,
-        "ca_model_name": None,
-        "ingress": None,
-        "optional_apps": {"traefik": options["ingress"] != "false"},
-    }
-
-
-# Every scenario's `Background` calls `wait_for_active_idle` again for the
-# same already-applied model - cache a confirmed failure so later scenarios
-# don't each take the full timeout on a stuck model.
-_settled: Dict[str, Exception] = {}
-
-
-def wait_for_active_idle(juju: jubilant.Juju, timeout: int = 60 * 45):
-    """Wait for every application to be active, then every agent to be idle."""
-    if juju.model in _settled:
-        # Already confirmed stuck - don't wait until the timeout.
-        raise _settled[juju.model]
-
-    try:
-        print(f"\nwaiting for the model ({juju.model}) to settle ...\n", flush=True)
-        juju.wait(jubilant.all_active, delay=10, timeout=timeout)
-        print("\nwaiting for agents idle ...\n", flush=True)
-        juju.wait(
-            jubilant.all_agents_idle,
-            delay=10,
-            timeout=timeout,
-            error=jubilant.any_error,
-        )
-    except Exception as exc:
-        _settled[juju.model] = exc
-        raise
+    return Mode(
+        internal_tls=outputs["internal_tls"],
+        external_ca=outputs["tls_termination"],
+        # Not an output at all when null, i.e. without an external CA.
+        ca_model_name=outputs.get("ca_model_name"),
+        ingress=outputs["ingress"],
+        traefik=outputs["optional_apps"]["traefik"],
+    )
 
 
 def leader_unit(juju: jubilant.Juju, app: str) -> str:
@@ -157,64 +77,57 @@ def leader_unit(juju: jubilant.Juju, app: str) -> str:
     raise AssertionError(f"no leader unit found for application '{app}'")
 
 
-@functools.cache
-def _proxied_endpoints(model: str) -> Dict[str, Any]:
-    """Traefik's ingress URLs, keyed by application (or by unit, for per-unit ingress).
+def model_namespace(juju: jubilant.Juju) -> str:
+    """The Kubernetes namespace of the model, which `juju.model` may prefix with its controller."""
+    assert juju.model, "Juju model not set"
+    return juju.model.rpartition(":")[-1]
 
-    Empty when the model has no Traefik. Cached per model, so the action runs once.
+
+def unit_fqdn(juju: jubilant.Juju, unit_name: str) -> str:
+    """The in-cluster FQDN of a unit, which its server certificate is issued for."""
+    app, _, number = unit_name.partition("/")
+    return f"{app}-{number}.{app}-endpoints.{model_namespace(juju)}.svc.cluster.local"
+
+
+def ingressed_url(proxied_endpoints: Dict[str, Any], app: str) -> Optional[str]:
+    """Base URL of an application's ingress route, or None if Traefik has no route for it.
+
+    `proxied_endpoints` is keyed by application (or by unit, for per-unit ingress).
     """
-    juju = jubilant.Juju(model=model)
-    if "traefik" not in juju.status().apps:
-        return {}
-    task = juju.run(leader_unit(juju, "traefik"), "show-proxied-endpoints")
-    return json.loads(task.results["proxied-endpoints"])
-
-
-def ingressed_url(juju: jubilant.Juju, app: str) -> Optional[str]:
-    """Base URL of an application's ingress route, or None if Traefik has no route for it."""
-    endpoints = _proxied_endpoints(juju.model)
-    for key in sorted(endpoints):
+    for key in sorted(proxied_endpoints):
         if key == app or key.startswith(f"{app}/"):
-            return endpoints[key]["url"].rstrip("/")
+            return proxied_endpoints[key]["url"].rstrip("/")
     return None
 
 
-def app_url(juju: jubilant.Juju, app: str, port: int) -> str:
-    """Base URL of an application: through Traefik if it's ingressed, else its first unit.
-
-    Through Traefik, only the load balancer address has to be reachable from
-    where the tests run, not the pods.
-    """
-    return ingressed_url(juju, app) or unit_url(juju, app, port)
-
-
-def unit_url(juju: jubilant.Juju, app: str, port: int) -> str:
+def unit_url(juju: jubilant.Juju, app: str) -> str:
     """Base URL of an application's first unit, picking the scheme it actually serves."""
-    status = juju.status()
-    address = next(iter(status.apps[app].units.values())).address
+    address = next(iter(juju.status().apps[app].units.values())).address
     for scheme in ("https", "http"):
-        url = f"{scheme}://{address}:{port}"
+        url = f"{scheme}://{address}:{PORTS[app]}"
         try:
             requests.get(url, timeout=30, verify=False)
         except requests.RequestException:
             continue
         return url
-    raise AssertionError(f"no reachable {app} workload at {address}:{port}")
+    raise AssertionError(f"no reachable {app} workload at {address}:{PORTS[app]}")
 
 
-def get_tls_context(juju: jubilant.Juju, ca_name: str) -> Optional[ssl.SSLContext]:
-    # Duplicated in tests/integration/helpers.py, adapted to not need a
-    # caller-supplied temp_path: the two pytest roots don't share a package.
-    if ca_name not in juju.status().apps:
-        return None
+def app_url(juju: jubilant.Juju, proxied_endpoints: Dict[str, Any], app: str) -> str:
+    """Base URL of an application: through Traefik if it's ingressed, else its first unit.
 
-    cert = juju.run(f"{ca_name}/0", "get-ca-certificate").results["ca-certificate"]
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".pem") as cert_file:
-        cert_file.write(cert)
-        cert_file.flush()
-        ctx = ssl.create_default_context()
-        ctx.load_verify_locations(cert_file.name)
-    return ctx
+    Through Traefik, only the load balancer address has to be reachable from
+    where the tests run, not the pods.
+    """
+    return ingressed_url(proxied_endpoints, app) or unit_url(juju, app)
+
+
+def ca_context(juju: jubilant.Juju, ca_app: str) -> ssl.SSLContext:
+    """A TLS context that trusts only the CA certificate of a self-signed-certificates app."""
+    certificate = juju.run(f"{ca_app}/0", "get-ca-certificate").results[
+        "ca-certificate"
+    ]
+    return ssl.create_default_context(cadata=certificate)
 
 
 def tls_handshake_error(
@@ -233,13 +146,3 @@ def tls_handshake_error(
             return None
     except ssl.SSLError as exc:
         return str(exc)
-
-
-def _expect_deployed(juju: jubilant.Juju, request, application: str) -> None:
-    """Skip if this mode doesn't deploy `application`, fail if it should but isn't."""
-    optional = deployment_mode(request)["optional_apps"]
-    if optional.get(application) is False:
-        pytest.skip(f"'{application}' is not deployed in this solution's current mode")
-    assert application in juju.status().apps, (
-        f"'{application}' should be deployed in this mode but isn't in the model"
-    )

@@ -34,8 +34,8 @@ solution's `pytest-bdd` scenarios (`tests/solution/<name>/test_solution.py`) aga
 itself deploys nothing.
 
 The Terraform module is *not* destroyed automatically afterwards (so you can inspect a failure).
-`just solution debug-dump` prints the Juju and Kubernetes state of every model; CI runs it when
-a solution test job fails. Clean up when you're done:
+In CI, a failed job uploads a [juju-lens](https://github.com/lucabello/juju-lens) recording of
+the run as an artifact. Clean up when you're done:
 
 ```bash
 terraform -chdir=tests/solution/cos-lite/terraform destroy -auto-approve
@@ -47,35 +47,30 @@ it lives in the same Terraform state as the solution model.
 ### Running a specific mode
 
 `--internal-tls`, `--external-ca`, and `--ingress` (`true`, `false`) select the deployment
-shape. `just solution test` passes them to the Terraform wrapper (use the `--option=value` form),
-and hands every argument after the solution name to pytest:
+shape, and are passed to the Terraform wrapper. `just --usage solution test` lists them with their
+defaults. Arguments after `--` go to pytest:
 
 ```bash
-just solution test cos-lite --internal-tls=false --external-ca=true --ingress=true
+just solution test cos-lite --internal-tls=false --external-ca=true --ingress=true -- -k tls
 ```
 
 `--external-ca=true` with `--ingress=false` is rejected before anything gets deployed:
 without ingress the product module leaves the external-CA wiring as a no-op, so the combination
-has nothing to assert. Scenarios don't carry mode tags: `tls.feature` reads the mode back from the
-Terraform wrapper's own outputs (`internal_tls`, `tls_termination`) and asserts against whichever
-one is running.
+has nothing to assert.
 
-### Running against an already-deployed model
+### Running against another model
 
-The `given` step (`the solution has been deployed`, defined in `steps/deployment.py`) can skip
-discovering a model from Terraform output entirely: set `SOLUTION_MODEL` (optionally
-`<controller>:<model>`) and it's used as-is. This lets an external suite that deploys a solution
-some other way reuse these same steps against its own model:
+The tests look for the solution in the model named after its directory (`cos-lite`, `cos`), which
+is what its Terraform wrapper deploys into. Set `SOLUTION_MODEL` (optionally
+`<controller>:<model>`) to use another model:
 
 ```bash
 cd tests/solution
 SOLUTION_MODEL="microk8s-localhost:cos-lite" uv run --frozen --isolated pytest -vv --capture=no cos-lite
 ```
 
-With `SOLUTION_MODEL` set, Terraform isn't run at all, so the steps take the mode from the
-options instead of the wrapper's outputs. Pass the `--internal-tls` and `--ingress` values the
-model was deployed with (both default to `true`). `--external-ca=true` isn't supported with
-`SOLUTION_MODEL` yet.
+The mode is always read from the Terraform wrapper's outputs, so its state must be there: the
+tests only run against a deployment made by `just solution test` (or by applying the wrapper).
 
 ## Adding a new scenario
 
@@ -96,12 +91,17 @@ Step definitions live in `steps/`, grouped by the domain concept they talk about
 `steps/deployment.py`, `steps/telemetry.py`, `steps/grafana.py`) rather than by the feature file
 that uses them. Register new modules in `conftest.py`'s `pytest_plugins`.
 
+The mode is stated in the scenario, not read from it: a `Given the solution is deployed with
+internal TLS` (see `steps/deployment.py`) skips the scenario when the deployment is in another
+mode, so the scenarios' steps don't need to branch on it.
+
 ### Talking to workloads
 
 Assertions against running workloads go through
-[observability-clients](https://pypi.org/project/observability-clients/) fixtures in `clients.py`,
-built lazily for each workload. Only
-add retries where data genuinely trails active/idle (e.g. the first Prometheus scrape).
+[observability-clients](https://pypi.org/project/observability-clients/) fixtures in
+`steps/clients.py`, which route through Traefik when the component has an ingress. Only
+add retries where data genuinely trails active/idle (e.g. the first Prometheus scrape): put
+tenacity's `retry` on the step itself, as `steps/telemetry.py` does.
 
 ## Adding a new solution
 
