@@ -4,17 +4,42 @@
 state what the deployment is like, and skip the scenario when it isn't.
 """
 
+from datetime import UTC, datetime, timedelta
+
 import jubilant
 import pytest
 from pytest_bdd import given, parsers, then
 
 from helpers import Mode
 
+# Units normally leave "installing agent" within minutes (8 at most in the recordings of the
+# runs that settled), so one still there after this long never will, e.g. because its pod
+# can't run on the cluster's architecture. Failing then beats waiting out the whole timeout.
+STUCK_INSTALLING_AGENT_AFTER = timedelta(minutes=15)
+
+
+def any_unit_stuck_installing_agent(status: jubilant.Status) -> bool:
+    """Whether a unit has been waiting for its agent to be installed for too long."""
+    now = datetime.now(UTC)
+    for app in status.apps.values():
+        for unit in app.units.values():
+            info = unit.workload_status
+            if info.current != "waiting" or info.message != "installing agent":
+                continue
+            # Juju prints `since` as e.g. "09 Nov 2026 17:16:34Z".
+            since = datetime.strptime(info.since, "%d %b %Y %H:%M:%SZ").replace(
+                tzinfo=UTC
+            )
+            if now - since > STUCK_INSTALLING_AGENT_AFTER:
+                return True
+    return False
+
 
 def wait_for_active_idle(juju: jubilant.Juju, timeout: int = 60 * 45) -> None:
     """Wait for every application to be active and every agent to be idle."""
     juju.wait(
         lambda status: jubilant.all_active(status) and jubilant.all_agents_idle(status),
+        error=any_unit_stuck_installing_agent,
         delay=10,
         timeout=timeout,
     )
