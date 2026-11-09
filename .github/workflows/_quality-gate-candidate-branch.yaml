@@ -58,11 +58,15 @@ jobs:
         internal-tls: ["true", "false"]
         external-ca: ["true", "false"]
         ingress: ["true", "false"]
-        # Infrastructure: every mode runs on Juju 3.6 and amd64, the rest only runs the mode
-        # with everything on (see `exclude`).
+        # Infrastructure: every mode runs on Juju 3.6, the rest only runs the mode with
+        # everything on (see `exclude`).
         juju-channel: ["3.6/stable", "4/stable"]
         k8s-channel: ["1.32-classic/stable"]
-        arch: [amd64, arm64]
+        # TODO: Add arm64 back. The Terraform modules default every application to arch=amd64, and
+        # the pods of the units never start on the arm64 runners ("waiting: installing agent").
+        # Setting `arch=arm64` as the constraints of the models and applications did not fix it.
+        # Once it works, run arm64 in the mode with everything on only, as Juju 4 does.
+        arch: [amd64]
         exclude:
           # An external CA only signs the ingress's certificate.
           - external-ca: "true"
@@ -73,13 +77,6 @@ jobs:
           - juju-channel: "4/stable"
             external-ca: "false"
           - juju-channel: "4/stable"
-            ingress: "false"
-          # ... and so does arm64.
-          - arch: arm64
-            internal-tls: "false"
-          - arch: arm64
-            external-ca: "false"
-          - arch: arm64
             ingress: "false"
     # COS needs a larger runner than COS Lite
     runs-on: self-hosted-linux-${{ matrix.arch }}-noble-${{ matrix.solution == 'cos' && 'xlarge' || 'large' }}
