@@ -98,7 +98,7 @@ Narrow down from the source to the individual value: **job → metric → label 
 Rules:
 
 - Rank by **series per value**, never by distinct-value count. A label with 20k values can carry 2% of series; a label with 600 values can carry 99%.
-- For a label with `D` distinct values that co-occurs broadly, aggregating it away roughly divides the metric's series by `D`.
+- For a label with `D` distinct values that co-occurs broadly, aggregating it away roughly divides the series count of that metric by `D`.
 - Histograms: the `le` label multiplies by the bucket count; `_sum`/`_count` add two more series per combination.
 
 ## 3. Remediate at the collector
@@ -216,7 +216,7 @@ OOM-killed. Set these on the Mimir coordinator with `juju config`.
 ## 6. Signals to monitor
 
 These metrics confirm the effect of the changes above and help you spot cardinality growth
-before it OOMs an ingester.
+before it runs an ingester out of memory.
 
 - `cortex_ingester_memory_series` (per ingester, no `user` label)
 - `cortex_ingester_memory_series_created_total{user}` / `_removed_total{user}` (per tenant; `created − removed` = in-memory series)

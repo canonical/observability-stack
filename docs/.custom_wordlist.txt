@@ -123,6 +123,7 @@ Memberlist
 memberlist
 MetalLB
 MetricsEndpointProvider
+metricstransform
 MicroCeph
 Microceph
 MicroK
@@ -136,6 +137,7 @@ misconfigured
 monorepo
 multiline
 Multipass
+multitenancy
 MyST
 nflog
 Nginx
@@ -171,6 +173,7 @@ preconfigured
 Profiler
 programmatically
 prometheus
+prometheusremotewrite
 promlabs
 PromLens
 promlens
@@ -211,6 +214,7 @@ rsyslog
 rtd
 ruler
 ruleset
+runbooks?
 scalable
 SCons
 SDK
