@@ -131,7 +131,7 @@ run "mesh_enabled_external_tls" {
   }
 
   assert {
-    condition     = length(juju_integration.external_ca_cert) == 2
-    error_message = "Expected grafana and otelcol to trust the external CA when the mesh is enabled"
+    condition     = length(juju_integration.external_ca_cert) == 3
+    error_message = "Expected alertmanager, grafana and otelcol to trust the external CA when the mesh is enabled"
   }
 }
