@@ -63,7 +63,7 @@ def deployment_mode(terraform_dir: Path) -> Mode:
 
 
 def mode_from_outputs(outputs: Dict[str, Any]) -> Mode:
-    """The mode described by a Terraform wrapper's output values, keyed by output name."""
+    """Turn a Terraform wrapper's output values (keyed by output name) into a Mode."""
     return Mode(
         internal_tls=outputs["internal_tls"],
         external_ca=outputs["tls_termination"],

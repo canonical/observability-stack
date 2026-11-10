@@ -42,8 +42,8 @@ def juju(solution_dir: Path) -> jubilant.Juju:
 def mode(solution_dir: Path) -> Mode:
     """The mode the solution was deployed in, from its Terraform wrapper's outputs.
 
-    For a deployment the wrapper didn't make (e.g. SolQA's, see `sqa_tests`), SOLUTION_MODE
-    states the mode instead: a JSON object of the wrapper's output values, keyed by output name.
+    If the wrapper didn't deploy it (as on SolQA), SOLUTION_MODE gives the mode instead: JSON
+    with the same keys as those outputs (see `sqa_tests`).
     """
     if "SOLUTION_MODE" in os.environ:
         return mode_from_outputs(json.loads(os.environ["SOLUTION_MODE"]))

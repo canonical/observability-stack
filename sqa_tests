@@ -15,26 +15,38 @@ UV_FLAGS=(--frozen --isolated --python 3.12)
 
 solution="${1:-${PRODUCT:-}}"
 if [ $# -gt 0 ]; then shift; fi
-# SolQA deploys terraform/<solution> with its defaults: internal TLS, no external CA, and the
-# default ingress. There's no Terraform wrapper state here to read that from, so state it in
-# the shape of the wrapper's outputs (see tests/solution/<solution>/terraform/outputs.tf).
+# Tell the tests which mode SolQA deployed the product in, so they know which checks apply.
+# (`just solution test` gets this from Terraform, but SolQA deploys the product itself.)
+# SolQA uses the track/3.0 product's defaults: internal TLS on, no external CA
+# ("tls_termination": false), and Traefik in front of the apps set to true under "ingress".
 case "$solution" in
     cos)
-        ingress='{"alertmanager": true, "catalogue": true, "grafana": true, "loki": true, "mimir": true, "opentelemetry_collector": true, "tempo": false}'
+        export SOLUTION_MODE='{
+            "internal_tls": true,
+            "tls_termination": false,
+            "optional_apps": {"traefik": true},
+            "ingress": {"alertmanager": true, "catalogue": true, "grafana": true, "loki": true,
+                        "mimir": true, "opentelemetry_collector": true, "tempo": false}
+        }'
         ;;
     cos-lite)
-        ingress='{"alertmanager": true, "catalogue": true, "grafana": true, "loki": true, "opentelemetry_collector": true, "prometheus": true}'
+        export SOLUTION_MODE='{
+            "internal_tls": true,
+            "tls_termination": false,
+            "optional_apps": {"traefik": true},
+            "ingress": {"alertmanager": true, "catalogue": true, "grafana": true, "loki": true,
+                        "prometheus": true}
+        }'
         ;;
     *)
         echo "ERROR: unknown solution '$solution'; pass cos or cos-lite, or set PRODUCT" >&2
         exit 1
         ;;
 esac
-export SOLUTION_MODE='{"internal_tls": true, "tls_termination": false, "ingress": '"$ingress"', "optional_apps": {"traefik": true}}'
 
-# SolQA's runner can reach Traefik's load balancer address but not the pods, so leave out the
-# scenarios that need a pod: the internal-TLS certificate checks connect to each unit, and
-# Tempo has no ingress in COS. The candidate quality gate still runs them.
+# Leave out the checks that must reach a pod directly, since SolQA's runner can only reach
+# Traefik: the internal TLS certificate checks, and COS's Tempo trace checks (Tempo isn't
+# behind Traefik in COS). The candidate quality gate still runs them.
 NEEDS_POD="units_serve_certificates_from_the_internal_ca or tempo_collects_traces"
 
 if ! command -v uv &> /dev/null; then
