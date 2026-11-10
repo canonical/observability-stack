@@ -1,24 +1,45 @@
 # Copyright 2026 Canonical Ltd.
 # See LICENSE file for licensing details.
-"""Shared helpers for solution smoke tests."""
+"""Helpers shared by the solution tests' fixtures and steps."""
 
-import functools
 import json
 import os
+import socket
+import ssl
 import subprocess
 import time
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, NamedTuple, Optional
 
 import jubilant
 import requests
 
-# Resolved terraform/tofu binary, set by quality-gates.just; falls back to
+# Resolved terraform/tofu binary, set by solution.just; falls back to
 # "terraform" when running pytest directly.
 TERRAFORM_BIN = os.environ.get("terraform") or "terraform"
 
 # How far back to look for logs and traces.
 LOOKBACK_HOURS = 24
+
+# Ports the workloads' own APIs listen on.
+PORTS = {
+    "alertmanager": 9093,
+    "grafana": 3000,
+    "loki": 3100,
+    "mimir": 8080,
+    "prometheus": 9090,
+    "tempo": 3200,
+}
+
+
+class Mode(NamedTuple):
+    """How the Terraform wrapper deployed the solution (see the wrapper's outputs.tf)."""
+
+    internal_tls: bool
+    external_ca: bool
+    ca_model_name: Optional[str]  # the model the external CA lives in
+    ingress: Dict[str, bool]  # per component
+    traefik: bool
 
 
 def lookback_window_ns() -> tuple[int, int]:
@@ -27,27 +48,24 @@ def lookback_window_ns() -> tuple[int, int]:
     return end - LOOKBACK_HOURS * 3600 * 1_000_000_000, end
 
 
-def terraform_output(terraform_dir: Path) -> Dict[str, Any]:
-    """Return `terraform output -json` for an already-applied module."""
+def deployment_mode(terraform_dir: Path) -> Mode:
+    """The mode of an already-applied Terraform wrapper, from its outputs."""
     result = subprocess.run(
         [TERRAFORM_BIN, f"-chdir={terraform_dir}", "output", "-json"],
         check=True,
         capture_output=True,
         text=True,
     )
-    return json.loads(result.stdout)
-
-
-def wait_for_active_idle(juju: jubilant.Juju, timeout: int = 60 * 45):
-    """Wait for every application to be active, then every agent to be idle."""
-    print(f"\nwaiting for the model ({juju.model}) to settle ...\n")
-    juju.wait(jubilant.all_active, delay=10, timeout=timeout)
-    print("\nwaiting for agents idle ...\n")
-    juju.wait(
-        jubilant.all_agents_idle,
-        delay=10,
-        timeout=timeout,
-        error=jubilant.any_error,
+    outputs = {
+        name: output["value"] for name, output in json.loads(result.stdout).items()
+    }
+    return Mode(
+        internal_tls=outputs["internal_tls"],
+        external_ca=outputs["tls_termination"],
+        # Not an output at all when null, i.e. without an external CA.
+        ca_model_name=outputs.get("ca_model_name"),
+        ingress=outputs["ingress"],
+        traefik=outputs["optional_apps"]["traefik"],
     )
 
 
@@ -59,45 +77,72 @@ def leader_unit(juju: jubilant.Juju, app: str) -> str:
     raise AssertionError(f"no leader unit found for application '{app}'")
 
 
-@functools.cache
-def _proxied_endpoints(model: str) -> Dict[str, Any]:
-    """Traefik's ingress URLs, keyed by application (or by unit, for per-unit ingress).
+def model_namespace(juju: jubilant.Juju) -> str:
+    """The Kubernetes namespace of the model, which `juju.model` may prefix with its controller."""
+    assert juju.model, "Juju model not set"
+    return juju.model.rpartition(":")[-1]
 
-    Empty when the model has no Traefik. Cached per model, so the action runs once.
+
+def unit_fqdn(juju: jubilant.Juju, unit_name: str) -> str:
+    """The in-cluster FQDN of a unit, which its server certificate is issued for."""
+    app, _, number = unit_name.partition("/")
+    return f"{app}-{number}.{app}-endpoints.{model_namespace(juju)}.svc.cluster.local"
+
+
+def ingressed_url(proxied_endpoints: Dict[str, Any], app: str) -> Optional[str]:
+    """Base URL of an application's ingress route, or None if Traefik has no route for it.
+
+    `proxied_endpoints` is keyed by application (or by unit, for per-unit ingress).
     """
-    juju = jubilant.Juju(model=model)
-    if "traefik" not in juju.status().apps:
-        return {}
-    task = juju.run(leader_unit(juju, "traefik"), "show-proxied-endpoints")
-    return json.loads(task.results["proxied-endpoints"])
-
-
-def app_url(juju: jubilant.Juju, app: str, port: int) -> str:
-    """Base URL of an application: through Traefik if it's ingressed, else its first unit.
-
-    Through Traefik, only the load balancer address has to be reachable from
-    where the tests run, not the pods.
-    """
-    endpoints = _proxied_endpoints(juju.model)
-    for key in sorted(endpoints):
+    for key in sorted(proxied_endpoints):
         if key == app or key.startswith(f"{app}/"):
-            return endpoints[key]["url"].rstrip("/")
-    return unit_url(juju, app, port)
+            return proxied_endpoints[key]["url"].rstrip("/")
+    return None
 
 
-def unit_url(juju: jubilant.Juju, app: str, port: int) -> str:
-    """Base URL of an application's first unit, picking the scheme it actually serves.
-
-    Solutions enable internal TLS by default, but that is configurable, so the
-    scheme is probed rather than assumed.
-    """
-    status = juju.status()
-    address = next(iter(status.apps[app].units.values())).address
+def unit_url(juju: jubilant.Juju, app: str) -> str:
+    """Base URL of an application's first unit, picking the scheme it actually serves."""
+    address = next(iter(juju.status().apps[app].units.values())).address
     for scheme in ("https", "http"):
-        url = f"{scheme}://{address}:{port}"
+        url = f"{scheme}://{address}:{PORTS[app]}"
         try:
             requests.get(url, timeout=30, verify=False)
         except requests.RequestException:
             continue
         return url
-    raise AssertionError(f"no reachable {app} workload at {address}:{port}")
+    raise AssertionError(f"no reachable {app} workload at {address}:{PORTS[app]}")
+
+
+def app_url(juju: jubilant.Juju, proxied_endpoints: Dict[str, Any], app: str) -> str:
+    """Base URL of an application: through Traefik if it's ingressed, else its first unit.
+
+    Through Traefik, only the load balancer address has to be reachable from
+    where the tests run, not the pods.
+    """
+    return ingressed_url(proxied_endpoints, app) or unit_url(juju, app)
+
+
+def ca_context(juju: jubilant.Juju, ca_app: str) -> ssl.SSLContext:
+    """A TLS context that trusts only the CA certificate of a self-signed-certificates app."""
+    certificate = juju.run(f"{ca_app}/0", "get-ca-certificate").results[
+        "ca-certificate"
+    ]
+    return ssl.create_default_context(cadata=certificate)
+
+
+def tls_handshake_error(
+    address: str, port: int, server_hostname: str, ctx: ssl.SSLContext
+) -> Optional[str]:
+    """Try a TLS handshake that verifies the peer's certificate against `ctx`.
+
+    Returns None if it succeeds, else the TLS error, so the caller's assertion
+    can say why (an unknown CA and a hostname mismatch need different fixes).
+    """
+    try:
+        with (
+            socket.create_connection((address, port), timeout=30) as sock,
+            ctx.wrap_socket(sock, server_hostname=server_hostname),
+        ):
+            return None
+    except ssl.SSLError as exc:
+        return str(exc)

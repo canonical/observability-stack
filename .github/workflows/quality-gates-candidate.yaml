@@ -1,18 +1,25 @@
 name: Solution tests
 
-# Periodically (and on demand) deploy the COS and COS Lite solutions from
-# every supported branch and run their solution test suites
-# (tests/solution). For each branch, when both solutions pass, promote every
-# charm pinned by that branch's Terraform modules from /beta to /candidate.
+# On demand, deploy the COS and COS Lite solutions from every supported
+# branch and run their solution test suites (tests/solution).
+#
+# FIXME: This workflow does not run periodically and does not promote charms yet. Until we
+# stabilize the solution tests and chase the failures they uncover in the charms, promotions keep
+# happening through the already-existing time-based mechanism. Once the tests are stable,
+# uncomment the `schedule` trigger below and the `promote` job in
+# _quality-gate-candidate-branch.yaml; then, for each branch, when both solutions pass, every
+# charm pinned by that branch's Terraform modules is promoted from /beta to /candidate.
 #
 # To support a new branch/track, add it to the `branch` matrix below; a
-# separate, independent test+promote pipeline is instantiated per branch.
+# separate, independent test pipeline is instantiated per branch.
 
 on:
   workflow_dispatch: {}
-  schedule:
-    # Once a month, on the 1st at 03:00 UTC.
-    - cron: "0 3 1 * *"
+  # FIXME: Disabled until the solution tests are stable and the failures they uncover in the
+  # charms are fixed. See the FIXME at the top of this file.
+  # schedule:
+  #   # Once a month, on the 1st at 03:00 UTC.
+  #   - cron: "0 3 1 * *"
 
 jobs:
   solutions:

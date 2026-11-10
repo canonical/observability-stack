@@ -14,4 +14,7 @@ Feature: Metrics collection
       | grafana      |
       | loki         |
       | prometheus   |
-      | traefik      |
+
+  Scenario: Prometheus collects metrics from Traefik
+    Given the solution is deployed with an ingress
+    Then Prometheus has metrics from the "traefik" application
