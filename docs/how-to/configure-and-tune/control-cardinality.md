@@ -16,19 +16,19 @@ cardinality API.
 
 ## The one idea
 
-Mimir's ingester memory is dominated by the **number of distinct time series** held in the TSDB head, not by samples/second. A series is one unique combination of metric name + label values. Every new combination costs memory (index entry, postings, head chunks) for as long as it lives in the head.
+Mimir's ingester memory is dominated by the number of distinct time series held in the TSDB head, not by samples/second. A series is one unique combination of metric name + label values. Every new combination costs memory (index entry, postings, head chunks) for as long as it lives in the head.
 
 Consequences:
 
 - Throughput (samples/s) is cheap; cardinality (distinct series) is expensive.
-- The series count is the number of **observed** label combinations, bounded above by the product of each label's value count, but usually far below it.
+- The series count is the number of observed label combinations, bounded above by the product of each label's value count, but usually far below it.
 - To accept more data without OOM, reduce distinct series or add memory.
 
 ## Control points (three layers)
 
-1. **Collector (best):** drop/aggregate before data leaves the collector.
-2. **Mimir (defensive):** cap series and rate-limit to protect the ingesters from the cardinality that still arrives (see {ref}`harden-mimir`).
-3. **Capacity (last resort):** more memory / more ingesters.
+1. Collector (best): drop/aggregate before data leaves the collector.
+2. Mimir (defensive): cap series and rate-limit to protect the ingesters from the cardinality that still arrives (see {ref}`harden-mimir`).
+3. Capacity (last resort): more memory / more ingesters.
 
 ## 1. Prerequisites: enable the cardinality tooling
 
@@ -56,7 +56,7 @@ Base: `https://<query-frontend>:8080/prometheus/api/v1/cardinality` (the Prometh
 Parameters: `selector`, `label_names[]`, `count_method=inmemory|active`, `limit`.
 
 ```bash
-curl -g -sk 'https://<query-frontend>:8080/prometheus/api/v1/cardinality/label_values?label_names[]=job&selector={__name__=~".*"}&count_method=inmemory&limit=100' \
+curl -g -sk 'https://<query-frontend-pod-IP>:8080/prometheus/api/v1/cardinality/label_values?label_names[]=job&selector={__name__=~".*"}&count_method=inmemory&limit=100' \
   -H 'X-Scope-OrgID: anonymous'
 ```
 
@@ -97,7 +97,7 @@ Narrow down from the source to the individual value: **job → metric → label 
 
 Rules:
 
-- Rank by **series per value**, never by distinct-value count. A label with 20k values can carry 2% of series; a label with 600 values can carry 99%.
+- Rank labels by total series footprint (or series per label name), never by distinct-value count. A label with 20k values can be found in 2% of series, while a label with 600 values can be found in 99%.
 - For a label with `D` distinct values that co-occurs broadly, aggregating it away roughly divides the series count of that metric by `D`.
 - Histograms: the `le` label multiplies by the bucket count; `_sum`/`_count` add two more series per combination.
 
@@ -111,20 +111,7 @@ and [Selectively drop telemetry using scrape config](selectively-drop-telemetry-
 
 Drop whole metric families by name, or every histogram at once. The prometheus receiver folds a classic histogram into a single OTLP histogram metric named after the base (for example `apiserver_request_duration_seconds`), so match the base name here; there is no `_bucket` suffix at this point (see 3.2 for dropping buckets by name).
 
-Modern (collector ≥ 0.146):
-
-```yaml
-processors:
-  filter/drop_unused:
-    error_mode: ignore
-    metric_conditions:
-      # Drop specific families by base name, e.g. every kubelet metric
-      - 'IsMatch(metric.name, "^kubelet_")'
-      # Or drop every histogram metric
-      - 'metric.type == METRIC_DATA_TYPE_HISTOGRAM'
-```
-
-Older collectors:
+Processors config:
 
 ```yaml
 processors:
@@ -194,15 +181,15 @@ OOM-killed. Set these on the Mimir coordinator with `juju config`.
 
 ### Per-tenant caps
 
-- **`max_global_series_per_user`**: cap in-memory series per tenant. Rejects
+- `max_global_series_per_user`: cap in-memory series per tenant. Rejects
   excess (4xx). Default `0` (disabled) in the charm; Mimir's own default is `150000`.
-  This is a cluster-wide limit on **distinct** series, not a per-unit limit: each ingester
+  This is a cluster-wide limit on distinct series, not a per-unit limit: each ingester
   enforces a local limit of `value × RF / N` (`RF` = replication factor, `N` = ingesters).
   At `RF=3` with 3 ingesters the local limit equals the configured value, so raise it as you
   add ingesters to keep the same per-unit target: `10M`, `20M` and `30M` give about 10M per
   unit at 3, 6 and 9 ingesters. Size the limit to the memory you can afford, not to a round
   number.
-- **`ingestion_rate`**: per-tenant samples/s limit. Throughput only; it does
+- `ingestion_rate`: per-tenant samples/s limit. Throughput only; it does
   not reduce cardinality.
 
 ## 5. Capacity
