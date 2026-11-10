@@ -9,8 +9,7 @@ myst:
 ```{note}
 **Availability markers used in this guide**
 
-- `[charm]` — configurable via `juju config` on the coordinator today.
-- `[future]` — not yet exposed by the charm. Placeholder; do not rely on it until the charm option lands.
+- `[charm]` — configurable via `juju config` on the coordinator.
 - `[collector]` — applied to your own OpenTelemetry collectors, outside the charm.
 ```
 
@@ -35,7 +34,7 @@ Consequences:
 ## Control points (three layers)
 
 1. **Collector (best):** drop/aggregate before data leaves the collector. `[collector]`
-2. **Mimir (defensive):** cap series and rate-limit to protect the ingesters from the cardinality that still arrives. (Partly `[future]` — see {ref}`harden-mimir`.)
+2. **Mimir (defensive):** cap series and rate-limit to protect the ingesters from the cardinality that still arrives (see {ref}`harden-mimir`).
 3. **Capacity (last resort):** more memory / more ingesters.
 
 ## 1. Prerequisites: enable the cardinality tooling
@@ -74,10 +73,6 @@ The remaining examples in this guide use `.../` for the base above.
 
 - `inmemory` — series in the ingester TSDB head (what consumes memory; what `max_global_series_per_user` counts).
 - `active` — only series with a sample within the active-series idle timeout (default 20m).
-
-### Dashboards
-
-- TODO: Mention the Cardinality dashboard once merged and released ...
 
 ## 2. Diagnose: series forensics
 
@@ -204,7 +199,7 @@ Mimir. This section is about protecting Mimir from the cardinality that still ar
 caps and rate limits that keep the ingesters within their memory budget instead of being
 OOM-killed.
 
-### 4.1 Per-tenant caps
+### Per-tenant caps
 
 - `[charm]` **`max_global_series_per_user`** — cap in-memory series per tenant. Rejects
   excess (4xx). Default `0` (disabled) in the charm; Mimir's own default is `150000`.
@@ -214,23 +209,8 @@ OOM-killed.
   add ingesters to keep the same per-unit target — `10M`, `20M` and `30M` give about 10M per
   unit at 3, 6 and 9 ingesters. Size the limit to the memory you can afford, not to a round
   number.
-- `[future]` **`max_global_series_per_metric`** — cap series per metric name; contains a
-  single runaway metric.
 - `[charm]` **`ingestion_rate`** — per-tenant samples/s limit. Throughput only; it does
   not reduce cardinality.
-- `[future]` **`max_label_names_per_series`** (default 30) /
-  **`max_label_value_length`** (default 2048) — bound per-series cost.
-
-### 4.2 Read-path guards
-
-- `[future]` **`-querier.max-fetched-chunks-per-query`** (default 2,000,000) /
-  **`-querier.max-fetched-series-per-query`** (default 0) — prevent a single huge metric
-  from making queries fail or exhausting the querier.
-
-### 4.3 Idle TSDBs
-
-- `[future]` **`-blocks-storage.tsdb.close-idle-tsdbs-after`** — close idle tenant TSDBs
-  to free memory.
 
 ## 5. Capacity
 
