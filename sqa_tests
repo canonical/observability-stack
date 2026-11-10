@@ -15,30 +15,34 @@ UV_FLAGS=(--frozen --isolated --python 3.12)
 
 solution="${1:-${PRODUCT:-}}"
 if [ $# -gt 0 ]; then shift; fi
+# SolQA deploys terraform/<solution> with its defaults: internal TLS, no external CA, and the
+# default ingress. There's no Terraform wrapper state here to read that from, so state it in
+# the shape of the wrapper's outputs (see tests/solution/<solution>/terraform/outputs.tf).
 case "$solution" in
-    cos | cos-lite) ;;
+    cos)
+        ingress='{"alertmanager": true, "catalogue": true, "grafana": true, "loki": true, "mimir": true, "opentelemetry_collector": true, "tempo": false}'
+        ;;
+    cos-lite)
+        ingress='{"alertmanager": true, "catalogue": true, "grafana": true, "loki": true, "opentelemetry_collector": true, "prometheus": true}'
+        ;;
     *)
         echo "ERROR: unknown solution '$solution'; pass cos or cos-lite, or set PRODUCT" >&2
         exit 1
         ;;
 esac
+export SOLUTION_MODE='{"internal_tls": true, "tls_termination": false, "ingress": '"$ingress"', "optional_apps": {"traefik": true}}'
+
+# SolQA's runner can reach Traefik's load balancer address but not the pods, so leave out the
+# scenarios that need a pod: the internal-TLS certificate checks connect to each unit, and
+# Tempo has no ingress in COS. The candidate quality gate still runs them.
+NEEDS_POD="units_serve_certificates_from_the_internal_ca or tempo_collects_traces"
 
 if ! command -v uv &> /dev/null; then
     echo "Installing astral-uv (snap, provides 'uv')..."
     sudo snap install astral-uv --classic
 fi
 
-# Right after SolQA's deploy, pods are still being replaced, so first wait
-# until everything is active and idle, the same way the tests do (`juju
-# wait-for` missed a settled model on SolQA). The tests then reach the
-# applications through Traefik's load balancer address.
-if ! (cd tests/solution && MODEL="$MODEL" uv run "${UV_FLAGS[@]}" python -c \
-    'import os, jubilant; from helpers import wait_for_active_idle; wait_for_active_idle(jubilant.Juju(model=os.environ["MODEL"]))'); then
-    echo "ERROR: $MODEL didn't become active and idle" >&2
-    juju status -m "$MODEL" >&2
-    exit 1
-fi
-
+# The tests wait for the model to be active and idle before checking anything.
 cd tests/solution
 SOLUTION_MODEL="$MODEL" uv run "${UV_FLAGS[@]}" pytest -vv -ra "$solution" \
-    --junitxml="$SCRIPT_DIR/test_results.xml" "$@"
+    -k "not ($NEEDS_POD)" --junitxml="$SCRIPT_DIR/test_results.xml" "$@"

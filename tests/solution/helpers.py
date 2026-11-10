@@ -59,6 +59,11 @@ def deployment_mode(terraform_dir: Path) -> Mode:
     outputs = {
         name: output["value"] for name, output in json.loads(result.stdout).items()
     }
+    return mode_from_outputs(outputs)
+
+
+def mode_from_outputs(outputs: Dict[str, Any]) -> Mode:
+    """The mode described by a Terraform wrapper's output values, keyed by output name."""
     return Mode(
         internal_tls=outputs["internal_tls"],
         external_ca=outputs["tls_termination"],

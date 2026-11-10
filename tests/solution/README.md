@@ -69,8 +69,10 @@ cd tests/solution
 SOLUTION_MODEL="microk8s-localhost:cos-lite" uv run --frozen --isolated pytest -vv --capture=no cos-lite
 ```
 
-The mode is always read from the Terraform wrapper's outputs, so its state must be there: the
-tests only run against a deployment made by `just solution test` (or by applying the wrapper).
+The mode is read from the Terraform wrapper's outputs, so its state must be there: the tests
+only run against a deployment made by `just solution test` (or by applying the wrapper). For a
+deployment the wrapper didn't make, set `SOLUTION_MODE` to a JSON object of the outputs it would
+have, keyed by output name, like `sqa_tests` does.
 
 ## Adding a new scenario
 
@@ -126,4 +128,6 @@ Solutions QA's lab through `sqa_tests` at the repo root. SolQA deploys the produ
 
 The tests reach the applications through Traefik's load balancer address (the URLs from Traefik's
 `show-proxied-endpoints` action), so only that address has to be reachable from SolQA's runner,
-not the pods. Applications without ingress are reached at their first unit's address.
+not the pods. SolQA's runner can't reach the pods, so `sqa_tests` leaves out the scenarios that
+need one: the internal-TLS certificate checks and, for COS, the Tempo traces ones (Tempo has no
+ingress there). `sqa_tests` also sets `SOLUTION_MODE` to the mode SolQA deploys in.
