@@ -1,5 +1,5 @@
 module "alertmanager" {
-  source = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/alertmanager-k8s-operator//terraform?depth=1"
 
   app_name           = var.alertmanager.app_name
   base               = local.bases.o11y
@@ -14,7 +14,7 @@ module "alertmanager" {
 }
 
 module "catalogue" {
-  source = "git::https://github.com/canonical/catalogue-k8s-operator//charm/terraform"
+  source = "git::https://github.com/canonical/catalogue-k8s-operator//charm/terraform?depth=1"
 
   app_name           = var.catalogue.app_name
   base               = local.bases.o11y
@@ -29,7 +29,7 @@ module "catalogue" {
 }
 
 module "grafana" {
-  source           = "git::https://github.com/canonical/grafana-k8s-operator//terraform"
+  source           = "git::https://github.com/canonical/grafana-k8s-operator//terraform?depth=1"
   replace_triggers = [terraform_data.grafana_litestream_resource.id]
 
   app_name           = var.grafana.app_name
@@ -45,7 +45,7 @@ module "grafana" {
 }
 
 module "loki" {
-  source = "git::https://github.com/canonical/loki-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/loki-k8s-operator//terraform?depth=1"
 
   app_name           = var.loki.app_name
   base               = local.bases.o11y
@@ -60,7 +60,7 @@ module "loki" {
 }
 
 module "opentelemetry_collector" {
-  source = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform?depth=1"
 
   app_name           = var.opentelemetry_collector.app_name
   base               = local.bases.o11y
@@ -75,7 +75,7 @@ module "opentelemetry_collector" {
 }
 
 module "prometheus" {
-  source = "git::https://github.com/canonical/prometheus-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/prometheus-k8s-operator//terraform?depth=1"
 
   app_name           = var.prometheus.app_name
   base               = local.bases.o11y
@@ -90,7 +90,7 @@ module "prometheus" {
 }
 
 module "ssc" {
-  source = "git::https://github.com/canonical/self-signed-certificates-operator//terraform"
+  source = "git::https://github.com/canonical/self-signed-certificates-operator//terraform?depth=1"
   count  = var.internal_tls ? 1 : 0
 
   app_name    = var.ssc.app_name
@@ -104,7 +104,7 @@ module "ssc" {
 }
 
 module "traefik" {
-  source = "git::https://github.com/canonical/traefik-k8s-operator//terraform"
+  source = "git::https://github.com/canonical/traefik-k8s-operator//terraform?depth=1"
   count  = local.traefik_enabled ? 1 : 0
 
   app_name           = var.traefik.app_name

@@ -69,6 +69,17 @@ variable "anti_affinity" {
 
 # -------------- # Network configurations --------------
 
+variable "mesh_enabled" {
+  description = "Route COS traffic through the Istio service mesh, which provides mTLS between COS components. This module does NOT deploy the Istio control plane: before enabling this, you must have already satisfied the istio-k8s dependency by deploying it in another Juju model (e.g. `istio-system`). See https://canonical-service-mesh-documentation.readthedocs-hosted.com/latest/istio/how-to/"
+  type        = bool
+  default     = false
+
+  validation {
+    condition     = !(var.internal_tls && var.mesh_enabled)
+    error_message = "mesh_enabled and internal_tls cannot both be enabled at the same time."
+  }
+}
+
 variable "internal_tls" {
   description = "Specify whether to use TLS or not for internal COS communication. By default, TLS is enabled using self-signed-certificates"
   type        = bool
@@ -209,6 +220,34 @@ variable "grafana" {
   })
   default     = {}
   description = "Application configuration for Grafana. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
+}
+
+variable "istio_beacon" {
+  type = object({
+    app_name           = optional(string, "istio-beacon")
+    config             = optional(map(string), {})
+    constraints        = optional(string, "arch=amd64")
+    resources          = optional(map(string), {})
+    revision           = optional(number, null)
+    storage_directives = optional(map(string), {})
+    units              = optional(number, 1)
+  })
+  default     = {}
+  description = "Application configuration for istio-beacon, only deployed when `mesh_enabled` is true. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
+}
+
+variable "istio_ingress" {
+  type = object({
+    app_name           = optional(string, "istio-ingress")
+    config             = optional(map(string), {})
+    constraints        = optional(string, "arch=amd64")
+    resources          = optional(map(string), {})
+    revision           = optional(number, null)
+    storage_directives = optional(map(string), {})
+    units              = optional(number, 1)
+  })
+  default     = {}
+  description = "Application configuration for istio-ingress, which replaces Traefik as the reverse proxy when `mesh_enabled` is true. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
 }
 
 variable "loki_coordinator" {
