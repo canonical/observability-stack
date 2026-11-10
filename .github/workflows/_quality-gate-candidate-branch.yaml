@@ -1,9 +1,13 @@
-name: Test and promote a branch's solutions
+name: Test a branch's solutions
 
 # Reusable workflow: discovers every solution defined under tests/solution/
-# on a single branch, deploys and tests each one, and — only if all of them
-# pass — promotes every charm pinned by that branch's Terraform modules from
-# /beta to /candidate.
+# on a single branch, then deploys and tests each one.
+#
+# FIXME: Promotion is disabled (see the commented-out `promote` job at the bottom): until the
+# solution tests are stable and the failures they uncover in the charms are fixed, promotions
+# happen through the already-existing time-based mechanism. Once enabled, the `promote` job
+# promotes every charm pinned by that branch's Terraform modules from /beta to /candidate, only
+# if all the solutions pass.
 #
 # One job runs the full solution test suite per solution, in these combinations:
 # - every deployment mode, on the default infrastructure (Juju 3.6, amd64);
@@ -148,28 +152,31 @@ jobs:
           retention-days: 3
           if-no-files-found: warn
 
-  promote:
-    name: Promote ${{ matrix.solution }}
-    needs: [discover-solutions, test-solutions]
-    # A pull_request-triggered run only tests the branch; it never promotes.
-    if: github.event_name != 'pull_request'
-    strategy:
-      matrix:
-        solution: ${{ fromJson(needs.discover-solutions.outputs.solutions) }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.branch }}
-
-      - name: Install dependencies
-        run: |
-          sudo snap install terraform --classic
-          sudo snap install just --classic
-          sudo snap install charmcraft --classic
-
-      - name: Promote
-        env:
-          CHARMCRAFT_AUTH: ${{ secrets.CHARMHUB_TOKEN }}
-        run: just solution promote ${{ matrix.solution }} ${{ inputs.branch }}
+  # FIXME: Promotion is disabled until the solution tests are stable and the failures they uncover
+  # in the charms are fixed. Until then, promotions happen through the already-existing time-based
+  # mechanism. Uncomment this job once the tests are stable.
+  # promote:
+  #   name: Promote ${{ matrix.solution }}
+  #   needs: [discover-solutions, test-solutions]
+  #   # A pull_request-triggered run only tests the branch; it never promotes.
+  #   if: github.event_name != 'pull_request'
+  #   strategy:
+  #     matrix:
+  #       solution: ${{ fromJson(needs.discover-solutions.outputs.solutions) }}
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #       with:
+  #         ref: ${{ inputs.branch }}
+  #
+  #     - name: Install dependencies
+  #       run: |
+  #         sudo snap install terraform --classic
+  #         sudo snap install just --classic
+  #         sudo snap install charmcraft --classic
+  #
+  #     - name: Promote
+  #       env:
+  #         CHARMCRAFT_AUTH: ${{ secrets.CHARMHUB_TOKEN }}
+  #       run: just solution promote ${{ matrix.solution }} ${{ inputs.branch }}
