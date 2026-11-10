@@ -7,13 +7,6 @@ myst:
 # How to control metric cardinality in Mimir
 
 ```{note}
-**Availability markers used in this guide**
-
-- `[charm]` — configurable via `juju config` on the coordinator.
-- `[collector]` — applied to your own OpenTelemetry collectors, outside the charm.
-```
-
-```{note}
 This guide uses Mimir for concrete examples. The collector-side guidance (section 3)
 applies equally to Prometheus in COS Lite, and the general principles are the same.
 Mimir-specific parts are the cardinality API endpoints and the `cortex_ingester_*`
@@ -28,12 +21,12 @@ Mimir's ingester memory is dominated by the **number of distinct time series** h
 Consequences:
 
 - Throughput (samples/s) is cheap; cardinality (distinct series) is expensive.
-- The series count is the number of **observed** label combinations, bounded above by the product of each label's value count — but usually far below it.
+- The series count is the number of **observed** label combinations, bounded above by the product of each label's value count, but usually far below it.
 - To accept more data without OOM, reduce distinct series or add memory.
 
 ## Control points (three layers)
 
-1. **Collector (best):** drop/aggregate before data leaves the collector. `[collector]`
+1. **Collector (best):** drop/aggregate before data leaves the collector.
 2. **Mimir (defensive):** cap series and rate-limit to protect the ingesters from the cardinality that still arrives (see {ref}`harden-mimir`).
 3. **Capacity (last resort):** more memory / more ingesters.
 
@@ -41,7 +34,7 @@ Consequences:
 
 ### Enable the cardinality API
 
-`[charm]` The coordinator exposes a `cardinality_analysis_enabled` option (default `false`). Enable the API with:
+The coordinator exposes a `cardinality_analysis_enabled` option (default `false`). Enable the API with:
 
 ```bash
 juju config <coordinator-app> cardinality_analysis_enabled=true
@@ -71,12 +64,12 @@ The remaining examples in this guide use `.../` for the base above.
 
 `count_method`:
 
-- `inmemory` — series in the ingester TSDB head (what consumes memory; what `max_global_series_per_user` counts).
-- `active` — only series with a sample within the active-series idle timeout (default 20m).
+- `inmemory`: series in the ingester TSDB head (what consumes memory; what `max_global_series_per_user` counts).
+- `active`: only series with a sample within the active-series idle timeout (default 20m).
 
 ## 2. Diagnose: series forensics
 
-Work **job → metric → label → value**. Requires the API from the previous section.
+Narrow down from the source to the individual value: **job → metric → label → value**. Requires the API from the previous section.
 
 1. Which source job?
 
@@ -108,7 +101,7 @@ Rules:
 - For a label with `D` distinct values that co-occurs broadly, aggregating it away roughly divides the metric's series by `D`.
 - Histograms: the `le` label multiplies by the bucket count; `_sum`/`_count` add two more series per combination.
 
-## 3. Remediate at the collector `[collector]`
+## 3. Remediate at the collector
 
 These are applied to your own OpenTelemetry collectors, not the charm. See also
 [Selectively drop telemetry using opentelemetry-collector](selectively-drop-telemetry-otelcol.md)
@@ -116,7 +109,7 @@ and [Selectively drop telemetry using scrape config](selectively-drop-telemetry-
 
 ### 3.1 Drop metric families / histograms (`filter` processor)
 
-Drop whole metric families by name, or every histogram at once. The prometheus receiver folds a classic histogram into a single OTLP histogram metric named after the base (for example `apiserver_request_duration_seconds`), so match the base name here — there is no `_bucket` suffix at this point (see 3.2 for dropping buckets by name).
+Drop whole metric families by name, or every histogram at once. The prometheus receiver folds a classic histogram into a single OTLP histogram metric named after the base (for example `apiserver_request_duration_seconds`), so match the base name here; there is no `_bucket` suffix at this point (see 3.2 for dropping buckets by name).
 
 Modern (collector ≥ 0.146):
 
@@ -179,7 +172,7 @@ processors:
 
 ### 3.4 Reduce histogram buckets
 
-Keep only the `le` values you query. This divides every histogram family by the ratio of buckets kept/dropped and is less destructive than dropping the whole family.
+Keep only the `le` values you query. This divides every histogram family by the ratio of buckets kept/dropped and is less destructive than dropping the whole family. At scrape time, add a `metric_relabel_configs` rule that matches the `le` label to drop the bucket boundaries you do not query.
 
 ### 3.5 Verify at the source
 
@@ -187,7 +180,7 @@ Keep only the `le` values you query. This divides every histogram family by the 
 curl -s localhost:8888/metrics | grep -E 'processor="filter/<id>"'
 ```
 
-`otelcol_processor_incoming_items` vs `otelcol_processor_outgoing_items`: `in > out` means the filter is dropping. (Items = data points, not Mimir series.)
+`otelcol_processor_incoming_items` vs `otelcol_processor_outgoing_items`: `in > out` means the filter is dropping. (Items = data points, not Mimir series.) The OpenTelemetry Collector dashboard bundled with COS includes a panel comparing `in` and `out`.
 
 (harden-mimir)=
 
@@ -197,19 +190,19 @@ Reducing cardinality (dropping or aggregating metrics and labels) belongs in the
 collector (section 3), which COS and COS Lite always deploy alongside Prometheus and
 Mimir. This section is about protecting Mimir from the cardinality that still arrives:
 caps and rate limits that keep the ingesters within their memory budget instead of being
-OOM-killed.
+OOM-killed. Set these on the Mimir coordinator with `juju config`.
 
 ### Per-tenant caps
 
-- `[charm]` **`max_global_series_per_user`** — cap in-memory series per tenant. Rejects
+- **`max_global_series_per_user`**: cap in-memory series per tenant. Rejects
   excess (4xx). Default `0` (disabled) in the charm; Mimir's own default is `150000`.
   This is a cluster-wide limit on **distinct** series, not a per-unit limit: each ingester
   enforces a local limit of `value × RF / N` (`RF` = replication factor, `N` = ingesters).
   At `RF=3` with 3 ingesters the local limit equals the configured value, so raise it as you
-  add ingesters to keep the same per-unit target — `10M`, `20M` and `30M` give about 10M per
+  add ingesters to keep the same per-unit target: `10M`, `20M` and `30M` give about 10M per
   unit at 3, 6 and 9 ingesters. Size the limit to the memory you can afford, not to a round
   number.
-- `[charm]` **`ingestion_rate`** — per-tenant samples/s limit. Throughput only; it does
+- **`ingestion_rate`**: per-tenant samples/s limit. Throughput only; it does
   not reduce cardinality.
 
 ## 5. Capacity
@@ -220,7 +213,10 @@ OOM-killed.
 - Headroom: `(limit − current) / current` is the fraction more series you can hold.
 - For the portion that is genuine scale (many sources, each with a stable series count), capacity is the correct answer; filtering is not.
 
-## 6. Verify
+## 6. Signals to monitor
+
+These metrics confirm the effect of the changes above and help you spot cardinality growth
+before it OOMs an ingester.
 
 - `cortex_ingester_memory_series` (per ingester, no `user` label)
 - `cortex_ingester_memory_series_created_total{user}` / `_removed_total{user}` (per tenant; `created − removed` = in-memory series)
@@ -250,4 +246,3 @@ OOM-killed.
 - OTel prometheus receiver: https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/prometheusreceiver
 - OTel prometheusremotewrite exporter: https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/prometheusremotewriteexporter
 - Prometheus relabeling: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
-- Grafana cardinality management dashboard: https://play.grafana.org/d/f0b9f49d-6652-4a3f-8025-20f65a6b0541/
