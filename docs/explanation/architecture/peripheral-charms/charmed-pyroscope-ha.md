@@ -65,7 +65,7 @@ This charm is intended to be:
 - used together with the [`pyroscope-coordinator-k8s` charm](#pyroscope-coordinator-charm).
 - deployed on top of a [COS Lite bundle](https://charmhub.io/cos-lite) to extend it with continuous profiling.
 
-## Charmed Pyroscope Ingressing Model
+## Charmed Pyroscope ingress model
 
 Pyroscope accepts http traffic (e.g. to serve the UI) and grpc traffic (to ingest profiles) on the same port (4040).
 

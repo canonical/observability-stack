@@ -217,7 +217,7 @@ ruleset
 runbooks?
 scalable
 SCons
-SDK
+SDKs?
 sequenceDiagram
 serverError
 severities
