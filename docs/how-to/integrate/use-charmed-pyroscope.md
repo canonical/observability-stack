@@ -7,6 +7,7 @@ myst:
 # How to use Charmed Pyroscope
 
 This page covers:
+
 - [How to deploy Charmed Pyroscope](#how-to-deploy-charmed-pyroscope): deploy the coordinator and worker charms, using Terraform or manually.
 - [How to enable TLS for Charmed Pyroscope](#how-to-enable-tls-for-charmed-pyroscope): terminate TLS at the coordinator's NGINX.
 - [How to integrate with charmed Pyroscope over `profiling`](#how-to-integrate-with-charmed-pyroscope-over-profiling): send profiles from charmed or uncharmed applications.
@@ -41,6 +42,7 @@ module "pyroscope" {
   s3_secret_key = var.s3_secret_key
 }
 ```
+
 Add relevant input variables to your `variables.tf`, then run `terraform apply`.
 
 ```{note}
@@ -87,7 +89,6 @@ pyroscope/0*                  active    idle   10.1.157.106                 Degr
 
 By default, the deployment will create one worker unit for every required role. You can fine-tune that to your needs using terraform input variables. See [Inputs](https://github.com/canonical/pyroscope-operators/tree/main/terraform#inputs) for the full list of available configurations.
 
-
 ### Monolithic deployment mode for testing and dev
 
 If you want just to experiment with Pyroscope, you can also manually deploy it in monolithic mode, which means having a single worker with the `all` role (which is the default), instead of the one-worker-application-per-role distributed mode. You will still need an object storage backend and `s3-integrator` pointing at the s3 endpoint. 
@@ -104,15 +105,18 @@ juju relate pyroscope s3-integrator
 Before enabling TLS, make sure you have deployed charmed Pyroscope.
 See the [How to deploy Charmed Pyroscope](#how-to-deploy-charmed-pyroscope) guide for instructions.
 
-
 ### Deploy a certificates provider
+
 For this example, we will use the [self-signed-certificates](https://charmhub.io/self-signed-certificates) charm, but you can use any other charm that provides the [`tls-certificates`](https://charmhub.io/integrations/tls-certificates) interface:
 
 ```bash
 juju deploy self-signed-certificates ssc 
 ```
+
 ### Integrate with Pyroscope
+
 Then, integrate the coordinator with self-signed-certificates
+
 ```bash
 juju integrate pyroscope:certificates ssc
 ```

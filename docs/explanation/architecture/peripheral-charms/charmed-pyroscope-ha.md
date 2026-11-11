@@ -11,6 +11,7 @@ myst:
 Charmed Pyroscope HA is a solution that handles deployment, scaling, and Day 2 operations specific to [Grafana Pyroscope](https://grafana.com/oss/tempo/), a distributed continuous profiling backend by Grafana Labs.
 
 The solution consists of two charms which have distinct responsibilities:
+
 -  [`pyroscope-coordinator-k8s`](#pyroscope-coordinator-charm): ingress, cluster coordination, single integration facade
 -  [`pyroscope-worker-k8s`](#pyroscope-worker-charm): run one or more Pyroscope application components
 
@@ -29,7 +30,6 @@ For step-by-step instructions, see:
 - [Use Charmed Pyroscope](../../../how-to/integrate/use-charmed-pyroscope.md): Deploy Charmed Pyroscope, configure TLS, and integrate workloads through the `profiling` interface.
 - [Migrate Charmed Pyroscope from v1 to v2](../../../how-to/integrate/migrate-charmed-pyroscope-v1-to-v2.md): Migrate an existing Charmed Pyroscope deployment from v1 to v2.
 
-
 ## Pyroscope Coordinator Charm
 
 `pyroscope-coordinator-k8s` is a charm that, in conjunction with the [`pyroscope-worker-k8s` charm](#pyroscope-worker-charm), deploys and operates [Grafana Pyroscope](https://grafana.com/oss/pyroscope/), a continuous profiling backend by Grafana Labs.
@@ -45,7 +45,6 @@ This charm must be deployed alongside its counterpart to function correctly; it 
 This charm is intended to be:
 - used together with the [`pyroscope-worker-k8s` charm](#pyroscope-worker-charm).
 - deployed on top of a [COS Lite bundle](https://charmhub.io/cos-lite) to extend it with continuous profiling.
-
 
 ## Pyroscope Worker Charm
 
@@ -66,7 +65,6 @@ This charm is intended to be:
 - used together with the [`pyroscope-coordinator-k8s` charm](#pyroscope-coordinator-charm).
 - deployed on top of a [COS Lite bundle](https://charmhub.io/cos-lite) to extend it with continuous profiling.
 
-
 ## Charmed Pyroscope Ingressing Model
 
 Pyroscope accepts http traffic (e.g. to serve the UI) and grpc traffic (to ingest profiles) on the same port (4040).
@@ -78,17 +76,23 @@ Therefore, we chose to split the incoming traffic into two streams: an http rout
 This also leaves us free to, in the future, expose them on different ingresses.
 
 Therefore, we use the following routing strategy. For grpc traffic:
+
 ```
 ingress(traefik):42424 --> coordinator(nginx):42424 --> worker:4040
 ```
+
 and for http traffic:
+
 ```
 ingress(traefik)/prefix --> coordinator(nginx):8080 --> worker:4040
 ```
+
 Where the prefix is `<model-name>-<coordinator-app-name>`.
 
 ### Example
+
 So if you have a deployment like:
+
 ```
 Unit                 Workload  Agent  Address       Ports          Message
 graf/0*              active    idle   10.1.232.148  
