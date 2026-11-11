@@ -69,8 +69,10 @@ cd tests/solution
 SOLUTION_MODEL="microk8s-localhost:cos-lite" uv run --frozen --isolated pytest -vv --capture=no cos-lite
 ```
 
-The mode is always read from the Terraform wrapper's outputs, so its state must be there: the
-tests only run against a deployment made by `just solution test` (or by applying the wrapper).
+The mode is read from the Terraform wrapper's outputs, so its state must be there: the tests
+only run against a deployment made by `just solution test` (or by applying the wrapper). If
+something else made the deployment, set `SOLUTION_MODE` to the mode instead: JSON with the same
+keys as the wrapper's outputs (`sqa_tests` has an example).
 
 ## Adding a new scenario
 
@@ -118,3 +120,14 @@ tenacity's `retry` on the step itself, as `steps/telemetry.py` does.
 5. Run `just solution test <name>` to verify it.
 
 
+## Running on SolQA
+
+The stable quality gate (`.github/workflows/quality-gates-stable.yaml`) runs these tests on
+Solutions QA's lab through `sqa_tests` at the repo root. SolQA deploys the product from
+`candidate`, runs `./sqa_tests <cos|cos-lite>`, and keeps `test_results.xml` with the run.
+
+The tests reach the applications through Traefik's load balancer address (the URLs from Traefik's
+`show-proxied-endpoints` action), so only that address has to be reachable from SolQA's runner,
+not the pods. A few checks must reach a pod directly, so `sqa_tests` leaves them out on SolQA:
+the internal TLS certificate checks, and COS's Tempo trace checks (Tempo isn't behind Traefik in
+COS). It also sets `SOLUTION_MODE`, since SolQA doesn't deploy through the Terraform wrapper.

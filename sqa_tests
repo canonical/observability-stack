@@ -1,4 +1,60 @@
-#!/bin/bash
-set -eu
+#!/usr/bin/env bash
+# SolQA entry point: run the solution tests against the deployed "cos" model.
+# Output: test_results.xml (JUnit), which SolQA keeps with the run.
+# Exit code: pytest's, so SolQA's "Run SQA tests" step fails if any test fails.
+# Usage: ./sqa_tests [cos|cos-lite] [pytest args]; defaults to $PRODUCT.
+set -euo pipefail
 
-./tests/sqa/model-active
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
+rm -f test_results.xml
+
+MODEL="cos"
+# SolQA's runners have Python 3.10; the tests need 3.12.
+UV_FLAGS=(--frozen --isolated --python 3.12)
+
+solution="${1:-${PRODUCT:-}}"
+if [ $# -gt 0 ]; then shift; fi
+# Tell the tests which mode SolQA deployed the product in, so they know which checks apply.
+# (`just solution test` gets this from Terraform, but SolQA deploys the product itself.)
+# SolQA uses the track/3.0 product's defaults: internal TLS on, no external CA
+# ("tls_termination": false), and Traefik in front of the apps set to true under "ingress".
+case "$solution" in
+    cos)
+        export SOLUTION_MODE='{
+            "internal_tls": true,
+            "tls_termination": false,
+            "optional_apps": {"traefik": true},
+            "ingress": {"alertmanager": true, "catalogue": true, "grafana": true, "loki": true,
+                        "mimir": true, "opentelemetry_collector": true, "tempo": false}
+        }'
+        ;;
+    cos-lite)
+        export SOLUTION_MODE='{
+            "internal_tls": true,
+            "tls_termination": false,
+            "optional_apps": {"traefik": true},
+            "ingress": {"alertmanager": true, "catalogue": true, "grafana": true, "loki": true,
+                        "prometheus": true}
+        }'
+        ;;
+    *)
+        echo "ERROR: unknown solution '$solution'; pass cos or cos-lite, or set PRODUCT" >&2
+        exit 1
+        ;;
+esac
+
+# Leave out the checks that must reach a pod directly, since SolQA's runner can only reach
+# Traefik: the internal TLS certificate checks, and COS's Tempo trace checks (Tempo isn't
+# behind Traefik in COS). The candidate quality gate still runs them.
+NEEDS_POD="units_serve_certificates_from_the_internal_ca or tempo_collects_traces"
+
+if ! command -v uv &> /dev/null; then
+    echo "Installing astral-uv (snap, provides 'uv')..."
+    sudo snap install astral-uv --classic
+fi
+
+# The tests wait for the model to be active and idle before checking anything.
+cd tests/solution
+SOLUTION_MODEL="$MODEL" uv run "${UV_FLAGS[@]}" pytest -vv -ra "$solution" \
+    -k "not ($NEEDS_POD)" --junitxml="$SCRIPT_DIR/test_results.xml" "$@"

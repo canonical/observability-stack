@@ -3,13 +3,14 @@
 # See LICENSE file for licensing details.
 """Shared pytest config for solution tests: step registration and the deployment fixtures."""
 
+import json
 import os
 from pathlib import Path
 
 import jubilant
 import pytest
 
-from helpers import Mode, deployment_mode
+from helpers import Mode, deployment_mode, mode_from_outputs
 
 # Step definitions shared by the feature files, grouped by topic.
 pytest_plugins = [
@@ -39,5 +40,11 @@ def juju(solution_dir: Path) -> jubilant.Juju:
 
 @pytest.fixture(scope="module")
 def mode(solution_dir: Path) -> Mode:
-    """The mode the solution was deployed in, from its Terraform wrapper's outputs."""
+    """The mode the solution was deployed in, from its Terraform wrapper's outputs.
+
+    If the wrapper didn't deploy it (as on SolQA), SOLUTION_MODE gives the mode instead: JSON
+    with the same keys as those outputs (see `sqa_tests`).
+    """
+    if "SOLUTION_MODE" in os.environ:
+        return mode_from_outputs(json.loads(os.environ["SOLUTION_MODE"]))
     return deployment_mode(solution_dir / "terraform")
