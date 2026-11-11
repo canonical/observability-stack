@@ -37,6 +37,7 @@ Desired end state for each area of a cycle release. Please mark tasks as they ar
 - [ ] The product has been successfully tested via Solutions QA.
 - [ ] Terraform state migrations (`moved` blocks) cover every resource change since the previous release, so upgrades in place work.
 - [ ] Integration tests cover fresh install and upgrade from the previous supported release(s) to this one, across every TLS mode (none, internal, external, full) and the supported Juju versions, for both COS and COS Lite.
+- [ ] The workflows tracking branches were bumped e.g., in [terraform.yml](https://github.com/canonical/observability-stack/blob/4ae7aacad61d090ebc83b4c944ac2f9eaef70e39/.github/workflows/terraform.yml#L102): `uses: canonical/observability-stack/.github/workflows/_integration.yml@track/X.Y`
 
 ## 5. Product release
 
