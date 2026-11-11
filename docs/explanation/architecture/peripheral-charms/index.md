@@ -15,4 +15,5 @@ sources, complementing the core observability stack.
 :maxdepth: 1
 
 Blackbox Exporter <blackbox-exporter>
+Charmed Pyroscope HA <charmed-pyroscope-ha>
 ```

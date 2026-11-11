@@ -18,6 +18,8 @@ Monitor SSL certificates with blackbox exporter <monitor-ssl-certificates-with-b
 Instrument machine charms <instrument-machine-charms>
 Use the Loki HTTP API <use-loki-http-api>
 Use Catalogue <use-catalogue>
+Use Charmed Pyroscope <use-charmed-pyroscope>
+Migrate Charmed Pyroscope from v1 to v2 <migrate-charmed-pyroscope-v1-to-v2>
 Send metrics to Mimir on Juju <send-metrics-to-mimir>
 ```
 
