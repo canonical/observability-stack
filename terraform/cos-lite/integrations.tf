@@ -148,6 +148,22 @@ resource "juju_integration" "otelcol_logging_provider" {
   }
 }
 
+resource "juju_integration" "traefik_logging_otelcol" {
+  count = local.traefik_enabled ? 1 : 0
+
+  model_uuid = local.model_uuid
+
+  application {
+    name     = module.traefik[0].app_name
+    endpoint = module.traefik[0].endpoints.logging
+  }
+
+  application {
+    name     = module.opentelemetry_collector.app_name
+    endpoint = module.opentelemetry_collector.provides.receive_loki_logs
+  }
+}
+
 resource "juju_integration" "loki_logging_otelcol_logging_consumer" {
   model_uuid = local.model_uuid
 
@@ -396,6 +412,10 @@ resource "juju_integration" "external_traefik_certificates" {
 
 resource "juju_integration" "external_ca_cert" {
   for_each = local.tls_termination ? {
+    alertmanager = {
+      app_name = module.alertmanager.app_name
+      endpoint = module.alertmanager.requires.receive_ca_cert
+    }
     grafana = {
       app_name = module.grafana.app_name
       endpoint = module.grafana.requires.receive_ca_cert
