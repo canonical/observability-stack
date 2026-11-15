@@ -48,6 +48,7 @@ This is a Terraform module facilitating the deployment of the COS Lite solution,
 | Name | Description |
 | ---- | ----------- |
 | <a name="output_components"></a> [components](#output\_components) | All Terraform charm modules which make up this product module |
+| <a name="output_interfaces"></a> [interfaces](#output\_interfaces) | Every offer this product exposes, keyed by the Juju interface it satisfies, as offer URLs. |
 | <a name="output_model_uuid"></a> [model\_uuid](#output\_model\_uuid) | The UUID of the model (created or looked up) |
 | <a name="output_offers"></a> [offers](#output\_offers) | All Juju offers which are exposed by this product module |
 <!-- END_TF_DOCS -->
