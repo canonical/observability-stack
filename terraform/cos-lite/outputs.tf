@@ -18,14 +18,6 @@ output "offers" {
   description = "All Juju offers which are exposed by this product module"
 }
 
-# The product key a consumer uses for this module's `interfaces` output, so a
-# matrix can wire module.<x>.interfaces to a consumer without a mapping table.
-# COS and Cos Lite intentionally share the `cos` key and the same interface names.
-output "product" {
-  description = "The product key for this module's `interfaces` output. COS and Cos Lite share `cos`."
-  value       = "cos"
-}
-
 # The integration interface consumers wire to: every offer this product
 # exposes, keyed by the Juju interface it satisfies and given as its offer URL.
 # A consumer names the interfaces it requires and Terraform ignores the rest,
