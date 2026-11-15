@@ -5,8 +5,8 @@ solution's Terraform module and run a set of assertions on the resulting deploym
 all works as expected.
 
 CI discovers solutions dynamically (any directory under `tests/solution/` containing a
-`terraform/` subdirectory) and runs these tests on a schedule. See `solution.just` for how
-these tests are invoked.
+`terraform/` subdirectory) and runs these tests as the [candidate quality gate](#quality-gates).
+See `solution.just` for how these tests are invoked.
 
 ## Prerequisites
 
@@ -117,4 +117,99 @@ tenacity's `retry` on the step itself, as `steps/telemetry.py` does.
    ```
 5. Run `just solution test <name>` to verify it.
 
+## Quality gates
 
+On Charmhub, a charm revision moves up through four risk levels: `edge`, `beta`, `candidate` and
+`stable`. A quality gate is a workflow that runs tests and moves revisions up one level only if
+every test passes. If a test fails, nothing moves. The solution tests in this directory are the
+tests of the candidate gate.
+
+```mermaid
+flowchart LR
+  e[edge] -->|beta gate| b[beta]
+  b -->|candidate gate| c[candidate]
+  c -->|stable gate| s[stable]
+```
+
+Each charm has a `dev` track, built from its `main` branch, and one track per release, built from
+a `track/<version>` branch (for example, Loki's `3.7` track comes from `track/3.7`). Each branch of
+this repo pins one track per charm in its Terraform modules: `main` pins `dev`, and `track/3.0`
+pins the tracks that make up COS 3.0.
+
+| Step | Moves | Tests | Workflow | Runs |
+|---|---|---|---|---|
+| Release | new revision to `edge` | The charm's own CI (unit and integration tests) | Each charm repo's release workflow | On every merge to `main` or `track/<version>` |
+| Beta gate | `edge` to `beta` | The charm's load and chaos tests, if it has them | "Beta Quality Gate" in [canonical/observability](https://github.com/canonical/observability) | Mondays 00:00 UTC, or by hand |
+| Candidate gate | `beta` to `candidate` | The solution tests in this directory | "Solution tests" in this repo | The 1st of each month 03:00 UTC, or by hand |
+| Stable gate | `candidate` to `stable` | The solution tests, run in the Solutions QA (SolQA) lab | "Stable quality gate" in this repo | By hand |
+
+### Beta gate
+
+Checks each charm and track on its own, for the charms and tracks listed in `manifest.yaml` in
+`canonical/observability`. It runs `tox -e load` and `tox -e chaos` if the charm defines them,
+then promotes that charm from `edge` to `beta`.
+
+### Candidate gate
+
+Runs once for each branch, `main` and `track/3.0`, and the branches don't affect each other. On
+each branch it:
+
+1. Deploys every solution under `tests/solution/` and runs its tests.
+2. If all of them pass, promotes from `beta` to `candidate` every charm that those solutions'
+   Terraform modules pin, as listed by `just solution charm-tracks <solution> <branch>`. If any
+   test fails, nothing on that branch is promoted.
+
+The gate doesn't promote the external charms that the modules also deploy: `traefik-k8s`,
+`self-signed-certificates` and `s3-integrator`.
+
+### Stable gate
+
+Runs only for release tracks (`track/3.0` today), never for `dev`. It is a dry run by default:
+it runs the tests but only prints the promotions. COS and COS Lite are handled separately. For
+each one whose `candidate` revisions differ from `stable`, it:
+
+1. Records the revisions in `candidate`.
+2. Asks SolQA to deploy the product from `candidate` and then run `sqa_tests` at the repo root,
+   which runs the solution tests against that deployment (see
+   [Running against an already-deployed model](#running-against-an-already-deployed-model)).
+3. Promotes `candidate` to `stable` only if every test passed and `candidate` has not changed
+   since step 1.
+
+### When a gate fails
+
+The revisions stay where they are. Open the workflow run in GitHub Actions to see which test
+failed. Once the test or the charm is fixed, start the workflow by hand ("Run workflow") instead
+of waiting for the next scheduled run.
+
+### Background
+
+- Spec OB091,
+  [Observability Charms Quality Gates](https://docs.google.com/document/d/1lzBw9cCEmdLoQJwLZz44gMLQNwaFd0nUTTmXzR4kcGI/edit)
+  (internal), approved in April 2026.
+- Beta gate: [canonical/observability#501](https://github.com/canonical/observability/pull/501).
+- Candidate gate: [#477](https://github.com/canonical/observability-stack/pull/477). Solution
+  tests: [#479](https://github.com/canonical/observability-stack/pull/479),
+  [#489](https://github.com/canonical/observability-stack/pull/489),
+  [#491](https://github.com/canonical/observability-stack/pull/491).
+- Stable gate: [#520](https://github.com/canonical/observability-stack/pull/520).
+
+### Current state (November 2026)
+
+> [!NOTE]
+> This section is a snapshot and needs to be updated as the gates change. When you fix one of
+> these items, remove it from the list. When the list is empty, remove the section.
+
+Where things differ from the design above:
+
+- No charm has load or chaos tests yet, so the beta gate promotes without testing.
+- The candidate gate has not had a successful run yet.
+- `track/3.0` has no solution tests yet, so the candidate gate can't test that branch.
+- The test modules in `tests/solution/<name>/terraform/` deploy from `edge`, so the candidate gate
+  tests `edge` revisions but promotes `beta` ones.
+- The daily "Promote Charm Train" workflow in `canonical/observability` still promotes `edge` to
+  `beta` and to `candidate` on release tracks, skipping the gates.
+- Until the stable gate is merged
+  ([#520](https://github.com/canonical/observability-stack/pull/520)), promotion to `stable` is
+  done by hand after a SolQA run, and `sqa_tests` only waits for the model to become active and
+  idle.
+- Nobody is notified when a gate fails.
