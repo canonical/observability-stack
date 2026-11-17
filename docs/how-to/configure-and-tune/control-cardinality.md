@@ -30,7 +30,7 @@ Consequences:
 2. Mimir (defensive): cap series and rate-limit to protect the ingesters from the cardinality that still arrives (see {ref}`harden-mimir`).
 3. Capacity (last resort): more memory / more ingesters.
 
-## 1. Prerequisites: enable the cardinality tooling
+## Prerequisites: enable the cardinality tooling
 
 ### Enable the cardinality API
 
@@ -67,7 +67,7 @@ The remaining examples in this guide use `.../` for the base above.
 - `inmemory`: series in the ingester TSDB head (what consumes memory; what `max_global_series_per_user` counts).
 - `active`: only series with a sample within the active-series idle timeout (default 20m).
 
-## 2. Diagnose: series forensics
+## Diagnose: series forensics
 
 Narrow down from the source to the individual value: **job → metric → label → value**. Requires the API from the previous section.
 
@@ -101,15 +101,15 @@ Rules:
 - For a label with `D` distinct values that co-occurs broadly, aggregating it away roughly divides the series count of that metric by `D`.
 - Histograms: the `le` label multiplies by the bucket count; `_sum`/`_count` add two more series per combination.
 
-## 3. Remediate at the collector
+## Remediate at the collector
 
 These are applied to your own OpenTelemetry collectors, not the charm. See also
 [Selectively drop telemetry using opentelemetry-collector](selectively-drop-telemetry-otelcol.md)
 and [Selectively drop telemetry using scrape config](selectively-drop-telemetry-scrape-config.md).
 
-### 3.1 Drop metric families / histograms (`filter` processor)
+### Drop metric families / histograms (`filter` processor)
 
-Drop whole metric families by name, or every histogram at once. The prometheus receiver folds a classic histogram into a single OTLP histogram metric named after the base (for example `apiserver_request_duration_seconds`), so match the base name here; there is no `_bucket` suffix at this point (see 3.2 for dropping buckets by name).
+Drop whole metric families by name, or every histogram at once. The prometheus receiver folds a classic histogram into a single OTLP histogram metric named after the base (for example `apiserver_request_duration_seconds`), so match the base name here; there is no `_bucket` suffix at this point (see the next section for dropping buckets by name).
 
 Processors config:
 
@@ -129,7 +129,7 @@ Scope by job (the prometheus receiver maps `job` → resource attribute `service
 - 'resource.attributes["service.name"] == "kubelet" and type == METRIC_DATA_TYPE_HISTOGRAM'
 ```
 
-### 3.2 Drop only buckets, keep `_sum`/`_count` (`metric_relabel_configs`)
+### Drop only buckets, keep `_sum`/`_count` (`metric_relabel_configs`)
 
 At scrape time the series are still `_bucket`/`_sum`/`_count`:
 
@@ -145,7 +145,7 @@ receivers:
               action: drop
 ```
 
-### 3.3 Aggregate away high-cardinality labels (`metricstransform`)
+### Aggregate away high-cardinality labels (`metricstransform`)
 
 ```yaml
 processors:
@@ -157,11 +157,11 @@ processors:
         aggregation_type: sum     # only sum is supported for histograms
 ```
 
-### 3.4 Reduce histogram buckets
+### Reduce histogram buckets
 
 Keep only the `le` values you query. This divides every histogram family by the ratio of buckets kept/dropped and is less destructive than dropping the whole family. At scrape time, add a `metric_relabel_configs` rule that matches the `le` label to drop the bucket boundaries you do not query.
 
-### 3.5 Verify at the source
+### Verify at the source
 
 ```bash
 curl -s localhost:8888/metrics | grep -E 'processor="filter/<id>"'
@@ -171,7 +171,7 @@ curl -s localhost:8888/metrics | grep -E 'processor="filter/<id>"'
 
 (harden-mimir)=
 
-## 4. Harden Mimir with defensive limits
+## Harden Mimir with defensive limits
 
 Reducing cardinality (dropping or aggregating metrics and labels) belongs in the
 collector (section 3), which COS and COS Lite always deploy alongside Prometheus and
@@ -192,7 +192,7 @@ OOM-killed. Set these on the Mimir coordinator with `juju config`.
 - `ingestion_rate`: per-tenant samples/s limit. Throughput only; it does
   not reduce cardinality.
 
-## 5. Capacity
+## Capacity
 
 - Memory ≈ distinct series × per-series cost (a few KB; label/chunk density dependent).
 - With `N` ingesters and replication factor `RF`, per-ingester series ≈ `D × RF / N` (for `N ≥ RF`).
@@ -200,7 +200,7 @@ OOM-killed. Set these on the Mimir coordinator with `juju config`.
 - Headroom: `(limit − current) / current` is the fraction more series you can hold.
 - For the portion that is genuine scale (many sources, each with a stable series count), capacity is the correct answer; filtering is not.
 
-## 6. Signals to monitor
+## Signals to monitor
 
 These metrics confirm the effect of the changes above and help you spot cardinality growth
 before it runs an ingester out of memory.
@@ -214,14 +214,14 @@ before it runs an ingester out of memory.
 - Cardinality API `series_count_total`
 - Collector `:8888/metrics` in/out
 
-## 7. Related guides
+## Related guides
 
 - [Evaluate telemetry volume](evaluate-telemetry-volume.md)
 - [Selectively drop telemetry using scrape config](selectively-drop-telemetry-scrape-config.md)
 - [Selectively drop telemetry using opentelemetry-collector](selectively-drop-telemetry-otelcol.md)
 - [Configure memory limits for the OpenTelemetry Collector](configure-memory-limits-otelcol.md)
 
-## 8. Upstream docs
+## Upstream docs
 
 - Mimir HTTP API (cardinality endpoints): https://grafana.com/docs/mimir/latest/references/http-api/
 - Mimir configuration parameters (limits): https://grafana.com/docs/mimir/latest/configure/configuration-parameters/#limits
