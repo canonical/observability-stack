@@ -1,9 +1,18 @@
-name: Test and promote a branch's solutions
+name: Test a branch's solutions
 
 # Reusable workflow: discovers every solution defined under tests/solution/
-# on a single branch, deploys and tests each one, and — only if all of them
-# pass — promotes every charm pinned by that branch's Terraform modules from
-# /beta to /candidate.
+# on a single branch, then deploys and tests each one.
+#
+# FIXME: Promotion is disabled (see the commented-out `promote` job at the bottom): until the
+# solution tests are stable and the failures they uncover in the charms are fixed, promotions
+# happen through the already-existing time-based mechanism. Once enabled, the `promote` job
+# promotes every charm pinned by that branch's Terraform modules from /beta to /candidate, only
+# if all the solutions pass.
+#
+# One job runs the full solution test suite per solution, in these combinations:
+# - every deployment mode, on the default infrastructure (Juju 3.6, amd64);
+# - one mode (everything on), on every other supported Juju version,
+#   Kubernetes version and architecture.
 #
 # Called once per supported branch/track from quality-gates-candidate.yaml, so adding
 # a new track only requires adding an entry to that workflow's branch
@@ -19,7 +28,7 @@ on:
         required: true
         type: string
     secrets:
-      CHARMCRAFT_AUTH:
+      CHARMHUB_TOKEN:
         required: true
 
 jobs:
@@ -41,51 +50,133 @@ jobs:
           echo "solutions=$solutions" >> "$GITHUB_OUTPUT"
 
   test-solutions:
-    name: Test ${{ matrix.solution }}
+    name: Test ${{ matrix.solution }} (internal-tls=${{ matrix.internal-tls }}, external-ca=${{ matrix.external-ca }}, ingress=${{ matrix.ingress }}, juju=${{ matrix.juju-channel }}, k8s=${{ matrix.k8s-channel }}, arch=${{ matrix.arch }})
     needs: [discover-solutions]
     strategy:
       fail-fast: false
+      # Don't hoard the self-hosted runners.
+      max-parallel: 10
       matrix:
         solution: ${{ fromJson(needs.discover-solutions.outputs.solutions) }}
-    runs-on: ubuntu-latest
+        # Deployment modes
+        internal-tls: ["true", "false"]
+        external-ca: ["true", "false"]
+        ingress: ["true", "false"]
+        # Infrastructure: every mode runs on Juju 3.6, the rest only runs the mode with
+        # everything on (see `exclude`).
+        juju-channel: ["3.6/stable", "4/stable"]
+        k8s-channel: ["1.32-classic/stable"]
+        # TODO: Add arm64 back. The Terraform modules default every application to arch=amd64, and
+        # the pods of the units never start on the arm64 runners ("waiting: installing agent").
+        # Setting `arch=arm64` as the constraints of the models and applications did not fix it.
+        # Once it works, run arm64 in the mode with everything on only, as Juju 4 does.
+        arch: [amd64]
+        exclude:
+          # An external CA only signs the ingress's certificate.
+          - external-ca: "true"
+            ingress: "false"
+          # Juju 4 only runs the mode with everything on...
+          - juju-channel: "4/stable"
+            internal-tls: "false"
+          - juju-channel: "4/stable"
+            external-ca: "false"
+          - juju-channel: "4/stable"
+            ingress: "false"
+    # COS needs a larger runner than COS Lite
+    runs-on: self-hosted-linux-${{ matrix.arch }}-noble-${{ matrix.solution == 'cos' && 'xlarge' || 'large' }}
+    env:
+      JUJU_CHANNEL: ${{ matrix.juju-channel }}
+      K8S_CHANNEL: ${{ matrix.k8s-channel }}
+      RECORDING_FOLDER: /tmp/juju-lens-recordings
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           ref: ${{ inputs.branch }}
 
+      # https://documentation.ubuntu.com/self-hosted-runners/en/latest/usage/faq/how-to-setup-canonical-k8s/
+      - name: Prepare the runner for Canonical K8s
+        if: ${{ runner.environment == 'self-hosted' }}
+        run: |
+          sudo apt-get remove -y docker.io containerd
+          sudo rm -rf /run/containerd
+          # Removing dockerd leaves `iptables -P FORWARD DROP` behind, which
+          # blackholes all pod egress. MicroK8s used to reset this; CK8s does not.
+          sudo iptables -P FORWARD ACCEPT
+          sudo ip6tables -P FORWARD ACCEPT || true
+
       - name: Install dependencies
         run: |
           sudo snap install concierge --classic
-          sudo concierge prepare -p k8s --extra-snaps just,astral-uv,terraform
+          # FIXME: `snap install k8s` sometimes fails on the self-hosted runners with "download too
+          # slow", which fails the job before any test runs. Retry `concierge prepare` to get past
+          # it; drop the loop once the runners' downloads are reliable.
+          for attempt in 1 2 3; do
+            sudo concierge prepare -p k8s --juju-channel "$JUJU_CHANNEL" --k8s-channel "$K8S_CHANNEL" --extra-snaps just,astral-uv,terraform && break
+            [ "$attempt" -lt 3 ] || exit 1
+            sleep 30
+          done
           # Configure Cilium for Istio ambient service mesh compatibility
           sudo k8s kubectl patch configmap cilium-config -n kube-system --type merge -p '{"data":{"bpf-lb-sock-hostns-only":"true"}}'
           sudo k8s kubectl rollout restart daemonset/cilium -n kube-system
           sudo k8s kubectl rollout status daemonset/cilium -n kube-system --timeout=90s
 
+      - name: Install juju-lens
+        run: curl -fsSL https://raw.githubusercontent.com/lucabello/juju-lens/main/install.sh | sudo sh
+
+      - name: Start juju-lens recording
+        run: sudo juju-lens record "solution" --output "$RECORDING_FOLDER" --max-size 2147483648 --max-duration 3h --detach
+
       - name: Run solution tests
-        run: just solution test ${{ matrix.solution }}
+        run: just solution test ${{ matrix.solution }} --internal-tls=${{ matrix.internal-tls }} --external-ca=${{ matrix.external-ca }} --ingress=${{ matrix.ingress }}
 
-  promote:
-    name: Promote ${{ matrix.solution }}
-    needs: [discover-solutions, test-solutions]
-    strategy:
-      matrix:
-        solution: ${{ fromJson(needs.discover-solutions.outputs.solutions) }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.branch }}
-
-      - name: Install dependencies
+      - name: Stop juju-lens recording
+        if: ${{ always() }}
         run: |
-          sudo snap install terraform --classic
-          sudo snap install just --classic
-          sudo snap install charmcraft --classic
+          sudo juju-lens stop --timeout 120s --force "$RECORDING_FOLDER" || true
+          sudo chown -R "$USER" "$RECORDING_FOLDER" || true
 
-      - name: Promote
+      - name: Compute juju-lens artifact name
+        id: lens-name
+        if: ${{ failure() }}
         env:
-          CHARMCRAFT_AUTH: ${{ secrets.CHARMCRAFT_AUTH }}
-        run: just solution promote ${{ matrix.solution }} ${{ inputs.branch }}
+          BRANCH: ${{ inputs.branch }}
+        run: echo "name=juju-lens-${BRANCH//\//-}-${{ matrix.solution }}-internal-tls-${{ matrix.internal-tls }}-external-ca-${{ matrix.external-ca }}-ingress-${{ matrix.ingress }}-juju-${JUJU_CHANNEL//\//-}-k8s-${K8S_CHANNEL//\//-}-${{ matrix.arch }}" >> "$GITHUB_OUTPUT"
+
+      - name: Upload juju-lens recording
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: ${{ steps.lens-name.outputs.name }}
+          path: ${{ env.RECORDING_FOLDER }}
+          retention-days: 3
+          if-no-files-found: warn
+
+  # FIXME: Promotion is disabled until the solution tests are stable and the failures they uncover
+  # in the charms are fixed. Until then, promotions happen through the already-existing time-based
+  # mechanism. Uncomment this job once the tests are stable.
+  # promote:
+  #   name: Promote ${{ matrix.solution }}
+  #   needs: [discover-solutions, test-solutions]
+  #   # A pull_request-triggered run only tests the branch; it never promotes.
+  #   if: github.event_name != 'pull_request'
+  #   strategy:
+  #     matrix:
+  #       solution: ${{ fromJson(needs.discover-solutions.outputs.solutions) }}
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #       with:
+  #         ref: ${{ inputs.branch }}
+  #
+  #     - name: Install dependencies
+  #       run: |
+  #         sudo snap install terraform --classic
+  #         sudo snap install just --classic
+  #         sudo snap install charmcraft --classic
+  #
+  #     - name: Promote
+  #       env:
+  #         CHARMCRAFT_AUTH: ${{ secrets.CHARMHUB_TOKEN }}
+  #       run: just solution promote ${{ matrix.solution }} ${{ inputs.branch }}

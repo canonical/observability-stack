@@ -28,31 +28,49 @@ From the repo root:
 just solution test cos-lite   # or: cos
 ```
 
-This will:
-
-1. `terraform init` and `terraform apply` the solution's Terraform wrapper module
-   (`tests/solution/<name>/terraform/`), deploying it into a new model on the current controller.
-2. Run that solution's `pytest-bdd` scenario (`tests/solution/<name>/test_solution.py`), which
-   connects to the model Terraform just created and waits for it to become active/idle.
+This first `terraform init`s and `terraform apply`s the solution's Terraform wrapper module
+(`tests/solution/<name>/terraform/`) into a new model on the current controller, then runs that
+solution's `pytest-bdd` scenarios (`tests/solution/<name>/test_solution.py`) against it. pytest
+itself deploys nothing.
 
 The Terraform module is *not* destroyed automatically afterwards (so you can inspect a failure).
-Clean up when you're done:
+In CI, a failed job uploads a [juju-lens](https://github.com/lucabello/juju-lens) recording of
+the run as an artifact. Clean up when you're done:
 
 ```bash
 terraform -chdir=tests/solution/cos-lite/terraform destroy -auto-approve
 ```
 
-### Running against an already-deployed model
+In `external-ca=true` mode this same command also tears down the external-CA model, since
+it lives in the same Terraform state as the solution model.
 
-The `given` step (`the solution has been deployed`, defined in `steps/common_steps.py`) can skip
-discovering a model from Terraform output entirely: set `SOLUTION_MODEL` (optionally
-`<controller>:<model>`) and it's used as-is. This lets an external suite that deploys a solution
-some other way reuse these same steps against its own model:
+### Running a specific mode
+
+`--internal-tls`, `--external-ca`, and `--ingress` (`true`, `false`) select the deployment
+shape, and are passed to the Terraform wrapper. `just --usage solution test` lists them with their
+defaults. Arguments after `--` go to pytest:
+
+```bash
+just solution test cos-lite --internal-tls=false --external-ca=true --ingress=true -- -k tls
+```
+
+`--external-ca=true` with `--ingress=false` is rejected before anything gets deployed:
+without ingress the product module leaves the external-CA wiring as a no-op, so the combination
+has nothing to assert.
+
+### Running against another model
+
+The tests look for the solution in the model named after its directory (`cos-lite`, `cos`), which
+is what its Terraform wrapper deploys into. Set `SOLUTION_MODEL` (optionally
+`<controller>:<model>`) to use another model:
 
 ```bash
 cd tests/solution
 SOLUTION_MODEL="microk8s-localhost:cos-lite" uv run --frozen --isolated pytest -vv --capture=no cos-lite
 ```
+
+The mode is always read from the Terraform wrapper's outputs, so its state must be there: the
+tests only run against a deployment made by `just solution test` (or by applying the wrapper).
 
 ## Adding a new scenario
 
@@ -73,17 +91,22 @@ Step definitions live in `steps/`, grouped by the domain concept they talk about
 `steps/deployment.py`, `steps/telemetry.py`, `steps/grafana.py`) rather than by the feature file
 that uses them. Register new modules in `conftest.py`'s `pytest_plugins`.
 
+The mode is stated in the scenario, not read from it: a `Given the solution is deployed with
+internal TLS` (see `steps/deployment.py`) skips the scenario when the deployment is in another
+mode, so the scenarios' steps don't need to branch on it.
+
 ### Talking to workloads
 
 Assertions against running workloads go through
-[observability-clients](https://pypi.org/project/observability-clients/) fixtures in `clients.py`,
-built lazily for each workload. Only
-add retries where data genuinely trails active/idle (e.g. the first Prometheus scrape).
+[observability-clients](https://pypi.org/project/observability-clients/) fixtures in
+`steps/clients.py`, which route through Traefik when the component has an ingress. Only
+add retries where data genuinely trails active/idle (e.g. the first Prometheus scrape): put
+tenacity's `retry` on the step itself, as `steps/telemetry.py` does.
 
 ## Adding a new solution
 
 1. Create `tests/solution/<name>/terraform/main.tf` wrapping `terraform/<name>`, and
-   `outputs.tf` exposing `model_name`.
+   an `outputs.tf` with the same outputs as the existing solutions (the steps read them).
 2. Add an empty `tests/solution/<name>/__init__.py`.
 3. Add `tests/solution/<name>/features/` with that solution's own scenarios.
 4. Add `tests/solution/<name>/test_solution.py` containing:

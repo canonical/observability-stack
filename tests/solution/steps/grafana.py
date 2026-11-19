@@ -2,6 +2,11 @@
 
 from observability_clients import Grafana
 from pytest_bdd import parsers, then
+from tenacity import retry, stop_after_delay, wait_fixed
+
+# A backend restarting (e.g. to reload a rotated certificate) answers Grafana's health check
+# with errors for a moment, even once the model is active/idle.
+_until_healthy = retry(wait=wait_fixed(10), stop=stop_after_delay(60 * 2), reraise=True)
 
 
 @then(parsers.parse('Grafana has a dashboard from the "{charm}" charm'))
@@ -28,6 +33,7 @@ def grafana_has_a_datasource_for(grafana: Grafana, application: str) -> dict:
 
 
 @then("that datasource is healthy")
+@_until_healthy
 def that_datasource_is_healthy(grafana: Grafana, datasource: dict):
     assert grafana.is_datasource_healthy(uid=datasource["uid"]), (
         f"Grafana datasource '{datasource['name']}' is not healthy"

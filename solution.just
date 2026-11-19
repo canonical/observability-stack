@@ -8,20 +8,35 @@ uv_flags := "--frozen --isolated"
 @default:
   just --list solution
 
-# Deploys into whichever Juju controller is currently active -- `juju switch`
-# to the intended one first.
-# Init/apply a solution's Terraform module, then run its solution test suite.
+# Apply a solution's Terraform wrapper in the given mode, then run its tests against it
+[arg("internal_tls", long="internal-tls", pattern="true|false", help="Encrypt the traffic between the components")]
+[arg("external_ca", long="external-ca", pattern="true|false", help="Terminate TLS in the ingress with an external CA; needs --ingress=true")]
+[arg("ingress", long="ingress", pattern="true|false", help="Deploy the ingress")]
 [group("test")]
 [working-directory("./tests/solution")]
-test solution="cos-lite":
+test solution="cos-lite" internal_tls="true" external_ca="false" ingress="true" *pytest_args:
   #!/usr/bin/env bash
+  # Deploys into whichever Juju controller is currently active -- `juju switch`
+  # to the intended one first. Arguments after `--` go to pytest.
   set -euo pipefail
   echo "==> Testing solution: {{solution}}"
   juju whoami
   if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
-  $terraform -chdir="{{solution}}/terraform" init -upgrade
-  $terraform -chdir="{{solution}}/terraform" apply -auto-approve
-  uv run ${uv_flags} pytest -vv -ra --capture=no "{{solution}}"
+  if [ "{{external_ca}}" = "true" ] && [ "{{ingress}}" = "false" ]; then
+    echo "ERROR: --external-ca=true needs --ingress=true: the external CA only signs the ingress's certificate."
+    exit 1
+  fi
+
+  vars=(-var "internal_tls={{internal_tls}}" -var "external_ca={{external_ca}}")
+  if [ "{{ingress}}" = "false" ]; then
+    vars+=(-var-file "$(cd ../.. && pwd)/terraform/{{solution}}/presets/no-ingress.tfvars")
+  fi
+
+  tf=("${terraform}" -chdir="{{solution}}/terraform")
+  "${tf[@]}" init -upgrade
+  # Apply is idempotent, so retry once to get past transient errors.
+  "${tf[@]}" apply -auto-approve "${vars[@]}" || "${tf[@]}" apply -auto-approve "${vars[@]}"
+  uv run ${uv_flags} pytest -vv -ra --capture=no "{{solution}}" {{pytest_args}}
 
 # Promote every charm in a solution from /beta to /candidate
 [group("promote")]
