@@ -228,6 +228,6 @@ You should see a successful query response with log entries from the
 - For more ways to send logs into Loki, including cross-model relations and
   direct Promtail or OpenTelemetry Collector clients, see
   [How to send logs to Loki on Juju](../integrate/send-logs-to-loki).
-- To grow this into a full Canonical Observability Stack with Grafana, Mimir,
+- To grow this into a full Canonical Observability Stack with Grafana, Mimir, Loki,
   Alertmanager, and correlated telemetry, see
   [Getting started with COS on Canonical K8s](/tutorial/cos-canonical-k8s-sandbox).
