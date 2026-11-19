@@ -14,7 +14,8 @@ mimir_worker = {
   read_units    = 1
   write_units   = 1
 }
-tempo_coordinator = { units = 1 }
+opentelemetry_collector = { units = 1 }
+tempo_coordinator       = { units = 1 }
 tempo_worker = {
   compactor_units         = 1
   distributor_units       = 1
@@ -23,3 +24,4 @@ tempo_worker = {
   querier_units           = 1
   query_frontend_units    = 1
 }
+traefik = { units = 1 }
