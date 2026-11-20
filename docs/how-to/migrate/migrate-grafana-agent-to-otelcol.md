@@ -45,11 +45,31 @@ juju deploy opentelemetry-collector-k8s otelcol --channel 2/stable
 
 ### Inspect grafana-agent integrations, and replicate them for the otelcol collector
 
-```{note}
-- Some relation endpoints have slightly different names, for clarity:
-  - `logging-consumer` is now `send-loki-logs`
-  - `grafana-cloud-config` is now `cloud-config`
-```
+Some relation endpoints have different names in the OpenTelemetry Collector charms. In all cases the interface and the role (`requires`/`provides`) are unchanged, so only the endpoint name needs to be updated when re-creating the integrations.
+
+Machine model (`grafana-agent` → `opentelemetry-collector`):
+
+| `grafana-agent` endpoint | `opentelemetry-collector` endpoint | Interface | Role |
+|:-------------------------|:----------------------------------|:----------|:-----|
+| `certificates`           | `receive-server-cert`             | `tls-certificates` | requires |
+| `logging-consumer`       | `send-loki-logs`                  | `loki_push_api` | requires |
+| `grafana-cloud-config`   | `cloud-config`                   | `grafana_cloud_config` | requires |
+| `tracing`                | `send-traces`                    | `tracing` | requires |
+
+All other endpoints (`juju-info`, `cos-agent`, `send-remote-write`, `receive-ca-cert` and `grafana-dashboards-provider`) keep their names.
+
+Kubernetes model (`grafana-agent-k8s` → `opentelemetry-collector-k8s`):
+
+| `grafana-agent-k8s` endpoint | `opentelemetry-collector-k8s` endpoint | Interface | Role |
+|:----------------------------|:---------------------------------------|:----------|:-----|
+| `certificates`              | `receive-server-cert`                  | `tls-certificates` | requires |
+| `logging-consumer`          | `send-loki-logs`                      | `loki_push_api` | requires |
+| `grafana-cloud-config`      | `cloud-config`                         | `grafana_cloud_config` | requires |
+| `tracing`                   | `send-traces`                          | `tracing` | requires |
+| `logging-provider`          | `receive-loki-logs`                   | `loki_push_api` | provides |
+| `tracing-provider`          | `receive-traces`                       | `tracing` | provides |
+
+All other endpoints (`send-remote-write`, `metrics-endpoint`, `grafana-dashboards-consumer`, `receive-ca-cert` and `grafana-dashboards-provider`) keep their names.
 
 The best way is to copy the workload charm relation endpoint that was connected to `grafana-agent`
 
