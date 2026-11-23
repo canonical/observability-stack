@@ -25,8 +25,8 @@ This solution is intended to be:
 
 For step-by-step instructions, see:
 
-- [Use Charmed Pyroscope](/docs/how-to/integrate/use-charmed-pyroscope.md): Deploy Charmed Pyroscope, configure TLS, and integrate workloads through the `profiling` interface.
-- [Migrate Charmed Pyroscope from v1 to v2](/docs/how-to/integrate/migrate-charmed-pyroscope-v1-to-v2.md): Migrate an existing Charmed Pyroscope deployment from v1 to v2.
+- [Use Charmed Pyroscope](/how-to/integrate/use-charmed-pyroscope.md): Deploy Charmed Pyroscope, configure TLS, and integrate workloads through the `profiling` interface.
+- [Migrate Charmed Pyroscope from v1 to v2](/how-to/integrate/migrate-charmed-pyroscope-v1-to-v2.md): Migrate an existing Charmed Pyroscope deployment from v1 to v2.
 
 ## Pyroscope Coordinator Charm
 

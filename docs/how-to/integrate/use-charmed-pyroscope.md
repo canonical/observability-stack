@@ -15,8 +15,8 @@ This page covers:
 ## How to deploy Charmed Pyroscope
 
 Charmed Pyroscope consists of two charms: 
-- [`pyroscope-coordinator-k8s`](/docs/explanation/architecture/peripheral-charms/charmed-pyroscope-ha.md#pyroscope-coordinator-charm), responsible for the ingress and cluster coordination;
-- [`pyroscope-worker-k8s`](/docs/explanation/architecture/peripheral-charms/charmed-pyroscope-ha.md#pyroscope-worker-charm), which runs the actual workloads. 
+- [`pyroscope-coordinator-k8s`](/explanation/architecture/peripheral-charms/charmed-pyroscope-ha.md#pyroscope-coordinator-charm), responsible for the ingress and cluster coordination;
+- [`pyroscope-worker-k8s`](/explanation/architecture/peripheral-charms/charmed-pyroscope-ha.md#pyroscope-worker-charm), which runs the actual workloads. 
 
 *Requirements*: Pyroscope requires an object storage backend (such as Ceph). Typically, that will be through the `s3-integrator` charm.
 
@@ -135,12 +135,12 @@ If not, refer to the [How to deploy Charmed Pyroscope](#how-to-deploy-charmed-py
 
 ### If the application is charmed
 
-Charms can integrate with [`pyroscope-coordinator-k8s`](/docs/explanation/architecture/peripheral-charms/charmed-pyroscope-ha.md#pyroscope-coordinator-charm) (or [`opentelemetry-collector`](https://charmhub.io/opentelemetry-collector)) over the `profiling` interface to receive an endpoint URL where they can push profiles to using the `otlp-grpc` format.
+Charms can integrate with [`pyroscope-coordinator-k8s`](/explanation/architecture/peripheral-charms/charmed-pyroscope-ha.md#pyroscope-coordinator-charm) (or [`opentelemetry-collector`](https://charmhub.io/opentelemetry-collector)) over the `profiling` interface to receive an endpoint URL where they can push profiles to using the `otlp-grpc` format.
 
 See the [`profiling` charm library docs](https://charmhub.io/pyroscope-coordinator-k8s/libraries/profiling) for exhaustive usage and API documentation.
 
 ### If the application is not charmed
 
-Uncharmed applications can be configured to send profiles directly to a [`pyroscope-coordinator-k8s`](/docs/explanation/architecture/peripheral-charms/charmed-pyroscope-ha.md#pyroscope-coordinator-charm) application (or `opentelemtry-collector`) by using their juju-managed addresses directly.
+Uncharmed applications can be configured to send profiles directly to a [`pyroscope-coordinator-k8s`](/explanation/architecture/peripheral-charms/charmed-pyroscope-ha.md#pyroscope-coordinator-charm) application (or `opentelemtry-collector`) by using their juju-managed addresses directly.
 
-For example if you have a model where the [`pyroscope-coordinator-k8s`](/docs/explanation/architecture/peripheral-charms/charmed-pyroscope-ha.md#pyroscope-coordinator-charm) application is available at `<IP address>`, you can manually configure your application to send profiles to `<IP address>:8080`.
+For example if you have a model where the [`pyroscope-coordinator-k8s`](/explanation/architecture/peripheral-charms/charmed-pyroscope-ha.md#pyroscope-coordinator-charm) application is available at `<IP address>`, you can manually configure your application to send profiles to `<IP address>:8080`.
