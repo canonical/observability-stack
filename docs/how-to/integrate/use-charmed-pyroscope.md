@@ -26,7 +26,7 @@ There is a Terraform module that can be used to deploy Pyroscope in [the Pyrosco
 
 #### Prerequisites
 
-Before applying the Terraform plan, ensure that you have an S3-compatible object storage ready together with an endpoint it can be reached over. The following example uses the `s3-integrator charm`, deployed in the same model to configure access to the object storage. Its application IP (`http://10.152.183.18:9000`) is used as the S3 endpoint URL. *Ceph* can also be used as the object-storage backend in this example.
+Before applying the Terraform plan, ensure that you have an S3-compatible object storage ready together with an endpoint it can be reached over. The following example uses the `s3-integrator charm`, deployed in the same model to configure access to the object storage. Its application IP (`http://10.152.183.18:9000`) is used as the S3 endpoint URL.
 
 #### Deployment 
 
