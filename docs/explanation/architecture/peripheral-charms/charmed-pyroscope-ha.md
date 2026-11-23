@@ -1,75 +1,68 @@
 ---
 myst:
   html_meta:
-    description: "How Charmed Pyroscope HA manages Grafana Pyroscope and works with COS for continuous profiling."
+    description: "How Charmed Pyroscope manages Grafana Pyroscope and works with COS for continuous profiling."
 ---
 
-(charmed-pyroscope-ha)=
+# Charmed Pyroscope
 
-# Charmed Pyroscope HA
-
-Charmed Pyroscope HA is a solution that handles deployment, scaling, and Day 2 operations specific to [Grafana Pyroscope](https://grafana.com/oss/tempo/), a distributed continuous profiling backend by Grafana Labs.
+Charmed Pyroscope is a solution that handles deployment, scaling, and Day 2 operations specific to [Grafana Pyroscope](https://grafana.com/oss/pyroscope/), a distributed continuous profiling backend by Grafana Labs.
 
 The solution consists of two charms which have distinct responsibilities:
 
--  [`pyroscope-coordinator-k8s`](#pyroscope-coordinator-charm): ingress, cluster coordination, single integration facade
--  [`pyroscope-worker-k8s`](#pyroscope-worker-charm): run one or more Pyroscope application components
+-  [`pyroscope-coordinator-k8s`](#pyroscope-coordinator-charm): ingress, cluster coordination, single integration facade;
+-  [`pyroscope-worker-k8s`](#pyroscope-worker-charm): run one or more Pyroscope application components.
 
-Together, these two charms drive the Grafana Pyroscope application, and can be composed with other operators to deliver a complex application or service. In particular, you can integrate the coordinator charm with [COS](https://documentation.ubuntu.com/observability/) to collect and visualise continuous profiling data, enhancing your observability toolkit.
+Together, these two charms drive the Grafana Pyroscope application, and can be composed with other operators to deliver a complex application or service. In particular, you can integrate the coordinator charm with **COS** to collect and visualise continuous profiling data, enhancing your observability toolkit.
 
 Grafana Pyroscope allows you to aggregate continuous profiling data from all your charmed applications with high availability, multi-tenancy, and durable storage.
 
 This solution is intended to be:
-- used together with [`grafana-k8s`](https://charmhub.io/grafana-k8s).
+- used together with [`grafana-k8s`](https://charmhub.io/grafana-k8s);
 - used with other charms that will push their profiles into it for storage and querying.
 
 ## Related how-to guides
 
 For step-by-step instructions, see:
 
-- [Use Charmed Pyroscope](../../../how-to/integrate/use-charmed-pyroscope.md): Deploy Charmed Pyroscope, configure TLS, and integrate workloads through the `profiling` interface.
-- [Migrate Charmed Pyroscope from v1 to v2](../../../how-to/integrate/migrate-charmed-pyroscope-v1-to-v2.md): Migrate an existing Charmed Pyroscope deployment from v1 to v2.
+- [Use Charmed Pyroscope](/docs/how-to/integrate/use-charmed-pyroscope.md): Deploy Charmed Pyroscope, configure TLS, and integrate workloads through the `profiling` interface.
+- [Migrate Charmed Pyroscope from v1 to v2](/docs/how-to/integrate/migrate-charmed-pyroscope-v1-to-v2.md): Migrate an existing Charmed Pyroscope deployment from v1 to v2.
 
 ## Pyroscope Coordinator Charm
 
-`pyroscope-coordinator-k8s` is a charm that, in conjunction with the [`pyroscope-worker-k8s` charm](#pyroscope-worker-charm), deploys and operates [Grafana Pyroscope](https://grafana.com/oss/pyroscope/), a continuous profiling backend by Grafana Labs.
-
-This charm, together with one or multiple worker charms, handles deployment, scaling, configuration, and Day 2 operations specific to Grafana Pyroscope.
+`pyroscope-coordinator-k8s` is the coordinator for a distributed Grafana Pyroscope deployment.
 
 This operator is the main entry point to the distributed Pyroscope deployment. It is responsible for configuring the worker nodes and runs an Nginx instance to provide an unified access point to all incoming traffic.
 
 ```{important}
-This charm must be deployed alongside its counterpart to function correctly; it is not functional on its own.
+This charm must be deployed alongside at least one Pyroscope worker charm to function correctly; it is not functional on its own.
 ```
 
 This charm is intended to be:
-- used together with the [`pyroscope-worker-k8s` charm](#pyroscope-worker-charm).
-- deployed on top of a [COS Lite bundle](https://charmhub.io/cos-lite) to extend it with continuous profiling.
+- used together with the [`pyroscope-worker-k8s` charm](#pyroscope-worker-charm);
+- deployed alongside **COS** or **COS Lite** to extend the observability stack with continuous profiling capabilities.
 
 ## Pyroscope Worker Charm
 
-`pyroscope-worker-k8s` is a charm that, in conjunction with the [`pyroscope-coordinator-k8s` charm](#pyroscope-coordinator-charm), deploys and operates [Grafana Pyroscope](https://grafana.com/oss/pyroscope/), a continuous profiling backend by Grafana Labs.
+`pyroscope-worker-k8s` runs Pyroscope application components as configured by the [`pyroscope-coordinator-k8s` charm](#pyroscope-coordinator-charm)
 
-This charm, together with a coordinator application, handles deployment, scaling, configuration, and Day 2 operations specific to Grafana Pyroscope.
-
-This operator is responsible for running and operating a single instance of the main `pyroscope` process. It is responsible for applying the configuration generated by the coordinator and monitor the status of the process.
+This operator is responsible for running and operating a single instance of the main `pyroscope` process. It also applies the configuration generated by the coordinator and monitors the process status.
  
 A `pyroscope-worker-k8s` application will coordinate with other worker applications, mediated by their shared connection to a `pyroscope-coordinator-k8s` instance, to run a Grafana Pyroscope cluster.
 
-
 ```{important}
-This charm only works in conjunction with its counterpart, and, when deployed in isolation, is not functional.
+This charm only works in conjunction with the coordinator charm and is not functional when deployed in isolation.
 ```
 
 This charm is intended to be:
-- used together with the [`pyroscope-coordinator-k8s` charm](#pyroscope-coordinator-charm).
-- deployed on top of a [COS Lite bundle](https://charmhub.io/cos-lite) to extend it with continuous profiling.
+- used together with the [`pyroscope-coordinator-k8s` charm](#pyroscope-coordinator-charm);
+- deployed alongside **COS** or **COS Lite** to extend the observability stack with continuous profiling capabilities.
 
 ## Charmed Pyroscope ingress model
 
 Pyroscope accepts http traffic (e.g. to serve the UI) and grpc traffic (to ingest profiles) on the same port (4040).
 
-We couldn't find a clean way to implement the same behaviour using traefik's `ingress` or `ingress-per-unit` primitives, and nginx didn't seem to support this nicely either.
+Due to functional limitations in Traefik and Nginx, the same behaviour cannot be cleanly implemented using Traefik's `ingress` or `ingress-per-unit` primitives, or through Nginx alone.
 
 Therefore, we chose to split the incoming traffic into two streams: an http route for http requests, and a grpc route for all grpc traffic. The nginx workload deployed by the coordinator charm will `proxy_pass/grpc_pass` both streams to the same port on the worker node(s).
 
@@ -91,12 +84,11 @@ Where the prefix is `<model-name>-<coordinator-app-name>`.
 
 ### Example
 
-So if you have a deployment like:
+If you have a deployment like:
 
 ```
 Unit                 Workload  Agent  Address       Ports          Message
 graf/0*              active    idle   10.1.232.148  
-minio/0*             active    idle   10.1.232.177  9000-9001/TCP
 pyroscope-worker/0*  active    idle   10.1.232.155                 (all roles) ready.
 pyroscope/0*         active    idle   10.1.232.153                 Degraded.
 s3-integrator/0*     active    idle   10.1.232.176  
