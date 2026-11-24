@@ -29,6 +29,45 @@
         "x": 0,
         "y": 0
       },
+      "id": 192,
+      "panels": [],
+      "title": "Setup",
+      "type": "row"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 171,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<div style=\"\n  background-color: rgba(255, 152, 48, 0.18);\n  border: 2px solid #ff9830;\n  border-radius: 6px;\n  padding: 16px;\n  text-align: center;\n  color: #ff9830;\n  font-size: 22px;\n  font-weight: bold;\n  letter-spacing: 0.5px;\n\">\n  \u26a0\ufe0f Set the \"COS model\" variable for your deployment. This dashboard is synced from git, so make changes in the source JSON and remove this row once your deployment is configured.\n</div>",
+        "mode": "html"
+      },
+      "pluginVersion": "12.4.2",
+      "title": "",
+      "transparent": true,
+      "type": "text"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
       "id": 190,
       "panels": [],
       "title": "High availability (COS model only)",
@@ -74,8 +113,7 @@
               }
             ]
           },
-          "unit": "short",
-          "noValue": "Set the COS model"
+          "unit": "short"
         },
         "overrides": []
       },
@@ -83,7 +121,7 @@
         "h": 6,
         "w": 8,
         "x": 0,
-        "y": 1
+        "y": 5
       },
       "id": 180,
       "options": {
@@ -107,7 +145,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "((count(count by (juju_application) (up{juju_model=~\"$cos_model\",juju_application=~\"mimir-.*|loki-.*|tempo-.*|alertmanager|traefik|grafana|otelcol|opentelemetry-collector\"}) < 2) or vector(0)) > bool 0) and on() (count(up{juju_model=~\"$cos_model\"}) > bool 0)",
+          "expr": "(count(count by (juju_application) (up{juju_model=~\"$cos_model\",juju_application=~\"mimir.*|loki.*|tempo.*|alertmanager|traefik|grafana|otelcol|opentelemetry-collector\"}) < 2) or vector(0)) > bool 0",
           "instant": true,
           "legendFormat": "{{juju_application}}",
           "range": false,
@@ -140,7 +178,7 @@
             "inspect": false
           },
           "mappings": [],
-          "noValue": "Set the COS model, or all scaled",
+          "noValue": "All scaled",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -193,7 +231,7 @@
         "h": 6,
         "w": 8,
         "x": 8,
-        "y": 1
+        "y": 5
       },
       "id": 181,
       "options": {
@@ -264,7 +302,7 @@
               "type": "value"
             }
           ],
-          "noValue": "Set the COS model",
+          "noValue": "All reporting",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -286,7 +324,7 @@
         "h": 6,
         "w": 8,
         "x": 16,
-        "y": 1
+        "y": 5
       },
       "id": 182,
       "options": {
@@ -310,7 +348,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "(count(up{juju_model=~\"$cos_model\",juju_application=~\"mimir-.*|loki-.*|tempo-.*|alertmanager|traefik|grafana|otelcol|opentelemetry-collector\"} == 0) or vector(0)) and on() (count(up{juju_model=~\"$cos_model\"}) > bool 0)",
+          "expr": "count(up{juju_model=~\"$cos_model\",juju_application=~\"mimir.*|loki.*|tempo.*|alertmanager|traefik|grafana|otelcol|opentelemetry-collector\"} == 0) or vector(0)",
           "instant": true,
           "legendFormat": "units not reporting",
           "range": false,
@@ -326,7 +364,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 7
+        "y": 11
       },
       "id": 151,
       "panels": [],
@@ -342,7 +380,7 @@
         "h": 2,
         "w": 24,
         "x": 0,
-        "y": 8
+        "y": 12
       },
       "id": 152,
       "options": {
@@ -368,7 +406,7 @@
         "h": 2,
         "w": 24,
         "x": 0,
-        "y": 10
+        "y": 14
       },
       "id": 173,
       "options": {
@@ -549,7 +587,7 @@
         "h": 9,
         "w": 8,
         "x": 0,
-        "y": 12
+        "y": 16
       },
       "id": 153,
       "options": {
@@ -674,8 +712,7 @@
               }
             ]
           },
-          "unit": "short",
-          "noValue": "Set the COS model"
+          "unit": "short"
         },
         "overrides": [
           {
@@ -782,7 +819,7 @@
         "h": 9,
         "w": 8,
         "x": 8,
-        "y": 12
+        "y": 16
       },
       "id": 186,
       "options": {
@@ -969,7 +1006,7 @@
         "h": 9,
         "w": 8,
         "x": 16,
-        "y": 12
+        "y": 16
       },
       "id": 156,
       "options": {
@@ -1025,7 +1062,7 @@
         "h": 2,
         "w": 24,
         "x": 0,
-        "y": 21
+        "y": 25
       },
       "id": 174,
       "options": {
@@ -1206,7 +1243,7 @@
         "h": 9,
         "w": 8,
         "x": 0,
-        "y": 23
+        "y": 27
       },
       "id": 141,
       "options": {
@@ -1331,8 +1368,7 @@
               }
             ]
           },
-          "unit": "short",
-          "noValue": "Set the COS model"
+          "unit": "short"
         },
         "overrides": [
           {
@@ -1439,7 +1475,7 @@
         "h": 9,
         "w": 8,
         "x": 8,
-        "y": 23
+        "y": 27
       },
       "id": 187,
       "options": {
@@ -1626,7 +1662,7 @@
         "h": 9,
         "w": 8,
         "x": 16,
-        "y": 23
+        "y": 27
       },
       "id": 137,
       "options": {
@@ -1682,7 +1718,7 @@
         "h": 2,
         "w": 24,
         "x": 0,
-        "y": 32
+        "y": 36
       },
       "id": 175,
       "options": {
@@ -1863,7 +1899,7 @@
         "h": 9,
         "w": 8,
         "x": 0,
-        "y": 34
+        "y": 38
       },
       "id": 183,
       "options": {
@@ -1988,8 +2024,7 @@
               }
             ]
           },
-          "unit": "short",
-          "noValue": "Set the COS model"
+          "unit": "short"
         },
         "overrides": [
           {
@@ -2096,7 +2131,7 @@
         "h": 9,
         "w": 8,
         "x": 8,
-        "y": 34
+        "y": 38
       },
       "id": 188,
       "options": {
@@ -2283,7 +2318,7 @@
         "h": 9,
         "w": 8,
         "x": 16,
-        "y": 34
+        "y": 38
       },
       "id": 185,
       "options": {
@@ -2336,7 +2371,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 43
+        "y": 47
       },
       "id": 135,
       "panels": [],
@@ -2434,7 +2469,7 @@
         "h": 8,
         "w": 6,
         "x": 0,
-        "y": 44
+        "y": 48
       },
       "id": 124,
       "options": {
@@ -2573,7 +2608,7 @@
         "h": 8,
         "w": 6,
         "x": 6,
-        "y": 44
+        "y": 48
       },
       "id": 123,
       "options": {
@@ -2712,7 +2747,7 @@
         "h": 8,
         "w": 6,
         "x": 12,
-        "y": 44
+        "y": 48
       },
       "id": 107,
       "options": {
@@ -2873,7 +2908,7 @@
         "h": 8,
         "w": 6,
         "x": 18,
-        "y": 44
+        "y": 48
       },
       "id": 121,
       "options": {
@@ -3018,7 +3053,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 52
+        "y": 56
       },
       "id": 132,
       "options": {
@@ -3116,7 +3151,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 52
+        "y": 56
       },
       "id": 106,
       "options": {
@@ -3269,7 +3304,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 60
+        "y": 64
       },
       "id": 101,
       "options": {
@@ -3408,7 +3443,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 60
+        "y": 64
       },
       "id": 213,
       "options": {
@@ -3462,7 +3497,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 68
+        "y": 72
       },
       "id": 100,
       "panels": [],
@@ -3495,8 +3530,7 @@
               }
             ]
           },
-          "unit": "short",
-          "noValue": "Set the COS model"
+          "unit": "short"
         },
         "overrides": []
       },
@@ -3504,7 +3538,7 @@
         "h": 8,
         "w": 6,
         "x": 0,
-        "y": 69
+        "y": 73
       },
       "id": 113,
       "options": {
@@ -3605,8 +3639,7 @@
               }
             ]
           },
-          "unit": "bytes",
-          "noValue": "Set the COS model"
+          "unit": "bytes"
         },
         "overrides": []
       },
@@ -3614,7 +3647,7 @@
         "h": 8,
         "w": 18,
         "x": 6,
-        "y": 69
+        "y": 73
       },
       "id": 111,
       "options": {
@@ -3657,7 +3690,7 @@
         "h": 2,
         "w": 24,
         "x": 0,
-        "y": 77
+        "y": 81
       },
       "id": 210,
       "options": {
@@ -3729,8 +3762,7 @@
               }
             ]
           },
-          "unit": "short",
-          "noValue": "Set the COS model"
+          "unit": "short"
         },
         "overrides": []
       },
@@ -3738,7 +3770,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 79
+        "y": 83
       },
       "id": 203,
       "options": {
@@ -3824,8 +3856,7 @@
               }
             ]
           },
-          "unit": "short",
-          "noValue": "Set the COS model"
+          "unit": "short"
         },
         "overrides": []
       },
@@ -3833,7 +3864,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 79
+        "y": 83
       },
       "id": 204,
       "options": {
@@ -3919,8 +3950,7 @@
               }
             ]
           },
-          "unit": "short",
-          "noValue": "Set the COS model"
+          "unit": "short"
         },
         "overrides": []
       },
@@ -3928,7 +3958,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 79
+        "y": 83
       },
       "id": 205,
       "options": {
@@ -3968,7 +3998,7 @@
         "h": 2,
         "w": 24,
         "x": 0,
-        "y": 87
+        "y": 91
       },
       "id": 211,
       "options": {
@@ -4040,8 +4070,7 @@
               }
             ]
           },
-          "unit": "short",
-          "noValue": "Set the COS model"
+          "unit": "short"
         },
         "overrides": []
       },
@@ -4049,7 +4078,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 89
+        "y": 93
       },
       "id": 200,
       "options": {
@@ -4135,8 +4164,7 @@
               }
             ]
           },
-          "unit": "short",
-          "noValue": "Set the COS model"
+          "unit": "short"
         },
         "overrides": []
       },
@@ -4144,7 +4172,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 89
+        "y": 93
       },
       "id": 201,
       "options": {
@@ -4230,8 +4258,7 @@
               }
             ]
           },
-          "unit": "short",
-          "noValue": "Set the COS model"
+          "unit": "short"
         },
         "overrides": []
       },
@@ -4239,7 +4266,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 89
+        "y": 93
       },
       "id": 202,
       "options": {
@@ -4279,7 +4306,7 @@
         "h": 2,
         "w": 24,
         "x": 0,
-        "y": 97
+        "y": 101
       },
       "id": 212,
       "options": {
@@ -4351,8 +4378,7 @@
               }
             ]
           },
-          "unit": "short",
-          "noValue": "Set the COS model"
+          "unit": "short"
         },
         "overrides": []
       },
@@ -4360,7 +4386,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 99
+        "y": 103
       },
       "id": 206,
       "options": {
@@ -4446,8 +4472,7 @@
               }
             ]
           },
-          "unit": "bytes",
-          "noValue": "Set the COS model"
+          "unit": "bytes"
         },
         "overrides": []
       },
@@ -4455,7 +4480,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 99
+        "y": 103
       },
       "id": 207,
       "options": {
@@ -4541,8 +4566,7 @@
               }
             ]
           },
-          "unit": "short",
-          "noValue": "Set the COS model"
+          "unit": "short"
         },
         "overrides": []
       },
@@ -4550,7 +4574,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 99
+        "y": 103
       },
       "id": 208,
       "options": {
@@ -4597,6 +4621,7 @@
           "text": "",
           "value": ""
         },
+        "hide": 3,
         "includeAll": false,
         "label": "Mimir datasource",
         "name": "prometheusds",
@@ -4611,6 +4636,7 @@
           "text": "",
           "value": ""
         },
+        "hide": 3,
         "includeAll": false,
         "label": "Loki datasource",
         "name": "lokids",
@@ -4783,7 +4809,8 @@
         "options": [],
         "query": "Rate : rate, Count : increase",
         "type": "custom",
-        "valuesFormat": "csv"
+        "valuesFormat": "csv",
+        "hide": 3
       }
     ]
   },
@@ -4795,6 +4822,6 @@
   "timezone": "browser",
   "title": "COS deployment overview",
   "uid": "cos-deployment-overview",
-  "version": 2,
+  "version": 0,
   "weekStart": ""
 }
