@@ -113,7 +113,8 @@
               }
             ]
           },
-          "unit": "short"
+          "unit": "short",
+          "noValue": "Set the COS model"
         },
         "overrides": []
       },
@@ -145,7 +146,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "(count(count by (juju_application) (up{juju_model=~\"$cos_model\",juju_application=~\"mimir.*|loki.*|tempo.*|alertmanager|traefik|grafana|otelcol|opentelemetry-collector\"}) < 2) or vector(0)) > bool 0",
+          "expr": "((count(count by (juju_application) (up{juju_model=~\"$cos_model\",juju_application=~\"mimir.*|loki.*|tempo.*|alertmanager|traefik|grafana|otelcol|opentelemetry-collector\"}) < 2) or vector(0)) > bool 0) and on() (count(up{juju_model=~\"$cos_model\"}) > bool 0)",
           "instant": true,
           "legendFormat": "{{juju_application}}",
           "range": false,
@@ -178,7 +179,7 @@
             "inspect": false
           },
           "mappings": [],
-          "noValue": "All scaled",
+          "noValue": "Set the COS model, or all scaled",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -302,7 +303,7 @@
               "type": "value"
             }
           ],
-          "noValue": "All reporting",
+          "noValue": "Set the COS model",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -348,7 +349,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "count(up{juju_model=~\"$cos_model\",juju_application=~\"mimir.*|loki.*|tempo.*|alertmanager|traefik|grafana|otelcol|opentelemetry-collector\"} == 0) or vector(0)",
+          "expr": "(count(up{juju_model=~\"$cos_model\",juju_application=~\"mimir.*|loki.*|tempo.*|alertmanager|traefik|grafana|otelcol|opentelemetry-collector\"} == 0) or vector(0)) and on() (count(up{juju_model=~\"$cos_model\"}) > bool 0)",
           "instant": true,
           "legendFormat": "units not reporting",
           "range": false,
@@ -480,7 +481,8 @@
               }
             ]
           },
-          "unit": "short"
+          "unit": "short",
+          "noValue": "No edge collectors reporting"
         },
         "overrides": [
           {
@@ -712,7 +714,8 @@
               }
             ]
           },
-          "unit": "short"
+          "unit": "short",
+          "noValue": "Set the COS model"
         },
         "overrides": [
           {
@@ -1136,7 +1139,8 @@
               }
             ]
           },
-          "unit": "short"
+          "unit": "short",
+          "noValue": "No edge collectors reporting"
         },
         "overrides": [
           {
@@ -1368,7 +1372,8 @@
               }
             ]
           },
-          "unit": "short"
+          "unit": "short",
+          "noValue": "Set the COS model"
         },
         "overrides": [
           {
@@ -1792,7 +1797,8 @@
               }
             ]
           },
-          "unit": "short"
+          "unit": "short",
+          "noValue": "No edge collectors reporting"
         },
         "overrides": [
           {
@@ -2024,7 +2030,8 @@
               }
             ]
           },
-          "unit": "short"
+          "unit": "short",
+          "noValue": "Set the COS model"
         },
         "overrides": [
           {
@@ -3530,7 +3537,8 @@
               }
             ]
           },
-          "unit": "short"
+          "unit": "short",
+          "noValue": "Set the COS model"
         },
         "overrides": []
       },
@@ -3639,7 +3647,8 @@
               }
             ]
           },
-          "unit": "bytes"
+          "unit": "bytes",
+          "noValue": "Set the COS model"
         },
         "overrides": []
       },
@@ -3762,7 +3771,8 @@
               }
             ]
           },
-          "unit": "short"
+          "unit": "short",
+          "noValue": "Set the COS model"
         },
         "overrides": []
       },
@@ -3856,7 +3866,8 @@
               }
             ]
           },
-          "unit": "short"
+          "unit": "short",
+          "noValue": "Set the COS model"
         },
         "overrides": []
       },
@@ -3950,7 +3961,8 @@
               }
             ]
           },
-          "unit": "short"
+          "unit": "short",
+          "noValue": "Set the COS model"
         },
         "overrides": []
       },
@@ -4070,7 +4082,8 @@
               }
             ]
           },
-          "unit": "short"
+          "unit": "short",
+          "noValue": "Set the COS model"
         },
         "overrides": []
       },
@@ -4164,7 +4177,8 @@
               }
             ]
           },
-          "unit": "short"
+          "unit": "short",
+          "noValue": "Set the COS model"
         },
         "overrides": []
       },
@@ -4258,7 +4272,8 @@
               }
             ]
           },
-          "unit": "short"
+          "unit": "short",
+          "noValue": "Set the COS model"
         },
         "overrides": []
       },
@@ -4378,7 +4393,8 @@
               }
             ]
           },
-          "unit": "short"
+          "unit": "short",
+          "noValue": "Set the COS model"
         },
         "overrides": []
       },
@@ -4472,7 +4488,8 @@
               }
             ]
           },
-          "unit": "bytes"
+          "unit": "bytes",
+          "noValue": "Set the COS model"
         },
         "overrides": []
       },
@@ -4566,7 +4583,8 @@
               }
             ]
           },
-          "unit": "short"
+          "unit": "short",
+          "noValue": "Set the COS model"
         },
         "overrides": []
       },

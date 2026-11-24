@@ -34,7 +34,7 @@ myst:
 ## Grafana
 
 - All data sources pass connectivity test.
-- Inspect the self-monitoring dashboards. Make sure "no data" only in panels where it makes sense.
+- Inspect the self-monitoring dashboards. Make sure "no data" exists only in panels where it makes sense. For a template that follows the whole pipeline, see [How to use the deployment dashboard](use-deployment-dashboard).
 
 ## HA
 

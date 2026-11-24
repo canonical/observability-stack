@@ -30,7 +30,7 @@ juju deploy cos-configuration-k8s cos-config \
     --config git_branch=main \
     --config git_depth=1 \
     --config grafana_dashboards_path=examples/
-juju relate cos-config grafana-k8s
+juju relate cos-config grafana
 ```
 
 ### Sync your own copy
@@ -40,7 +40,7 @@ To diverge from the example, copy [examples/deployment-dashboard.json](../../../
 ```shell
 juju config cos-config git_repo=<your repository URL>
 juju config cos-config grafana_dashboards_path=<path to your dashboards>
-juju relate cos-config grafana-k8s
+juju relate cos-config grafana
 ```
 
 Both paths behave the same once configured: the charm provisions the dashboard into Grafana on every sync. Because it is provisioned, it is read-only in the Grafana UI, so change the JSON in the repository and let the charm sync it rather than editing the dashboard by hand.
@@ -59,4 +59,4 @@ The dashboard is organized as rows, one per part of the stack.
 ## See also
 
 - [Deployment topology best practices](../../reference/topology)
-- [Sync alert rules and dashboards from a git repo](../integrate/sync-alert-rules-from-git-repo)
+- [Sync alert rules and dashboards from a git repository](../integrate/sync-alert-rules-from-git-repo)
