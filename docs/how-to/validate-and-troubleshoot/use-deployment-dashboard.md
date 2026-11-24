@@ -18,9 +18,9 @@ Until you do, their panels read "Set the COS model" instead of showing an empty 
 
 ## Sync the dashboard into Grafana
 
-[Provisioning the dashboard](../integrate/sync-alert-rules-from-git-repo.md#sync-dashboards) with the cos-configuration-k8s charm keeps it in step with its source, so you never edit it in the Grafana UI. To sync the upstream example, deploy the charm against this repository and point it at the `examples` directory. To sync your own copy instead, copy [examples/deployment-dashboard.json](../../../examples/deployment-dashboard.json) into your own repository, edit it there, and point the charm at that repository and path.
+[Provisioning the dashboard](../integrate/sync-alert-rules-from-git-repo.md#sync-dashboards) with the cos-configuration-k8s charm keeps it in step with its source, so you never edit it in the Grafana UI. To sync the upstream example, deploy the charm against this repository and point it at the `examples` directory with the following configuration: `git_repo=https://github.com/canonical/observability-stack` and `grafana_dashboards_path=examples/`.
 
-Both paths behave the same once configured: the charm provisions the dashboard into Grafana on every sync. Because it is provisioned, it is read-only in the Grafana UI, so change the JSON in the repository and let the charm sync it rather than editing the dashboard by hand.
+To sync your own copy instead, copy [examples/deployment-dashboard.json](../../../examples/deployment-dashboard.json) into your own repository, edit it there, and point the charm at that repository and path.
 
 If you only want to look at it once, import the JSON file through the Grafana import dialog instead.
 
