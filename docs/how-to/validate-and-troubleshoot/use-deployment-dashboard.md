@@ -6,7 +6,7 @@ myst:
 
 # How to use the deployment dashboard
 
-COS ships an example Grafana dashboard, [examples/deployment-dashboard.json](../../../examples/deployment-dashboard.json), for investigating a full COS deployment. It follows telemetry from targets, to edge collectors, to the COS collector, to the backends (Mimir, Loki, Tempo), and it checks that the COS applications are scaled for high availability.
+The example Grafana deployment dashboard at [examples/deployment-dashboard.json](../../../examples/deployment-dashboard.json) provides an overview for investigating a full COS deployment. It follows telemetry from targets, to edge collectors, to the COS collector, to the backends (Mimir, Loki, Tempo), and it checks that the COS applications are scaled for high availability.
 
 It is a template rather than a finished dashboard, so there is one variable to set after you import it, and then you sync it into Grafana.
 
@@ -18,30 +18,7 @@ Until you do, their panels read "Set the COS model" instead of showing an empty 
 
 ## Sync the dashboard into Grafana
 
-Provisioning the dashboard with the [cos-configuration-k8s](https://charmhub.io/cos-configuration-k8s) charm keeps it in step with its source, so you never edit it in the Grafana UI.
-
-### Sync the upstream example
-
-Deploy the charm against this repository and point it at the `examples` directory:
-
-```shell
-juju deploy cos-configuration-k8s cos-config \
-    --config git_repo=https://github.com/canonical/observability-stack \
-    --config git_branch=main \
-    --config git_depth=1 \
-    --config grafana_dashboards_path=examples/
-juju relate cos-config grafana
-```
-
-### Sync your own copy
-
-To diverge from the example, copy [examples/deployment-dashboard.json](../../../examples/deployment-dashboard.json) into your own repository, edit it there, and point the charm at that repository and path instead:
-
-```shell
-juju config cos-config git_repo=<your repository URL>
-juju config cos-config grafana_dashboards_path=<path to your dashboards>
-juju relate cos-config grafana
-```
+[Provisioning the dashboard](../integrate/sync-alert-rules-from-git-repo.md#sync-dashboards) with the cos-configuration-k8s charm keeps it in step with its source, so you never edit it in the Grafana UI. To sync the upstream example, deploy the charm against this repository and point it at the `examples` directory. To sync your own copy instead, copy [examples/deployment-dashboard.json](../../../examples/deployment-dashboard.json) into your own repository, edit it there, and point the charm at that repository and path.
 
 Both paths behave the same once configured: the charm provisions the dashboard into Grafana on every sync. Because it is provisioned, it is read-only in the Grafana UI, so change the JSON in the repository and let the charm sync it rather than editing the dashboard by hand.
 
@@ -53,8 +30,8 @@ The dashboard is organized as rows, one per part of the stack.
 
 - High availability: whether the COS applications that need more than one replica are scaled, which ones are not, and how many units are down.
 - Telemetry pipelines: logs, metrics, and traces, each as a row of edge collectors, the COS collector, and the backend. Read a row left to right; a break shows as refusals or export failures at the hop where it happens.
-- Collectors: the health of the collectors themselves. Restarts, uptime, CPU, and memory are ranked lists; the filter and exporter queue are trends.
 - Backends: the Mimir, Loki, and Tempo ingesters, shown as Active, In memory, and Flushed to S3.
+- Collectors: the health of the collectors themselves. The filter and exporter queue indicate telemetry processing within pipelines.
 
 ## See also
 
