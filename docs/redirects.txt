@@ -13,3 +13,4 @@
 "juju-topology" "explanation/architecture/juju-topology"
 "security" "reference/security-hardening-guide"
 "tutorial/mimir-on-juju" "how-to/deploy-and-manage/deploy-mimir-on-juju"
+"how-to/configure-and-tune/sync-alert-rules-from-git" "how-to/integrate/sync-alert-rules-from-git-repo"
