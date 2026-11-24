@@ -18,6 +18,8 @@ Monitor SSL certificates with blackbox exporter <monitor-ssl-certificates-with-b
 Instrument machine charms <instrument-machine-charms>
 Use the Loki HTTP API <use-loki-http-api>
 Use Catalogue <use-catalogue>
+Use Charmed Pyroscope <use-charmed-pyroscope>
+Migrate Charmed Pyroscope from v1 to v2 <migrate-charmed-pyroscope-v1-to-v2>
 Send metrics to Mimir on Juju <send-metrics-to-mimir>
 Send logs to Loki on Juju <send-logs-to-loki>
 ```
@@ -38,7 +40,7 @@ Manually enable a Tempo HA tracing receiver <manually-enable-tempo-ha-tracing-re
 Add alert rules <adding-alert-rules>
 Integrate Alertmanager with external receivers <integrate-alertmanager-receivers>
 Set up SLOs with Sloth <set-up-slos-with-sloth>
-Sync alert rules from a git repo <sync-alert-rules-from-git-repo>
+Sync alert rules and dashboards from a git repo <sync-alert-rules-from-git-repo>
 ```
 
 ## Test & validate integrations
