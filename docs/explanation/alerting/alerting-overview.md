@@ -37,7 +37,7 @@ Charmed rules are bundled directly with a charmed operator, encoding the operati
 
 ### Git-ops alert rules
 
-Custom alert rules can be loaded into COS from an external Git repository using the [COS Configuration charm](https://charmhub.io/cos-configuration-k8s). This is the recommended approach for organization-specific or workload-specific rules that are not bundled with a charm. See [How to sync alert rules from a Git repository](../../how-to/configure-and-tune/sync-alert-rules-from-git) for setup instructions.
+Custom alert rules can be loaded into COS from an external Git repository using the [COS Configuration charm](https://charmhub.io/cos-configuration-k8s). This is the recommended approach for organization-specific or workload-specific rules that are not bundled with a charm. See [How to sync alert rules and dashboards from a git repository](../../how-to/integrate/sync-alert-rules-from-git-repo) for setup instructions.
 
 ## Type of alert rule
 
