@@ -97,3 +97,8 @@ where `.n` in `tf-cos-3.0.n` is the latest available patch version in the [COS t
 ## Deploy COS Alerter
 
 COS Alerter is a watchdog service for COS. Deploy it on dedicated infrastructure that is separate from your COS or COS Lite deployment. For more information, including deployment details, see the [COS Alerter repository](https://github.com/canonical/cos-alerter).
+
+## Next steps
+
+- To investigate the telemetry pipeline of the deployment, see [How to use the deployment dashboard](../validate-and-troubleshoot/use-deployment-dashboard).
+- To confirm the deployment is healthy, see [How to validate a COS deployment](../validate-and-troubleshoot/validate-cos-deployment).

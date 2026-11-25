@@ -226,3 +226,7 @@ tempo-querier/0            wal/15             filesystem  kubernetes  /var/lib/j
 tempo-query-frontend/0     wal/17             filesystem  kubernetes  /var/lib/juju/storage/wal/0             1.0 GiB  attached  Successfully provisioned volume pvc-e5cde942-0ada-4dc8-9ade-fe6989d1f7a0
 traefik/0                  configurations/0   filesystem  kubernetes  /var/lib/juju/storage/configurations/0  1.0 GiB  attached  Successfully provisioned volume pvc-5930d32c-7909-4d81-b039-ab45c3461200
 ```
+
+## Next steps
+
+- To investigate the telemetry pipeline of this deployment, see [How to use the deployment dashboard](../how-to/validate-and-troubleshoot/use-deployment-dashboard).
