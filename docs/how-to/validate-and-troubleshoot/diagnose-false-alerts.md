@@ -66,7 +66,7 @@ If the rule is not present:
   tree. If the rule file is missing from the charm or stored in a non-default location, 
   our charm libraries may not have picked it up.
 - For **rules synced from a Git repository** via the
-  [COS Configuration charm](/how-to/configure-and-tune/sync-alert-rules-from-git), confirm that
+  [COS Configuration charm](/how-to/integrate/sync-alert-rules-from-git-repo), confirm that
   the rule file exists in the repository and that the charm is polling successfully.
 
 ### Check the alert expression
