@@ -99,9 +99,7 @@ where `.n` in `tf-cos-3.1.n` is the latest available patch version in the [COS t
 
 COS Alerter is a watchdog service for COS. Deploy it on dedicated infrastructure that is separate from your COS or COS Lite deployment. For more information, including deployment details, see the [COS Alerter repository](https://github.com/canonical/cos-alerter).
 
-## Deploy individual components
+## Next steps
 
-If you are not deploying the full Canonical Observability Stack and only need a
-specific COS component on Juju, see the component-focused guides:
-
-- [How to deploy Mimir on Juju](deploy-mimir-on-juju)
+- To investigate the telemetry pipeline of the deployment, see [How to use the deployment dashboard](../validate-and-troubleshoot/use-deployment-dashboard).
+- To confirm the deployment is healthy, see [How to validate a COS deployment](../validate-and-troubleshoot/validate-cos-deployment).
