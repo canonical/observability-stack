@@ -33,6 +33,8 @@ The dashboard is organized as rows, one per part of the stack.
 - Backends: the Mimir, Loki, and Tempo ingesters, shown as Active, In memory, and Flushed to S3.
 - Collectors: the health of the collectors themselves. The filter and exporter queue indicate telemetry processing within pipelines.
 
+![deployment-dashboard](../../assets/deployment-dashboard.png)
+
 ## See also
 
 - [Deployment topology best practices](../../reference/topology)
