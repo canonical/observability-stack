@@ -6,13 +6,11 @@ Fine-tune telemetry collection, alerting rules, and data handling.
 
 ## Alert management
 
-Control which alert rules are active and keep them in sync with your Git
-repository.
+Control which alert rules are active, and customize the rules your deployment receives.
 
 ```{toctree}
 :maxdepth: 1
 
-Sync alert rules from Git <sync-alert-rules-from-git>
 Disable built-in charm alert rules <disable-charmed-rules>
 ```
 

@@ -12,3 +12,4 @@
 "design-goals" "explanation/architecture/design-goals"
 "juju-topology" "explanation/architecture/juju-topology"
 "security" "reference/security-hardening-guide"
+"how-to/configure-and-tune/sync-alert-rules-from-git" "how-to/integrate/sync-alert-rules-from-git-repo"
