@@ -24,4 +24,5 @@ Diagnose and resolve common issues in a running COS environment.
 
 Troubleshooting <troubleshooting>
 Diagnose false alerts <diagnose-false-alerts>
+Use the deployment dashboard <use-deployment-dashboard>
 ```
