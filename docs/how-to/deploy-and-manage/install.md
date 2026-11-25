@@ -106,3 +106,8 @@ specific COS component on Juju, see the component-focused guides:
 
 - [How to deploy Mimir on Juju](deploy-mimir-on-juju)
 - [How to deploy Loki on Juju](deploy-loki-on-juju)
+
+## Next steps
+
+- To investigate the telemetry pipeline of the deployment, see [How to use the deployment dashboard](../validate-and-troubleshoot/use-deployment-dashboard).
+- To confirm the deployment is healthy, see [How to validate a COS deployment](../validate-and-troubleshoot/validate-cos-deployment).
