@@ -283,7 +283,7 @@ variable "opentelemetry_collector" {
     resources          = optional(map(string), {})
     revision           = optional(number, null)
     storage_directives = optional(map(string), {})
-    units              = optional(number, 1)
+    units              = optional(number, 3)
   })
   default     = {}
   description = "Application configuration for OpenTelemetry Collector. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
@@ -364,7 +364,7 @@ variable "traefik" {
     resources          = optional(map(string), {})
     revision           = optional(number, null)
     storage_directives = optional(map(string), {})
-    units              = optional(number, 1)
+    units              = optional(number, 3)
   })
   default     = {}
   description = "Application configuration for Traefik. For more details: https://registry.terraform.io/providers/juju/juju/latest/docs/resources/application"
